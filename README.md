@@ -1,2 +1,2 @@
 # GSG-Factions
-Factions Server related repo with parent-child maven setup, talk to simple for more info.
+Factions Server related repo with super pom maven setup, talk to simple for more info.
