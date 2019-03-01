@@ -10,6 +10,10 @@ public class CommandParseException extends Exception {
 
     private Consumer<CommandSender> senderConsumer;
 
+    public CommandParseException(String type, int index) {
+        this.senderConsumer = sender -> sender.sendMessage(Text.toColor("&cUnable to parse " + type + " at index " + index));
+    }
+
     public CommandParseException(String message) {
         this.senderConsumer = sender -> sender.sendMessage(Text.toColor(message));
     }

@@ -1,7 +1,5 @@
 package com.gameservergroup.gsgcore;
 
-import com.gameservergroup.gsgcore.events.EventPost;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class GSGCore extends JavaPlugin {
@@ -11,12 +9,7 @@ public class GSGCore extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-
-        EventPost.of(AsyncPlayerChatEvent.class)
-                .filter(event -> event.getMessage().contains("a"))
-                .handle(event -> {
-
-                }).post(this);
+        
     }
 
     @Override
