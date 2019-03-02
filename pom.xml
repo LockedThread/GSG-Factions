@@ -11,6 +11,8 @@
 
     <modules>
         <module>gsgcore</module>
+        <module>gsggenblocks</module>
+        <!--<module>gsgmcmmorewards</module>-->
     </modules>
 
     <dependencies>
