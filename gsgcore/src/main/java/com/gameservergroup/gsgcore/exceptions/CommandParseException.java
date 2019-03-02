@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 
 import java.util.function.Consumer;
 
-
 public class CommandParseException extends Exception {
 
     private Consumer<CommandSender> senderConsumer;
@@ -20,5 +19,9 @@ public class CommandParseException extends Exception {
 
     public CommandParseException(Consumer<CommandSender> senderConsumer) {
         this.senderConsumer = senderConsumer;
+    }
+
+    public Consumer<CommandSender> getSenderConsumer() {
+        return senderConsumer;
     }
 }
