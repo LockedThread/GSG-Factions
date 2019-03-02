@@ -27,9 +27,20 @@ public class Argument {
         return valueOptional.isPresent();
     }
 
-    public <T> Optional<T> parse(Class<T> tClass) throws CommandParseException {
+    public <T> Optional<T> parse(Class<T> tClass) {
         if (valueOptional.isPresent()) {
-            return ArgumentRegistry.getInstance().parse(tClass, valueOptional.get());
+            final Optional<T> parse = ArgumentRegistry.getInstance().parse(tClass, valueOptional.get());
+            if (parse.isPresent()) {
+                return parse;
+            }
+        }
+        return Optional.empty();
+    }
+
+    public <T> T forceParse(Class<T> tClass) throws CommandParseException {
+        final Optional<T> parse = parse(tClass);
+        if (parse.isPresent()) {
+            return parse.get();
         }
         throw new CommandParseException(tClass.getSimpleName(), index);
     }
