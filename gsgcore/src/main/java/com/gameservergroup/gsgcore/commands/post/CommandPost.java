@@ -31,14 +31,19 @@ public class CommandPost {
 
     public CommandBuilder<? extends CommandSender> build() {
         this.commandBuilder = new CommandBuilder<>(this);
-        return commandBuilder;
+        return this.commandBuilder;
     }
 
     public CommandBuilder<? extends CommandSender> getCommandBuilder() {
-        return commandBuilder;
+        return this.commandBuilder;
     }
 
-    public void call(CommandHandler commandHandler) throws CommandParseException {
+    public void setCommandBuilder(CommandBuilder<? extends CommandSender> commandBuilder) {
+        this.commandBuilder = commandBuilder;
+    }
+
+    @SuppressWarnings("unchecked")
+    void call(CommandHandler commandHandler) throws CommandParseException {
         for (Predicate<ICommandHandler<? extends CommandSender>> predicate : getCommandBuilder().getPredicates()) {
             if (!predicate.test(commandHandler)) {
                 return;

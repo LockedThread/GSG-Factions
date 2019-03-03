@@ -9,7 +9,7 @@ public class ArgumentRegistry implements IArgumentRegistry {
 
     private ArgumentRegistry() {
         this.argumentParserRegistry = new HashMap<>();
-        register(Integer.class, () -> s -> {
+        register(int.class, () -> s -> {
             try {
                 return Optional.of(Integer.parseInt(s));
             } catch (NumberFormatException e) {
@@ -18,13 +18,14 @@ public class ArgumentRegistry implements IArgumentRegistry {
         });
     }
 
-    public static ArgumentRegistry getInstance() {
+    static ArgumentRegistry getInstance() {
         if (instance == null) {
             instance = new ArgumentRegistry();
         }
         return instance;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> Optional<T> parse(Class<T> tClass, String application) {
         for (Map.Entry<Class<?>, HashSet<ArgumentParser<?>>> entry : argumentParserRegistry.entrySet()) {

@@ -1,6 +1,5 @@
-package com.gameservergroup.gsgcore.commands;
+package com.gameservergroup.gsgcore.commands.handler;
 
-import com.gameservergroup.gsgcore.commands.handler.CommandHandler;
 import com.gameservergroup.gsgcore.exceptions.CommandParseException;
 import org.bukkit.command.CommandSender;
 
