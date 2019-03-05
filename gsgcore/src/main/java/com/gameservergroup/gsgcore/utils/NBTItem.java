@@ -5,6 +5,7 @@ import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class NBTItem {
 
@@ -12,8 +13,17 @@ public class NBTItem {
     private NBTTagCompound rootCompound;
 
     public NBTItem(ItemStack startItemStack) {
+        Objects.requireNonNull(startItemStack, "startItemStack can't be null in NBTItem Constructor");
         this.nmsItemStack = CraftItemStack.asNMSCopy(startItemStack);
         this.rootCompound = nmsItemStack.hasTag() ? nmsItemStack.getTag() : new NBTTagCompound();
+    }
+
+    public Set<String> getKeys() {
+        return rootCompound.c();
+    }
+
+    public boolean hasKey(String key) {
+        return rootCompound.hasKey(key);
     }
 
     public boolean getBoolean(String key) {
@@ -46,7 +56,7 @@ public class NBTItem {
 
     public NBTItem set(String key, Object value) {
         PrimitiveClass primitiveClass = PrimitiveClass.get(value.getClass());
-        Objects.requireNonNull(primitiveClass);
+        Objects.requireNonNull(primitiveClass, "Unable to find primitive class \"" + value.toString() + "\"");
 
         switch (primitiveClass) {
             case BOOLEAN:

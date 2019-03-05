@@ -1,5 +1,6 @@
 package com.gameservergroup.gsgcore.items;
 
+import com.gameservergroup.gsgcore.utils.NBTItem;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -7,6 +8,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class CustomItem {
 
@@ -67,7 +69,7 @@ public class CustomItem {
     }
 
     public static CustomItem of(ItemStackBuilder itemStackBuilder, String name) {
-        return new CustomItem(name, itemStackBuilder.build());
+        return new CustomItem(name, new NBTItem(itemStackBuilder.build()).set(name, true).buildItemStack());
     }
 
     private static DyeColor parseDyeColor(String s) {
@@ -96,5 +98,18 @@ public class CustomItem {
 
     public String getName() {
         return name;
+    }
+
+    public static CustomItem findCustomItem(ItemStack itemStack) {
+        return new NBTItem(itemStack).getKeys()
+                .stream()
+                .map(key -> customItems.get(key))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static CustomItem getCustomItem(String name) {
+        return customItems.get(name);
     }
 }
