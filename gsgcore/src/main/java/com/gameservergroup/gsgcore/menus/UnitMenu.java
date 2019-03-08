@@ -11,7 +11,6 @@ public class UnitMenu extends Unit {
 
     @Override
     public void setup() {
-        hookDisable(() -> GSG_CORE.getLogger().info("You have disabled the Menu Unit."));
         EventPost.of(InventoryOpenEvent.class)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(EventFilters.getIgnoreNonMenus())
