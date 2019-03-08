@@ -1,36 +1,29 @@
 package com.gameservergroup.gsgcore.storage;
 
-import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gameservergroup.gsgcore.GSGCore;
-import com.google.common.reflect.TypeToken;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Optional;
 
 public class JsonFile<T> {
 
     private File directory;
     private String fileName;
-    private Class<T> tClass;
-    private JSON json;
+    private TypeReference<T> typeReference;
+    private ObjectMapper objectMapper;
 
-    @SuppressWarnings({"unchecked", "UnstableApiUsage"})
-    public JsonFile(File directory, String fileName, TypeToken<T> typeToken, JSON json) {
+    public JsonFile(File directory, String fileName, TypeReference<T> typeReference, ObjectMapper objectMapper) {
         this.directory = directory;
-        this.tClass = (Class<T>) typeToken.getRawType();
+        this.typeReference = typeReference;
         this.fileName = fileName.endsWith(".json") ? fileName : fileName + ".json";
-        this.json = json;
-        System.out.println("directory=" + directory.toString());
-        System.out.println("tClass=" + tClass.getName());
-        System.out.println("fileName=" + fileName);
+        this.objectMapper = objectMapper;
     }
 
-    @SuppressWarnings({"unchecked", "UnstableApiUsage"})
-    public JsonFile(File directory, String fileName, TypeToken<T> typeToken) {
-        this(directory, fileName, typeToken, GSGCore.getInstance().getJson());
+    public JsonFile(File directory, String fileName, TypeReference<T> typeToken) {
+        this(directory, fileName, typeToken, GSGCore.getInstance().getJsonObjectMapper());
     }
 
     public void save(T t) {
@@ -39,7 +32,7 @@ public class JsonFile<T> {
             if (!file.exists()) {
                 file.createNewFile();
             }
-            Files.write(file.toPath(), json.asString(t).getBytes());
+            objectMapper.writeValue(file, t);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,15 +43,11 @@ public class JsonFile<T> {
             return Optional.empty();
         }
         try {
-            return Optional.ofNullable(json.beanFrom(tClass, getFileContents()));
+            return Optional.ofNullable(objectMapper.readValue(getFile(), typeReference));
         } catch (IOException e) {
             e.printStackTrace();
         }
         return Optional.empty();
-    }
-
-    public String getFileContents() throws IOException {
-        return new String(Files.readAllBytes(getFile().toPath()), StandardCharsets.UTF_8);
     }
 
     public File getFile() {
