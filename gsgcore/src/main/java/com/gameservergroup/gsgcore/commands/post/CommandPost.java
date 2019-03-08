@@ -13,7 +13,7 @@ public class CommandPost {
 
     private static HashMap<String[], CommandPost> commandPosts;
 
-    private CommandBuilder<? extends CommandSender> commandBuilder;
+    private CommandBuilder<CommandSender> commandBuilder;
 
     private CommandPost() {
     }
@@ -29,7 +29,7 @@ public class CommandPost {
         return commandPosts;
     }
 
-    public CommandBuilder<? extends CommandSender> build() {
+    public CommandBuilder<CommandSender> build() {
         this.commandBuilder = new CommandBuilder<>(this);
         return this.commandBuilder;
     }
@@ -38,7 +38,7 @@ public class CommandPost {
         return this.commandBuilder;
     }
 
-    public void setCommandBuilder(CommandBuilder<? extends CommandSender> commandBuilder) {
+    public void setCommandBuilder(CommandBuilder<CommandSender> commandBuilder) {
         this.commandBuilder = commandBuilder;
     }
 
