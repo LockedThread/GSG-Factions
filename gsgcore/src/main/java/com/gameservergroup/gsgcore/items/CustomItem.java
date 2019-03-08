@@ -92,14 +92,6 @@ public class CustomItem {
         return customItems;
     }
 
-    public ItemStack getItemStack() {
-        return itemStack;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public static CustomItem findCustomItem(ItemStack itemStack) {
         return new NBTItem(itemStack).getKeys()
                 .stream()
@@ -111,5 +103,13 @@ public class CustomItem {
 
     public static CustomItem getCustomItem(String name) {
         return customItems.get(name);
+    }
+
+    public ItemStack getItemStack() {
+        return itemStack;
+    }
+
+    public String getName() {
+        return name;
     }
 }

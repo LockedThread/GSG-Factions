@@ -14,17 +14,17 @@ public class EventPost<T extends Event> {
     private EventPriority eventPriority;
     private Consumer<T> eventConsumer;
 
+    private EventPost(Class<T> eventClass, EventPriority eventPriority) {
+        this.eventClass = eventClass;
+        this.eventPriority = eventPriority;
+    }
+
     public static <T extends Event> EventPost<T> of(Class<T> eventClass, EventPriority eventPriority) {
         return new EventPost<>(eventClass, eventPriority);
     }
 
     public static <T extends Event> EventPost<T> of(Class<T> eventClass) {
         return new EventPost<>(eventClass, EventPriority.NORMAL);
-    }
-
-    private EventPost(Class<T> eventClass, EventPriority eventPriority) {
-        this.eventClass = eventClass;
-        this.eventPriority = eventPriority;
     }
 
     public EventPost<T> filter(Predicate<T> event) {
