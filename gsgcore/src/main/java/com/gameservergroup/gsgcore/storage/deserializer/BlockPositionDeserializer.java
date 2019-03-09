@@ -4,17 +4,17 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.io.IOException;
 
-public class LocationDeserializer extends JsonDeserializer<Location> {
+public class BlockPositionDeserializer extends JsonDeserializer<BlockPosition> {
 
     @Override
-    public Location deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        double x = 0.0, y = 0.0, z = 0.0;
+    public BlockPosition deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+        int x = 0, y = 0, z = 0;
         World world = null;
 
         while (!jsonParser.isClosed()) {
@@ -24,22 +24,17 @@ public class LocationDeserializer extends JsonDeserializer<Location> {
                         world = Bukkit.getWorld(jsonParser.getValueAsString());
                         break;
                     case "x":
-                        x = jsonParser.getValueAsDouble();
+                        x = jsonParser.getValueAsInt();
                         break;
                     case "y":
-                        y = jsonParser.getValueAsDouble();
+                        y = jsonParser.getValueAsInt();
                         break;
                     case "z":
-                        z = jsonParser.getValueAsDouble();
+                        z = jsonParser.getValueAsInt();
                         break;
                 }
             }
         }
-        return new Location(world, x, y, z);
-    }
-
-    @Override
-    public Class<?> handledType() {
-        return Location.class;
+        return BlockPosition.of(world, x, y, z);
     }
 }
