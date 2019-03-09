@@ -5,6 +5,7 @@ import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -67,6 +68,12 @@ public class ItemStackBuilder {
         if (section.isSet("itemflags") && section.isList("itemflags")) {
             itemStackBuilder.addItemFlags(section.getStringList("itemflags").stream().map(ItemStackBuilder::parseItemFlag).toArray(ItemFlag[]::new));
         }
+        if (section.isSet("enchants") && section.isList("enchants")) {
+            for (String enchants : section.getStringList("enchants")) {
+                String[] split = enchants.split(":");
+                itemStackBuilder.addEnchant(Enchantment.getByName(split[0]), Integer.parseInt(split[1]));
+            }
+        }
         return itemStackBuilder;
     }
 
@@ -76,6 +83,10 @@ public class ItemStackBuilder {
 
     public void setAmount(int amount) {
         itemStack.setAmount(amount);
+    }
+
+    public void addEnchant(Enchantment enchantment, int level) {
+        consumeItemMeta(itemMeta -> itemMeta.addEnchant(enchantment, level, true));
     }
 
     public ItemStackBuilder consumeItemStack(Consumer<ItemStack> itemStackConsumer) {
