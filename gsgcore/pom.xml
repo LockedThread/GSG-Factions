@@ -14,18 +14,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>net.techcable.tacospigot</groupId>
             <artifactId>server</artifactId>
             <version>1.8.8-R0.2-SNAPSHOT</version>
@@ -47,14 +35,6 @@
                 <directory>${project.basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
-            <resource>
-                <directory>${project.basedir}/src/main/resources/META-INF</directory>
-                <targetPath>./META-INF</targetPath>
-                <filtering>false</filtering>
-                <includes>
-                    <include>services/javax.annotation.processing.Processor</include>
-                </includes>
-            </resource>
         </resources>
 
         <plugins>
@@ -65,7 +45,6 @@
                 <configuration>
                     <source>8</source>
                     <target>8</target>
-                    <proc>none</proc>
                 </configuration>
             </plugin>
             <plugin>
