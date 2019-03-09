@@ -20,7 +20,8 @@ public class CommandPostExecutor implements CommandExecutor {
             for (String alias : entry.getKey()) {
                 if (alias.equalsIgnoreCase(command.getName())) {
                     try {
-                        if (sender.hasPermission(entry.getValue().getCommandBuilder().getPermission())) {
+                        final String permission = entry.getValue().getCommandBuilder().getPermission();
+                        if (permission == null || sender.hasPermission(permission)) {
                             entry.getValue().call(sender instanceof Player ? new CommandHandler<>((Player) sender, label, args) : new CommandHandler<>((ConsoleCommandSender) sender, label, args));
                         } else {
                             sender.sendMessage(Text.toColor("&cYou don't have permission to execute this command!"));
