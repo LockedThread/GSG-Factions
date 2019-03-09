@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public class Menu implements InventoryHolder {
+public abstract class Menu implements InventoryHolder {
 
     private Consumer<InventoryOpenEvent> inventoryOpenEventConsumer;
     private Consumer<InventoryCloseEvent> inventoryCloseEventConsumer;
@@ -22,7 +22,10 @@ public class Menu implements InventoryHolder {
     public Menu(String name, int size) {
         this.inventory = Bukkit.createInventory(this, size, Text.toColor(name));
         this.menuItems = new Int2ObjectOpenHashMap<>();
+        initialize();
     }
+
+    public abstract void initialize();
 
     public Optional<MenuItem> getMenuItem(int slot) {
         return Optional.of(menuItems.get(slot));
