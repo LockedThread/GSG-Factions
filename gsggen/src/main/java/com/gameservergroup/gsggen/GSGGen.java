@@ -2,6 +2,7 @@ package com.gameservergroup.gsggen;
 
 import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsggen.menu.GenMenu;
+import com.gameservergroup.gsggen.task.TaskGeneneration;
 import com.gameservergroup.gsggen.units.UnitGen;
 
 public class GSGGen extends Module {
@@ -20,6 +21,7 @@ public class GSGGen extends Module {
         saveDefaultConfig();
         registerUnits(unitGen = new UnitGen());
         this.genMenu = new GenMenu();
+        new TaskGeneneration().runTaskTimerAsynchronously(this, getConfig().getLong("interval"), getConfig().getLong("interval"));
     }
 
     @Override

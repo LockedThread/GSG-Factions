@@ -1,4 +1,5 @@
-#Directions - (VERTICAL_UP,VERTICAL_DOWN,NORTH,SOUTH,EAST,WEST)
+#Directions - (VERTICAL_UP,VERTICAL_DOWN,HORIZONTAL)
+interval: 10
 menu:
   options:
     close-inventory-on-purchase: false

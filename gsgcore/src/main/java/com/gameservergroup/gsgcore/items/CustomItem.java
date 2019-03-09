@@ -4,21 +4,20 @@ import com.gameservergroup.gsgcore.utils.NBTItem;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 public class CustomItem {
 
     private static HashMap<String, CustomItem> customItems = new HashMap<>();
     private String name;
     private ItemStack itemStack;
+    private EnumSet<CustomItemType> customItemTypes;
 
-    private CustomItem(String name, ItemStack itemStack) {
+    private CustomItem(String name, ItemStack itemStack, CustomItemType... customItemTypes) {
         this.name = name;
         this.itemStack = itemStack;
-
+        this.customItemTypes = EnumSet.copyOf(Arrays.asList(customItemTypes));
         customItems.put(name, this);
-
     }
 
     public static CustomItem of(ConfigurationSection section, String name) {
@@ -56,5 +55,9 @@ public class CustomItem {
 
     public String getName() {
         return name;
+    }
+
+    public Set<CustomItemType> getCustomItemTypes() {
+        return customItemTypes;
     }
 }
