@@ -6,15 +6,12 @@ public enum Direction {
 
     VERTICAL_UP(BlockFace.UP),
     VERTICAL_DOWN(BlockFace.DOWN),
-    NORTH(BlockFace.NORTH),
-    SOUTH(BlockFace.SOUTH),
-    EAST(BlockFace.EAST),
-    WEST(BlockFace.WEST);
+    HORIZONTAL(BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH, BlockFace.NORTH);
 
-    private BlockFace blockFace;
+    private BlockFace[] blockFaces;
 
-    Direction(BlockFace blockFace) {
-        this.blockFace = blockFace;
+    Direction(BlockFace... blockFaces) {
+        this.blockFaces = blockFaces;
     }
 
     public static Direction fromBlockFace(BlockFace blockFace) {
@@ -23,19 +20,16 @@ public enum Direction {
         } catch (IllegalArgumentException ignored) {
         }
         for (Direction direction : values()) {
-            if (direction.blockFace == blockFace) {
-                return direction;
+            for (BlockFace face : direction.blockFaces) {
+                if (blockFace == face) {
+                    return direction;
+                }
             }
         }
         return null;
     }
 
-    public BlockFace getBlockFace() {
-        return blockFace;
-    }
-
-    @Override
-    public String toString() {
-        return super.toString();
+    public BlockFace[] getBlockFaces() {
+        return blockFaces;
     }
 }
