@@ -1,12 +1,9 @@
 package com.gameservergroup.gsgcore.plugin;
 
-import com.gameservergroup.gsgcore.GSGCore;
 import com.gameservergroup.gsgcore.units.Unit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class Module extends JavaPlugin {
-
-    public static final GSGCore GSG_CORE = GSGCore.getInstance();
 
     public abstract void enable();
 

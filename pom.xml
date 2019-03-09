@@ -11,6 +11,7 @@
 
     <modules>
         <module>gsgcore</module>
+        <module>gsggen</module>
     </modules>
 
     <dependencies>
