@@ -11,14 +11,14 @@ public abstract class Generation {
     private BlockPosition startingBlockPosition, currentBlockPosition;
     private int length;
 
-    Generation(BlockPosition startingBlockPosition, Material material, Direction direction) {
+    public Generation(BlockPosition startingBlockPosition, Material material, Direction direction) {
         this.startingBlockPosition = startingBlockPosition;
         this.currentBlockPosition = startingBlockPosition;
         this.material = material;
         this.direction = direction;
     }
 
-    public abstract void generate();
+    public abstract boolean generate();
 
     public BlockPosition getStartingBlockPosition() {
         return startingBlockPosition;

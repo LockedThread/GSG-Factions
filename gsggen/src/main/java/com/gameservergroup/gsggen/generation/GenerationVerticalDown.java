@@ -4,10 +4,10 @@ import com.gameservergroup.gsgcore.enums.Direction;
 import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import org.bukkit.Material;
 
-public class GenerationHorizontal extends Generation {
+public class GenerationVerticalDown extends Generation {
 
-    public GenerationHorizontal(BlockPosition startingBlockPosition, Material material) {
-        super(startingBlockPosition, material, Direction.HORIZONTAL);
+    public GenerationVerticalDown(BlockPosition startingBlockPosition, Material material) {
+        super(startingBlockPosition, material, Direction.VERTICAL_DOWN);
     }
 
     @Override
