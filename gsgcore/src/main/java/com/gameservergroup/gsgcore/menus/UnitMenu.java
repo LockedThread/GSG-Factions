@@ -16,10 +16,8 @@ public class UnitMenu extends Unit {
                 .filter(EventFilters.getIgnoreNonMenus())
                 .handle(event -> {
                     Menu menu = (Menu) event.getInventory().getHolder();
-                    System.out.println("called InventoryOpenEvent - " + menu.getInventory().getName());
                     if (menu.getInventoryOpenEventConsumer() != null) {
                         menu.getInventoryOpenEventConsumer().accept(event);
-                        System.out.println("Called open event consumer for " + menu.getInventory().getName());
                     }
                 }).post(GSG_CORE);
 
@@ -27,10 +25,8 @@ public class UnitMenu extends Unit {
                 .filter(EventFilters.getIgnoreNonMenus())
                 .handle(event -> {
                     Menu menu = (Menu) event.getInventory().getHolder();
-                    System.out.println("called InventoryCloseEvent - " + menu.getInventory().getName());
                     if (menu.getInventoryCloseEventConsumer() != null) {
                         menu.getInventoryCloseEventConsumer().accept(event);
-                        System.out.println("Called close event consumer for " + menu.getInventory().getName());
                     }
                 }).post(GSG_CORE);
 
@@ -38,7 +34,6 @@ public class UnitMenu extends Unit {
                 .filter(EventFilters.getIgnoreNonMenus())
                 .handle(event -> {
                     Menu menu = (Menu) event.getInventory().getHolder();
-                    System.out.println("called InventoryOpenEvent - " + menu.getInventory().getName());
                     menu.getMenuItem(event.getRawSlot()).ifPresent(menuItem1 -> menuItem1.getInventoryClickEventConsumer().accept(event));
                 }).post(GSG_CORE);
     }
