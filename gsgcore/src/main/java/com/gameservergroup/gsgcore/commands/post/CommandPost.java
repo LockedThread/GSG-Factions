@@ -6,6 +6,7 @@ import com.gameservergroup.gsgcore.commands.handler.ICommandHandler;
 import com.gameservergroup.gsgcore.exceptions.CommandParseException;
 import org.bukkit.command.CommandSender;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.function.Predicate;
 
@@ -38,12 +39,12 @@ public class CommandPost {
         return this.commandBuilder;
     }
 
-    public void setCommandBuilder(CommandBuilder<CommandSender> commandBuilder) {
-        this.commandBuilder = commandBuilder;
+    public void setCommandBuilder(CommandBuilder<? extends CommandSender> commandBuilder) {
+        this.commandBuilder = (CommandBuilder<CommandSender>) commandBuilder;
     }
 
     @SuppressWarnings("unchecked")
-    void call(CommandHandler commandHandler) throws CommandParseException {
+    void call(CommandHandler commandHandler) throws CommandParseException, IOException {
         for (Predicate<ICommandHandler<? extends CommandSender>> predicate : getCommandBuilder().getPredicates()) {
             if (!predicate.test(commandHandler)) {
                 return;

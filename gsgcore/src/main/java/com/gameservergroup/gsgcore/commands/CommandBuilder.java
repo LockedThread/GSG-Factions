@@ -17,6 +17,7 @@ public class CommandBuilder<T extends CommandSender> {
     private HashSet<Predicate<ICommandHandler<? extends CommandSender>>> predicates;
     private CommandPost commandPost;
     private FunctionalCommandHandler<T> functionalCommandHandler;
+    private String permission;
 
     private CommandBuilder(HashSet<Predicate<ICommandHandler<? extends CommandSender>>> predicates, CommandPost commandPost, FunctionalCommandHandler<T> functionalCommandHandler) {
         this.predicates = predicates;
@@ -27,6 +28,11 @@ public class CommandBuilder<T extends CommandSender> {
     public CommandBuilder(CommandPost commandPost) {
         this.commandPost = commandPost;
         this.predicates = new HashSet<>();
+    }
+
+    public CommandBuilder<T> assertPermission(String permission) {
+        this.permission = permission;
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -52,9 +58,9 @@ public class CommandBuilder<T extends CommandSender> {
             commandHandler.reply("&cYou may only use this command as Console!");
             return false;
         });
-        final CommandBuilder<ConsoleCommandSender> playerCommandBuilder = new CommandBuilder<>(predicates, commandPost, (FunctionalCommandHandler<ConsoleCommandSender>) functionalCommandHandler);
-        commandPost.setCommandBuilder(playerCommandBuilder);
-        return playerCommandBuilder;
+        final CommandBuilder<ConsoleCommandSender> consoleCommandSenderCommandBuilder = new CommandBuilder<>(predicates, commandPost, (FunctionalCommandHandler<ConsoleCommandSender>) functionalCommandHandler);
+        commandPost.setCommandBuilder(consoleCommandSenderCommandBuilder);
+        return consoleCommandSenderCommandBuilder;
     }
 
     public CommandBuilder<T> filter(Predicate<ICommandHandler<? extends CommandSender>> predicate) {
@@ -78,5 +84,9 @@ public class CommandBuilder<T extends CommandSender> {
 
     public FunctionalCommandHandler<T> getFunctionalCommandHandler() {
         return functionalCommandHandler;
+    }
+
+    public String getPermission() {
+        return permission;
     }
 }
