@@ -32,9 +32,7 @@ public class UnitMenu extends Unit {
 
         EventPost.of(InventoryClickEvent.class)
                 .filter(EventFilters.getIgnoreNonMenus())
-                .handle(event -> {
-                    Menu menu = (Menu) event.getInventory().getHolder();
-                    menu.getMenuItem(event.getRawSlot()).ifPresent(menuItem1 -> menuItem1.getInventoryClickEventConsumer().accept(event));
-                }).post(GSG_CORE);
+                .handle(event -> ((Menu) event.getClickedInventory().getHolder()).getMenuItem(event.getRawSlot()).ifPresent(menuItem -> menuItem.getInventoryClickEventConsumer().accept(event)))
+                .post(GSG_CORE);
     }
 }

@@ -1,0 +1,40 @@
+#Directions - (VERTICAL_UP,VERTICAL_DOWN,NORTH,SOUTH,EAST,WEST)
+menu:
+  options:
+    close-inventory-on-purchase: false
+    close-inventory-on-no-money: true
+  name: '               &e&l(*) &fGens &e&l(*)'
+  size: 18
+  items:
+    0: 'cobblestone-up'
+gens:
+  cobblestone-up:
+    patch: false
+    price: 10
+    direction: 'VERTICAL_UP'
+    menu:
+      amount: 1
+      material: 'COBBLESTONE'
+      name: '&d&l(!) &fCobblestone GenBucket &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fUP'
+        - ' &dPrice: &f$10'
+        - ''
+      enchants:
+        - 'DURABILITY:1'
+      itemflags:
+        - 'HIDE_ENCHANTS'
+    item:
+      amount: 1
+      material: 'COBBLESTONE'
+      name: '&d&l(!) &fCobblestone GenBucket &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fUP'
+        - ' &dPlace this genbucket to generate cobblestone '
+        - ''
+      enchants:
+        - 'DURABILITY:1'
+      itemflags:
+        - 'HIDE_ENCHANTS'

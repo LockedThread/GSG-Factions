@@ -1,0 +1,6 @@
+name: GSGGen
+main: com.gameservergroup.gsggen.GSGGen
+version: 1.0-SNAPSHOT
+description: GSG fully configurable genblock/genbucket plugin
+depend: [GSGCore, Factions, WorldGuard]
+author: LockedThread

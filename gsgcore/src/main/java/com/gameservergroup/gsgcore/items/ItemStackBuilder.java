@@ -95,8 +95,11 @@ public class ItemStackBuilder {
     }
 
     public ItemStackBuilder consumeItemMeta(Consumer<ItemMeta> itemMetaConsumer) {
-        itemMetaConsumer.accept(itemStack.getItemMeta());
-        itemStack.setItemMeta(itemStack.getItemMeta());
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta != null) {
+            itemMetaConsumer.accept(itemMeta);
+            itemStack.setItemMeta(itemMeta);
+        }
         return this;
     }
 

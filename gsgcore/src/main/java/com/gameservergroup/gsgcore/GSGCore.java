@@ -66,6 +66,7 @@ public class GSGCore extends Module {
         serializers.addSerializer(new BlockPositionSerializer()).addDeserializer(BlockPosition.class, new BlockPositionDeserializer());
         //ChunkPosition
         serializers.addSerializer(new ChunkPositionSerializer()).addDeserializer(ChunkPosition.class, new ChunkPositionDeserializer());
+
         objectMapper.registerModule(serializers);
 
         this.jsonObjectMapper = objectMapper;
