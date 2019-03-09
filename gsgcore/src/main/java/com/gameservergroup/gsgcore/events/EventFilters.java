@@ -15,7 +15,7 @@ public class EventFilters {
     private static final Predicate<PlayerMoveEvent> IGNORE_SAME_CHUNK = event -> event.getFrom().getChunk().getX() == event.getTo().getChunk().getX() && event.getFrom().getChunk().getZ() == event.getTo().getChunk().getZ();
     private static final Predicate<? extends Cancellable> IGNORE_CANCELLED = cancellable -> !cancellable.isCancelled();
     private static final Predicate<? extends PlayerEvent> IGNORE_HAND_NULL = event -> event.getPlayer().getItemInHand() != null;
-    private static final Predicate<? extends InventoryEvent> IGNORE_NON_MENUS = (Predicate<InventoryEvent>) event -> event instanceof InventoryClickEvent ? ((InventoryClickEvent) event).getClickedInventory() instanceof Menu : event.getInventory().getHolder() instanceof Menu;
+    private static final Predicate<? extends InventoryEvent> IGNORE_NON_MENUS = (Predicate<InventoryEvent>) event -> event instanceof InventoryClickEvent ? ((InventoryClickEvent) event).getClickedInventory().getHolder() instanceof Menu : event.getInventory().getHolder() instanceof Menu;
 
     public static <T extends InventoryEvent> Predicate<T> getIgnoreNonMenus() {
         return (Predicate<T>) IGNORE_NON_MENUS;
