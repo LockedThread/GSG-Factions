@@ -34,9 +34,7 @@ public class UnitGen extends Unit {
             Direction direction = null;
             boolean patch = false;
             ConfigurationSection section = GSG_GEN.getConfig().getConfigurationSection("gens." + genKey);
-            System.out.println("genKey=" + genKey);
             for (String data : section.getKeys(false)) {
-                System.out.println("data=" + data);
                 if (data.equalsIgnoreCase("price")) {
                     price = section.getDouble("price");
                 } else if (data.equalsIgnoreCase("direction")) {
@@ -48,7 +46,6 @@ public class UnitGen extends Unit {
                 }
             }
             genHashMap.put(genKey, new Gen(section, direction, price, patch));
-            System.out.println();
         }
 
         CommandPost.of()
