@@ -28,7 +28,7 @@ public abstract class Menu implements InventoryHolder {
     public abstract void initialize();
 
     public Optional<MenuItem> getMenuItem(int slot) {
-        return Optional.of(menuItems.get(slot));
+        return Optional.ofNullable(menuItems.get(slot));
     }
 
     public void setItem(int slot, MenuItem menuItem) {
