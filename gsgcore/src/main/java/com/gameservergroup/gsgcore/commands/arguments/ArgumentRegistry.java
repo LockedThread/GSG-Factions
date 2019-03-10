@@ -1,6 +1,9 @@
 package com.gameservergroup.gsgcore.commands.arguments;
 
 import com.gameservergroup.gsgcore.items.CustomItem;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -45,6 +48,18 @@ public class ArgumentRegistry implements IArgumentRegistry {
         register(CustomItem.class, () -> s -> Optional.ofNullable(CustomItem.getCustomItem(s)));
         // String
         register(String.class, () -> Optional::of);
+        // Player
+        register(Player.class, () -> s -> Optional.ofNullable(Bukkit.getPlayer(s)));
+        // OfflinePlayer
+        register(OfflinePlayer.class, () -> s -> Optional.ofNullable(Bukkit.getOfflinePlayer(s)));
+        // UUID
+        register(UUID.class, () -> s -> {
+            try {
+                return Optional.of(UUID.fromString(s));
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+        });
     }
 
     static ArgumentRegistry getInstance() {
