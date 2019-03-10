@@ -16,14 +16,12 @@ public abstract class Generation {
         this.currentBlockPosition = startingBlockPosition;
         this.gen = gen;
         this.length = gen.getLength();
-        System.out.println("instantiated Generation object");
     }
 
     public abstract boolean generate();
 
     public void enable() {
         GSGGen.getInstance().getUnitGen().getGenerations().add(this);
-        System.out.println("enabled generation");
     }
 
     public int getLength() {
