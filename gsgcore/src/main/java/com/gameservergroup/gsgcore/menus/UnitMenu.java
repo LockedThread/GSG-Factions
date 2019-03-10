@@ -7,6 +7,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
+import java.util.Optional;
+
 public class UnitMenu extends Unit {
 
     @Override
@@ -32,7 +34,13 @@ public class UnitMenu extends Unit {
 
         EventPost.of(InventoryClickEvent.class)
                 .filter(EventFilters.getIgnoreNonMenus())
-                .handle(event -> ((Menu) event.getClickedInventory().getHolder()).getMenuItem(event.getRawSlot()).ifPresent(menuItem -> menuItem.getInventoryClickEventConsumer().accept(event)))
+                .handle(event -> {
+                    Menu menu = (Menu) event.getClickedInventory().getHolder();
+                    final Optional<MenuItem> menuItem = menu.getMenuItem(event.getRawSlot());
+                    if (menuItem.isPresent() && menuItem.get().getInventoryClickEventConsumer() != null) {
+                        menuItem.get().getInventoryClickEventConsumer().accept(event);
+                    }
+                })
                 .post(GSG_CORE);
     }
 }
