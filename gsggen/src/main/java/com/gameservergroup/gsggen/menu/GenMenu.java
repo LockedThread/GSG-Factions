@@ -34,7 +34,9 @@ public class GenMenu extends Menu {
                 itemStackBuilder.addEnchant(Enchantment.DURABILITY, 1);
                 itemStackBuilder.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
-            setItem(getInventory().firstEmpty(), itemStackBuilder.build());
+            while (getInventory().firstEmpty() != -1) {
+                setItem(getInventory().firstEmpty(), itemStackBuilder.build());
+            }
         }
     }
 }
