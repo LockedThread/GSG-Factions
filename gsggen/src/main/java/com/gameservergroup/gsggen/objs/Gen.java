@@ -4,8 +4,15 @@ import com.gameservergroup.gsgcore.enums.Direction;
 import com.gameservergroup.gsgcore.items.CustomItem;
 import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.menus.MenuItem;
+import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsgcore.utils.Text;
+import com.gameservergroup.gsggen.generation.Generation;
+import com.gameservergroup.gsggen.generation.GenerationHorizontal;
+import com.gameservergroup.gsggen.generation.GenerationVerticalDown;
+import com.gameservergroup.gsggen.generation.GenerationVerticalUp;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class Gen {
@@ -17,17 +24,36 @@ public class Gen {
     private final Direction direction;
     private final double price;
     private final boolean patch;
+    private final int length;
 
-    public Gen(ConfigurationSection configurationSection, Direction direction, double price, boolean patch) {
+    public Gen(ConfigurationSection configurationSection, Direction direction, double price, boolean patch, int length) {
         this.direction = direction;
         this.price = price;
         this.patch = patch;
         this.name = configurationSection.getName();
         this.configurationSection = configurationSection;
+        this.length = length;
         CustomItem.of(configurationSection.getConfigurationSection("item"), name);
         this.material = getCustomItem().getItemStack().getType();
         this.bucket = getCustomItem().getItemStack().getType().name().endsWith("BUCKET");
 
+    }
+
+    public Generation getGeneration(Block startingBlock) {
+        return getGeneration(startingBlock, null);
+    }
+
+    public Generation getGeneration(Block startingBlock, BlockFace blockFace) {
+        switch (direction) {
+            case VERTICAL_UP:
+                return new GenerationVerticalUp(BlockPosition.of(startingBlock), this);
+            case VERTICAL_DOWN:
+                return new GenerationVerticalDown(BlockPosition.of(startingBlock), this);
+            case HORIZONTAL:
+                return new GenerationHorizontal(BlockPosition.of(startingBlock), this, blockFace);
+            default:
+                return null;
+        }
     }
 
     public CustomItem getCustomItem() {
@@ -101,5 +127,9 @@ public class Gen {
                 ", price=" + price +
                 ", patch=" + patch +
                 '}';
+    }
+
+    public int getLength() {
+        return length;
     }
 }

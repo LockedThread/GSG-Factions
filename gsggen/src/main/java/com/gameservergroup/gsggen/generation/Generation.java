@@ -1,21 +1,19 @@
 package com.gameservergroup.gsggen.generation;
 
-import com.gameservergroup.gsgcore.enums.Direction;
 import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
+import com.gameservergroup.gsggen.objs.Gen;
 import org.bukkit.Material;
 
 public abstract class Generation {
 
-    private final Material material;
-    private final Direction direction;
     private BlockPosition startingBlockPosition, currentBlockPosition;
     private int length;
+    private Gen gen;
 
-    public Generation(BlockPosition startingBlockPosition, Material material, Direction direction) {
+    public Generation(BlockPosition startingBlockPosition, Gen gen) {
         this.startingBlockPosition = startingBlockPosition;
         this.currentBlockPosition = startingBlockPosition;
-        this.material = material;
-        this.direction = direction;
+        this.gen = gen;
     }
 
     public abstract boolean generate();
@@ -25,11 +23,7 @@ public abstract class Generation {
     }
 
     public Material getMaterial() {
-        return material;
-    }
-
-    public Direction getDirection() {
-        return direction;
+        return gen.getMaterial();
     }
 
     public int getLength() {
@@ -46,5 +40,9 @@ public abstract class Generation {
 
     public void setCurrentBlockPosition(BlockPosition currentBlockPosition) {
         this.currentBlockPosition = currentBlockPosition;
+    }
+
+    public Gen getGen() {
+        return gen;
     }
 }

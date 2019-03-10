@@ -45,7 +45,7 @@ public class UnitGen extends Unit {
                     throw new RuntimeException("We've found a un-parsable key in " + section.getCurrentPath() + " called " + data);
                 }
             }
-            genHashMap.put(genKey, new Gen(section, direction, price, patch));
+            genHashMap.put(genKey, new Gen(section, direction, price, patch, length));
         }
 
         CommandPost.of()
