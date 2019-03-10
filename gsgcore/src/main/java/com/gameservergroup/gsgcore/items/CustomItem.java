@@ -69,31 +69,35 @@ public class CustomItem {
         return interactEventConsumer;
     }
 
-    public void setInteractEventConsumer(Consumer<PlayerInteractEvent> interactEventConsumer) {
+    public CustomItem setInteractEventConsumer(Consumer<PlayerInteractEvent> interactEventConsumer) {
         this.interactEventConsumer = interactEventConsumer;
+        return this;
     }
 
     public Consumer<BlockBreakEvent> getBreakEventConsumer() {
         return breakEventConsumer;
     }
 
-    public void setBreakEventConsumer(Consumer<BlockBreakEvent> breakEventConsumer) {
+    public CustomItem setBreakEventConsumer(Consumer<BlockBreakEvent> breakEventConsumer) {
         this.breakEventConsumer = breakEventConsumer;
+        return this;
     }
 
     public Consumer<BlockPlaceEvent> getPlaceEventConsumer() {
         return placeEventConsumer;
     }
 
-    public void setPlaceEventConsumer(Consumer<BlockPlaceEvent> placeEventConsumer) {
+    public CustomItem setPlaceEventConsumer(Consumer<BlockPlaceEvent> placeEventConsumer) {
         this.placeEventConsumer = placeEventConsumer;
+        return this;
     }
 
     public Consumer<PlayerBucketEmptyEvent> getBucketEmptyEventConsumer() {
         return bucketEmptyEventConsumer;
     }
 
-    public void setBucketEmptyEventConsumer(Consumer<PlayerBucketEmptyEvent> bucketEmptyEventConsumer) {
+    public CustomItem setBucketEmptyEventConsumer(Consumer<PlayerBucketEmptyEvent> bucketEmptyEventConsumer) {
         this.bucketEmptyEventConsumer = bucketEmptyEventConsumer;
+        return this;
     }
 }
