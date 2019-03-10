@@ -1,4 +1,8 @@
 #Directions - (VERTICAL_UP,VERTICAL_DOWN,HORIZONTAL)
+#ItemFlags - (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html)
+#Enchantments - (http://docs.codelanx.com/Bukkit/1.8/org/bukkit/enchantments/Enchantment.html)
+#Material - (http://docs.codelanx.com/Bukkit/1.8/org/bukkit/Material.html)
+#DyeColor (Colors used for glass panes, wool, and glass) - (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html)
 interval: 6
 disable-lava-bucket-player-use: true
 menu:
@@ -7,6 +11,10 @@ menu:
     close-inventory-on-no-money: false
   name: '                 &e&l(*) &fGens &e&l(*)'
   size: 18
+  fill:
+    enabled: true
+    glass-pane-color: 'BLACK'
+    enchanted: true
   items:
     0: 'cobblestone-up'
     9: 'obsidian-up'
