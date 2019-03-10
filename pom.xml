@@ -12,6 +12,7 @@
     <modules>
         <module>gsgcore</module>
         <module>gsggen</module>
+        <module>factions</module>
     </modules>
 
     <dependencies>
