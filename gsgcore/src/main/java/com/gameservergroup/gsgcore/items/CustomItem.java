@@ -2,21 +2,29 @@ package com.gameservergroup.gsgcore.items;
 
 import com.gameservergroup.gsgcore.utils.NBTItem;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 public class CustomItem {
 
     private static HashMap<String, CustomItem> customItems = new HashMap<>();
     private String name;
     private ItemStack itemStack;
-    private EnumSet<CustomItemType> customItemTypes;
+    private Consumer<PlayerInteractEvent> interactEventConsumer;
+    private Consumer<BlockBreakEvent> breakEventConsumer;
+    private Consumer<BlockPlaceEvent> placeEventConsumer;
+    private Consumer<PlayerBucketEmptyEvent> bucketEmptyEventConsumer;
 
-    private CustomItem(String name, ItemStack itemStack, CustomItemType... customItemTypes) {
+    private CustomItem(String name, ItemStack itemStack) {
         this.name = name;
         this.itemStack = itemStack;
-        this.customItemTypes = EnumSet.copyOf(Arrays.asList(customItemTypes));
         customItems.put(name, this);
     }
 
@@ -57,7 +65,35 @@ public class CustomItem {
         return name;
     }
 
-    public Set<CustomItemType> getCustomItemTypes() {
-        return customItemTypes;
+    public Consumer<PlayerInteractEvent> getInteractEventConsumer() {
+        return interactEventConsumer;
+    }
+
+    public void setInteractEventConsumer(Consumer<PlayerInteractEvent> interactEventConsumer) {
+        this.interactEventConsumer = interactEventConsumer;
+    }
+
+    public Consumer<BlockBreakEvent> getBreakEventConsumer() {
+        return breakEventConsumer;
+    }
+
+    public void setBreakEventConsumer(Consumer<BlockBreakEvent> breakEventConsumer) {
+        this.breakEventConsumer = breakEventConsumer;
+    }
+
+    public Consumer<BlockPlaceEvent> getPlaceEventConsumer() {
+        return placeEventConsumer;
+    }
+
+    public void setPlaceEventConsumer(Consumer<BlockPlaceEvent> placeEventConsumer) {
+        this.placeEventConsumer = placeEventConsumer;
+    }
+
+    public Consumer<PlayerBucketEmptyEvent> getBucketEmptyEventConsumer() {
+        return bucketEmptyEventConsumer;
+    }
+
+    public void setBucketEmptyEventConsumer(Consumer<PlayerBucketEmptyEvent> bucketEmptyEventConsumer) {
+        this.bucketEmptyEventConsumer = bucketEmptyEventConsumer;
     }
 }
