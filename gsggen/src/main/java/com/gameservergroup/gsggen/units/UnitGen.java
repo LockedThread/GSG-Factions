@@ -18,6 +18,7 @@ public class UnitGen extends Unit {
 
     private static final GSGGen GSG_GEN = GSGGen.getInstance();
 
+    private boolean closeInventoryOnPurchase, closeInventoryOnNoMoney;
     private Set<Generation> generations;
     private HashMap<String, Gen> genHashMap = new HashMap<>();
 
@@ -25,6 +26,10 @@ public class UnitGen extends Unit {
         JsonFile<Set<Generation>> jsonFile = new JsonFile<>(GSGGen.getInstance().getDataFolder(), "gens", new TypeReference<Set<Generation>>() {
         });
         this.generations = jsonFile.load().orElse(new HashSet<>());
+        this.closeInventoryOnNoMoney = GSG_GEN.getConfig().getBoolean("menu.options.close-inventory-on-no-money");
+        this.closeInventoryOnPurchase = GSG_GEN.getConfig().getBoolean("menu.options.close-inventory-on-purchase");
+
+        hookDisable(() -> jsonFile.save(generations));
 
         for (String genKey : GSG_GEN
                 .getConfig()
@@ -64,5 +69,13 @@ public class UnitGen extends Unit {
 
     public HashMap<String, Gen> getGenHashMap() {
         return genHashMap;
+    }
+
+    public boolean isCloseInventoryOnPurchase() {
+        return closeInventoryOnPurchase;
+    }
+
+    public boolean isCloseInventoryOnNoMoney() {
+        return closeInventoryOnNoMoney;
     }
 }
