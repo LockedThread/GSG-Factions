@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.gameservergroup.gsgcore.commands.post.CommandPostExecutor;
+import com.gameservergroup.gsgcore.items.UnitCustomItem;
 import com.gameservergroup.gsgcore.menus.UnitMenu;
 import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgcore.storage.deserializer.BlockPositionDeserializer;
@@ -42,7 +43,7 @@ public class GSGCore extends Module {
         this.units = new HashSet<>();
         this.modules = new HashSet<>();
         this.commandPostExecutor = new CommandPostExecutor();
-        registerUnits(new UnitMenu(), new UnitTest());
+        registerUnits(new UnitMenu(), new UnitTest(), new UnitCustomItem());
     }
 
     @Override
