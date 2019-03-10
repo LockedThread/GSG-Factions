@@ -8,6 +8,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -22,7 +23,9 @@ public class EventFilters {
     private static final Predicate<? extends Cancellable> IGNORE_CANCELLED = cancellable -> !cancellable.isCancelled();
     private static final Predicate<? extends InventoryEvent> IGNORE_NON_MENUS = (Predicate<InventoryEvent>) event -> event instanceof InventoryClickEvent ? ((InventoryClickEvent) event).getClickedInventory().getHolder() instanceof Menu : event.getInventory().getHolder() instanceof Menu;
     private static final Predicate<? extends Event> IGNORE_HAND_NULL = event -> {
-        if (event instanceof PlayerInteractEvent) {
+        if (event instanceof PlayerBucketEmptyEvent) {
+            return ((PlayerBucketEmptyEvent) event).getItemStack() != null;
+        } else if (event instanceof PlayerInteractEvent) {
             return ((PlayerInteractEvent) event).getItem() != null;
         } else if (event instanceof PlayerEvent) {
             return ((PlayerEvent) event).getPlayer().getItemInHand() != null;
@@ -35,7 +38,9 @@ public class EventFilters {
         return false;
     };
     private static final Predicate<? extends Event> IGNORE_HAND_META_NULL = event -> {
-        if (event instanceof PlayerInteractEvent) {
+        if (event instanceof PlayerBucketEmptyEvent) {
+            return ((PlayerBucketEmptyEvent) event).getItemStack().hasItemMeta();
+        } else if (event instanceof PlayerInteractEvent) {
             return ((PlayerInteractEvent) event).getItem().hasItemMeta();
         } else if (event instanceof PlayerEvent) {
             return ((PlayerEvent) event).getPlayer().getItemInHand().hasItemMeta();
@@ -47,7 +52,9 @@ public class EventFilters {
         return false;
     };
     private static final Predicate<? extends Event> IGNORE_HAND_DISPLAYNAME_NULL = event -> {
-        if (event instanceof PlayerInteractEvent) {
+        if (event instanceof PlayerBucketEmptyEvent) {
+            return ((PlayerBucketEmptyEvent) event).getItemStack().getItemMeta().hasDisplayName();
+        } else if (event instanceof PlayerInteractEvent) {
             return ((PlayerInteractEvent) event).getItem().getItemMeta().hasDisplayName();
         } else if (event instanceof PlayerEvent) {
             return ((PlayerEvent) event).getPlayer().getItemInHand().getItemMeta().hasDisplayName();
