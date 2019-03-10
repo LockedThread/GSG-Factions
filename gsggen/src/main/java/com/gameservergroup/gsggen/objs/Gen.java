@@ -6,6 +6,7 @@ import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.menus.MenuItem;
 import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsgcore.utils.Text;
+import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.generation.Generation;
 import com.gameservergroup.gsggen.generation.GenerationHorizontal;
 import com.gameservergroup.gsggen.generation.GenerationVerticalDown;
@@ -37,7 +38,18 @@ public class Gen {
         this.name = configurationSection.getName();
         this.configurationSection = configurationSection;
         this.length = length;
-        CustomItem.of(configurationSection.getConfigurationSection("item"), name);
+        CustomItem customItem = CustomItem.of(configurationSection.getConfigurationSection("item"), name);
+        if (isBucket()) {
+            customItem.setBucketEmptyEventConsumer(event -> {
+                getGeneration(event.getBlockClicked(), direction == Direction.HORIZONTAL ? event.getBlockFace() : direction.getBlockFaces()[0]).enable();
+                event.setCancelled(true);
+                event.getBlockClicked().setType(event.getItemStack().getType());
+            });
+        } else {
+            customItem.setPlaceEventConsumer(event ->
+                    getGeneration(event.getBlockPlaced(), direction == Direction.HORIZONTAL ? event.getBlockAgainst().getFace(event.getBlockPlaced()) : direction.getBlockFaces()[0]).enable()
+            );
+        }
         this.material = getCustomItem().getItemStack().getType();
         this.bucket = getCustomItem().getItemStack().getType().name().endsWith("BUCKET");
     }
@@ -69,9 +81,15 @@ public class Gen {
                     event.setCancelled(true);
                     if (event.getWhoClicked().getInventory().firstEmpty() == -1) {
                         event.getWhoClicked().sendMessage(Text.toColor("&cYou inventory is full, unable to give you a gen!"));
+                        if (GSGGen.getInstance().getUnitGen().isCloseInventoryOnNoMoney()) {
+                            event.getWhoClicked().closeInventory();
+                        }
                     } else {
                         event.getWhoClicked().getInventory().addItem(getCustomItem().getItemStack());
                         event.getWhoClicked().closeInventory();
+                        if (GSGGen.getInstance().getUnitGen().isCloseInventoryOnPurchase()) {
+                            event.getWhoClicked().closeInventory();
+                        }
                     }
                 });
     }
