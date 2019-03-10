@@ -8,7 +8,6 @@ import com.google.common.base.Joiner;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class UnitCustomItem extends Unit {
@@ -34,7 +33,6 @@ public class UnitCustomItem extends Unit {
                                     "&dName: &f" + customItem.getName(),
                                     "&dBlockBreakEvent: &f" + (customItem.getBreakEventConsumer() != null),
                                     "&dBlockPlaceEvent: &f" + (customItem.getPlaceEventConsumer() != null),
-                                    "&dPlayerBucketEmptyEvent: &f" + (customItem.getBucketEmptyEventConsumer() != null),
                                     "&dPlayerInteractEvent: &f" + (customItem.getInteractEventConsumer() != null),
                                     "");
                         } else {
@@ -86,16 +84,5 @@ public class UnitCustomItem extends Unit {
                         customItem.getInteractEventConsumer().accept(event);
                     }
                 }).post(GSG_CORE);
-
-        EventPost.of(PlayerBucketEmptyEvent.class)
-                .filter(EventFilters.getIgnoreCancelled())
-                .filter(EventFilters.getIgnoreHandNull())
-                .handle(event -> {
-                    final CustomItem customItem = CustomItem.findCustomItem(event.getItemStack());
-                    if (customItem != null && customItem.getBucketEmptyEventConsumer() != null) {
-                        customItem.getBucketEmptyEventConsumer().accept(event);
-                    }
-                }).post(GSG_CORE);
-
     }
 }

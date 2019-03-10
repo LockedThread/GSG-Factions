@@ -4,7 +4,6 @@ import com.gameservergroup.gsgcore.utils.NBTItem;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -20,7 +19,6 @@ public class CustomItem {
     private Consumer<PlayerInteractEvent> interactEventConsumer;
     private Consumer<BlockBreakEvent> breakEventConsumer;
     private Consumer<BlockPlaceEvent> placeEventConsumer;
-    private Consumer<PlayerBucketEmptyEvent> bucketEmptyEventConsumer;
 
     private CustomItem(String name, ItemStack itemStack) {
         this.name = name;
@@ -71,6 +69,7 @@ public class CustomItem {
 
     public CustomItem setInteractEventConsumer(Consumer<PlayerInteractEvent> interactEventConsumer) {
         this.interactEventConsumer = interactEventConsumer;
+        System.out.println("setInteractEventConsumer");
         return this;
     }
 
@@ -92,12 +91,31 @@ public class CustomItem {
         return this;
     }
 
-    public Consumer<PlayerBucketEmptyEvent> getBucketEmptyEventConsumer() {
-        return bucketEmptyEventConsumer;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomItem that = (CustomItem) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(itemStack, that.itemStack) &&
+                Objects.equals(interactEventConsumer, that.interactEventConsumer) &&
+                Objects.equals(breakEventConsumer, that.breakEventConsumer) &&
+                Objects.equals(placeEventConsumer, that.placeEventConsumer);
     }
 
-    public CustomItem setBucketEmptyEventConsumer(Consumer<PlayerBucketEmptyEvent> bucketEmptyEventConsumer) {
-        this.bucketEmptyEventConsumer = bucketEmptyEventConsumer;
-        return this;
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, itemStack, interactEventConsumer, breakEventConsumer, placeEventConsumer);
+    }
+
+    @Override
+    public String toString() {
+        return "CustomItem{" +
+                "name='" + name + '\'' +
+                ", itemStack=" + itemStack +
+                ", interactEventConsumer=" + interactEventConsumer +
+                ", breakEventConsumer=" + breakEventConsumer +
+                ", placeEventConsumer=" + placeEventConsumer +
+                '}';
     }
 }
