@@ -16,7 +16,7 @@ public class UnitCustomItem extends Unit {
     @Override
     public void setup() {
         CommandPost.of()
-                .getCommandBuilder()
+                .build()
                 .assertPermission("gsg.customitem")
                 .handler(c -> {
                     if (c.getRawArgs().length == 0) {
@@ -62,7 +62,7 @@ public class UnitCustomItem extends Unit {
                 .filter(EventFilters.getIgnoreHandNull())
                 .handle(event -> {
                     final CustomItem customItem = CustomItem.findCustomItem(event.getPlayer().getItemInHand());
-                    if (customItem != null) {
+                    if (customItem != null && customItem.getBreakEventConsumer() != null) {
                         customItem.getBreakEventConsumer().accept(event);
                     }
                 }).post(GSG_CORE);
@@ -72,7 +72,7 @@ public class UnitCustomItem extends Unit {
                 .filter(EventFilters.getIgnoreHandNull())
                 .handle(event -> {
                     final CustomItem customItem = CustomItem.findCustomItem(event.getItemInHand());
-                    if (customItem != null) {
+                    if (customItem != null && customItem.getPlaceEventConsumer() != null) {
                         customItem.getPlaceEventConsumer().accept(event);
                     }
                 }).post(GSG_CORE);
@@ -82,7 +82,7 @@ public class UnitCustomItem extends Unit {
                 .filter(EventFilters.getIgnoreHandNull())
                 .handle(event -> {
                     final CustomItem customItem = CustomItem.findCustomItem(event.getItem());
-                    if (customItem != null) {
+                    if (customItem != null && customItem.getInteractEventConsumer() != null) {
                         customItem.getInteractEventConsumer().accept(event);
                     }
                 }).post(GSG_CORE);
@@ -92,7 +92,7 @@ public class UnitCustomItem extends Unit {
                 .filter(EventFilters.getIgnoreHandNull())
                 .handle(event -> {
                     final CustomItem customItem = CustomItem.findCustomItem(event.getItemStack());
-                    if (customItem != null) {
+                    if (customItem != null && customItem.getBucketEmptyEventConsumer() != null) {
                         customItem.getBucketEmptyEventConsumer().accept(event);
                     }
                 }).post(GSG_CORE);
