@@ -20,8 +20,8 @@ public class GenerationHorizontal extends Generation {
     @Override
     public boolean generate() {
         final Chunk chunk = getCurrentBlockPosition().getLocation().getChunk();
-        if (chunk.isLoaded()) {
-            chunk.load();
+        if (!chunk.isLoaded()) {
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), chunk::load);
         }
         final Block relative = getCurrentBlockPosition().getBlock().getRelative(blockFace);
         if (getLength() == 0) {
