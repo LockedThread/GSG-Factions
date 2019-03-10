@@ -1,10 +1,11 @@
 #Directions - (VERTICAL_UP,VERTICAL_DOWN,HORIZONTAL)
 interval: 6
+disable-lava-bucket-player-use: true
 menu:
   options:
     close-inventory-on-purchase: false
-    close-inventory-on-no-money: true
-  name: '               &e&l(*) &fGens &e&l(*)'
+    close-inventory-on-no-money: false
+  name: '                 &e&l(*) &fGens &e&l(*)'
   size: 18
   items:
     0: 'cobblestone-up'
@@ -17,6 +18,7 @@ gens:
     patch: false
     price: 10
     direction: 'VERTICAL_UP'
+    material: 'COBBLESTONE'
     menu:
       amount: 1
       material: 'COBBLESTONE'
@@ -48,6 +50,7 @@ gens:
     patch: false
     price: 5000
     direction: 'VERTICAL_UP'
+    material: 'OBSIDIAN'
     menu:
       amount: 1
       material: 'OBSIDIAN'
@@ -63,7 +66,7 @@ gens:
         - 'HIDE_ENCHANTS'
     item:
       amount: 1
-      material: 'COBBLESTONE'
+      material: 'OBSIDIAN'
       name: '&d&l(!) &fObsidian GenBucket &d&l(!)'
       lore:
         - ''
@@ -79,6 +82,7 @@ gens:
     patch: false
     price: 250
     direction: 'HORIZONTAL'
+    material: 'COBBLESTONE'
     menu:
       amount: 1
       material: 'COBBLESTONE'
@@ -110,6 +114,7 @@ gens:
     patch: false
     price: 2500
     direction: 'HORIZONTAL'
+    material: 'OBSIDIAN'
     menu:
       amount: 1
       material: 'OBSIDIAN'
