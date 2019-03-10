@@ -1,5 +1,7 @@
 package com.gameservergroup.gsgcore.commands.arguments;
 
+import com.gameservergroup.gsgcore.items.CustomItem;
+
 import java.util.*;
 
 public class ArgumentRegistry implements IArgumentRegistry {
@@ -9,6 +11,7 @@ public class ArgumentRegistry implements IArgumentRegistry {
 
     private ArgumentRegistry() {
         this.argumentParserRegistry = new HashMap<>();
+        // Integer
         register(int.class, () -> s -> {
             try {
                 return Optional.of(Integer.parseInt(s));
@@ -16,6 +19,32 @@ public class ArgumentRegistry implements IArgumentRegistry {
                 return Optional.empty();
             }
         });
+        register(Integer.class, () -> s -> {
+            try {
+                return Optional.of(Integer.parseInt(s));
+            } catch (NumberFormatException e) {
+                return Optional.empty();
+            }
+        });
+        // Double
+        register(double.class, () -> s -> {
+            try {
+                return Optional.of(Double.parseDouble(s));
+            } catch (NumberFormatException e) {
+                return Optional.empty();
+            }
+        });
+        register(Double.class, () -> s -> {
+            try {
+                return Optional.of(Double.parseDouble(s));
+            } catch (NumberFormatException e) {
+                return Optional.empty();
+            }
+        });
+        // CustomItem
+        register(CustomItem.class, () -> s -> Optional.ofNullable(CustomItem.getCustomItem(s)));
+        // String
+        register(String.class, () -> Optional::of);
     }
 
     static ArgumentRegistry getInstance() {
