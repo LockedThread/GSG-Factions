@@ -1,10 +1,8 @@
 package com.gameservergroup.gsggen.units;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.gameservergroup.gsgcore.commands.post.CommandPost;
 import com.gameservergroup.gsgcore.enums.Direction;
 import com.gameservergroup.gsgcore.events.EventPost;
-import com.gameservergroup.gsgcore.storage.JsonFile;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.generation.Generation;
@@ -27,14 +25,10 @@ public class UnitGen extends Unit {
     private HashMap<String, Gen> genHashMap = new HashMap<>();
 
     public void setup() {
-        JsonFile<Set<Generation>> jsonFile = new JsonFile<>(GSGGen.getInstance().getDataFolder(), "gens", new TypeReference<Set<Generation>>() {
-        });
-        this.generations = jsonFile.load().orElse(new HashSet<>());
+        this.generations = new HashSet<>();
         this.closeInventoryOnNoMoney = GSG_GEN.getConfig().getBoolean("menu.options.close-inventory-on-no-money");
         this.closeInventoryOnPurchase = GSG_GEN.getConfig().getBoolean("menu.options.close-inventory-on-purchase");
         this.disableLavaBucketPlayerUse = GSG_GEN.getConfig().getBoolean("disable-lava-bucket-player-use");
-        hookDisable(() -> jsonFile.save(generations));
-
         for (String genKey : GSG_GEN
                 .getConfig()
                 .getConfigurationSection("gens")
