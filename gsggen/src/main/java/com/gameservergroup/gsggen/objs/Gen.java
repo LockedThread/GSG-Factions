@@ -9,49 +9,53 @@ import com.gameservergroup.gsgcore.utils.Text;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.generation.Generation;
 import com.gameservergroup.gsggen.generation.GenerationHorizontal;
-import com.gameservergroup.gsggen.generation.GenerationVerticalDown;
-import com.gameservergroup.gsggen.generation.GenerationVerticalUp;
+import com.gameservergroup.gsggen.generation.GenerationVertical;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.block.Action;
 
 public class Gen {
 
     private final ConfigurationSection configurationSection;
     private final String name;
-    private final boolean bucket;
     private final Material material;
     private final Direction direction;
     private final double price;
     private final boolean patch;
     private final int length;
 
-    public Gen(ConfigurationSection configurationSection, Direction direction, double price, boolean patch) {
-        this(configurationSection, direction, price, patch, 256);
+    public Gen(ConfigurationSection configurationSection, Direction direction, double price, boolean patch, Material material) {
+        this(configurationSection, direction, price, patch, 256, material);
     }
 
-    public Gen(ConfigurationSection configurationSection, Direction direction, double price, boolean patch, int length) {
+    public Gen(ConfigurationSection configurationSection, Direction direction, double price, boolean patch, int length, Material material) {
         this.direction = direction;
         this.price = price;
         this.patch = patch;
         this.name = configurationSection.getName();
         this.configurationSection = configurationSection;
         this.length = length;
+        this.material = material;
         CustomItem customItem = CustomItem.of(configurationSection.getConfigurationSection("item"), name);
         if (isBucket()) {
-            customItem.setBucketEmptyEventConsumer(event -> {
-                getGeneration(event.getBlockClicked(), direction == Direction.HORIZONTAL ? event.getBlockFace() : direction.getBlockFaces()[0]).enable();
-                event.setCancelled(true);
-                event.getBlockClicked().setType(event.getItemStack().getType());
+            customItem.setInteractEventConsumer(event -> {
+                if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    Block relative = event.getClickedBlock().getRelative(event.getBlockFace());
+                    event.setCancelled(true);
+                    relative.setType(getMaterial());
+                    event.getPlayer().updateInventory();
+                    getGeneration(relative, direction == Direction.HORIZONTAL ? event.getBlockFace() : direction.getBlockFaces()[0]).enable();
+                }
             });
         } else {
-            customItem.setPlaceEventConsumer(event ->
-                    getGeneration(event.getBlockPlaced(), direction == Direction.HORIZONTAL ? event.getBlockAgainst().getFace(event.getBlockPlaced()) : direction.getBlockFaces()[0]).enable()
-            );
+            customItem.setPlaceEventConsumer(event -> {
+                System.out.println(getMaterial());
+                event.getPlayer().setItemInHand(event.getItemInHand());
+                getGeneration(event.getBlockPlaced(), direction == Direction.HORIZONTAL ? event.getBlockAgainst().getFace(event.getBlockPlaced()) : direction.getBlockFaces()[0]).enable();
+            });
         }
-        this.material = getCustomItem().getItemStack().getType();
-        this.bucket = getCustomItem().getItemStack().getType().name().endsWith("BUCKET");
     }
 
     public Generation getGeneration(Block startingBlock) {
@@ -59,11 +63,12 @@ public class Gen {
     }
 
     public Generation getGeneration(Block startingBlock, BlockFace blockFace) {
+        System.out.println("startingBlock = [" + startingBlock + "], blockFace = [" + blockFace + "]");
         switch (direction) {
             case VERTICAL_UP:
-                return new GenerationVerticalUp(BlockPosition.of(startingBlock), this);
+                return new GenerationVertical(BlockPosition.of(startingBlock), this, Direction.VERTICAL_UP);
             case VERTICAL_DOWN:
-                return new GenerationVerticalDown(BlockPosition.of(startingBlock), this);
+                return new GenerationVertical(BlockPosition.of(startingBlock), this, Direction.VERTICAL_DOWN);
             case HORIZONTAL:
                 return new GenerationHorizontal(BlockPosition.of(startingBlock), this, blockFace);
             default:
@@ -86,7 +91,6 @@ public class Gen {
                         }
                     } else {
                         event.getWhoClicked().getInventory().addItem(getCustomItem().getItemStack());
-                        event.getWhoClicked().closeInventory();
                         if (GSGGen.getInstance().getUnitGen().isCloseInventoryOnPurchase()) {
                             event.getWhoClicked().closeInventory();
                         }
@@ -99,7 +103,7 @@ public class Gen {
     }
 
     public boolean isBucket() {
-        return bucket;
+        return getCustomItem().getItemStack().getType() == Material.LAVA_BUCKET || getCustomItem().getItemStack().getType() == Material.WATER_BUCKET;
     }
 
     public Material getMaterial() {

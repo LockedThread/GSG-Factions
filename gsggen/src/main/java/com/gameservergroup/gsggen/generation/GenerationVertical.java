@@ -1,26 +1,31 @@
 package com.gameservergroup.gsggen.generation;
 
+import com.gameservergroup.gsgcore.enums.Direction;
 import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.objs.Gen;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 
-public class GenerationVerticalUp extends Generation {
+public class GenerationVertical extends Generation {
 
-    public GenerationVerticalUp(BlockPosition startingBlockPosition, Gen gen) {
+    private Direction direction;
+
+    public GenerationVertical(BlockPosition startingBlockPosition, Gen gen, Direction direction) {
         super(startingBlockPosition, gen);
+        this.direction = direction;
     }
 
     @Override
     public boolean generate() {
-        final Block relative = getCurrentBlockPosition().getBlock().getRelative(BlockFace.UP);
+        final Chunk chunk = getCurrentBlockPosition().getLocation().getChunk();
+        if (chunk.isLoaded()) {
+            chunk.load();
+        }
+        final Block relative = getCurrentBlockPosition().getBlock().getRelative(direction.getBlockFaces()[0]);
         if (getLength() == 0) {
             return false;
-        }
-        if (!relative.getChunk().isLoaded()) {
-            relative.getChunk().load();
         }
         if (getStartingBlockPosition().getBlock().getType() != getMaterial()) {
             return false;

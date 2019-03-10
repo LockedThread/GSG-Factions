@@ -3,6 +3,7 @@ package com.gameservergroup.gsggen.generation;
 import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.objs.Gen;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -18,6 +19,10 @@ public class GenerationHorizontal extends Generation {
 
     @Override
     public boolean generate() {
+        final Chunk chunk = getCurrentBlockPosition().getLocation().getChunk();
+        if (chunk.isLoaded()) {
+            chunk.load();
+        }
         final Block relative = getCurrentBlockPosition().getBlock().getRelative(blockFace);
         if (getLength() == 0) {
             return false;
