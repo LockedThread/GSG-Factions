@@ -35,7 +35,7 @@ public class CommandPost {
         return this.commandBuilder;
     }
 
-    public CommandBuilder<CommandSender> getCommandBuilder() {
+    protected CommandBuilder<CommandSender> getCommandBuilder() {
         return this.commandBuilder;
     }
 
