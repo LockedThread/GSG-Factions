@@ -29,7 +29,7 @@ public class Argument {
 
     public <T> Optional<T> parse(Class<T> tClass) {
         if (valueOptional.isPresent()) {
-            final Optional<T> parse = ArgumentRegistry.getInstance().parse(tClass, valueOptional.get());
+            Optional<T> parse = ArgumentRegistry.getInstance().parse(tClass, valueOptional.get());
             if (parse.isPresent()) {
                 return parse;
             }
