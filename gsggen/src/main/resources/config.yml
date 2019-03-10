@@ -10,6 +10,7 @@ menu:
     0: 'cobblestone-up'
 gens:
   cobblestone-up:
+    length: 256
     patch: false
     price: 10
     direction: 'VERTICAL_UP'

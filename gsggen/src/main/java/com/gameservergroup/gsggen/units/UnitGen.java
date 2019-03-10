@@ -30,6 +30,7 @@ public class UnitGen extends Unit {
                 .getConfig()
                 .getConfigurationSection("gens")
                 .getKeys(false)) {
+            int length = 0;
             double price = 0.0;
             Direction direction = null;
             boolean patch = false;
@@ -41,11 +42,13 @@ public class UnitGen extends Unit {
                     direction = Direction.valueOf(section.getString("direction").toUpperCase());
                 } else if (data.equalsIgnoreCase("patch")) {
                     patch = section.getBoolean("patch");
+                } else if (data.equalsIgnoreCase("length")) {
+                    length = section.getInt("length");
                 } else if (!data.equalsIgnoreCase("menu") && !data.equalsIgnoreCase("item")) {
-                    throw new RuntimeException("We've found a un-parsable key in " + section.getCurrentPath() + " called " + data);
+                    throw new RuntimeException("We've found an un-parsable key in " + section.getCurrentPath() + " called " + data);
                 }
             }
-            genHashMap.put(genKey, new Gen(section, direction, price, patch, length));
+            genHashMap.put(genKey, length <= 0 ? new Gen(section, direction, price, patch) : new Gen(section, direction, price, patch, length));
         }
 
         CommandPost.of()

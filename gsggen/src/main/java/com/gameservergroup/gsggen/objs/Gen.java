@@ -26,6 +26,10 @@ public class Gen {
     private final boolean patch;
     private final int length;
 
+    public Gen(ConfigurationSection configurationSection, Direction direction, double price, boolean patch) {
+        this(configurationSection, direction, price, patch, 256);
+    }
+
     public Gen(ConfigurationSection configurationSection, Direction direction, double price, boolean patch, int length) {
         this.direction = direction;
         this.price = price;
@@ -36,7 +40,6 @@ public class Gen {
         CustomItem.of(configurationSection.getConfigurationSection("item"), name);
         this.material = getCustomItem().getItemStack().getType();
         this.bucket = getCustomItem().getItemStack().getType().name().endsWith("BUCKET");
-
     }
 
     public Generation getGeneration(Block startingBlock) {
