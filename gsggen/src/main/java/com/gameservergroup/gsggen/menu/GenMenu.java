@@ -1,8 +1,13 @@
 package com.gameservergroup.gsggen.menu;
 
+import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.menus.Menu;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.objs.Gen;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 
 public class GenMenu extends Menu {
 
@@ -21,6 +26,15 @@ public class GenMenu extends Menu {
             } else {
                 throw new RuntimeException("Unable to find Gen called \"" + key + "\"");
             }
+        }
+        if (GSG_GEN.getConfig().getBoolean("menu.fill.enabled")) {
+            DyeColor dyeColor = DyeColor.valueOf(GSG_GEN.getConfig().getString("menu.fill.glass-pane-color").toUpperCase());
+            ItemStackBuilder itemStackBuilder = ItemStackBuilder.of(Material.STAINED_GLASS_PANE).setDyeColor(dyeColor).setDisplayName(" ");
+            if (GSG_GEN.getConfig().getBoolean("menu.fill.enchanted")) {
+                itemStackBuilder.addEnchant(Enchantment.DURABILITY, 1);
+                itemStackBuilder.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
+            setItem(getInventory().firstEmpty(), itemStackBuilder.build());
         }
     }
 }
