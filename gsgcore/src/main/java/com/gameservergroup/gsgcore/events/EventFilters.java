@@ -28,6 +28,34 @@ public class EventFilters {
         }
         return false;
     };
+    private static final Predicate<? extends Event> IGNORE_HAND_META_NULL = event -> {
+        if (event instanceof PlayerEvent) {
+            return ((PlayerEvent) event).getPlayer().getItemInHand().hasItemMeta();
+        } else if (event instanceof BlockBreakEvent) {
+            return ((BlockBreakEvent) event).getPlayer().getItemInHand().hasItemMeta();
+        } else if (event instanceof BlockPlaceEvent) {
+            return ((BlockPlaceEvent) event).getItemInHand().hasItemMeta();
+        }
+        return false;
+    };
+    private static final Predicate<? extends Event> IGNORE_HAND_DISPLAYNAME_NULL = event -> {
+        if (event instanceof PlayerEvent) {
+            return ((PlayerEvent) event).getPlayer().getItemInHand().getItemMeta().hasDisplayName();
+        } else if (event instanceof BlockBreakEvent) {
+            return ((BlockBreakEvent) event).getPlayer().getItemInHand().getItemMeta().hasDisplayName();
+        } else if (event instanceof BlockPlaceEvent) {
+            return ((BlockPlaceEvent) event).getItemInHand().getItemMeta().hasDisplayName();
+        }
+        return false;
+    };
+
+    public static <T extends Event> Predicate<T> getIgnoreHandDisplaynameNull() {
+        return (Predicate<T>) IGNORE_HAND_DISPLAYNAME_NULL;
+    }
+
+    public static <T extends Event> Predicate<T> getIgnoreHandMetaNull() {
+        return (Predicate<T>) IGNORE_HAND_META_NULL;
+    }
 
     public static <T extends InventoryEvent> Predicate<T> getIgnoreNonMenus() {
         return (Predicate<T>) IGNORE_NON_MENUS;
