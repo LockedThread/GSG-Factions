@@ -19,7 +19,6 @@ import com.gameservergroup.gsgcore.storage.serializers.BlockPositionSerializer;
 import com.gameservergroup.gsgcore.storage.serializers.ChunkPositionSerializer;
 import com.gameservergroup.gsgcore.storage.serializers.LocationSerializer;
 import com.gameservergroup.gsgcore.units.Unit;
-import com.gameservergroup.gsgcore.units.UnitTest;
 import org.bukkit.Location;
 
 import java.util.HashSet;
@@ -27,7 +26,6 @@ import java.util.HashSet;
 public class GSGCore extends Module {
 
     private static GSGCore instance;
-    private HashSet<Module> modules;
     private HashSet<Unit> units;
     private CommandPostExecutor commandPostExecutor;
     private ObjectMapper jsonObjectMapper;
@@ -41,18 +39,19 @@ public class GSGCore extends Module {
         instance = this;
         setupJson();
         this.units = new HashSet<>();
-        this.modules = new HashSet<>();
         this.commandPostExecutor = new CommandPostExecutor();
-        registerUnits(new UnitMenu(), new UnitTest(), new UnitCustomItem());
+        registerUnits(new UnitMenu(), new UnitCustomItem());
     }
 
     @Override
     public void disable() {
         instance = null;
-        getUnits()
-                .stream()
-                .filter(unit -> unit.getRunnable() != null)
-                .forEach(unit -> unit.getRunnable().run());
+        System.out.println("getUnits() = " + getUnits());
+        for (Unit unit : getUnits()) {
+            if (unit.getCallBack() != null) {
+                unit.getCallBack().call();
+            }
+        }
     }
 
     private void setupJson() {
@@ -71,14 +70,6 @@ public class GSGCore extends Module {
         objectMapper.registerModule(serializers);
 
         this.jsonObjectMapper = objectMapper;
-    }
-
-    public void registerModule(Module module) {
-        modules.add(module);
-    }
-
-    public void unregisterModule(Module module) {
-        modules.remove(module);
     }
 
     public CommandPostExecutor getCommandPostExecutor() {
