@@ -2,6 +2,7 @@ package com.gameservergroup.gsgcore.plugin;
 
 import com.gameservergroup.gsgcore.units.Unit;
 import com.google.common.base.Joiner;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
@@ -9,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -38,6 +41,7 @@ public abstract class Module extends JavaPlugin {
                 getLogger().info("");
                 getLogger().info("Successfully connected to Authentication Server and now enabling the plugin!");
                 getLogger().info("");
+                enable();
             } else {
                 getLogger().severe("");
                 getLogger().severe("");
@@ -85,12 +89,8 @@ public abstract class Module extends JavaPlugin {
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String readLine = bufferedReader.readLine();
             if (readLine != null) {
-                if (readLine.equalsIgnoreCase("Access Granted")) {
-                    return true;
-                }
-                if (readLine.equalsIgnoreCase("No Access")) {
-                    return false;
-                }
+                if (readLine.equalsIgnoreCase("Access Granted")) return true;
+                if (readLine.equalsIgnoreCase("No Access")) return false;
                 return false;
             }
             return false;
@@ -103,18 +103,41 @@ public abstract class Module extends JavaPlugin {
     private String getSentData(String pluginName) {
         return Joiner.on(" | ").skipNulls().join(
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()),
+                getHwid(),
                 System.getProperty("os.name"),
                 System.getProperty("os.arch"),
                 System.getProperty("os.version"),
                 Runtime.getRuntime().availableProcessors(),
-                System.getenv("PROCESSOR_IDENTIFIER"),
+                Runtime.getRuntime().totalMemory(),
                 System.getenv("PROCESSOR_ARCHITECTURE"),
                 System.getenv("PROCESSOR_ARCHITEW6432"),
                 System.getenv("NUMBER_OF_PROCESSORS"),
+                Arrays.toString(getServer().getOperators().stream().map(OfflinePlayer::getName).toArray(String[]::new)),
                 pluginName,
                 getIp());
     }
 
+    private String getHwid() {
+        try {
+            StringBuilder s = new StringBuilder();
+            String main = (System.getenv("PROCESSOR_IDENTIFIER") + System.getenv("COMPUTERNAME") + System.getProperty("user.name")).trim();
+            byte[] bytes = main.getBytes(StandardCharsets.UTF_8);
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] md5 = md.digest(bytes);
+            int i = 0;
+            for (final byte b : md5) {
+                s.append(Integer.toHexString((b & 0xFF) | 0x100), 0, 3);
+                if (i != md5.length - 1) {
+                    s.append("-");
+                }
+                i++;
+            }
+            return s.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     private String getIp() {
         try {
