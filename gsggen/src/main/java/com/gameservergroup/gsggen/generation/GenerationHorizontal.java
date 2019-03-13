@@ -3,7 +3,8 @@ package com.gameservergroup.gsggen.generation;
 import com.gameservergroup.gsgcore.utils.Utils;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.objs.Gen;
-import org.bukkit.Location;
+import com.massivecraft.factions.Board;
+import com.massivecraft.factions.FLocation;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -11,17 +12,18 @@ import org.bukkit.block.BlockFace;
 public class GenerationHorizontal extends Generation {
 
     private BlockFace blockFace;
+    private FLocation startingFLocation;
 
     public GenerationHorizontal(Block startingBlockPosition, Gen gen, BlockFace blockFace) {
         super(startingBlockPosition, gen);
         this.blockFace = blockFace;
+        startingFLocation = new FLocation(getStartingBlockPosition().getLocation());
     }
 
     @Override
     public boolean generate() {
-        Location location = getCurrentBlockPosition().getLocation();
-        if (!location.getChunk().isLoaded()) {
-            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), location.getChunk()::load);
+        if (!getCurrentBlockPosition().getLocation().getChunk().isLoaded()) {
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), getCurrentBlockPosition().getLocation().getChunk()::load);
         }
         final Block relative = getCurrentBlockPosition().getRelative(blockFace);
         if (getLength() == 0) {
@@ -44,7 +46,10 @@ public class GenerationHorizontal extends Generation {
                 relative.getType() != Material.AIR)) {
             return false;
         }
-        if (!Utils.isInWorldBorder(location)) {
+        if (!Board.getInstance().getFactionAt(startingFLocation).getTag().equals(Board.getInstance().getFactionAt(new FLocation(relative)).getTag())) {
+            return false;
+        }
+        if (Utils.isOutsideBorder(relative.getLocation())) {
             return false;
         }
 
