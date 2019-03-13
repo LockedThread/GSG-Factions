@@ -13,7 +13,6 @@ import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.struct.Role;
 import com.massivecraft.factions.util.FactionGUI;
-import com.massivecraft.factions.util.Message;
 import com.massivecraft.factions.util.TitleAPI;
 import com.massivecraft.factions.util.VisualizeUtil;
 import com.massivecraft.factions.zcore.fperms.Access;
@@ -617,14 +616,9 @@ public class FactionsPlayerListener implements Listener {
                 me.msg(TL.PLAYER_WARAUTO);
             }
         } else if (corners.contains(to) && me.hasFaction() && me.canClaimForFaction(me.getFaction())) {
-            if (factionTo != null && factionTo.isNormal()) {
-                return;
+            if (factionTo == null || factionTo.isWilderness()) {
+                TitleAPI.getInstance().sendTitle(player, Text.toColor("&4&lCORNER CLAIM"), Text.toColor(TL.ENTERED_CORNER.toString()), 0, 60, 20);
             }
-
-            TitleAPI.getInstance().sendTitle(player, Text.toColor("&4&lCORNER CLAIM"), Text.toColor("&eType &6/f corner &eto claim all nearby chunks!"), 0, 60, 20);
-            player.sendMessage(Message.center(Text.toColor("&4&lCORNER CLAIM")));
-            player.sendMessage(Message.center(Text.toColor("&cYou have entered an unclaimed corner of the world!")));
-            player.sendMessage(Message.center(Text.toColor("&eType &6/f corner &eto claim all available chunks within 300 blocks!")));
         }
     }
 

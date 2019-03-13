@@ -29,6 +29,8 @@ public enum TL {
     /**
      * LockedThread's ADDITIONS
      */
+    ENTERED_CORNER("&eType &6/f corner &eto claim all nearby chunks!"),
+
     COMMAND_INVALID_ARGUMENTS("&cUnable to execute command, invalid arguments!"),
 
 
