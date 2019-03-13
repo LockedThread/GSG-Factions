@@ -4,7 +4,6 @@ import com.gameservergroup.gsgcore.enums.Direction;
 import com.gameservergroup.gsgcore.items.CustomItem;
 import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.menus.MenuItem;
-import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsgcore.utils.Text;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.generation.Generation;
@@ -15,6 +14,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
+
+import java.util.Objects;
 
 public class Gen {
 
@@ -51,7 +52,6 @@ public class Gen {
             });
         } else {
             customItem.setPlaceEventConsumer(event -> {
-                System.out.println(getMaterial());
                 event.getPlayer().setItemInHand(event.getItemInHand());
                 getGeneration(event.getBlockPlaced(), direction == Direction.HORIZONTAL ? event.getBlockAgainst().getFace(event.getBlockPlaced()) : direction.getBlockFaces()[0]).enable();
             });
@@ -63,14 +63,13 @@ public class Gen {
     }
 
     public Generation getGeneration(Block startingBlock, BlockFace blockFace) {
-        System.out.println("startingBlock = [" + startingBlock + "], blockFace = [" + blockFace + "]");
         switch (direction) {
             case VERTICAL_UP:
-                return new GenerationVertical(BlockPosition.of(startingBlock), this, Direction.VERTICAL_UP);
+                return new GenerationVertical(startingBlock, this, Direction.VERTICAL_UP);
             case VERTICAL_DOWN:
-                return new GenerationVertical(BlockPosition.of(startingBlock), this, Direction.VERTICAL_DOWN);
+                return new GenerationVertical(startingBlock, this, Direction.VERTICAL_DOWN);
             case HORIZONTAL:
-                return new GenerationHorizontal(BlockPosition.of(startingBlock), this, blockFace);
+                return new GenerationHorizontal(startingBlock, this, blockFace);
             default:
                 return null;
         }
@@ -122,39 +121,39 @@ public class Gen {
         return patch;
     }
 
+    public int getLength() {
+        return length;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Gen gen = (Gen) o;
-
-        return Double.compare(gen.price, price) == 0 && patch == gen.patch && material == gen.material && direction == gen.direction;
+        return Double.compare(gen.price, price) == 0 &&
+                patch == gen.patch &&
+                length == gen.length &&
+                Objects.equals(configurationSection, gen.configurationSection) &&
+                Objects.equals(name, gen.name) &&
+                material == gen.material &&
+                direction == gen.direction;
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = material != null ? material.hashCode() : 0;
-        result = 31 * result + (direction != null ? direction.hashCode() : 0);
-        temp = Double.doubleToLongBits(price);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (patch ? 1 : 0);
-        return result;
+        return Objects.hash(configurationSection, name, material, direction, price, patch, length);
     }
 
     @Override
     public String toString() {
         return "Gen{" +
-                "material=" + material +
+                "configurationSection=" + configurationSection +
+                ", name='" + name + '\'' +
+                ", material=" + material +
                 ", direction=" + direction +
                 ", price=" + price +
                 ", patch=" + patch +
+                ", length=" + length +
                 '}';
-    }
-
-    public int getLength() {
-        return length;
     }
 }

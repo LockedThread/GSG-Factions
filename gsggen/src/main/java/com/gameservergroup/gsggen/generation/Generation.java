@@ -1,17 +1,17 @@
 package com.gameservergroup.gsggen.generation;
 
-import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.objs.Gen;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 
 public abstract class Generation {
 
-    private BlockPosition startingBlockPosition, currentBlockPosition;
+    private Block startingBlockPosition, currentBlockPosition;
     private Gen gen;
     private int length;
 
-    public Generation(BlockPosition startingBlockPosition, Gen gen) {
+    public Generation(Block startingBlockPosition, Gen gen) {
         this.startingBlockPosition = startingBlockPosition;
         this.currentBlockPosition = startingBlockPosition;
         this.gen = gen;
@@ -32,7 +32,7 @@ public abstract class Generation {
         this.length = length;
     }
 
-    public BlockPosition getStartingBlockPosition() {
+    public Block getStartingBlockPosition() {
         return startingBlockPosition;
     }
 
@@ -40,11 +40,11 @@ public abstract class Generation {
         return gen.getMaterial();
     }
 
-    public BlockPosition getCurrentBlockPosition() {
+    public Block getCurrentBlockPosition() {
         return currentBlockPosition;
     }
 
-    public void setCurrentBlockPosition(BlockPosition currentBlockPosition) {
+    public void setCurrentBlockPosition(Block currentBlockPosition) {
         this.currentBlockPosition = currentBlockPosition;
     }
 
