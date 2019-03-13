@@ -49,6 +49,10 @@ public class EventPost<T extends Event> {
         return eventPriority;
     }
 
+    public void setEventPriority(EventPriority eventPriority) {
+        this.eventPriority = eventPriority;
+    }
+
     Consumer<T> getEventConsumer() {
         return eventConsumer;
     }
