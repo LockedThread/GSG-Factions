@@ -1,11 +1,12 @@
 package com.gameservergroup.gsgcore.units;
 
 import com.gameservergroup.gsgcore.GSGCore;
+import com.gameservergroup.gsgcore.utils.CallBack;
 
 public abstract class Unit {
 
     public static final GSGCore GSG_CORE = GSGCore.getInstance();
-    private Runnable runnable;
+    private CallBack callBack;
 
     public void call() {
         GSG_CORE.getUnits().add(this);
@@ -14,12 +15,11 @@ public abstract class Unit {
 
     public abstract void setup();
 
-    public void hookDisable(Runnable runnable) {
-        this.runnable = runnable;
+    public void hookDisable(CallBack callBack) {
+        this.callBack = callBack;
     }
 
-    public Runnable getRunnable() {
-        return runnable;
+    public CallBack getCallBack() {
+        return callBack;
     }
-
 }
