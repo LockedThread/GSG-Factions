@@ -91,7 +91,6 @@ public abstract class Module extends JavaPlugin {
             if (readLine != null) {
                 if (readLine.equalsIgnoreCase("Access Granted")) return true;
                 if (readLine.equalsIgnoreCase("No Access")) return false;
-                return false;
             }
             return false;
         } catch (IOException ex) {
@@ -140,8 +139,12 @@ public abstract class Module extends JavaPlugin {
     }
 
     private String getIp() {
+        int port = getServer().getPort();
+        String ip = getServer().getIp();
         try {
-            return new BufferedReader(new InputStreamReader(new URL("http://bot.whatismyipaddress.com").openStream())).readLine().trim();
+            return ip.isEmpty() || ip.equalsIgnoreCase("localhost") || ip.equalsIgnoreCase("127.0.0.1") || ip.equalsIgnoreCase("0.0.0.0")
+                    ? new BufferedReader(new InputStreamReader(new URL("http://bot.whatismyipaddress.com").openStream())).readLine().trim() + ":" + port
+                    : ip + ":" + port;
         } catch (Exception e) {
             return "UNREACHABLE CONNECTION";
         }
