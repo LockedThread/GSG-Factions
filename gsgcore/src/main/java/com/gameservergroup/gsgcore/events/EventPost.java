@@ -1,5 +1,6 @@
 package com.gameservergroup.gsgcore.events;
 
+import com.gameservergroup.gsgcore.plugin.Module;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 
@@ -9,6 +10,7 @@ import java.util.function.Predicate;
 
 public class EventPost<T extends Event> {
 
+    private boolean disabled = false;
     private Class<T> eventClass;
     private HashSet<Predicate<T>> filters = new HashSet<>();
     private EventPriority eventPriority;
@@ -42,7 +44,13 @@ public class EventPost<T extends Event> {
 
     public EventPoster handle(Consumer<T> event) {
         this.eventConsumer = event;
-        return plugin -> new EventPostExecutor<>(EventPost.this).registerListener(plugin);
+        return plugin -> {
+            if (plugin instanceof Module) {
+                Module module = (Module) plugin;
+                module.getEventPosts().add(EventPost.this);
+            }
+            new EventPostExecutor<>(EventPost.this, plugin).registerListener();
+        };
     }
 
     EventPriority getEventPriority() {
@@ -55,5 +63,13 @@ public class EventPost<T extends Event> {
 
     Consumer<T> getEventConsumer() {
         return eventConsumer;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }
