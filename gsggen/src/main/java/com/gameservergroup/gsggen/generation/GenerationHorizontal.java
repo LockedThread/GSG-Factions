@@ -22,10 +22,10 @@ public class GenerationHorizontal extends Generation {
 
     @Override
     public boolean generate() {
-        if (!getCurrentBlockPosition().getLocation().getChunk().isLoaded()) {
-            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), getCurrentBlockPosition().getLocation().getChunk()::load);
-        }
         final Block relative = getCurrentBlockPosition().getRelative(blockFace);
+        if (!relative.getChunk().isLoaded()) {
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), relative.getChunk()::load);
+        }
         if (getLength() == 0) {
             return false;
         }

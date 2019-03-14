@@ -3,7 +3,6 @@ package com.gameservergroup.gsggen.generation;
 import com.gameservergroup.gsgcore.enums.Direction;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.objs.Gen;
-import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
@@ -18,11 +17,10 @@ public class GenerationVertical extends Generation {
 
     @Override
     public boolean generate() {
-        final Chunk chunk = getCurrentBlockPosition().getChunk();
-        if (!chunk.isLoaded()) {
-            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), chunk::load);
-        }
         final Block relative = getCurrentBlockPosition().getRelative(direction.getBlockFaces()[0]);
+        if (!relative.getChunk().isLoaded()) {
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), relative.getChunk()::load);
+        }
         if (getLength() == 0) {
             return false;
         }
