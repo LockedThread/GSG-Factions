@@ -22,6 +22,7 @@ public abstract class Module extends JavaPlugin {
     private static Economy economy;
     private Unit[] units;
     private HashSet<EventPost<?>> eventPosts;
+    private boolean temp = true;
 
     public static Economy getEconomy() {
         return economy;
@@ -34,8 +35,6 @@ public abstract class Module extends JavaPlugin {
     public abstract void enable();
 
     public abstract void disable();
-
-    private boolean temp = true;
 
     @Override
     public void onEnable() {
