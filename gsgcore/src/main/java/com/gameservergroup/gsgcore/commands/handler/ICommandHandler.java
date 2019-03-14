@@ -14,6 +14,12 @@ public interface ICommandHandler<T extends CommandSender> {
         }
     }
 
+    default void reply(Enum... eee) {
+        for (Enum anEnum : eee) {
+            getSender().sendMessage(Text.toColor(anEnum.toString()));
+        }
+    }
+
     String[] getRawArgs();
 
     Argument getArg(int index);
