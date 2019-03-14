@@ -2,5 +2,9 @@ package com.gameservergroup.gsgcore.utils;
 
 public interface CallBack {
 
-    void call();
+    default void call() {
+    }
+
+    default void call(Object... objects) {
+    }
 }
