@@ -12,6 +12,14 @@ public class BlockPosition {
     private String worldName;
     private int x, y, z;
 
+    private BlockPosition(String worldName, int x, int y, int z) {
+        Objects.requireNonNull(worldName, "The World Name must not be null for BlockPosition instantiation");
+        this.worldName = worldName;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
     public static BlockPosition of(Location location) {
         Objects.requireNonNull(location, "Location must not be null for BlockPosition instantiation");
         return new BlockPosition(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
@@ -25,14 +33,6 @@ public class BlockPosition {
     public static BlockPosition of(World world, int x, int y, int z) {
         Objects.requireNonNull(world, "World must not be null for BlockPosition instantiation");
         return new BlockPosition(world.getName(), x, y, z);
-    }
-
-    private BlockPosition(String worldName, int x, int y, int z) {
-        Objects.requireNonNull(worldName, "The World Name must not be null for BlockPosition instantiation");
-        this.worldName = worldName;
-        this.x = x;
-        this.y = y;
-        this.z = z;
     }
 
     public World getWorld() {

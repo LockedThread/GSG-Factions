@@ -81,6 +81,22 @@ public class ItemStackBuilder {
         return new ItemStackBuilder(material);
     }
 
+    private static DyeColor parseDyeColor(String s) {
+        try {
+            return DyeColor.valueOf(s.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Unable to parse " + s + " as a Bukkit DyeColor", e);
+        }
+    }
+
+    private static ItemFlag parseItemFlag(String s) {
+        try {
+            return ItemFlag.valueOf(s.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Unable to parse " + s + " as a Bukkit DyeColor", e);
+        }
+    }
+
     public void setAmount(int amount) {
         itemStack.setAmount(amount);
     }
@@ -139,21 +155,5 @@ public class ItemStackBuilder {
 
     public ItemStack build() {
         return itemStack;
-    }
-
-    private static DyeColor parseDyeColor(String s) {
-        try {
-            return DyeColor.valueOf(s.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Unable to parse " + s + " as a Bukkit DyeColor", e);
-        }
-    }
-
-    private static ItemFlag parseItemFlag(String s) {
-        try {
-            return ItemFlag.valueOf(s.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Unable to parse " + s + " as a Bukkit DyeColor", e);
-        }
     }
 }

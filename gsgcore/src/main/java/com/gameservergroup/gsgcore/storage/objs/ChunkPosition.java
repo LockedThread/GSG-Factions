@@ -14,6 +14,13 @@ public class ChunkPosition {
     private String worldName;
     private int x, z;
 
+    private ChunkPosition(String worldName, int x, int z) {
+        Objects.requireNonNull(worldName, "WorldName must not be null for ChunkPosition instantiation");
+        this.worldName = worldName;
+        this.x = x;
+        this.z = z;
+    }
+
     public static ChunkPosition of(World world, int x, int z) {
         Objects.requireNonNull(world, "World must not be null for ChunkPosition instantiation");
         return new ChunkPosition(world.getName(), x, z);
@@ -22,13 +29,6 @@ public class ChunkPosition {
     public static ChunkPosition of(Chunk chunk) {
         Objects.requireNonNull(chunk, "Chunk must not be null for ChunkPosition instantiation");
         return new ChunkPosition(chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
-    }
-
-    private ChunkPosition(String worldName, int x, int z) {
-        Objects.requireNonNull(worldName, "WorldName must not be null for ChunkPosition instantiation");
-        this.worldName = worldName;
-        this.x = x;
-        this.z = z;
     }
 
     public Set<Block> getBlocks() {
