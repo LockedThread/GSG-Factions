@@ -1,5 +1,6 @@
 package com.massivecraft.factions.zcore;
 
+import com.gameservergroup.gsgcore.plugin.Module;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -17,7 +18,6 @@ import com.massivecraft.factions.zcore.util.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.lang.reflect.Modifier;
@@ -27,7 +27,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 
 
-public abstract class MPlugin extends JavaPlugin {
+public abstract class MPlugin extends Module {
 
     // Persist related
     public final Gson gson = this.getGsonBuilder()
@@ -114,6 +114,21 @@ public abstract class MPlugin extends JavaPlugin {
         log("=== ENABLE DONE (Took " + (System.currentTimeMillis() - timeEnableStart) + "ms) ===");
     }
 
+    @Override
+    public void disable() {
+        if (saveTask != null) {
+            this.getServer().getScheduler().cancelTask(saveTask);
+            saveTask = null;
+        }
+        // only save data if plugin actually loaded successfully
+        if (loadSuccessful) {
+            Factions.getInstance().forceSave();
+            FPlayers.getInstance().forceSave();
+            Board.getInstance().forceSave();
+        }
+        log("Disabled");
+    }
+
     public void loadLang() {
         File lang = new File(getDataFolder(), "lang.yml");
         OutputStream out = null;
@@ -178,20 +193,6 @@ public abstract class MPlugin extends JavaPlugin {
             getLogger().log(Level.WARNING, "Factions: Report this stack trace to drtshock.");
             e.printStackTrace();
         }
-    }
-
-    public void onDisable() {
-        if (saveTask != null) {
-            this.getServer().getScheduler().cancelTask(saveTask);
-            saveTask = null;
-        }
-        // only save data if plugin actually loaded successfully
-        if (loadSuccessful) {
-            Factions.getInstance().forceSave();
-            FPlayers.getInstance().forceSave();
-            Board.getInstance().forceSave();
-        }
-        log("Disabled");
     }
 
     // -------------------------------------------- //

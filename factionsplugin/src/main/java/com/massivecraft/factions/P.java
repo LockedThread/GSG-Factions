@@ -10,6 +10,7 @@ import com.massivecraft.factions.integration.Essentials;
 import com.massivecraft.factions.integration.Worldguard;
 import com.massivecraft.factions.listeners.*;
 import com.massivecraft.factions.struct.ChatMode;
+import com.massivecraft.factions.units.UnitWorldBorder;
 import com.massivecraft.factions.util.*;
 import com.massivecraft.factions.zcore.MPlugin;
 import com.massivecraft.factions.zcore.fperms.Access;
@@ -66,7 +67,7 @@ public class P extends MPlugin {
     }
 
     @Override
-    public void onEnable() {
+    public void enable() {
         if (!preEnable()) {
             return;
         }
@@ -126,6 +127,7 @@ public class P extends MPlugin {
         getServer().getPluginManager().registerEvents(new FactionsEntityListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsExploitListener(), this);
         getServer().getPluginManager().registerEvents(new FactionsBlockListener(this), this);
+        registerUnits(new UnitWorldBorder());
 
         // since some other plugins execute commands directly through this command interface, provide it
         this.getCommand(this.refCommand).setExecutor(this);
@@ -140,6 +142,19 @@ public class P extends MPlugin {
         setupPlaceholderAPI();
         postEnable();
         this.loadSuccessful = true;
+    }
+
+    @Override
+    public void disable() {
+// only save data if plugin actually completely loaded successfully
+        if (this.loadSuccessful) {
+            Conf.save();
+        }
+        if (AutoLeaveTask != null) {
+            this.getServer().getScheduler().cancelTask(AutoLeaveTask);
+            AutoLeaveTask = null;
+        }
+        super.disable();
     }
 
     private void setupPlaceholderAPI() {
@@ -187,20 +202,6 @@ public class P extends MPlugin {
         }.getType();
 
         return new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().enableComplexMapKeySerialization().excludeFieldsWithModifiers(Modifier.TRANSIENT, Modifier.VOLATILE).registerTypeAdapter(accessTypeAdatper, new PermissionsMapTypeAdapter()).registerTypeAdapter(LazyLocation.class, new MyLocationTypeAdapter()).registerTypeAdapter(mapFLocToStringSetType, new MapFLocToStringSetTypeAdapter()).registerTypeAdapterFactory(EnumTypeAdapter.ENUM_FACTORY);
-    }
-
-    @Override
-    public void onDisable() {
-        // only save data if plugin actually completely loaded successfully
-        if (this.loadSuccessful) {
-            Conf.save();
-        }
-        if (AutoLeaveTask != null) {
-            this.getServer().getScheduler().cancelTask(AutoLeaveTask);
-            AutoLeaveTask = null;
-        }
-
-        super.onDisable();
     }
 
     public void startAutoLeaveTask(boolean restartIfRunning) {

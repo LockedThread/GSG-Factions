@@ -238,6 +238,9 @@ max-relations:
 # The buffer is in chunks, so 1 as a buffer means an entire chunk of buffer between 
 # the border of the world and what can be claimed to factions
 world-border:
+  disable-enderpearl: true
+  disable-tnt: true
+  disable-liquid: true
   buffer: 0
 
 # Raids
