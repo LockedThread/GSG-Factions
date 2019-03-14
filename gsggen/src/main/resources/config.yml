@@ -4,6 +4,8 @@
 #Material - (http://docs.codelanx.com/Bukkit/1.8/org/bukkit/Material.html)
 #DyeColor (Colors used for glass panes, wool, and glass) - (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html)
 interval: 6
+enable-combattagplus-integration: true
+#May cause issues with minecraft clients, this is not fixable without causing mas amount of ItemStack instantiations.
 disable-lava-bucket-player-use: true
 menu:
   options:
