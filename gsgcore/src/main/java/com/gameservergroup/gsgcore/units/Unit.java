@@ -9,7 +9,6 @@ public abstract class Unit {
     private CallBack callBack;
 
     public void call() {
-        GSG_CORE.getUnits().add(this);
         setup();
     }
 
