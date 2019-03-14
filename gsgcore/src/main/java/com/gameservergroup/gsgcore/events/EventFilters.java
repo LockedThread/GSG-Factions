@@ -1,17 +1,16 @@
 package com.gameservergroup.gsgcore.events;
 
 import com.gameservergroup.gsgcore.menus.Menu;
+import com.gameservergroup.gsgcore.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Predicate;
@@ -65,6 +64,26 @@ public class EventFilters {
         }
         return false;
     };
+    private static final Predicate<? extends Event> IGNORE_OUTSIDE_BORDER = event -> {
+        if (event instanceof PlayerTeleportEvent) {
+            return !Utils.isOutsideBorder(((PlayerTeleportEvent) event).getTo());
+        } else if (event instanceof BlockPlaceEvent) {
+            return !Utils.isOutsideBorder(((BlockPlaceEvent) event).getBlockPlaced().getLocation());
+        } else if (event instanceof BlockBreakEvent) {
+            return !Utils.isOutsideBorder(((BlockBreakEvent) event).getBlock().getLocation());
+        } else if (event instanceof PlayerBucketEmptyEvent) {
+            return !Utils.isOutsideBorder(((PlayerBucketEmptyEvent) event).getBlockClicked().getRelative(((PlayerBucketEmptyEvent) event).getBlockFace()).getLocation());
+        } else if (event instanceof BlockEvent) {
+            return !Utils.isOutsideBorder(((BlockEvent) event).getBlock().getLocation());
+        } else if (event instanceof PlayerEvent) {
+            return !Utils.isOutsideBorder(((PlayerEvent) event).getPlayer().getLocation());
+        }
+        return false;
+    };
+
+    public static <T extends Event> Predicate<T> getIgnoreOutsideBorder() {
+        return (Predicate<T>) IGNORE_OUTSIDE_BORDER;
+    }
 
     public static <T extends Event> Predicate<T> getIgnoreHandDisplaynameNull() {
         return (Predicate<T>) IGNORE_HAND_DISPLAYNAME_NULL;
