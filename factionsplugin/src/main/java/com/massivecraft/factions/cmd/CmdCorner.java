@@ -5,7 +5,12 @@ import com.massivecraft.factions.Conf;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.struct.Permission;
+import com.massivecraft.factions.tasks.TaskCorner;
 import com.massivecraft.factions.zcore.util.TL;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class CmdCorner extends FCommand {
 
@@ -33,23 +38,26 @@ public class CmdCorner extends FCommand {
                 msg(TL.COMMAND_CORNER_CANT_CLAIM);
             } else {
                 msg(TL.COMMAND_CORNER_ATTEMPTING);
-                int amount = 0;
+                List<FLocation> surrounding = new ArrayList<>(400);
+                for (int x = 0; x < Conf.bufferSize; x++) {
+                    for (int z = 0; z < Conf.bufferSize; z++) {
+                        int newX = (int) (to.getX() > 0 ? (to.getX() - x) : (to.getX() + x));
+                        int newZ = (int) (to.getZ() > 0 ? (to.getZ() - z) : (to.getZ() + z));
 
-                for (int x = -Conf.bufferSize; x < to.getX() + Conf.bufferSize; x++) {
-                    for (int z = -Conf.bufferSize; z < to.getX() + Conf.bufferSize; z++) {
-                        FLocation location = new FLocation(me.getWorld().getName(), x, z);
+                        FLocation location = new FLocation(me.getWorld().getName(), newX, newZ);
                         Faction at = Board.getInstance().getFactionAt(location);
-                        if (at == null || at.isWilderness()) {
-                            if (fme.attemptClaim(myFaction, location, false)) {
-                                amount++;
-                            }
+                        if (at == null || !at.isNormal()) {
+                            surrounding.add(location);
                         }
                     }
                 }
-                if (amount == 0) {
+
+                surrounding.sort(Comparator.comparingInt(fLocation -> (int) fLocation.getDistanceTo(to)));
+
+                if (surrounding.isEmpty()) {
                     msg(TL.COMMAND_CORNER_CANT_CLAIM);
                 } else {
-                    msg(TL.COMMAND_CORNER_SUCCESS, amount);
+                    new TaskCorner(fme, surrounding).runTaskTimer(p, 1L, 1L);
                 }
             }
         } else {
