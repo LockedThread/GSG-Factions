@@ -32,7 +32,7 @@ public class GSGPrinter extends Module {
                 this.enableCombatTagPlusIntegration = getConfig().getBoolean("enable-combattagplus-integration");
                 this.combatIntegration = new CombatTagPlusImpl(combatTagPlus);
             } else {
-                getLogger().severe("You don't have CombatTagPlus installed, if you don't wish to use it disable the integration in GSGGen's config.yml");
+                getLogger().severe("You don't have CombatTagPlus installed, if you don't wish to use it disable the integration in GSGPrinter's config.yml");
                 getPluginLoader().disablePlugin(this);
                 return;
             }
