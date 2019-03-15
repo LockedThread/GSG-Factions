@@ -4,6 +4,7 @@ import com.gameservergroup.gsgcore.utils.Text;
 
 public enum PrinterMessages {
 
+    YOU_ARE_IN_COMBAT("&cYou can't enabled Printer whilst in combat."),
     INVENTORY_MUST_BE_EMPTY("&cYour inventory and armor must be empty to enable printer!"),
     MUST_BE_IN_FRIENDLY_TERRITORY("&cYou must be in friendly territory to activate /printer!"),
     THIS_BLOCK_ISNT_PLACEABLE("&cYou are not allowed to edit this block!"),

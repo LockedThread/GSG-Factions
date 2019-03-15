@@ -9,6 +9,7 @@ import com.gameservergroup.gsgcore.utils.Text;
 import com.gameservergroup.gsgcore.utils.Utils;
 import com.gameservergroup.gsgprinter.GSGPrinter;
 import com.gameservergroup.gsgprinter.enums.PrinterMessages;
+import com.massivecraft.factions.FPlayers;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -68,10 +69,12 @@ public class UnitPrinter extends Unit {
                     Player player = commandContext.getSender();
                     if (printingPlayers.contains(player.getUniqueId())) {
                         disablePrinter(player, true);
+                    } else if (GSG_PRINTER.isEnableCombatTagPlusIntegration() && GSG_PRINTER.getCombatIntegration().isTagged(player)) {
+                        commandContext.reply(PrinterMessages.YOU_ARE_IN_COMBAT);
+                    } else if (FPlayers.getInstance().getByPlayer(player).isInOthersTerritory()) {
+                        commandContext.reply(PrinterMessages.MUST_BE_IN_FRIENDLY_TERRITORY);
                     } else if (!Utils.playerInventoryIsEmpty(player)) {
                         commandContext.reply(PrinterMessages.INVENTORY_MUST_BE_EMPTY);
-                    } else if (!GSG_CORE.canBuild(player, player.getLocation())) {
-                        commandContext.reply(PrinterMessages.MUST_BE_IN_FRIENDLY_TERRITORY);
                     } else {
                         enablePrinter(player, true);
                     }
