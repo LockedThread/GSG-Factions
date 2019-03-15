@@ -9,7 +9,10 @@ import com.gameservergroup.gsgcore.utils.Text;
 import com.gameservergroup.gsgcore.utils.Utils;
 import com.gameservergroup.gsgprinter.GSGPrinter;
 import com.gameservergroup.gsgprinter.enums.PrinterMessages;
+import com.massivecraft.factions.Board;
+import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayers;
+import com.massivecraft.factions.util.FlightDisableUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -55,6 +58,11 @@ public class UnitPrinter extends Unit {
 
     @Override
     public void setup() {
+        FlightDisableUtil.flightDisableConsumers.add(fPlayer -> {
+            if (printingPlayers.contains(fPlayer.getPlayer().getUniqueId())) {
+                disablePrinter(fPlayer.getPlayer(), true, false);
+            }
+        });
         this.printingPlayers = new HashSet<>();
         this.useNcp = GSG_PRINTER.getConfig().getBoolean("use-ncp");
         this.allowedCommands = new HashSet<>(GSG_PRINTER.getConfig().getStringList("allowed-commands"));
@@ -71,8 +79,10 @@ public class UnitPrinter extends Unit {
                         disablePrinter(player, true);
                     } else if (GSG_PRINTER.isEnableCombatTagPlusIntegration() && GSG_PRINTER.getCombatIntegration().isTagged(player)) {
                         commandContext.reply(PrinterMessages.YOU_ARE_IN_COMBAT);
-                    } else if (FPlayers.getInstance().getByPlayer(player).isInOthersTerritory()) {
+                    } else if (FPlayers.getInstance().getByPlayer(player).isInOthersTerritory() || Board.getInstance().getFactionAt(new FLocation(player.getLocation())).isWilderness()) {
                         commandContext.reply(PrinterMessages.MUST_BE_IN_FRIENDLY_TERRITORY);
+                    } else if (FPlayers.getInstance().getByPlayer(player).getFaction().isWilderness()) {
+                        commandContext.reply(PrinterMessages.YOU_ARE_FACTIONLESS);
                     } else if (!Utils.playerInventoryIsEmpty(player)) {
                         commandContext.reply(PrinterMessages.INVENTORY_MUST_BE_EMPTY);
                     } else {
@@ -117,14 +127,6 @@ public class UnitPrinter extends Unit {
                 .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
                 .handle(event -> disablePrinter(event.getPlayer(), true))
                 .post(GSG_PRINTER);
-
-        EventPost.of(PlayerMoveEvent.class)
-                .filter(EventFilters.getIgnoreSameChunk())
-                .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
-                .handle(event -> {
-                    if (!GSG_CORE.canBuild(event.getPlayer(), event.getTo()))
-                        disablePrinter(event.getPlayer(), true);
-                }).post(GSG_PRINTER);
 
         EventPost.of(HangingBreakByEntityEvent.class)
                 .filter(event -> event.getRemover() instanceof Player)
