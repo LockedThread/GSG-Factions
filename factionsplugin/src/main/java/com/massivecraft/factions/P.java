@@ -26,7 +26,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -42,7 +41,7 @@ public class P extends MPlugin {
     // Single 4 life.
     public static com.massivecraft.factions.P p;
     public static Permission perms = null;
-    public BukkitTask flightTask;
+    public FlightDisableUtil flightTask;
     // Commands
     public FCmdRoot cmdBase;
     public CmdAutoHelp cmdAutoHelp;
@@ -134,7 +133,7 @@ public class P extends MPlugin {
 
         if (getConfig().getBoolean("f-fly.enabled", true)) {
             int delay = getConfig().getInt("f-fly.radius-check", 1) * 20;
-            flightTask = new FlightDisableUtil().runTaskTimer(this, 0, delay);
+            (this.flightTask = new FlightDisableUtil()).runTaskTimer(this, 0, delay);
             log(Level.INFO, "Enabling enemy radius check for f fly every %s seconds", delay / 20);
         }
 

@@ -56,5 +56,4 @@ public class FlightDisableUtil extends BukkitRunnable {
             }
         }
     }
-
 }

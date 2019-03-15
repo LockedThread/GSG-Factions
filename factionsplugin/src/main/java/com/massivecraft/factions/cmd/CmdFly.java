@@ -17,6 +17,7 @@ public class CmdFly extends FCommand {
         this.optionalArgs.put("on/off", "flip");
 
         this.permission = Permission.FLY.node;
+        this.senderMustBePlayer = true;
         this.senderMustBeMember = false;
         this.senderMustBeModerator = false;
     }
@@ -25,11 +26,6 @@ public class CmdFly extends FCommand {
     public void perform() {
         if (!fme.hasFaction() && !fme.hasAltFaction()) {
             msg("&cYou are not a member of any faction.");
-            return;
-        }
-
-        if (p.flightTask.isCancelled()) {
-            msg("&cFlight is currently disabled!");
             return;
         }
 
@@ -56,12 +52,7 @@ public class CmdFly extends FCommand {
             return;
         }
 
-        this.doWarmUp(WarmUpUtil.Warmup.FLIGHT, TL.WARMUPS_NOTIFY_FLIGHT, "Fly", new Runnable() {
-            @Override
-            public void run() {
-                fme.setFlying(true);
-            }
-        }, this.p.getConfig().getLong("warmups.f-fly", 0));
+        this.doWarmUp(WarmUpUtil.Warmup.FLIGHT, TL.WARMUPS_NOTIFY_FLIGHT, "Fly", () -> fme.setFlying(true), this.p.getConfig().getLong("warmups.f-fly", 0));
     }
 
     @Override

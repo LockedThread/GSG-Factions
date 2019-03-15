@@ -22,7 +22,7 @@ findfactionsexploit:
 
 
 # Essentials Hook
-# Should we delete player homes that they set via Essentials when they leave a Faction if they have homes set in that
+# Should we delete playeenemy-radiusr homes that they set via Essentials when they leave a Faction if they have homes set in that
 # Faction's territory?
 delete-ess-homes: true
 
