@@ -1,0 +1,5 @@
+use-ncp: true
+allowed-commands: ["/printer", "/f ", "/faction", "/warp", "/spawn", "/tp", "/m ", "/msg","/r ", "/reply", "/whisper", "/w ", "/t ", "/tell", "/mute", "/warn", "/punish", "/ban", "/history", "/dupeip","/staffchat", "/bal"]
+blacklisted-keywords:
+  - 'vault'
+  - 'chest'

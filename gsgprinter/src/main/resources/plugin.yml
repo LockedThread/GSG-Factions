@@ -1,0 +1,4 @@
+name: GSGPrinter
+main: com.gameservergroup.gsgprinter.GSGPrinter
+version: 1.0
+depend: [GSGCore]
