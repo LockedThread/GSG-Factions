@@ -79,7 +79,7 @@ public class GSGCore extends Module {
             }
         }
         if (getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-            protectionIntegrations.add(new ProtectionWorldGuardImpl());
+            protectionIntegrations.add(new ProtectionWorldGuardImpl(getServer().getPluginManager().getPlugin("WorldGuard")));
         }
         if (protectionIntegrations.isEmpty()) {
             protectionIntegrations.add(new ProtectionDefaultImpl());
