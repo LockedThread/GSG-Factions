@@ -12,13 +12,14 @@ public class EventPost<T extends Event> {
 
     private boolean disabled = false;
     private Class<T> eventClass;
-    private HashSet<Predicate<T>> filters = new HashSet<>();
+    private HashSet<Predicate<T>> filters;
     private EventPriority eventPriority;
     private Consumer<T> eventConsumer;
 
     private EventPost(Class<T> eventClass, EventPriority eventPriority) {
         this.eventClass = eventClass;
         this.eventPriority = eventPriority;
+        this.filters = new HashSet<>();
     }
 
     public static <T extends Event> EventPost<T> of(Class<T> eventClass, EventPriority eventPriority) {
