@@ -38,7 +38,7 @@ import java.util.function.Predicate;
 public class UnitPrinter extends Unit {
 
     private static final GSGPrinter GSG_PRINTER = GSGPrinter.getInstance();
-    private static final EnumSet<Material> BANNED_INTERACTABLES = EnumSet.of(Material.MONSTER_EGG, Material.EGG,
+    public static final EnumSet<Material> BANNED_INTERACTABLES = EnumSet.of(Material.MONSTER_EGG, Material.EGG,
             Material.MOB_SPAWNER, Material.BEACON, Material.BEDROCK, Material.BOW, Material.POTION,
             Material.ENDER_PEARL, Material.SNOW_BALL, Material.EXP_BOTTLE, Material.ENDER_CHEST, Material.INK_SACK,
             Material.EYE_OF_ENDER, Material.ACACIA_DOOR_ITEM, Material.DARK_OAK_DOOR_ITEM, Material.BIRCH_DOOR_ITEM,
@@ -58,7 +58,7 @@ public class UnitPrinter extends Unit {
         this.useNcp = GSG_PRINTER.getConfig().getBoolean("use-ncp");
         this.allowedCommands = new HashSet<>(GSG_PRINTER.getConfig().getStringList("allowed-commands"));
         this.blacklistedKeywords = new HashSet<>(GSG_PRINTER.getConfig().getStringList("blacklisted-keywords"));
-        hookDisable(() -> printingPlayers.forEach(uuid -> disablePrinter(Bukkit.getPlayer(uuid), false)));
+        hookDisable(() -> printingPlayers.forEach(uuid -> disablePrinter(Bukkit.getPlayer(uuid), false, false)));
         cancelEvents(event -> printingPlayers.contains(event.getPlayer().getUniqueId()), new Class[]{PlayerPickupItemEvent.class, PlayerDropItemEvent.class, PlayerFishEvent.class, PlayerInteractEntityEvent.class, PlayerItemConsumeEvent.class, PlayerBucketEmptyEvent.class, PlayerBucketFillEvent.class, PlayerInteractAtEntityEvent.class, PlayerArmorStandManipulateEvent.class, PlayerShearEntityEvent.class, PlayerEditBookEvent.class, PlayerEggThrowEvent.class});
         CommandPost.of()
                 .build()
@@ -92,13 +92,15 @@ public class UnitPrinter extends Unit {
                 .handle(event -> disablePrinter(event.getPlayer(), true))
                 .post(GSG_PRINTER);
 
-        EventPost.of(BlockPlaceEvent.class, EventPriority.LOWEST)
+        EventPost.of(BlockPlaceEvent.class, EventPriority.HIGHEST)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> event.getBlockPlaced() != null)
                 .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
                 .handle(event -> {
-                    if (!chargePlayer(event.getPlayer(), event.getBlockPlaced().getType())) {
-                        event.setCancelled(true);
+                    if (GSG_CORE.canBuild(event.getPlayer(), event.getBlockPlaced())) {
+                        if (!chargePlayer(event.getPlayer(), event.getBlockPlaced().getType())) {
+                            event.setCancelled(true);
+                        }
                     }
                 }).post(GSG_PRINTER);
 
@@ -155,7 +157,7 @@ public class UnitPrinter extends Unit {
                 .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
                 .handle(event -> {
                     String message = event.getMessage().toLowerCase().trim();
-                    if (startsWith(allowedCommands, message) || sift(blacklistedKeywords, message)) {
+                    if (!startsWith(allowedCommands, message) || sift(blacklistedKeywords, message)) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(Text.toColor("&cYou can't use that command in /printer!"));
                     }
@@ -241,9 +243,13 @@ public class UnitPrinter extends Unit {
     private void enablePrinter(Player player, boolean notify) {
         printingPlayers.add(player.getUniqueId());
         player.setGameMode(GameMode.CREATIVE);
+        player.setFlying(false);
+        player.setAllowFlight(false);
+        player.performCommand("f fly y");
         player.closeInventory();
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
+
         if (notify) {
             player.sendMessage(PrinterMessages.PRINTER_ENABLE.toString());
         }
@@ -256,12 +262,19 @@ public class UnitPrinter extends Unit {
     }
 
     private void disablePrinter(Player player, boolean notify) {
+        disablePrinter(player, notify, true);
+    }
+
+    private void disablePrinter(Player player, boolean notify, boolean nofall) {
         printingPlayers.remove(player.getUniqueId());
         player.setGameMode(GameMode.SURVIVAL);
+        player.performCommand("f fly n");
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
-        player.setMetadata("nofalldamage", new FixedMetadataValue(GSG_PRINTER, true));
-        GSG_PRINTER.getServer().getScheduler().runTaskLater(GSG_PRINTER, () -> player.removeMetadata("nofalldamage", GSG_PRINTER), 200L);
+        if (nofall) {
+            player.setMetadata("nofalldamage", new FixedMetadataValue(GSG_PRINTER, true));
+            GSG_PRINTER.getServer().getScheduler().runTaskLater(GSG_PRINTER, () -> player.removeMetadata("nofalldamage", GSG_PRINTER), 200L);
+        }
         if (notify) {
             player.sendMessage(PrinterMessages.PRINTER_DISABLE.toString());
         }
