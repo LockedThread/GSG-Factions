@@ -13,6 +13,7 @@ import com.massivecraft.factions.struct.ChatMode;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.struct.Role;
+import com.massivecraft.factions.util.FlightDisableUtil;
 import com.massivecraft.factions.util.RelationUtil;
 import com.massivecraft.factions.util.TitleAPI;
 import com.massivecraft.factions.util.WarmUpUtil;
@@ -967,6 +968,7 @@ public abstract class MemoryFPlayer implements FPlayer {
             if (cooldown > 0) {
                 setTakeFallDamage(false);
                 Bukkit.getScheduler().runTaskLater(P.p, () -> setTakeFallDamage(true), 20L * cooldown);
+                FlightDisableUtil.flightDisableConsumers.forEach(fPlayerConsumer -> fPlayerConsumer.accept(this));
             }
         }
 

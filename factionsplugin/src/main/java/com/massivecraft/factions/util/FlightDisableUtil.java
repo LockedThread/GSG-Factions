@@ -11,9 +11,13 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class FlightDisableUtil extends BukkitRunnable {
+
+    public static HashSet<Consumer<FPlayer>> flightDisableConsumers = new HashSet<>();
 
     public static boolean enemiesNearby(FPlayer target, int radius) {
         List<Entity> nearbyEntities = target.getPlayer().getNearbyEntities(radius, radius, radius);
