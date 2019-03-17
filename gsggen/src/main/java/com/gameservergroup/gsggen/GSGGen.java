@@ -41,6 +41,11 @@ public class GSGGen extends Module {
     }
 
     @Override
+    public void reload() {
+        reloadConfig();
+    }
+
+    @Override
     public void disable() {
         instance = null;
     }

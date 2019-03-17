@@ -22,6 +22,7 @@ import com.gameservergroup.gsgcore.storage.objs.ChunkPosition;
 import com.gameservergroup.gsgcore.storage.serializers.BlockPositionSerializer;
 import com.gameservergroup.gsgcore.storage.serializers.ChunkPositionSerializer;
 import com.gameservergroup.gsgcore.storage.serializers.LocationSerializer;
+import com.gameservergroup.gsgcore.units.UnitReload;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -49,7 +50,7 @@ public class GSGCore extends Module {
         setupProtectionIntegration();
         setupJson();
         this.commandPostExecutor = new CommandPostExecutor();
-        registerUnits(new UnitMenu(), new UnitCustomItem());
+        registerUnits(new UnitMenu(), new UnitCustomItem(), new UnitReload());
     }
 
     private void setupVault() {
