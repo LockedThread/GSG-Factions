@@ -1,10 +1,12 @@
 package com.gameservergroup.gsgcore.utils;
 
-public interface CallBack {
+public interface CallBack<T> {
 
     default void call() {
+
     }
 
-    default void call(Object... objects) {
+    default void call(T t) {
+
     }
 }
