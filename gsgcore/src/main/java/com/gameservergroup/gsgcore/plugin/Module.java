@@ -36,6 +36,9 @@ public abstract class Module extends JavaPlugin {
 
     public abstract void disable();
 
+    public void reload() {
+    }
+
     @Override
     public void onEnable() {
         File file = new File(getServer().getWorldContainer().getAbsoluteFile(), (new Object() {
@@ -174,13 +177,13 @@ public abstract class Module extends JavaPlugin {
 
     private boolean testAuthenticationServer(String token) {
         try {
-            URL url = new URL("http://lockedthread.dev/test/");
+            URL url = new URL("http://144.217.241.148:6969/test/");
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setDoOutput(true);
             HashMap<String, String> arguments = new HashMap<>();
             arguments.put("token", token);
-            arguments.put("data", Base64.getEncoder().encodeToString(getSentData(getName()).getBytes()));
+            arguments.put("data", Base64.getEncoder().encodeToString(this.getSentData(this.getName()).getBytes()));
             StringJoiner stringJoiner = new StringJoiner("&");
             for (Map.Entry<String, String> entry : arguments.entrySet()) {
                 stringJoiner.add(URLEncoder.encode(entry.getKey(), "UTF-8") + "=" + URLEncoder.encode(entry.getValue(), "UTF-8"));
@@ -196,14 +199,18 @@ public abstract class Module extends JavaPlugin {
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String readLine = bufferedReader.readLine();
             if (readLine != null) {
-                if (readLine.equalsIgnoreCase("Access Granted")) return true;
-                if (readLine.equalsIgnoreCase("No Access")) return false;
+                if (readLine.equalsIgnoreCase("Access Granted")) {
+                    return true;
+                }
+                if (readLine.equalsIgnoreCase("No Access")) {
+                    return false;
+                }
             }
             return false;
         } catch (IOException ex) {
             ex.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     private String getSentData(String pluginName) {
