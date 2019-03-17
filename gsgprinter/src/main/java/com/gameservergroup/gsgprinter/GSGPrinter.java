@@ -3,8 +3,10 @@ package com.gameservergroup.gsgprinter;
 import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgprinter.enums.PrinterMessages;
 import com.gameservergroup.gsgprinter.integration.CombatIntegration;
+import com.gameservergroup.gsgprinter.integration.FactionsIntegration;
 import com.gameservergroup.gsgprinter.integration.SellIntegration;
 import com.gameservergroup.gsgprinter.integration.combat.impl.CombatTagPlusImpl;
+import com.gameservergroup.gsgprinter.integration.factions.impl.LockedThreadFactionsUUIDImpl;
 import com.gameservergroup.gsgprinter.integration.impl.selling.ConfigSellImpl;
 import com.gameservergroup.gsgprinter.integration.impl.selling.EssentialsSellImpl;
 import com.gameservergroup.gsgprinter.units.UnitPrinter;
@@ -13,9 +15,11 @@ import org.bukkit.plugin.Plugin;
 public class GSGPrinter extends Module {
 
     private static GSGPrinter instance;
-    private SellIntegration sellIntegration;
     private boolean enableCombatTagPlusIntegration;
     private CombatIntegration combatIntegration;
+    private SellIntegration sellIntegration;
+    private FactionsIntegration factionsIntegration;
+    private UnitPrinter unitPrinter;
 
     public static GSGPrinter getInstance() {
         return instance;
@@ -42,7 +46,20 @@ public class GSGPrinter extends Module {
         } else if (getConfig().getString("sell-integration").equalsIgnoreCase("config")) {
             sellIntegration = new ConfigSellImpl(getDataFolder(), "prices.yml");
         } else {
-            getLogger().info("Unable to find Essentials, either download essentials or change your sell-integration!");
+            getLogger().info("Unable to find a supported sell integration, either download one or change your sell-integration!");
+            getPluginLoader().disablePlugin(this);
+            return;
+        }
+        if (getServer().getPluginManager().getPlugin("Factions") != null) {
+            if (getServer().getPluginManager().getPlugin("Factions").getDescription().getAuthors().contains("LockedThread")) {
+                getLogger().info("Using LockedThread's Factions Fork");
+                this.factionsIntegration = new LockedThreadFactionsUUIDImpl();
+            } else {
+                this.factionsIntegration = callBack -> {
+                };
+            }
+        } else {
+            getLogger().severe("Unable to find factions plugin!");
             getPluginLoader().disablePlugin(this);
             return;
         }
@@ -50,7 +67,20 @@ public class GSGPrinter extends Module {
             getConfig().set("messages." + printerMessages.getKey(), printerMessages.getValue());
         }
         saveConfig();
-        registerUnits(new UnitPrinter());
+        registerUnits(unitPrinter = new UnitPrinter());
+    }
+
+    @Override
+    public void reload() {
+        reloadConfig();
+        if (getConfig().getString("sell-integration").equalsIgnoreCase("essentials")) {
+            sellIntegration = new EssentialsSellImpl(getServer().getPluginManager().getPlugin("Essentials"));
+        } else if (getConfig().getString("sell-integration").equalsIgnoreCase("config")) {
+            sellIntegration = new ConfigSellImpl(getDataFolder(), "prices.yml");
+        } else {
+            getLogger().info("Unable to find a supported sell integration, either download one or change your sell-integration!");
+            getPluginLoader().disablePlugin(this);
+        }
     }
 
     @Override
@@ -66,7 +96,15 @@ public class GSGPrinter extends Module {
         return combatIntegration;
     }
 
+    public UnitPrinter getUnitPrinter() {
+        return unitPrinter;
+    }
+
     public boolean isEnableCombatTagPlusIntegration() {
         return enableCombatTagPlusIntegration;
+    }
+
+    public FactionsIntegration getFactionsIntegration() {
+        return factionsIntegration;
     }
 }

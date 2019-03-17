@@ -5,6 +5,7 @@ import com.gameservergroup.gsgcore.events.EventFilters;
 import com.gameservergroup.gsgcore.events.EventPost;
 import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgcore.units.Unit;
+import com.gameservergroup.gsgcore.utils.CallBack;
 import com.gameservergroup.gsgcore.utils.Text;
 import com.gameservergroup.gsgcore.utils.Utils;
 import com.gameservergroup.gsgprinter.GSGPrinter;
@@ -12,7 +13,7 @@ import com.gameservergroup.gsgprinter.enums.PrinterMessages;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.util.FlightDisableUtil;
+import com.massivecraft.factions.event.FactionDisbandEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -42,7 +43,7 @@ import java.util.function.Predicate;
 public class UnitPrinter extends Unit {
 
     private static final GSGPrinter GSG_PRINTER = GSGPrinter.getInstance();
-    public static final EnumSet<Material> BANNED_INTERACTABLES = EnumSet.of(Material.MONSTER_EGG, Material.EGG,
+    private static final EnumSet<Material> BANNED_INTERACTABLES = EnumSet.of(Material.MONSTER_EGG, Material.EGG,
             Material.MOB_SPAWNER, Material.BEACON, Material.BEDROCK, Material.BOW, Material.POTION,
             Material.ENDER_PEARL, Material.SNOW_BALL, Material.EXP_BOTTLE, Material.ENDER_CHEST, Material.INK_SACK,
             Material.EYE_OF_ENDER, Material.ACACIA_DOOR_ITEM, Material.DARK_OAK_DOOR_ITEM, Material.BIRCH_DOOR_ITEM,
@@ -56,18 +57,63 @@ public class UnitPrinter extends Unit {
     private HashSet<String> blacklistedKeywords;
     private Set<UUID> printingPlayers;
 
+    public static GSGPrinter getGsgPrinter() {
+        return GSG_PRINTER;
+    }
+
+    private boolean startsWith(Collection<String> strings, String data) {
+        return strings.stream().anyMatch(string -> string.toLowerCase().startsWith(data.toLowerCase()));
+    }
+
+    private boolean sift(Collection<String> strings, String data) {
+        return strings.stream().anyMatch(string -> string.contains(data));
+    }
+
+    private <T extends PlayerEvent> void cancelEvents(Predicate<T> predicate, Class<T>[] playerEvents) {
+        for (Class<T> playerEvent : playerEvents) {
+            System.out.println("cancelling " + playerEvent.getSimpleName());
+            EventPost.of(playerEvent)
+                    .filter(predicate)
+                    .handle(event -> {
+                        if (event instanceof Cancellable) {
+                            event.getPlayer().sendMessage(PrinterMessages.YOU_CANT_DO_THIS.toString());
+                            ((Cancellable) event).setCancelled(true);
+                        }
+                    }).post(GSG_PRINTER);
+        }
+    }
+
+    public static EnumSet<Material> getBannedInteractables() {
+        return BANNED_INTERACTABLES;
+    }
+
     @Override
     public void setup() {
-        FlightDisableUtil.flightDisableConsumers.add(fPlayer -> {
-            if (printingPlayers.contains(fPlayer.getPlayer().getUniqueId())) {
-                disablePrinter(fPlayer.getPlayer(), true, false);
+        GSG_PRINTER.getFactionsIntegration().hookFlightDisable(new CallBack<Player>() {
+            @Override
+            public void call(Player player) {
+                if (printingPlayers.contains(player.getUniqueId())) {
+                    disablePrinter(player, true, true);
+                }
             }
         });
+
+        EventPost.of(FactionDisbandEvent.class)
+                .handle(factionDisbandEvent -> {
+                    for (Player onlinePlayer : factionDisbandEvent.getFaction().getOnlinePlayers()) {
+                        printingPlayers.remove(onlinePlayer.getUniqueId());
+                    }
+                }).post(GSG_PRINTER);
         this.printingPlayers = new HashSet<>();
         this.useNcp = GSG_PRINTER.getConfig().getBoolean("use-ncp");
         this.allowedCommands = new HashSet<>(GSG_PRINTER.getConfig().getStringList("allowed-commands"));
         this.blacklistedKeywords = new HashSet<>(GSG_PRINTER.getConfig().getStringList("blacklisted-keywords"));
-        hookDisable(() -> printingPlayers.forEach(uuid -> disablePrinter(Bukkit.getPlayer(uuid), false, false)));
+        hookDisable(new CallBack() {
+            @Override
+            public void call() {
+                printingPlayers.forEach(uuid -> disablePrinter(Bukkit.getPlayer(uuid), false, false));
+            }
+        });
         cancelEvents(event -> printingPlayers.contains(event.getPlayer().getUniqueId()), new Class[]{PlayerPickupItemEvent.class, PlayerDropItemEvent.class, PlayerFishEvent.class, PlayerInteractEntityEvent.class, PlayerItemConsumeEvent.class, PlayerBucketEmptyEvent.class, PlayerBucketFillEvent.class, PlayerInteractAtEntityEvent.class, PlayerArmorStandManipulateEvent.class, PlayerShearEntityEvent.class, PlayerEditBookEvent.class, PlayerEggThrowEvent.class});
         CommandPost.of()
                 .build()
@@ -79,7 +125,7 @@ public class UnitPrinter extends Unit {
                         disablePrinter(player, true);
                     } else if (GSG_PRINTER.isEnableCombatTagPlusIntegration() && GSG_PRINTER.getCombatIntegration().isTagged(player)) {
                         commandContext.reply(PrinterMessages.YOU_ARE_IN_COMBAT);
-                    } else if (FPlayers.getInstance().getByPlayer(player).isInOthersTerritory() || Board.getInstance().getFactionAt(new FLocation(player.getLocation())).isWilderness()) {
+                    } else if (Board.getInstance().getFactionAt(new FLocation(player.getLocation())) != FPlayers.getInstance().getByPlayer(player).getFaction()) {
                         commandContext.reply(PrinterMessages.MUST_BE_IN_FRIENDLY_TERRITORY);
                     } else if (FPlayers.getInstance().getByPlayer(player).getFaction().isWilderness()) {
                         commandContext.reply(PrinterMessages.YOU_ARE_FACTIONLESS);
@@ -212,45 +258,29 @@ public class UnitPrinter extends Unit {
                     event.setDroppedExp(0);
                 }).post(GSG_PRINTER);
 
-        EventPost.of(BlockBreakEvent.class)
-                .filter(EventFilters.getIgnoreCancelled())
-                .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
-                .filter(event -> BANNED_INTERACTABLES.contains(event.getBlock().getType()))
-                .handle(event -> {
-                    if (BANNED_INTERACTABLES.contains(event.getBlock().getType()) || event.getBlock().getY() < 1) {
-                        event.setCancelled(true);
-                    }
-                }).post(GSG_PRINTER);
-    }
-
-    private boolean startsWith(Collection<String> strings, String data) {
-        return strings.stream().anyMatch(string -> string.toLowerCase().startsWith(data.toLowerCase()));
-    }
-
-    private boolean sift(Collection<String> strings, String data) {
-        return strings.stream().anyMatch(string -> string.contains(data));
-    }
-
-    private <T extends PlayerEvent> void cancelEvents(Predicate<T> predicate, Class<T>[] playerEvents) {
-        for (Class<T> playerEvent : playerEvents) {
-            System.out.println("cancelling " + playerEvent.getSimpleName());
-            EventPost.of(playerEvent)
-                    .filter(predicate)
+        if (GSG_PRINTER.getConfig().getBoolean("enable-blockbreak")) {
+            EventPost.of(BlockBreakEvent.class)
+                    .filter(EventFilters.getIgnoreCancelled())
+                    .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
+                    .handle(event -> event.setCancelled(true))
+                    .post(GSG_PRINTER);
+        } else {
+            EventPost.of(BlockBreakEvent.class)
+                    .filter(EventFilters.getIgnoreCancelled())
+                    .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
+                    .filter(event -> BANNED_INTERACTABLES.contains(event.getBlock().getType()))
                     .handle(event -> {
-                        if (event instanceof Cancellable) {
-                            event.getPlayer().sendMessage(PrinterMessages.YOU_CANT_DO_THIS.toString());
-                            ((Cancellable) event).setCancelled(true);
+                        if (BANNED_INTERACTABLES.contains(event.getBlock().getType()) || event.getBlock().getY() < 1) {
+                            event.setCancelled(true);
                         }
                     }).post(GSG_PRINTER);
         }
     }
 
-    private void enablePrinter(Player player, boolean notify) {
+    public void enablePrinter(Player player, boolean notify) {
+        player.performCommand("f fly y");
         printingPlayers.add(player.getUniqueId());
         player.setGameMode(GameMode.CREATIVE);
-        player.setFlying(false);
-        player.setAllowFlight(false);
-        player.performCommand("f fly y");
         player.closeInventory();
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
@@ -263,28 +293,6 @@ public class UnitPrinter extends Unit {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ncp exempt " + player.getName() + " blockplace");
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ncp exempt " + player.getName() + " blockinteract");
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ncp exempt " + player.getName() + " moving_morepackets");
-        }
-    }
-
-    private void disablePrinter(Player player, boolean notify) {
-        disablePrinter(player, notify, true);
-    }
-
-    private void disablePrinter(Player player, boolean notify, boolean nofall) {
-        printingPlayers.remove(player.getUniqueId());
-        player.setGameMode(GameMode.SURVIVAL);
-        player.performCommand("f fly n");
-        player.getInventory().clear();
-        player.getInventory().setArmorContents(null);
-        if (nofall) {
-            player.setMetadata("nofalldamage", new FixedMetadataValue(GSG_PRINTER, true));
-            GSG_PRINTER.getServer().getScheduler().runTaskLater(GSG_PRINTER, () -> player.removeMetadata("nofalldamage", GSG_PRINTER), 200L);
-        }
-        if (notify) {
-            player.sendMessage(PrinterMessages.PRINTER_DISABLE.toString());
-        }
-        if (useNcp) {
-            GSG_PRINTER.getServer().dispatchCommand(GSG_PRINTER.getServer().getConsoleSender(), "ncp unexempt " + player.getName());
         }
     }
 
@@ -302,5 +310,43 @@ public class UnitPrinter extends Unit {
         }
         GSG_PRINTER.getServer().getScheduler().runTaskAsynchronously(GSG_PRINTER, () -> Module.getEconomy().withdrawPlayer(player, price));
         return true;
+    }
+
+    public void disablePrinter(Player player, boolean notify) {
+        disablePrinter(player, notify, true);
+    }
+
+    public void disablePrinter(Player player, boolean notify, boolean nofall) {
+        printingPlayers.remove(player.getUniqueId());
+        player.performCommand("f fly n");
+        player.setGameMode(GameMode.SURVIVAL);
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(null);
+        if (nofall) {
+            player.setMetadata("nofalldamage", new FixedMetadataValue(GSG_PRINTER, true));
+            GSG_PRINTER.getServer().getScheduler().runTaskLater(GSG_PRINTER, () -> player.removeMetadata("nofalldamage", GSG_PRINTER), 200L);
+        }
+        if (notify) {
+            player.sendMessage(PrinterMessages.PRINTER_DISABLE.toString());
+        }
+        if (useNcp) {
+            GSG_PRINTER.getServer().dispatchCommand(GSG_PRINTER.getServer().getConsoleSender(), "ncp unexempt " + player.getName());
+        }
+    }
+
+    public boolean isUseNcp() {
+        return useNcp;
+    }
+
+    public HashSet<String> getAllowedCommands() {
+        return allowedCommands;
+    }
+
+    public HashSet<String> getBlacklistedKeywords() {
+        return blacklistedKeywords;
+    }
+
+    public Set<UUID> getPrintingPlayers() {
+        return printingPlayers;
     }
 }

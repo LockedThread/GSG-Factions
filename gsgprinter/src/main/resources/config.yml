@@ -1,7 +1,37 @@
 enable-combattagplus-integration: true
+#Allows the breaking of blocks in printer
+enable-blockbreak: true
+#Auto excludes them from printer related checks for no cheat plus.
 use-ncp: true
+#Can be config or essentials.
 sell-integration: 'config'
-allowed-commands: ["/printer", "/f ", "/faction", "/warp", "/spawn", "/tp", "/m ", "/msg","/r ", "/reply", "/whisper", "/w ", "/t ", "/tell", "/mute", "/warn", "/punish", "/ban", "/history", "/dupeip","/staffchat", "/bal"]
+#Commands allowed
+allowed-commands:
+  - '/printer'
+  - '/f '
+  - '/faction'
+  - '/warp'
+  - '/spawn'
+  - '/tp'
+  - '/m '
+  - '/msg'
+  - '/r '
+  - '/reply'
+  - '/whisper'
+  - '/w '
+  - '/t '
+  - '/tell'
+  - '/mute'
+  - '/warn'
+  - '/punish'
+  - '/ban'
+  - '/history'
+  - '/dupeip'
+  - '/staffchat'
+  - '/bal'
+  - '/f fly y'
+  - '/f fly n'
+#Keywords banned from running in commands
 blacklisted-keywords:
   - 'vault'
   - 'chest'

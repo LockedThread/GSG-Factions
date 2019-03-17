@@ -11,7 +11,8 @@ public enum PrinterMessages {
     YOU_DONT_HAVE_ENOUGH_MONEY("&cYou don't have enough money to place a {material}"),
     PRINTER_ENABLE("&aYou have enabled PrinterMode!"),
     PRINTER_DISABLE("&cYou have disabled PrinterMode!"),
-    YOU_CANT_DO_THIS("&cYou can't do this while printing!"), YOU_ARE_FACTIONLESS("&cYou can't enable printer whilst being factionless!");
+    YOU_CANT_DO_THIS("&cYou can't do this while printing!"),
+    YOU_ARE_FACTIONLESS("&cYou can't enable printer whilst being factionless!");
 
     private String message;
 

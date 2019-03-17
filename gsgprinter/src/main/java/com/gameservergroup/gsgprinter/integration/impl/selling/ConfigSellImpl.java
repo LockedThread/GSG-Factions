@@ -26,7 +26,7 @@ public class ConfigSellImpl implements SellIntegration {
                 this.prices = new EnumMap<>(Material.class);
                 this.yamlConfiguration = YamlConfiguration.loadConfiguration(file);
                 for (Material material : Material.values()) {
-                    if (material.isBlock() && !UnitPrinter.BANNED_INTERACTABLES.contains(material)) {
+                    if (material.isBlock() && !UnitPrinter.getBannedInteractables().contains(material)) {
                         yamlConfiguration.set(material.name().toLowerCase().replace("_", "-"), 1.0);
                         prices.put(material, 0.0);
                     }
