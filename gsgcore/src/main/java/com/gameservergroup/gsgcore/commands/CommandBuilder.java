@@ -17,7 +17,6 @@ public class CommandBuilder<T extends CommandSender> {
     private HashSet<Predicate<ICommandHandler<? extends CommandSender>>> predicates;
     private CommandPost commandPost;
     private FunctionalCommandHandler<T> functionalCommandHandler;
-    private String permission;
 
     private CommandBuilder(HashSet<Predicate<ICommandHandler<? extends CommandSender>>> predicates, CommandPost commandPost, FunctionalCommandHandler<T> functionalCommandHandler) {
         this.predicates = predicates;
@@ -31,7 +30,13 @@ public class CommandBuilder<T extends CommandSender> {
     }
 
     public CommandBuilder<T> assertPermission(String permission) {
-        this.permission = permission;
+        filter(iCommandHandler -> {
+            if (iCommandHandler.getSender().hasPermission(permission)) {
+                return true;
+            }
+            iCommandHandler.reply("&cYou don't have permission to execute this command!");
+            return false;
+        });
         return this;
     }
 
@@ -86,7 +91,4 @@ public class CommandBuilder<T extends CommandSender> {
         return functionalCommandHandler;
     }
 
-    public String getPermission() {
-        return permission;
-    }
 }
