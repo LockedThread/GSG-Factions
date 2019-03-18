@@ -18,7 +18,7 @@ public class GenerationVertical extends Generation {
     @Override
     public boolean generate() {
         final Block relative = getCurrentBlockPosition().getRelative(direction.getBlockFaces()[0]);
-        if (!relative.getChunk().isLoaded()) {
+        if (!relative.getWorld().isChunkLoaded(relative.getX() >> 4, relative.getZ() >> 4)) {
             GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), relative.getChunk()::load);
         }
         if (getLength() == 0) {
@@ -33,17 +33,19 @@ public class GenerationVertical extends Generation {
         if (relative.getType() != Material.AIR && !getGen().isPatch()) {
             return false;
         }
-        if (getGen().isPatch() && (relative.getType() != Material.WATER ||
-                relative.getType() != Material.STATIONARY_WATER ||
-                relative.getType() != Material.LAVA ||
-                relative.getType() != Material.COBBLESTONE ||
-                relative.getType() != Material.OBSIDIAN ||
-                relative.getType() != Material.AIR)) {
+        if (getGen().isPatch() && relative.getType() != Material.WATER &&
+                relative.getType() != Material.STATIONARY_WATER &&
+                relative.getType() != Material.LAVA &&
+                relative.getType() != Material.STATIONARY_LAVA &&
+                relative.getType() != Material.OBSIDIAN &&
+                relative.getType() != Material.SAND &&
+                relative.getType() != Material.GRAVEL &&
+                relative.getType() != Material.AIR &&
+                relative.getType() != Material.COBBLESTONE) {
             return false;
         }
-
         setLength(getLength() - 1);
-        GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getGen().getMaterial().getId(), (byte) 0, false));
+        GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getGen().getMaterial().getId(), (byte) 0, relative.isLiquid()));
         setCurrentBlockPosition(relative);
         return true;
     }
