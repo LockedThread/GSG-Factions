@@ -22,8 +22,8 @@ public class JsonFile<T> {
         this.objectMapper = objectMapper;
     }
 
-    public JsonFile(File directory, String fileName, TypeReference<T> typeToken) {
-        this(directory, fileName, typeToken, GSGCore.getInstance().getJsonObjectMapper());
+    public JsonFile(File directory, String fileName, TypeReference<T> typeReference) {
+        this(directory, fileName, typeReference, GSGCore.getInstance().getJsonObjectMapper());
     }
 
     public void save(T t) {
