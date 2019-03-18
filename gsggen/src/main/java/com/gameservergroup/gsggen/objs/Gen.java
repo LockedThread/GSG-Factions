@@ -4,6 +4,7 @@ import com.gameservergroup.gsgcore.enums.Direction;
 import com.gameservergroup.gsgcore.items.CustomItem;
 import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.menus.MenuItem;
+import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgcore.utils.Text;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.generation.Generation;
@@ -43,6 +44,13 @@ public class Gen {
         if (isBucket()) {
             customItem.setInteractEventConsumer(event -> {
                 if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    if (Module.getEconomy().has(event.getPlayer(), price)) {
+                        Module.getEconomy().withdrawPlayer(event.getPlayer(), price);
+                    } else {
+                        event.getPlayer().sendMessage(Text.toColor("&cYou don't have enough money to place this!"));
+                        event.setCancelled(true);
+                        return;
+                    }
                     Block relative = event.getClickedBlock().getRelative(event.getBlockFace());
                     event.setCancelled(true);
                     relative.setType(getMaterial());
@@ -53,6 +61,13 @@ public class Gen {
         } else {
             customItem.setPlaceEventConsumer(event -> {
                 event.getPlayer().setItemInHand(event.getItemInHand());
+                if (Module.getEconomy().has(event.getPlayer(), price)) {
+                    Module.getEconomy().withdrawPlayer(event.getPlayer(), price);
+                } else {
+                    event.getPlayer().sendMessage(Text.toColor("&cYou don't have enough money to place this!"));
+                    event.setCancelled(true);
+                    return;
+                }
                 getGeneration(event.getBlockPlaced(), direction == Direction.HORIZONTAL ? event.getBlockAgainst().getFace(event.getBlockPlaced()) : direction.getBlockFaces()[0]).enable();
             });
         }

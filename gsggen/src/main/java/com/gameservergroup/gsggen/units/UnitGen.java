@@ -56,7 +56,6 @@ public class UnitGen extends Unit {
             }
             genHashMap.put(genKey, length <= 0 ? new Gen(section, direction, price, patch, material) : new Gen(section, direction, price, patch, length, material));
         }
-
         CommandPost.of()
                 .build()
                 .assertPlayer()
