@@ -19,7 +19,6 @@ public class CmdCorner extends FCommand {
         this.aliases.add("corner");
 
         this.permission = Permission.CLAIM_RADIUS.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

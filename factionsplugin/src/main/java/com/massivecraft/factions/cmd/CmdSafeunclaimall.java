@@ -19,7 +19,6 @@ public class CmdSafeunclaimall extends FCommand {
         this.optionalArgs.put("world", "all");
 
         this.permission = Permission.MANAGE_SAFE_ZONE.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;

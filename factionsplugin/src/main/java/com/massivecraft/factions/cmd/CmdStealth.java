@@ -15,7 +15,6 @@ public class CmdStealth extends FCommand {
         this.optionalArgs.put("on/off", "flip");
 
         this.permission = Permission.STEALTH.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = true;
         senderMustBeMember = true;
@@ -37,7 +36,7 @@ public class CmdStealth extends FCommand {
             fme.setStealth(false);
             fme.sendMessage(ChatColor.YELLOW + "Faction stealth " + ChatColor.LIGHT_PURPLE + "disabled");
         } else {
-            if (FlightDisableUtil.enemiesNearby(fme, P.p.getConfig().getInt("f-fly.enemy-radius"))) {
+            if (FlightDisableUtil.enemiesNearby(fme, P.p.getConfig().getInt("f-impl.enemy-radius"))) {
                 msg("&cYou can not do that while around enemies.");
             } else {
                 fme.setStealth(true);

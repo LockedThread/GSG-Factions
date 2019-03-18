@@ -21,7 +21,6 @@ public class CmdInvite extends FCommand {
         //this.optionalArgs.put("", "");
 
         this.permission = Permission.INVITE.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

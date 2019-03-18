@@ -18,7 +18,6 @@ public class CmdClaimAt extends FCommand {
         this.requiredArgs.add("z");
 
         this.permission = Permission.CLAIMAT.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = true;

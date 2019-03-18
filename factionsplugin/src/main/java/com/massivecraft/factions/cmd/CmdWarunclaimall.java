@@ -19,7 +19,6 @@ public class CmdWarunclaimall extends FCommand {
         this.optionalArgs.put("world", "all");
 
         this.permission = Permission.MANAGE_WAR_ZONE.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;

@@ -27,7 +27,6 @@ public class CmdCreate extends FCommand {
         //this.optionalArgs.put("", "");
 
         this.permission = Permission.CREATE.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

@@ -21,7 +21,6 @@ public class CmdDisband extends FCommand {
         this.optionalArgs.put("faction tag", "yours");
 
         this.permission = Permission.DISBAND.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;
@@ -43,10 +42,8 @@ public class CmdDisband extends FCommand {
             if (!assertMinRole(Role.ADMIN)) {
                 return;
             }
-        } else {
-            if (!Permission.DISBAND_ANY.has(sender, true)) {
-                return;
-            }
+        } else if (!Permission.DISBAND_ANY.has(sender, true)) {
+            return;
         }
 
         if (!faction.isNormal()) {
@@ -68,7 +65,7 @@ public class CmdDisband extends FCommand {
         for (FPlayer fplayer : faction.getFPlayers()) {
             Bukkit.getServer().getPluginManager().callEvent(new FPlayerLeaveEvent(fplayer, faction, FPlayerLeaveEvent.PlayerLeaveReason.DISBAND));
 
-            // Remove faction fly for all players in this Faction
+            // Remove faction impl for all players in this Faction
             fplayer.setFFlying(false, false);
         }
 

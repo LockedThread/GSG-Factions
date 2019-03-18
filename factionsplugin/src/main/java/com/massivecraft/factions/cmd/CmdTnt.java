@@ -29,7 +29,6 @@ public class CmdTnt extends FCommand {
         this.optionalArgs.put("radius", "");
 
         this.permission = Permission.TNT.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = true;

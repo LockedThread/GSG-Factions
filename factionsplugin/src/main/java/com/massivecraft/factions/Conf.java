@@ -383,7 +383,7 @@ public class Conf {
     }
 
     public static void load() {
-        P.p.persist.loadOrSaveDefault(i, com.massivecraft.factions.Conf.class, "conf");
+        P.p.persist.loadOrSaveDefault(i, Conf.class, "conf");
     }
 
     public static void save() {

@@ -27,7 +27,6 @@ public class CmdConfig extends FCommand {
         this.errorOnToManyArgs = false;
 
         this.permission = Permission.CONFIG.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;

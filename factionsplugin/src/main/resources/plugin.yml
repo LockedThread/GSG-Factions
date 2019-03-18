@@ -313,7 +313,7 @@ permissions:
   factions.ban:
     description: Ban players from Factions
   factions.fly:
-    description: Allow use of /f fly
+    description: Allow use of /f impl
   factions.coleader:
     description: Allow use of /f coleader <target>
   factions.near:

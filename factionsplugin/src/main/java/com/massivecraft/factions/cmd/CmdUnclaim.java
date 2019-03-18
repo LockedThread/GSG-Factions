@@ -22,7 +22,6 @@ public class CmdUnclaim extends FCommand {
         this.optionalArgs.put("faction", "your");
 
         this.permission = Permission.UNCLAIM.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

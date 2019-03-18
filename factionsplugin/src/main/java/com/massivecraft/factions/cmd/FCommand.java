@@ -17,8 +17,6 @@ public abstract class FCommand extends MCommand<P> {
 
     public SimpleDateFormat sdf = new SimpleDateFormat(TL.DATE_FORMAT.toString());
 
-    public boolean disableOnLock;
-
     public FPlayer fme;
     public Faction myFaction;
     public boolean senderMustBeMember;
@@ -31,7 +29,6 @@ public abstract class FCommand extends MCommand<P> {
         super(P.p);
 
         // Due to safety reasons it defaults to disable on lock.
-        disableOnLock = true;
 
         // The money commands must be disabled if money should not be used.
         isMoneyCommand = false;
@@ -55,11 +52,6 @@ public abstract class FCommand extends MCommand<P> {
 
     @Override
     public boolean isEnabled() {
-        if (p.getLocked() && this.disableOnLock) {
-            msg("<b>Factions was locked by an admin. Please try again later.");
-            return false;
-        }
-
         if (this.isMoneyCommand && !Conf.econEnabled) {
             msg("<b>Faction economy features are disabled on this server.");
             return false;

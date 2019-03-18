@@ -11,6 +11,14 @@
 # It's suggested that you only turn this on at the direction of a developer.
 debug: false
 
+sotw: false
+
+# Faction Locks
+lock:
+  enabled: false
+  block-place: true
+  block-break: true
+
 # Prevent find factions exploit
 # This will help limit how many times a player can be sent a map of factions.
 # Set this to the cooldown you want, in miliseconds, for a map to be shown to a player.
@@ -68,7 +76,7 @@ warp-cost:
 f-fly:
   # Enable Faction Fly:
   enable: true
-  # If a player leaves fly (out of territory or took damage)
+  # If a player leaves impl (out of territory or took damage)
   # how long should they not take fall damage for?
   # Set to 0 to have them always take fall damage.
   falldamage-cooldown: 3
@@ -211,7 +219,7 @@ warmups:
   f-home: 0
   # Delay for /f warp
   f-warp: 0
-  # Delay for /f fly
+  # Delay for /f impl
   f-fly: 0
 
 ######################################################
@@ -638,6 +646,7 @@ fwarp-gui:
       color: BLACK
       name: ' '
       lore:
+
         - ############################################################
           # +------------------------------------------------------+ #
           # |                Big List of variables                 | #

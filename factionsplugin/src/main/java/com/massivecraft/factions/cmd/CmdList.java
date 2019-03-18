@@ -30,7 +30,6 @@ public class CmdList extends FCommand {
         this.optionalArgs.put("page", "1");
 
         this.permission = Permission.LIST.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;

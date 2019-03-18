@@ -33,7 +33,7 @@ public enum PermissableAction {
     PROMOTE("promote"),
     SETWARP("setwarp"),
     WARP("warp"),
-    FLY("fly"),
+    FLY("impl"),
     GEN_BUCKET("gen Buckets"),
     CHEST("chest"),
     TAG("tag"),

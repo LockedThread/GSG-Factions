@@ -15,7 +15,6 @@ public class CmdAHome extends FCommand {
         this.requiredArgs.add("player name");
 
         this.permission = Permission.AHOME.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;

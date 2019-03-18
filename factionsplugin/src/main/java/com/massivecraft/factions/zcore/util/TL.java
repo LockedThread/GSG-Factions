@@ -33,6 +33,17 @@ public enum TL {
 
     COMMAND_INVALID_ARGUMENTS("&cUnable to execute command, invalid arguments!"),
 
+    COMMAND_SOTW_DESCRIPTION("Allows you to disable flight"),
+    COMMAND_SOTW_BROADCAST_ON("\n&cSOTW has started and factions flight is disabled!\n"),
+    COMMAND_SOTW_BROADCAST_OFF("\n&cSOTW has ended and factions flight is enabled!\n"),
+
+    LOCK_IS_ENABLED("&cFactions are currently locked, you can't place or break spawners!"),
+
+    COMMAND_LOCK_LOCKED("&eFactions is now locked"),
+    COMMAND_LOCK_UNLOCKED("&eFactions in now unlocked"),
+    COMMAND_LOCK_DESCRIPTION("Lock all write stuff. Apparently."),
+
+    SOTW_IS_ENABLED("&cYou can't enable factions flight right now!"),
 
     COMMAND_CORNER_NOT_CORNER("&cYou must be at a corner to execute this command!"),
     COMMAND_CORNER_CANT_CLAIM("&cYou are unable to claim this corner!"),
@@ -242,9 +253,9 @@ public enum TL {
     COMMAND_FLY_DESCRIPTION("Enter or leave Faction flight mode"),
     COMMAND_FLY_CHANGE("&eFaction flight &d%1$s"),
     COMMAND_FLY_DAMAGE("&eFaction flight &ddisabled&e due to entering combat"),
-    COMMAND_FLY_NO_ACCESS("&cCannot fly in territory of %1$s"),
-    COMMAND_FLY_ENEMY_NEARBY("&cCannot enable fly, enemy nearby"),
-    COMMAND_FLY_ENEMY_DISABLE("&cEnemy nearby, disabling fly"),
+    COMMAND_FLY_NO_ACCESS("&cCannot impl in territory of %1$s"),
+    COMMAND_FLY_ENEMY_NEARBY("&cCannot enable impl, enemy nearby"),
+    COMMAND_FLY_ENEMY_DISABLE("&cEnemy nearby, disabling impl"),
     COMMAND_FLY_STEALH_DESCRIPTION("Allows for flight around enemies"),
 
     COMMAND_NOTIFICATIONS_DESCRIPTION("Toggle territory chat notifications on or off"),
@@ -360,10 +371,6 @@ public enum TL {
     COMMAND_LIST_FORLIST("for listing the factions"),
     COMMAND_LIST_ONLINEFACTIONLESS("Online factionless: "),
     COMMAND_LIST_DESCRIPTION("See a list of the factions"),
-
-    COMMAND_LOCK_LOCKED("&eFactions is now locked"),
-    COMMAND_LOCK_UNLOCKED("&eFactions in now unlocked"),
-    COMMAND_LOCK_DESCRIPTION("Lock all write stuff. Apparently."),
 
     COMMAND_LOGINS_TOGGLE("&eSet login / logout notifications for Faction members to: &6%s"),
     COMMAND_LOGINS_DESCRIPTION("Toggle(?) login / logout notifications for Faction members"),

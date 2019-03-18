@@ -21,7 +21,6 @@ public class CmdStrike extends FCommand {
         this.errorOnToManyArgs = false;
 
         this.permission = Permission.STRIKE.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;

@@ -22,7 +22,6 @@ public class CmdClaim extends FCommand {
         this.optionalArgs.put("faction", "your");
 
         this.permission = Permission.CLAIM.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

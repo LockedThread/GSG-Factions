@@ -11,13 +11,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class FlightDisableUtil extends BukkitRunnable {
-
-    public static HashSet<Consumer<FPlayer>> flightDisableConsumers = new HashSet<>();
 
     public static boolean enemiesNearby(FPlayer target, int radius) {
         List<Entity> nearbyEntities = target.getPlayer().getNearbyEntities(radius, radius, radius);
@@ -53,7 +49,7 @@ public class FlightDisableUtil extends BukkitRunnable {
         for (Player player : Bukkit.getOnlinePlayers()) {
             FPlayer pilot = FPlayers.getInstance().getByPlayer(player);
             if (pilot.isFlying() && !pilot.isAdminBypassing() && !pilot.getPlayer().getGameMode().equals(GameMode.SPECTATOR) && !pilot.getPlayer().isOp()) {
-                if (enemiesNearby(pilot, P.p.getConfig().getInt("f-fly.enemy-radius"))) {
+                if (enemiesNearby(pilot, P.p.getConfig().getInt("f-impl.enemy-radius"))) {
                     pilot.msg(TL.COMMAND_FLY_ENEMY_DISABLE);
                     pilot.setFlying(false);
                 }

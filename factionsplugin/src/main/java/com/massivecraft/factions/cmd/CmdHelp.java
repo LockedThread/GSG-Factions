@@ -25,7 +25,6 @@ public class CmdHelp extends FCommand {
         this.optionalArgs.put("page", "1");
 
         this.permission = Permission.HELP.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;
@@ -134,6 +133,31 @@ public class CmdHelp extends FCommand {
         helpPages.add(pageLines);
 
         pageLines = new ArrayList<>();
+        pageLines.add(p.cmdBase.cmdCorner.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdStealth.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdAlts.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdAltJoin.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdAnnounce.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdBan.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdbanlist.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdColeader.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdVault.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdTnt.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdTntfill.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdFly.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdLock.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdLogins.getUseageTemplate(true));
+        helpPages.add(pageLines);
+
+        pageLines = new ArrayList<>();
+        pageLines.add(p.cmdBase.cmdFWarp.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdFWarpOther.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdDelFWarp.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdSetFWarp.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdSetMaxMembers.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdSetMaxWarps.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdSetVaultRows.getUseageTemplate(true));
+        pageLines.add(p.cmdBase.cmdSotw.getUseageTemplate(true));
         pageLines.add(p.cmdBase.cmdMap.getUseageTemplate(true));
         pageLines.add(p.cmdBase.cmdBoom.getUseageTemplate(true));
         pageLines.add(p.cmdBase.cmdOwner.getUseageTemplate(true));

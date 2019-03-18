@@ -12,10 +12,7 @@ public class CmdToggleAllianceChat extends FCommand {
         this.aliases.add("togglealliancechat");
         this.aliases.add("ac");
 
-        this.disableOnLock = false;
-
         this.permission = Permission.TOGGLE_ALLIANCE_CHAT.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = true;
         senderMustBeMember = true;

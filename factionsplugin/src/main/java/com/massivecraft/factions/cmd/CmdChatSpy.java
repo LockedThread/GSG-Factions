@@ -13,7 +13,6 @@ public class CmdChatSpy extends FCommand {
         this.optionalArgs.put("on/off", "flip");
 
         this.permission = Permission.CHATSPY.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

@@ -22,7 +22,6 @@ public class CmdMod extends FCommand {
         //this.optionalArgs.put("", "");
 
         this.permission = Permission.MOD.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = false;
         senderMustBeMember = true;

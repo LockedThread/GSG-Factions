@@ -19,7 +19,6 @@ public class CmdDeinvite extends FCommand {
         //this.optionalArgs.put("", "");
 
         this.permission = Permission.DEINVITE.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

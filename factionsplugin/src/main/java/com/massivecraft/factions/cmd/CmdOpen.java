@@ -16,7 +16,6 @@ public class CmdOpen extends FCommand {
         this.optionalArgs.put("yes/no", "flip");
 
         this.permission = Permission.OPEN.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

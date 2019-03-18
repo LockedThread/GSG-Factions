@@ -18,7 +18,6 @@ public class CmdPermanent extends FCommand {
         //this.optionalArgs.put("", "");
 
         this.permission = Permission.SET_PERMANENT.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;

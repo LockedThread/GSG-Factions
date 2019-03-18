@@ -22,7 +22,6 @@ public abstract class FRelationCommand extends FCommand {
         //this.optionalArgs.put("player name", "you");
 
         this.permission = Permission.RELATION.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

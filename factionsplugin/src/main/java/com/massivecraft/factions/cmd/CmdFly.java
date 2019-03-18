@@ -37,6 +37,10 @@ public class CmdFly extends FCommand {
     }
 
     private void toggleFlight(final boolean toggle) {
+        if (P.p.isSotw()) {
+            msg(TL.SOTW_IS_ENABLED);
+            return;
+        }
         // If false do nothing besides set
         if (!toggle) {
             fme.setFlying(false);

@@ -15,7 +15,6 @@ public class CmdTitle extends FCommand {
         this.optionalArgs.put("title", "");
 
         this.permission = Permission.TITLE.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

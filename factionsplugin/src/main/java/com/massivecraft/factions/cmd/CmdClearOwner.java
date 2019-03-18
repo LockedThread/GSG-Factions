@@ -15,7 +15,6 @@ public class CmdClearOwner extends FCommand {
         this.requiredArgs.add("player name");
 
         this.permission = Permission.OWNER.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

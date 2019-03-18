@@ -22,7 +22,6 @@ public class CmdTag extends FCommand {
         //this.optionalArgs.put("", "");
 
         this.permission = Permission.TAG.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

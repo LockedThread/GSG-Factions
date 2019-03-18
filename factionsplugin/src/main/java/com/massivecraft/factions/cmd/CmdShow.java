@@ -43,7 +43,6 @@ public class CmdShow extends FCommand {
         this.optionalArgs.put("faction tag", "yours");
 
         this.permission = Permission.SHOW.node;
-        this.disableOnLock = false;
 
         senderMustBeMember = false;
         senderMustBeModerator = false;

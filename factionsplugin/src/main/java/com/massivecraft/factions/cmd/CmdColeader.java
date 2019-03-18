@@ -21,7 +21,6 @@ public class CmdColeader extends FCommand {
         this.optionalArgs.put("player name", "name");
 
         this.permission = Permission.COLEADER.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = false;
         senderMustBeMember = true;

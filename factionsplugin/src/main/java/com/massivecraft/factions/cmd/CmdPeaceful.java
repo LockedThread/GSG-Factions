@@ -16,7 +16,6 @@ public class CmdPeaceful extends FCommand {
         //this.optionalArgs.put("", "");
 
         this.permission = Permission.SET_PEACEFUL.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;

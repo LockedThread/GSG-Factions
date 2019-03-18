@@ -17,7 +17,6 @@ public class CmdPowerBoost extends FCommand {
         this.requiredArgs.add("# or reset");
 
         this.permission = Permission.POWERBOOST.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;

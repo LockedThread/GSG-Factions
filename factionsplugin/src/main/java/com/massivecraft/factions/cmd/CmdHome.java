@@ -26,7 +26,6 @@ public class CmdHome extends FCommand {
         //this.optionalArgs.put("", "");
 
         this.permission = Permission.HOME.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = true;
         senderMustBeMember = true;

@@ -22,7 +22,6 @@ public class CmdBan extends FCommand {
         this.requiredArgs.add("target");
 
         this.permission = Permission.BAN.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

@@ -15,7 +15,6 @@ public class CmdPermanentPower extends FCommand {
         this.requiredArgs.add("power");
 
         this.permission = Permission.SET_PERMANENTPOWER.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;

@@ -1,6 +1,8 @@
 package com.massivecraft.factions;
 
 import com.earth2me.essentials.IEssentials;
+import com.gameservergroup.gsgcore.events.EventFilters;
+import com.gameservergroup.gsgcore.events.EventPost;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.massivecraft.factions.cmd.CmdAutoHelp;
@@ -16,13 +18,16 @@ import com.massivecraft.factions.zcore.MPlugin;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
+import com.massivecraft.factions.zcore.util.TL;
 import com.massivecraft.factions.zcore.util.TextUtil;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -47,8 +52,10 @@ public class P extends MPlugin {
     public CmdAutoHelp cmdAutoHelp;
     // Persistence related
     private boolean locked = false;
+    private boolean sotw = false;
+    private long factionsFlightDelay;
     private FactionsPlayerListener factionsPlayerListener;
-    private Integer AutoLeaveTask = null;
+    private Integer autoLeaveTask = null;
     private ClipPlaceholderAPIManager clipPlaceholderAPIManager;
     private boolean mvdwPlaceholderAPIManager = false;
 
@@ -131,27 +138,60 @@ public class P extends MPlugin {
         // since some other plugins execute commands directly through this command interface, provide it
         this.getCommand(this.refCommand).setExecutor(this);
 
-        if (getConfig().getBoolean("f-fly.enabled", true)) {
-            int delay = getConfig().getInt("f-fly.radius-check", 1) * 20;
-            (this.flightTask = new FlightDisableUtil()).runTaskTimer(this, 0, delay);
-            log(Level.INFO, "Enabling enemy radius check for f fly every %s seconds", delay / 20);
+        this.sotw = getConfig().getBoolean("sotw");
+
+        this.factionsFlightDelay = getConfig().getInt("f-fly.radius-check", 1) * 20;
+        if (sotw) {
+            log(Level.INFO, "Factions Flight is disabled because /f sotw is enabled!");
+        } else if (getConfig().getBoolean("f-fly.enabled", true)) {
+            (this.flightTask = new FlightDisableUtil()).runTaskTimer(this, 0, factionsFlightDelay);
+            log(Level.INFO, "Enabling enemy radius check for f fly every %s seconds", factionsFlightDelay / 20);
         }
 
         new TitleAPI();
         setupPlaceholderAPI();
         postEnable();
+        this.locked = getConfig().getBoolean("lock.enabled");
+        if (getConfig().getBoolean("lock.block-place")) {
+            EventPost.of(BlockPlaceEvent.class)
+                    .filter(EventFilters.getIgnoreCancelled())
+                    .filter(event -> !event.getPlayer().isOp())
+                    .filter(event -> locked)
+                    .filter(event -> event.getBlockPlaced().getType() == Material.MOB_SPAWNER)
+                    .handle(event -> {
+                        event.setCancelled(true);
+                        event.getPlayer().sendMessage(TL.LOCK_IS_ENABLED.toString());
+                    }).post(this);
+        }
+        if (getConfig().getBoolean("lock.block-break")) {
+            EventPost.of(BlockPlaceEvent.class)
+                    .filter(EventFilters.getIgnoreCancelled())
+                    .filter(event -> !event.getPlayer().isOp())
+                    .filter(event -> locked)
+                    .filter(event -> event.getBlockPlaced().getType() == Material.MOB_SPAWNER)
+                    .handle(event -> {
+                        event.setCancelled(true);
+                        event.getPlayer().sendMessage(TL.LOCK_IS_ENABLED.toString());
+                    }).post(this);
+        }
         this.loadSuccessful = true;
     }
 
     @Override
     public void disable() {
-// only save data if plugin actually completely loaded successfully
+        if (getConfig().getBoolean("lock.enabled") != locked) {
+            getConfig().set("lock.enabled", locked);
+        }
+        if (getConfig().getBoolean("sotw") != sotw) {
+            getConfig().set("sotw", sotw);
+        }
+        saveConfig();
         if (this.loadSuccessful) {
             Conf.save();
         }
-        if (AutoLeaveTask != null) {
-            this.getServer().getScheduler().cancelTask(AutoLeaveTask);
-            AutoLeaveTask = null;
+        if (autoLeaveTask != null) {
+            this.getServer().getScheduler().cancelTask(autoLeaveTask);
+            autoLeaveTask = null;
         }
         super.disable();
     }
@@ -204,16 +244,16 @@ public class P extends MPlugin {
     }
 
     public void startAutoLeaveTask(boolean restartIfRunning) {
-        if (AutoLeaveTask != null) {
+        if (autoLeaveTask != null) {
             if (!restartIfRunning) {
                 return;
             }
-            this.getServer().getScheduler().cancelTask(AutoLeaveTask);
+            this.getServer().getScheduler().cancelTask(autoLeaveTask);
         }
 
         if (Conf.autoLeaveRoutineRunsEveryXMinutes > 0.0) {
             long ticks = (long) (20 * 60 * Conf.autoLeaveRoutineRunsEveryXMinutes);
-            AutoLeaveTask = getServer().getScheduler().scheduleSyncRepeatingTask(this, new AutoLeaveTask(), ticks, ticks);
+            autoLeaveTask = getServer().getScheduler().scheduleSyncRepeatingTask(this, new AutoLeaveTask(), ticks, ticks);
         }
     }
 
@@ -381,5 +421,17 @@ public class P extends MPlugin {
 
     public FactionsPlayerListener getFactionsPlayerListener() {
         return factionsPlayerListener;
+    }
+
+    public boolean isSotw() {
+        return sotw;
+    }
+
+    public void setSotw(boolean sotw) {
+        this.sotw = sotw;
+    }
+
+    public long getFactionsFlightDelay() {
+        return factionsFlightDelay;
     }
 }

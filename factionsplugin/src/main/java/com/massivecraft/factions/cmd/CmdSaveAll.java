@@ -18,7 +18,6 @@ public class CmdSaveAll extends FCommand {
         //this.optionalArgs.put("", "");
 
         this.permission = Permission.SAVE.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;

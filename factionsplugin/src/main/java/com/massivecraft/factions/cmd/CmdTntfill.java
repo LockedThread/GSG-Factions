@@ -30,7 +30,6 @@ public class CmdTntfill extends FCommand {
         this.requiredArgs.add("radius");
 
         this.permission = Permission.TNTFILL.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = true;

@@ -22,7 +22,6 @@ public class CmdBanlist extends FCommand {
         this.optionalArgs.put("faction", "faction");
 
         this.permission = Permission.BAN.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

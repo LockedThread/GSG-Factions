@@ -96,7 +96,7 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
                 return fPlayer.hasFaction() ? fPlayer.getRole().getPrefix() : "";
             // Then Faction stuff
             case "faction_chat_prefix":
-                return fPlayer.hasFaction() ? Text.toColor("&8[" + PlaceholderAPI.setPlaceholders(player, "%rel_factionsuuid_relation_color%") + faction.getTag() + "&8] ") : "";
+                return fPlayer.hasFaction() ? Text.toColor("&8[" + PlaceholderAPI.setPlaceholders(player, "%rel_factionsuuid_relation_color%") + fPlayer.getRole().getPrefix() + faction.getTag() + "&8] ") : "";
             case "faction_name":
                 return fPlayer.hasFaction() ? faction.getTag() : "";
             case "faction_power":

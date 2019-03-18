@@ -283,12 +283,7 @@ public abstract class MPlugin extends Module {
                     }
 
                     if (async) {
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-                            @Override
-                            public void run() {
-                                command.execute(sender, args);
-                            }
-                        });
+                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> command.execute(sender, args));
                     } else {
                         command.execute(sender, args);
                     }

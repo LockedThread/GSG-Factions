@@ -75,7 +75,7 @@ public class FCmdRoot extends FCommand {
     public CmdSetDefaultRole cmdSetDefaultRole = new CmdSetDefaultRole();
     public CmdMapHeight cmdMapHeight = new CmdMapHeight();
     public CmdClaimAt cmdClaimAt = new CmdClaimAt();
-    public CmdBan cmdban = new CmdBan();
+    public CmdBan cmdBan = new CmdBan();
     public CmdUnban cmdUnban = new CmdUnban();
     public CmdBanlist cmdbanlist = new CmdBanlist();
     public CmdColeader cmdColeader = new CmdColeader();
@@ -96,7 +96,9 @@ public class FCmdRoot extends FCommand {
     public CmdCorner cmdCorner = new CmdCorner();
     public CmdPayPal cmdPayPal = new CmdPayPal();
     public CmdSetPayPal cmdSetPayPal = new CmdSetPayPal();
-
+    public CmdLock cmdLock = new CmdLock();
+    public CmdVault cmdVault = new CmdVault();
+    public CmdSotw cmdSotw = new CmdSotw();
 
     public FCmdRoot() {
         super();
@@ -111,8 +113,6 @@ public class FCmdRoot extends FCommand {
         senderMustBeMember = false;
         senderMustBeModerator = false;
         senderMustBeAdmin = false;
-
-        this.disableOnLock = false;
 
         this.setHelpShort("The faction base command");
         this.helpLong.add(p.txt.parseTags("<i>This command contains all faction stuff."));
@@ -184,7 +184,7 @@ public class FCmdRoot extends FCommand {
         this.addSubCommand(this.cmdSetDefaultRole);
         this.addSubCommand(this.cmdMapHeight);
         this.addSubCommand(this.cmdClaimAt);
-        this.addSubCommand(this.cmdban);
+        this.addSubCommand(this.cmdBan);
         this.addSubCommand(this.cmdUnban);
         this.addSubCommand(this.cmdbanlist);
         this.addSubCommand(this.cmdColeader);
@@ -204,8 +204,9 @@ public class FCmdRoot extends FCommand {
         this.addSubCommand(this.cmdCorner);
         this.addSubCommand(this.cmdPayPal);
         this.addSubCommand(this.cmdSetPayPal);
-        this.addSubCommand(new CmdVault());
-
+        this.addSubCommand(this.cmdVault);
+        this.addSubCommand(this.cmdLock);
+        this.addSubCommand(this.cmdSotw);
 
         if (P.p.getConfig().getBoolean("f-fly.enable", false)) {
             this.addSubCommand(this.cmdFly);

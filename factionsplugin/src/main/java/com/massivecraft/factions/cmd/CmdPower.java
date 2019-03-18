@@ -16,7 +16,6 @@ public class CmdPower extends FCommand {
         this.optionalArgs.put("player name", "you");
 
         this.permission = Permission.POWER.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;

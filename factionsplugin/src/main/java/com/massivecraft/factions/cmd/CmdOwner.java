@@ -19,7 +19,6 @@ public class CmdOwner extends FCommand {
         this.optionalArgs.put("player name", "you");
 
         this.permission = Permission.OWNER.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

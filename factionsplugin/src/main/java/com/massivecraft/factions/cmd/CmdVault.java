@@ -10,7 +10,6 @@ public class CmdVault extends FCommand {
         this.aliases.add("chest");
 
         this.permission = Permission.VAULT.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = true;
         senderMustBeMember = true;

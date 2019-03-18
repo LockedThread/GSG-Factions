@@ -17,7 +17,6 @@ public class CmdMap extends FCommand {
         this.optionalArgs.put("on/off", "once");
 
         this.permission = Permission.MAP.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

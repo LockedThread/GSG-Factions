@@ -1,20 +1,18 @@
 package com.massivecraft.factions.cmd;
 
-import com.massivecraft.factions.P;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.zcore.util.TL;
 
+public class CmdLock extends FCommand {
 
-public class CmdVersion extends FCommand {
-
-    public CmdVersion() {
-        this.aliases.add("version");
-        this.aliases.add("ver");
+    public CmdLock() {
+        super();
+        this.aliases.add("lock");
 
         //this.requiredArgs.add("");
-        //this.optionalArgs.put("", "");
+        this.optionalArgs.put("on/off", "flip");
 
-        this.permission = Permission.VERSION.node;
+        this.permission = Permission.LOCK.node;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;
@@ -24,11 +22,12 @@ public class CmdVersion extends FCommand {
 
     @Override
     public void perform() {
-        msg(TL.COMMAND_VERSION_VERSION, P.p.getDescription().getFullName());
+        p.setLocked(this.argAsBool(0, !p.getLocked()));
+        msg(p.getLocked() ? TL.COMMAND_LOCK_LOCKED : TL.COMMAND_LOCK_UNLOCKED);
     }
 
     @Override
     public TL getUsageTranslation() {
-        return TL.COMMAND_VERSION_DESCRIPTION;
+        return TL.COMMAND_LOCK_DESCRIPTION;
     }
 }

@@ -11,7 +11,6 @@ public class CmdPayPal extends FCommand {
         this.aliases.add("paypal");
 
         this.permission = Permission.PAYPAL.node;
-        this.disableOnLock = true;
         this.optionalArgs.put("faction", "you");
 
         senderMustBePlayer = true;

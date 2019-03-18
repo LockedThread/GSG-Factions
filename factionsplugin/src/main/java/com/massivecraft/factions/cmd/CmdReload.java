@@ -12,7 +12,6 @@ public class CmdReload extends FCommand {
         this.aliases.add("reload");
 
         this.permission = Permission.RELOAD.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = false;
         senderMustBeMember = false;

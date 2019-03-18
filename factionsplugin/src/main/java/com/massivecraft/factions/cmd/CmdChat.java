@@ -17,7 +17,6 @@ public class CmdChat extends FCommand {
         this.optionalArgs.put("mode", "next");
 
         this.permission = Permission.CHAT.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = true;
         senderMustBeMember = true;

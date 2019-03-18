@@ -11,7 +11,6 @@ public class CmdSetPayPal extends FCommand {
         this.aliases.add("setpaypal");
 
         this.permission = Permission.SET_PAYPAL.node;
-        this.disableOnLock = true;
 
         this.optionalArgs.put("faction", "you");
         this.requiredArgs.add("email");

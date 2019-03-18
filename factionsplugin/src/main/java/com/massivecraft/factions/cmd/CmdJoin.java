@@ -16,7 +16,6 @@ public class CmdJoin extends FCommand {
         this.optionalArgs.put("player", "you");
 
         this.permission = Permission.JOIN.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

@@ -17,7 +17,6 @@ public class CmdAltJoin extends FCommand {
         this.optionalArgs.put("player", "you");
 
         this.permission = Permission.ALTS_JOIN.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

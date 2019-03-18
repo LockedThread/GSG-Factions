@@ -13,7 +13,6 @@ public class CmdLeave extends FCommand {
         //this.optionalArgs.put("", "");
 
         this.permission = Permission.LEAVE.node;
-        this.disableOnLock = true;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

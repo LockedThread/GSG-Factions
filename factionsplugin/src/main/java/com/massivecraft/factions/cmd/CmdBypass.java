@@ -14,7 +14,6 @@ public class CmdBypass extends FCommand {
         this.optionalArgs.put("on/off", "flip");
 
         this.permission = Permission.BYPASS.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;

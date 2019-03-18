@@ -24,7 +24,6 @@ public class CmdKick extends FCommand {
         //this.optionalArgs.put("", "");
 
         this.permission = Permission.KICK.node;
-        this.disableOnLock = false;
 
         senderMustBePlayer = true;
         senderMustBeMember = false;
