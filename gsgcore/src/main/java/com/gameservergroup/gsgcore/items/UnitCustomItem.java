@@ -6,6 +6,7 @@ import com.gameservergroup.gsgcore.events.EventPost;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.google.common.base.Joiner;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -55,7 +56,7 @@ public class UnitCustomItem extends Unit {
                     }
                 }).post(GSG_CORE, "customitem", "customitems");
 
-        EventPost.of(BlockBreakEvent.class)
+        EventPost.of(BlockBreakEvent.class, EventPriority.HIGH)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(EventFilters.getIgnoreHandNull())
                 .handle(event -> {
@@ -65,7 +66,7 @@ public class UnitCustomItem extends Unit {
                     }
                 }).post(GSG_CORE);
 
-        EventPost.of(BlockPlaceEvent.class)
+        EventPost.of(BlockPlaceEvent.class, EventPriority.HIGH)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(EventFilters.getIgnoreHandNull())
                 .handle(event -> {
@@ -75,7 +76,7 @@ public class UnitCustomItem extends Unit {
                     }
                 }).post(GSG_CORE);
 
-        EventPost.of(PlayerInteractEvent.class)
+        EventPost.of(PlayerInteractEvent.class, EventPriority.HIGH)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(EventFilters.getIgnoreHandNull())
                 .handle(event -> {
