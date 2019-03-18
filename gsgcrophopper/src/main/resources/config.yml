@@ -1,0 +1,11 @@
+crophopper:
+  material: 'HOPPER'
+  name: '&d&l(!) &fCropHopper &d&l(!)'
+  lore:
+    - ''
+    - ' &dPlace this down to collect Cactus!'
+    - ''
+  enchants:
+    - 'DURABILITY:1'
+  itemflags:
+    - 'HIDE_ENCHANTS'

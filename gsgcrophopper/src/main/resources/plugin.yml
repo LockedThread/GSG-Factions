@@ -1,0 +1,4 @@
+name: GSGCropHopper
+main: com.gameservergroup.gsgprinter.GSGCropHopper
+version: 1.0
+depend: [GSGCore]
