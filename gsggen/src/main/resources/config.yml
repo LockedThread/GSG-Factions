@@ -3,6 +3,8 @@
 #Enchantments - (http://docs.codelanx.com/Bukkit/1.8/org/bukkit/enchantments/Enchantment.html)
 #Material - (http://docs.codelanx.com/Bukkit/1.8/org/bukkit/Material.html)
 #DyeColor (Colors used for glass panes, wool, and glass) - (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html)
+
+#Interval in which gens flow in ticks, 20tps = 20 ticks per second therefore around 3 gens per second by default.
 interval: 6
 enable-combattagplus-integration: true
 #May cause issues with minecraft clients, this is not fixable without causing mas amount of ItemStack instantiations.
@@ -13,15 +15,20 @@ menu:
     close-inventory-on-no-money: false
   name: '                 &e&l(*) &fGens &e&l(*)'
   size: 18
+  #Flls the background with glass panes.
   fill:
     enabled: true
     glass-pane-color: 'BLACK'
     enchanted: true
+  #These are the gen ids from below sorted by item slot number, slots start at 0 and end at the size of the inventory minus 1.
   items:
     0: 'cobblestone-up'
     9: 'obsidian-up'
     2: 'cobblestone-horizontal'
     11: 'obsidian-horizontal'
+#You may add as many gens as you'd like in here by copy pasting one consecutively onto the bottom of this configuration section.
+#The menu section is the item shown in the gui.
+#The patch setting is for patch buckets, patch buckets flow thru all blocks other than the block it's generating.
 gens:
   cobblestone-up:
     length: 256
