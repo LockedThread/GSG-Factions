@@ -58,6 +58,7 @@ public class P extends MPlugin {
     private Integer autoLeaveTask = null;
     private ClipPlaceholderAPIManager clipPlaceholderAPIManager;
     private boolean mvdwPlaceholderAPIManager = false;
+    private int defaultTntBankBalance;
 
     public P() {
         p = this;
@@ -137,6 +138,8 @@ public class P extends MPlugin {
 
         // since some other plugins execute commands directly through this command interface, provide it
         this.getCommand(this.refCommand).setExecutor(this);
+
+        this.defaultTntBankBalance = getConfig().getInt("default-tnt-bank-balance", 500000);
 
         this.sotw = getConfig().getBoolean("sotw");
 
@@ -433,5 +436,9 @@ public class P extends MPlugin {
 
     public long getFactionsFlightDelay() {
         return factionsFlightDelay;
+    }
+
+    public int getDefaultTntBankBalance() {
+        return defaultTntBankBalance;
     }
 }

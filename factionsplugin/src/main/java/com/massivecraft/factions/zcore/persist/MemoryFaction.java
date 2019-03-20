@@ -90,7 +90,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.foundedDate = System.currentTimeMillis();
         this.defaultRole = Role.NORMAL;
         this.tntBankBalance = 0;
-        this.tntBankLimit = 200000;
+        this.tntBankLimit = P.p.getDefaultTntBankBalance();
         this.tntBankOpensAfter = 0L;
         this.maxWarps = -1;
         this.maxMembers = -1;
@@ -122,7 +122,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         announcements = old.announcements;
         this.defaultRole = Role.NORMAL;
         this.tntBankBalance = 0;
-        this.tntBankLimit = 200000;
+        this.tntBankLimit = P.p.getDefaultTntBankBalance();
         this.tntBankOpensAfter = 0L;
         this.maxWarps = -1;
         this.maxMembers = -1;

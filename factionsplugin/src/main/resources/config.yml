@@ -5,6 +5,8 @@
 
 # Made with love <3
 
+default-tnt-bank-balance: 5000000
+
 # Debug
 # Turn this on if you are having issues with something and working on resolving them.
 # This will spam your console with information that is useful if you know how to read the source.

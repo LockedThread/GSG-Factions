@@ -33,6 +33,8 @@ public enum TL {
 
     COMMAND_INVALID_ARGUMENTS("&cUnable to execute command, invalid arguments!"),
 
+    COMMAND_SETMAXTNTBANKBALANCE_DESCRIPTION("Allows admins to set max tntbank balance"),
+
     COMMAND_SOTW_DESCRIPTION("Allows you to disable flight"),
     COMMAND_SOTW_BROADCAST_ON("\n&cSOTW has started and factions flight is disabled!\n"),
     COMMAND_SOTW_BROADCAST_OFF("\n&cSOTW has ended and factions flight is enabled!\n"),

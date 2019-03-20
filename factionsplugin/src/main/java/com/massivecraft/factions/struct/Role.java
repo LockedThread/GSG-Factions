@@ -55,6 +55,8 @@ public enum Role implements Permissable {
 
     public static com.massivecraft.factions.struct.Role fromString(String check) {
         switch (check.toLowerCase()) {
+            case "leader":
+            case "owner":
             case "admin":
                 return ADMIN;
             case "coleader":
