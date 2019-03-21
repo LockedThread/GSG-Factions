@@ -4,7 +4,7 @@ import com.massivecraft.factions.Faction;
 
 public interface FactionsBankIntegration {
 
-    void setTntBankBalance(Faction faction, int amount);
+    boolean setTntBankBalance(Faction faction, int amount);
 
     int getTntBankBalance(Faction faction);
 

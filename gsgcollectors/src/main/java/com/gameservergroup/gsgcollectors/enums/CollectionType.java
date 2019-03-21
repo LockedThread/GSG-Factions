@@ -2,7 +2,7 @@ package com.gameservergroup.gsgcollectors.enums;
 
 import com.gameservergroup.gsgcollectors.GSGCollectors;
 import com.gameservergroup.gsgcore.items.ItemStackBuilder;
-import org.apache.commons.lang3.StringUtils;
+import com.gameservergroup.gsgcore.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -118,12 +118,13 @@ public enum CollectionType {
         if (getMaterial() == null) {
             SpawnEgg spawnEgg = new SpawnEgg(getEntityType());
             this.itemStack = ItemStackBuilder.of(GSGCollectors.getInstance().getConfig().getConfigurationSection("menu.collection-type-format"))
-                    .consumeItemMeta(itemMeta -> itemMeta.setDisplayName(itemMeta.getDisplayName().replace("{mob}", StringUtils.capitalize(spawnEgg.getSpawnedType().name().replace("_", " ").toLowerCase()))))
-                    .setMaterial(spawnEgg.getItemType()).setData(spawnEgg.getData())
+                    .consumeItemMeta(itemMeta -> itemMeta.setDisplayName(itemMeta.getDisplayName().replace("{mob}", Utils.toTitleCasing(spawnEgg.getSpawnedType().name().replace("_", " ").toLowerCase()))))
+                    .setMaterial(spawnEgg.getItemType())
+                    .setData(spawnEgg.getData())
                     .build();
         } else {
             this.itemStack = ItemStackBuilder.of(GSGCollectors.getInstance().getConfig().getConfigurationSection("menu.collection-type-format"))
-                    .consumeItemMeta(itemMeta -> itemMeta.setDisplayName(itemMeta.getDisplayName().replace("{mob}", StringUtils.capitalize(getMaterial().name().replace("_", " ").toLowerCase()))))
+                    .consumeItemMeta(itemMeta -> itemMeta.setDisplayName(itemMeta.getDisplayName().replace("{mob}", Utils.toTitleCasing(getMaterial().name().replace("_", " ").toLowerCase()))))
                     .setMaterial(getMaterial())
                     .build();
         }

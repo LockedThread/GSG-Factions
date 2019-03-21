@@ -8,6 +8,28 @@ options:
   use-titles: true
   prevent-normal-farms: true
   save-task-delay: 300000
+sellwand-item:
+  material: 'DIAMOND_HOE'
+  name: '&e&l(!) &f&lSellWand &e&l(!)'
+  lore:
+    - ''
+    - ' &dRight click a collector to sell all of its collected inventory!'
+    - ''
+  enchants:
+    - 'DURABILITY:1'
+  itemflags:
+    - 'HIDE_ENCHANTS'
+tntwand-item:
+  material: 'WOOD_HOE'
+  name: '&c&l(!) &f&lTNTWand &c&l(!)'
+  lore:
+    - ''
+    - ' &dRight click a collector to deposit all of its tnt!'
+    - ''
+  enchants:
+    - 'DURABILITY:1'
+  itemflags:
+    - 'HIDE_ENCHANTS'
 collector-item:
   material: 'BEACON'
   name: '&d&l(!) &f&lCollector &d&l(!)'

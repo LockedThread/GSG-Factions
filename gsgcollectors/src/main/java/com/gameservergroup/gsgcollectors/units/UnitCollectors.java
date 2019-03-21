@@ -75,7 +75,7 @@ public class UnitCollectors extends Unit {
 
     @Override
     public void setup() {
-        jsonFile = new JsonFile<>(GSG_COLLECTORS.getDataFolder(), "collectors", new TypeToken<HashMap<ChunkPosition, Collector>>() {
+        this.jsonFile = new JsonFile<>(GSG_COLLECTORS.getDataFolder(), "collectors", new TypeToken<HashMap<ChunkPosition, Collector>>() {
         });
         this.collectorHashMap = jsonFile.load().orElse(new HashMap<>());
         TaskSave taskSave = new TaskSave(GSG_COLLECTORS.getConfig().getLong("options.save-task-delay"));
@@ -83,7 +83,7 @@ public class UnitCollectors extends Unit {
         hookDisable(new CallBack() {
             @Override
             public void call() {
-                taskSave.interrupt();
+                taskSave.stop();
                 jsonFile.save(collectorHashMap);
             }
         });
@@ -97,20 +97,23 @@ public class UnitCollectors extends Unit {
         this.preventNormalFarms = GSG_COLLECTORS.getConfig().getBoolean("options.prevent-normal-farms", true);
         if (this.fillMenu = GSG_COLLECTORS.getConfig().getBoolean("menu.fill.enabled")) {
             if (GSG_COLLECTORS.getConfig().getBoolean("menu.fill.enchanted")) {
-                this.fillItemStack = ItemStackBuilder.of(Material.STAINED_GLASS_PANE).setDyeColor(DyeColor.valueOf(GSG_COLLECTORS.getConfig().getString("menu.fill.glass-pane-color")))
+                this.fillItemStack = ItemStackBuilder.of(Material.STAINED_GLASS_PANE)
+                        .setDyeColor(DyeColor.valueOf(GSG_COLLECTORS.getConfig().getString("menu.fill.glass-pane-color")))
                         .setDisplayName(" ")
                         .addItemFlags(ItemFlag.HIDE_ENCHANTS)
                         .addEnchant(Enchantment.DURABILITY, 1)
                         .build();
             } else {
-                this.fillItemStack = ItemStackBuilder.of(Material.STAINED_GLASS_PANE).setDyeColor(DyeColor.valueOf(GSG_COLLECTORS.getConfig().getString("menu.fill.glass-pane-color")))
+                this.fillItemStack = ItemStackBuilder.of(Material.STAINED_GLASS_PANE)
+                        .setDyeColor(DyeColor.valueOf(GSG_COLLECTORS.getConfig().getString("menu.fill.glass-pane-color")))
                         .setDisplayName(" ")
                         .build();
             }
         }
 
         this.collectorItem = CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("collector-item")).setPlaceEventConsumer(event -> {
-            if (getCollector(event.getBlockPlaced().getLocation()) == null) {
+            Collector collector = getCollector(event.getBlockPlaced().getLocation());
+            if (collector == null) {
                 createCollector(event.getBlockPlaced().getLocation());
                 if (!CollectorMessages.TITLE_COLLECTOR_PLACE.toString().isEmpty()) {
                     if (useTitles) {
@@ -120,8 +123,27 @@ public class UnitCollectors extends Unit {
                     }
                 }
             } else {
-                event.getPlayer().sendMessage(CollectorMessages.ALREADY_ONE_HERE.toString());
-                event.setCancelled(true);
+                collector.getBlockPosition().getBlock().setType(Material.AIR);
+                collector.setBlockPosition(BlockPosition.of(event.getBlockPlaced()));
+                event.getPlayer().sendMessage(CollectorMessages.UPDATED_COLLECTOR_BLOCKPOSITION.toString());
+            }
+        });
+        CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                Collector collector = getCollector(event.getClickedBlock().getLocation());
+                if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
+                    collector.sellAll(event.getPlayer());
+                    event.setCancelled(true);
+                }
+            }
+        });
+        CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("tntwand-item")).setInteractEventConsumer(event -> {
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                Collector collector = getCollector(event.getClickedBlock().getLocation());
+                if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
+                    collector.depositTnt(event.getPlayer());
+                    event.setCancelled(true);
+                }
             }
         });
         if (GSG_COLLECTORS.getServer().getPluginManager().getPlugin("Factions") != null) {
@@ -169,7 +191,7 @@ public class UnitCollectors extends Unit {
                     }
                 }).post(GSG_COLLECTORS);
 
-        EventPost.of(PlayerInteractEvent.class, EventPriority.LOWEST)
+        EventPost.of(PlayerInteractEvent.class, EventPriority.HIGHEST)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> event.getClickedBlock() != null)
                 .handle(event -> {
@@ -208,16 +230,15 @@ public class UnitCollectors extends Unit {
         if (preventNormalFarms) {
             EventPost.of(SpawnerPreSpawnEvent.class)
                     .filter(EventFilters.getIgnoreCancelled())
+                    .filter(event -> collectionTypes.contains(CollectionType.fromEntityType(event.getSpawnedType())))
                     .handle(event -> {
                         Collector collector = collectorHashMap.get(ChunkPosition.of(event.getLocation().getChunk()));
                         if (collector != null) {
-                            if (collectionTypes.contains(CollectionType.fromEntityType(event.getSpawnedType()))) {
-                                event.setCancelled(true);
-                                if (event.getSpawnedType() == EntityType.CREEPER) {
-                                    collector.addAmount(CollectionType.TNT, (int) CollectionType.TNT.getPrice());
-                                } else {
-                                    collector.addAmount(CollectionType.fromEntityType(event.getSpawnedType()), 1);
-                                }
+                            event.setCancelled(true);
+                            if (event.getSpawnedType() == EntityType.CREEPER) {
+                                collector.addAmount(CollectionType.TNT, (int) CollectionType.TNT.getPrice());
+                            } else {
+                                collector.addAmount(CollectionType.fromEntityType(event.getSpawnedType()), 1);
                             }
                         } else {
                             event.setCancelled(true);
@@ -252,7 +273,6 @@ public class UnitCollectors extends Unit {
                         }
                     }).post(GSG_COLLECTORS);
         }
-
 
     }
 

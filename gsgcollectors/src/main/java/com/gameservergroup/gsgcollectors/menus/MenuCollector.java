@@ -49,7 +49,9 @@ public class MenuCollector extends Menu {
                                 FactionsBankIntegration factionsBankIntegration = GSGCollectors.getInstance().getUnitCollectors().getFactionsBankIntegration();
                                 if (factionsBankIntegration != null) {
                                     Faction faction = FPlayers.getInstance().getByPlayer(player).getFaction();
-                                    factionsBankIntegration.setTntBankBalance(faction, factionsBankIntegration.getTntBankBalance(faction) + amountToBeSubtracted);
+                                    if (!factionsBankIntegration.setTntBankBalance(faction, factionsBankIntegration.getTntBankBalance(faction) + amountToBeSubtracted)) {
+                                        return;
+                                    }
                                 } else if (player.getInventory().firstEmpty() == -1) {
                                     player.getWorld().dropItemNaturally(player.getLocation(), new ItemStack(Material.TNT, amountToBeSubtracted));
                                 } else {

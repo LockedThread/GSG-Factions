@@ -6,8 +6,8 @@ import com.massivecraft.factions.Faction;
 public class LockedThreadFactionsBankImpl implements FactionsBankIntegration {
 
     @Override
-    public void setTntBankBalance(Faction faction, int amount) {
-        faction.setTntBankBalance(amount);
+    public boolean setTntBankBalance(Faction faction, int amount) {
+        return faction.setTntBankBalance(amount);
     }
 
     @Override

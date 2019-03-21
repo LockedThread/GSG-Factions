@@ -3,6 +3,7 @@ package com.gameservergroup.gsgcollectors.obj;
 import com.gameservergroup.gsgcollectors.GSGCollectors;
 import com.gameservergroup.gsgcollectors.enums.CollectionType;
 import com.gameservergroup.gsgcollectors.enums.CollectorMessages;
+import com.gameservergroup.gsgcollectors.integration.FactionsBankIntegration;
 import com.gameservergroup.gsgcollectors.menus.MenuCollector;
 import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
@@ -14,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.github.paperspigot.Title;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 
 public class Collector {
@@ -44,13 +46,48 @@ public class Collector {
 
     public void sellAll(Player player) {
         double money = getAmounts().entrySet().stream().filter(entry -> entry.getKey() != CollectionType.TNT).mapToDouble(entry -> entry.getKey().getPrice() * entry.getValue()).sum();
-        Module.getEconomy().depositPlayer(player, money);
-        if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
-            player.sendTitle(Title.builder().title(CollectorMessages.TITLE_SELL.toString().replace("{money}", String.valueOf(money))).fadeIn(5).fadeOut(5).stay(25).build());
+        if (money > 0.0) {
+            Module.getEconomy().depositPlayer(player, money);
+            if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
+                player.sendTitle(Title.builder().title(CollectorMessages.TITLE_SELL.toString().replace("{money}", String.valueOf(money))).fadeIn(5).fadeOut(5).stay(25).build());
+            } else {
+                player.sendMessage(CollectorMessages.TITLE_SELL.toString().replace("{money}", String.valueOf(money)));
+            }
+            resetWithBlackList(CollectionType.TNT);
         } else {
-            player.sendMessage(CollectorMessages.TITLE_SELL.toString().replace("{money}", String.valueOf(money)));
+            if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
+                player.sendTitle(Title.builder().title(CollectorMessages.CANT_SELL_NOTHING.toString().replace("{money}", String.valueOf(money))).fadeIn(5).fadeOut(5).stay(25).build());
+            } else {
+                player.sendMessage(CollectorMessages.CANT_SELL_NOTHING.toString());
+            }
         }
-        getAmounts().keySet().stream().filter(collectionType -> collectionType != CollectionType.TNT).forEach(collectionType -> getAmounts().remove(collectionType));
+    }
+
+    public void resetWithBlackList(CollectionType... collectionTypes) {
+        amounts.keySet()
+                .forEach(collectionType -> Arrays.stream(collectionTypes)
+                        .filter(type -> collectionType != type)
+                        .forEach(type -> getAmounts().remove(collectionType)));
+    }
+
+    public void depositTnt(Player player) {
+        int tntAmount = getAmounts().getOrDefault(CollectionType.TNT, 0);
+        if (tntAmount > 0) {
+            Faction faction = getFaction();
+            FactionsBankIntegration factionsBankIntegration = GSGCollectors.getInstance().getUnitCollectors().getFactionsBankIntegration();
+            if (factionsBankIntegration.setTntBankBalance(faction, factionsBankIntegration.getTntBankBalance(faction) + tntAmount)) {
+                if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
+                    player.sendTitle(Title.builder().title(CollectorMessages.DEPOSITED_TNT.toString().replace("{tnt}", String.valueOf(tntAmount))).fadeIn(5).stay(25).fadeOut(5).build());
+                } else {
+                    player.sendMessage(CollectorMessages.DEPOSITED_TNT.toString().replace("{tnt}", String.valueOf(tntAmount)));
+                }
+                reset(CollectionType.TNT);
+            }
+        } else if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
+            player.sendTitle(Title.builder().title(CollectorMessages.CANT_DEPOSIT_NOTHING.toString()).fadeIn(5).stay(25).fadeOut(5).build());
+        } else {
+            player.sendMessage(CollectorMessages.CANT_DEPOSIT_NOTHING.toString());
+        }
     }
 
     public void removeAmount(CollectionType collectionType, int amount) {
@@ -81,6 +118,10 @@ public class Collector {
 
     public Chunk getChunk() {
         return blockPosition.getLocation().getChunk();
+    }
+
+    public void setBlockPosition(BlockPosition blockPosition) {
+        this.blockPosition = blockPosition;
     }
 
     public BlockPosition getBlockPosition() {
