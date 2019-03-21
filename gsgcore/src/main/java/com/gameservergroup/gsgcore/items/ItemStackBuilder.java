@@ -86,6 +86,9 @@ public class ItemStackBuilder {
                 itemStackBuilder.addEnchant(Enchantment.getByName(split[0]), Integer.parseInt(split[1]));
             }
         }
+        if (section.isSet("unbreakable") && section.isBoolean("unbreakable")) {
+            itemStackBuilder.setUnbreakable(section.getBoolean("unbreakable"));
+        }
         return itemStackBuilder;
     }
 
@@ -107,6 +110,11 @@ public class ItemStackBuilder {
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Unable to parse " + s + " as a Bukkit DyeColor", e);
         }
+    }
+
+    public ItemStackBuilder setUnbreakable(boolean b) {
+        itemStack.getItemMeta().spigot().setUnbreakable(b);
+        return this;
     }
 
     public ItemStackBuilder setAmount(int amount) {
