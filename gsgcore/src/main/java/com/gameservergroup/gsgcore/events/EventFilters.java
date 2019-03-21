@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Predicate;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "unused"})
 public class EventFilters {
 
     private static final Predicate<PlayerMoveEvent> IGNORE_SAME_CHUNK = event -> event.getFrom().getChunk().getX() != event.getTo().getChunk().getX() && event.getFrom().getChunk().getZ() != event.getTo().getChunk().getZ();
