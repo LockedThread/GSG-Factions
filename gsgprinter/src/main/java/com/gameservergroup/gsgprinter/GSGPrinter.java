@@ -64,7 +64,11 @@ public class GSGPrinter extends Module {
             return;
         }
         for (PrinterMessages printerMessages : PrinterMessages.values()) {
-            getConfig().set("messages." + printerMessages.getKey(), printerMessages.getValue());
+            if (getConfig().isSet("messages." + printerMessages.getKey())) {
+                printerMessages.setMessage(getConfig().getString("messages." + printerMessages.getKey()));
+            } else {
+                getConfig().set("messages." + printerMessages.getKey(), printerMessages.getValue());
+            }
         }
         saveConfig();
         registerUnits(unitPrinter = new UnitPrinter());
