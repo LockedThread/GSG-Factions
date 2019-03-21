@@ -15,6 +15,7 @@ public class GenMenu extends Menu {
 
     public GenMenu() {
         super(GSG_GEN.getConfig().getString("menu.name"), GSG_GEN.getConfig().getInt("menu.size"));
+        initialize();
     }
 
     @Override
