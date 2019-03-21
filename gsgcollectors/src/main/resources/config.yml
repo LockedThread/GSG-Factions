@@ -1,0 +1,75 @@
+#Role names may very based on your faction plugin.
+#Most role names are: ADMIN, COLEADER, MODERATOR, NORMAL, RECRUIT
+options:
+  is-role-restricted: true
+  at-least-role: 'COLEADER'
+  can-access-not-yours: false
+  can-edit-whilst-factionless: true
+  use-titles: true
+  prevent-normal-farms: true
+  save-task-delay: 300000
+collector-item:
+  material: 'BEACON'
+  name: '&d&l(!) &f&lCollector &d&l(!)'
+  lore:
+    - ''
+    - ' &dPlace this down to start collecting mobs, cactus, and sugarcane!'
+    - ''
+  enchants:
+    - 'DURABILITY:1'
+  itemflags:
+    - 'HIDE_ENCHANTS'
+menu:
+  #Placeholders:
+  #{faction} - the faction's name
+  name: '&e{faction} Collector'
+  size: 27
+  fill:
+    enabled: true
+    glass-pane-color: 'BLACK'
+    enchanted: true
+  collection-type-format:
+    name: '&e&l(!) &f{mob} &e&l(!)'
+    lore:
+      - '&cYou have &f{amount} &cavailable to sell'
+    enchants:
+      - 'DURABILITY:1'
+    itemflags:
+      - 'HIDE_ENCHANTS'
+collection-types:
+  iron-golem:
+    slot: 9
+    price: 200.0
+  enderman:
+    slot: 10
+    price: 20.0
+  witch:
+    slot: 11
+    price: 20.0
+  villager:
+    slot: 12
+    price: 20.0
+  cow:
+    slot: 13
+    price: 5.0
+  pig:
+    slot: 14
+    price: 5.0
+  pig-zombie:
+    slot: 15
+    price: 17.0
+  chicken:
+    slot: 16
+    price: 3.0
+  spider:
+    slot: 17
+    price: 3.0
+  cactus:
+    slot: 21
+    price: 2.0
+  tnt:
+    slot: 22
+    price: 1.0
+  sugar_cane:
+    slot: 23
+    price: 2.0
