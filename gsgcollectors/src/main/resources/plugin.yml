@@ -1,4 +1,4 @@
 name: GSGCollectors
 main: com.gameservergroup.gsgcollectors.GSGCollectors
 version: 1.0
-depend: [GSGCore]
+depend: [GSGCore, Factions]
