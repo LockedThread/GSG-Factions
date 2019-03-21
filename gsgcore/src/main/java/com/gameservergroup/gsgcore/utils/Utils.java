@@ -1,5 +1,6 @@
 package com.gameservergroup.gsgcore.utils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.WorldBorder;
@@ -11,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -29,5 +31,10 @@ public class Utils {
 
     public static void writeToFile(File file, String input) throws IOException {
         Files.write(file.toPath(), input.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static String toTitleCasing(String input) {
+        input = input.toLowerCase();
+        return !input.contains(" ") ? StringUtils.capitalize(input) : Arrays.stream(input.split(" ")).map(s -> StringUtils.capitalize(s) + " ").collect(Collectors.joining());
     }
 }
