@@ -287,6 +287,7 @@ public class UnitCollectors extends Unit {
                 location.getChunk().load();
             }
             location.getBlock().setType(Material.AIR);
+            location.getWorld().dropItemNaturally(location, getCollectorItem().getItemStack());
         }
     }
 
