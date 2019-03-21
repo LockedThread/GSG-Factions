@@ -31,6 +31,8 @@ public enum TL {
      */
     ENTERED_CORNER("&eType &6/f corner &eto claim all nearby chunks!"),
 
+    COMMAND_TNT_FULL("&cYour tnt bank is full. Please upgrade your tnt bank."),
+
     COMMAND_INVALID_ARGUMENTS("&cUnable to execute command, invalid arguments!"),
 
     COMMAND_SETMAXTNTBANKBALANCE_DESCRIPTION("Allows admins to set max tntbank balance"),
@@ -43,7 +45,7 @@ public enum TL {
 
     COMMAND_LOCK_LOCKED("&eFactions is now locked"),
     COMMAND_LOCK_UNLOCKED("&eFactions in now unlocked"),
-    COMMAND_LOCK_DESCRIPTION("Lock all write stuff. Apparently."),
+    COMMAND_LOCK_DESCRIPTION("Lock all placement of spawners."),
 
     SOTW_IS_ENABLED("&cYou can't enable factions flight right now!"),
 
@@ -112,7 +114,7 @@ public enum TL {
     COMMAND_ALTS_CANNOTFORCE("&cYou do not have permission to force alts to join a Faction"),
     COMMAND_ALTS_SYSTEMFACTION("&cAlts may only join normal factions. This is a system faction."),
 
-    COMMAND_ANNOUNCE_DESCRIPTION("Announce a message to players in faction."),
+    COMMAND_ANNOUNCE_DESCRIPTION("Announce a message to players your faction"),
 
     COMMAND_AUTOCLAIM_ENABLED("&eNow auto-claiming land for &d%1$s&e."),
     COMMAND_AUTOCLAIM_DISABLED("&eAuto-claiming of land disabled."),
@@ -375,7 +377,7 @@ public enum TL {
     COMMAND_LIST_DESCRIPTION("See a list of the factions"),
 
     COMMAND_LOGINS_TOGGLE("&eSet login / logout notifications for Faction members to: &6%s"),
-    COMMAND_LOGINS_DESCRIPTION("Toggle(?) login / logout notifications for Faction members"),
+    COMMAND_LOGINS_DESCRIPTION("Login & logout notifications for Factions"),
 
     COMMAND_MAP_TOSHOW("to show the map"),
     COMMAND_MAP_FORSHOW("for showing the map"),
@@ -561,9 +563,7 @@ public enum TL {
     COMMAND_SETMAXVAULTS_DESCRIPTION("Set max vaults for a Faction."),
     COMMAND_SETMAXVAULTS_SUCCESS("&aSet max vaults for &e%s &ato &b%d"),
 
-    COMMAND_VAULT_DESCRIPTION("/f vault <number> to open one of your Faction's vaults."),
-    COMMAND_VAULT_TOOHIGH("&cYou tried to open vault %d but your Faction only has %d vaults."),
-    COMMAND_VAULT_NOACCESS("&cYou don't have permission to access faction vault."),
+    COMMAND_VAULT_DESCRIPTION("/f vault to open one of your Faction's vaults."),
 
     COMMAND_SHOW_NOFACTION_SELF("You are not in a faction"),
     COMMAND_SHOW_NOFACTION_OTHER("That's not a faction"),

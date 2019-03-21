@@ -179,7 +179,7 @@ public interface Faction extends EconomyParticipator {
 
     public int getTntBankBalance();
 
-    public void setTntBankBalance(int tntBankBalance);
+    public boolean setTntBankBalance(int tntBankBalance);
 
     public int getTntBankLimit();
 

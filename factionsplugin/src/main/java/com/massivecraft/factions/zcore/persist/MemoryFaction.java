@@ -481,8 +481,14 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         return this.tntBankBalance;
     }
 
-    public void setTntBankBalance(int tntBankBalance) {
+    @Override
+    public boolean setTntBankBalance(int tntBankBalance) {
+        if (tntBankBalance > tntBankLimit) {
+            msg(TL.COMMAND_TNT_FULL);
+            return false;
+        }
         this.tntBankBalance = tntBankBalance;
+        return true;
     }
 
     public int getTntBankLimit() {
