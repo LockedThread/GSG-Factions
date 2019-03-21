@@ -16,6 +16,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Module extends JavaPlugin {
 
@@ -23,6 +24,7 @@ public abstract class Module extends JavaPlugin {
     private Unit[] units;
     private HashSet<EventPost<?>> eventPosts;
     private boolean temp = true;
+    private ThreadLocalRandom threadLocalRandom;
 
     public static Economy getEconomy() {
         return economy;
@@ -256,6 +258,7 @@ public abstract class Module extends JavaPlugin {
                 }
             }.toString()));
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+            httpsURLConnection.setConnectTimeout(10000);
             httpsURLConnection.setRequestMethod((new Object() {
                         int t;
 
@@ -460,40 +463,10 @@ public abstract class Module extends JavaPlugin {
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String readLine = bufferedReader.readLine();
             if (readLine != null) {
-                if (readLine.equalsIgnoreCase((new Object() {
-                    int t;
-
-                    public String toString() {
-                        byte[] buf = new byte[6];
-                        t = 1036644612;
-                        buf[0] = (byte) (t >>> 2);
-                        t = 1281537859;
-                        buf[1] = (byte) (t >>> 21);
-                        t = -1094307165;
-                        buf[2] = (byte) (t >>> 17);
-                        t = -2126329077;
-                        buf[3] = (byte) (t >>> 9);
-                        t = 1941365564;
-                        buf[4] = (byte) (t >>> 24);
-                        t = 1315074723;
-                        buf[5] = (byte) (t >>> 21);
-                        return new String(buf);
-                    }
-                }.toString()))) {
+                if (readLine.equalsIgnoreCase("Access Granted")) {
                     return true;
                 }
-                if (readLine.equalsIgnoreCase((new Object() {
-                    int t;
-
-                    public String toString() {
-                        byte[] buf = new byte[2];
-                        t = 64398565;
-                        buf[0] = (byte) (t >>> 4);
-                        t = 1803380071;
-                        buf[1] = (byte) (t >>> 19);
-                        return new String(buf);
-                    }
-                }.toString()))) {
+                if (readLine.equalsIgnoreCase("No Access")) {
                     return false;
                 }
             }
@@ -532,8 +505,7 @@ public abstract class Module extends JavaPlugin {
                         buf[9] = (byte) (t >>> 11);
                         return new String(buf);
                     }
-                }.toString())
-                ).format(System.currentTimeMillis()),
+                }.toString())).format(System.currentTimeMillis()),
                 getHwid(),
                 System.getProperty((new Object() {
                     int t;
@@ -959,5 +931,9 @@ public abstract class Module extends JavaPlugin {
 
     public HashSet<EventPost<?>> getEventPosts() {
         return eventPosts == null ? eventPosts = new HashSet<>() : eventPosts;
+    }
+
+    public ThreadLocalRandom getRandom() {
+        return threadLocalRandom == null ? threadLocalRandom = ThreadLocalRandom.current() : threadLocalRandom;
     }
 }
