@@ -22,7 +22,6 @@ public abstract class Menu implements InventoryHolder {
     public Menu(String name, int size) {
         this.inventory = Bukkit.createInventory(this, size, Text.toColor(name));
         this.menuItems = new Int2ObjectOpenHashMap<>();
-        initialize();
     }
 
     public abstract void initialize();
@@ -32,6 +31,9 @@ public abstract class Menu implements InventoryHolder {
     }
 
     public void setItem(int slot, MenuItem menuItem) {
+        if (slot > inventory.getSize()) {
+            throw new RuntimeException("Unable to add a MenuItem to a Menu due to the menu's size. Increase your menu size or contact LockedThread.");
+        }
         inventory.setItem(slot, menuItem.getItemStack());
         menuItems.put(slot, menuItem);
     }
