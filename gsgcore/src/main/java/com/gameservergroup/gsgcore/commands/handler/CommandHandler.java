@@ -35,7 +35,11 @@ public class CommandHandler<T extends CommandSender> implements ICommandHandler<
 
     @Override
     public String getRawArg(int index) {
-        return args[index];
+        try {
+            return args[index];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     @Override

@@ -4,15 +4,15 @@ import com.gameservergroup.gsgcore.exceptions.CommandParseException;
 
 import java.util.Optional;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Argument {
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<String> valueOptional;
     private int index;
 
     public Argument(int index, String value) {
         this.index = index;
-        this.valueOptional = Optional.of(value);
+        this.valueOptional = Optional.ofNullable(value);
     }
 
     public int getIndex() {
