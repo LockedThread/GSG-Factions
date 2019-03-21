@@ -119,6 +119,9 @@ permissions:
       factions.strike: true
       factions.announce: true
       factions.permissions: true
+      factions.promote: true
+  factions.promote:
+    description: Allows you to promote players in your faction
   factions.admin:
     description: hand over your admin rights
   factions.admin.any:
