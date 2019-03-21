@@ -19,6 +19,10 @@ public class ItemStackBuilder {
 
     private ItemStack itemStack;
 
+    private ItemStackBuilder() {
+        this.itemStack = new ItemStack(Material.WOOD, 1);
+    }
+
     private ItemStackBuilder(Material material) {
         this.itemStack = new ItemStack(material, 1);
     }
@@ -31,8 +35,16 @@ public class ItemStackBuilder {
         this.itemStack = new ItemStack(material, material == Material.WOOL ? dyeColor.getWoolData() : dyeColor.getDyeData());
     }
 
+    private ItemStackBuilder(ItemStack itemStack) {
+        this.itemStack = itemStack;
+    }
+
+    public static ItemStackBuilder of(ItemStack itemStack) {
+        return new ItemStackBuilder(itemStack);
+    }
+
     public static ItemStackBuilder of(ConfigurationSection section) {
-        final ItemStackBuilder itemStackBuilder = ItemStackBuilder.of(Material.matchMaterial(section.getString("material")));
+        ItemStackBuilder itemStackBuilder = section.isSet("material") ? ItemStackBuilder.of(Material.matchMaterial(section.getString("material"))) : new ItemStackBuilder();
         if (section.isSet("amount")) {
             if (section.isInt("amount")) {
                 itemStackBuilder.setAmount(section.getInt("amount"));
@@ -97,12 +109,14 @@ public class ItemStackBuilder {
         }
     }
 
-    public void setAmount(int amount) {
+    public ItemStackBuilder setAmount(int amount) {
         itemStack.setAmount(amount);
+        return this;
     }
 
-    public void addEnchant(Enchantment enchantment, int level) {
+    public ItemStackBuilder addEnchant(Enchantment enchantment, int level) {
         consumeItemMeta(itemMeta -> itemMeta.addEnchant(enchantment, level, true));
+        return this;
     }
 
     public ItemStackBuilder consumeItemStack(Consumer<ItemStack> itemStackConsumer) {
