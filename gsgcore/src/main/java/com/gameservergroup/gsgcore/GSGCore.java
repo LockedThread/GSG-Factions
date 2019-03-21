@@ -1,11 +1,5 @@
 package com.gameservergroup.gsgcore;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.gameservergroup.gsgcore.commands.post.CommandPostExecutor;
 import com.gameservergroup.gsgcore.integration.ProtectionIntegration;
 import com.gameservergroup.gsgcore.integration.impl.protection.ProtectionDefaultImpl;
@@ -14,21 +8,22 @@ import com.gameservergroup.gsgcore.integration.impl.protection.ProtectionWorldGu
 import com.gameservergroup.gsgcore.items.UnitCustomItem;
 import com.gameservergroup.gsgcore.menus.UnitMenu;
 import com.gameservergroup.gsgcore.plugin.Module;
-import com.gameservergroup.gsgcore.storage.deserializer.BlockPositionDeserializer;
-import com.gameservergroup.gsgcore.storage.deserializer.ChunkPositionDeserializer;
-import com.gameservergroup.gsgcore.storage.deserializer.LocationDeserializer;
+import com.gameservergroup.gsgcore.storage.adapters.AdapterBlockPosition;
+import com.gameservergroup.gsgcore.storage.adapters.AdapterChunkPosition;
 import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsgcore.storage.objs.ChunkPosition;
-import com.gameservergroup.gsgcore.storage.serializers.BlockPositionSerializer;
-import com.gameservergroup.gsgcore.storage.serializers.ChunkPositionSerializer;
-import com.gameservergroup.gsgcore.storage.serializers.LocationSerializer;
 import com.gameservergroup.gsgcore.units.UnitReload;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.InstanceCreator;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -36,8 +31,8 @@ public class GSGCore extends Module {
 
     private static GSGCore instance;
     private CommandPostExecutor commandPostExecutor;
-    private ObjectMapper jsonObjectMapper;
     private ProtectionIntegration[] protectionIntegrations;
+    private Gson gson;
 
     public static GSGCore getInstance() {
         return instance;
@@ -95,29 +90,22 @@ public class GSGCore extends Module {
     }
 
     private void setupJson() {
-        ObjectMapper objectMapper = new ObjectMapper()
-                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
-                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        SimpleModule serializers = new SimpleModule("Serializers", new Version(1, 0, 0, null));
-
-        //Location
-        serializers.addSerializer(new LocationSerializer()).addDeserializer(Location.class, new LocationDeserializer());
-        //BlockPosition
-        serializers.addSerializer(new BlockPositionSerializer()).addDeserializer(BlockPosition.class, new BlockPositionDeserializer());
-        //ChunkPosition
-        serializers.addSerializer(new ChunkPositionSerializer()).addDeserializer(ChunkPosition.class, new ChunkPositionDeserializer());
-
-        objectMapper.registerModule(serializers);
-
-        this.jsonObjectMapper = objectMapper;
+        this.gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .enableComplexMapKeySerialization()
+                .disableHtmlEscaping()
+                .registerTypeAdapter(EnumMap.class, (InstanceCreator<EnumMap>) type -> new EnumMap((Class<?>) (((ParameterizedType) type).getActualTypeArguments())[0]))
+                .registerTypeAdapter(BlockPosition.class, new AdapterBlockPosition())
+                .registerTypeAdapter(ChunkPosition.class, new AdapterChunkPosition())
+                .create();
     }
 
     public CommandPostExecutor getCommandPostExecutor() {
         return commandPostExecutor;
     }
 
-    public ObjectMapper getJsonObjectMapper() {
-        return jsonObjectMapper;
+    public Gson getGson() {
+        return gson;
     }
 
     public ProtectionIntegration[] getProtectionIntegrations() {

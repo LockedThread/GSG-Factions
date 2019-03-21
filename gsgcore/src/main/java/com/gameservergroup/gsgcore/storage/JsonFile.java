@@ -1,29 +1,26 @@
 package com.gameservergroup.gsgcore.storage;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gameservergroup.gsgcore.GSGCore;
+import com.gameservergroup.gsgcore.utils.Utils;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Optional;
 
 public class JsonFile<T> {
 
     private File directory;
     private String fileName;
-    private TypeReference<T> typeReference;
-    private ObjectMapper objectMapper;
+    private TypeToken<T> typeReference;
 
-    public JsonFile(File directory, String fileName, TypeReference<T> typeReference, ObjectMapper objectMapper) {
+    public JsonFile(File directory, String fileName, TypeToken<T> typeReference) {
         this.directory = directory;
         this.typeReference = typeReference;
         this.fileName = fileName.endsWith(".json") ? fileName : fileName + ".json";
-        this.objectMapper = objectMapper;
-    }
-
-    public JsonFile(File directory, String fileName, TypeReference<T> typeReference) {
-        this(directory, fileName, typeReference, GSGCore.getInstance().getJsonObjectMapper());
     }
 
     public void save(T t) {
@@ -32,7 +29,7 @@ public class JsonFile<T> {
             if (!file.exists()) {
                 file.createNewFile();
             }
-            objectMapper.writeValue(file, t);
+            Utils.writeToFile(file, GSGCore.getInstance().getGson().toJson(t, typeReference.getType()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,7 +40,14 @@ public class JsonFile<T> {
             return Optional.empty();
         }
         try {
-            return Optional.ofNullable(objectMapper.readValue(getFile(), typeReference));
+
+            byte[] encoded = Files.readAllBytes(getFile().toPath());
+            String json = new String(encoded, StandardCharsets.UTF_8);
+            if (json.isEmpty()) {
+                System.out.println("json is empty, " + json);
+                return Optional.empty();
+            }
+            return Optional.ofNullable(GSGCore.getInstance().getGson().fromJson(new InputStreamReader(Files.newInputStream(getFile().toPath()), StandardCharsets.UTF_8), typeReference.getType()));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -10,7 +10,9 @@ import java.util.Objects;
 public class BlockPosition {
 
     private String worldName;
-    private int x, y, z;
+    private int x;
+    private int y;
+    private int z;
 
     private BlockPosition(String worldName, int x, int y, int z) {
         Objects.requireNonNull(worldName, "The World Name must not be null for BlockPosition instantiation");

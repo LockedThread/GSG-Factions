@@ -12,7 +12,8 @@ import java.util.Set;
 public class ChunkPosition {
 
     private String worldName;
-    private int x, z;
+    private int x;
+    private int z;
 
     private ChunkPosition(String worldName, int x, int z) {
         Objects.requireNonNull(worldName, "WorldName must not be null for ChunkPosition instantiation");
