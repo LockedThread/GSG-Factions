@@ -18,12 +18,6 @@
             <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>net.techcable.tacospigot</groupId>
-            <artifactId>server</artifactId>
-            <version>1.8.8-R0.2-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>

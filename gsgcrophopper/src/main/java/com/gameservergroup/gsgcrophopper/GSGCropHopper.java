@@ -1,11 +1,11 @@
 package com.gameservergroup.gsgcrophopper;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgcore.storage.JsonFile;
 import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsgcore.storage.objs.ChunkPosition;
 import com.gameservergroup.gsgcrophopper.units.UnitCropHopper;
+import com.google.gson.reflect.TypeToken;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,7 +26,7 @@ public class GSGCropHopper extends Module {
     @Override
     public void enable() {
         gsgCropHopper = this;
-        this.jsonFile = new JsonFile<>(getDataFolder(), "jsonFile", new TypeReference<HashMap<ChunkPosition, BlockPosition>>() {
+        this.jsonFile = new JsonFile<>(getDataFolder(), "jsonFile", new TypeToken<HashMap<ChunkPosition, BlockPosition>>() {
         });
         this.blockPositionHashMap = jsonFile.load().orElse(new HashMap<>());
         registerUnits(new UnitCropHopper());
