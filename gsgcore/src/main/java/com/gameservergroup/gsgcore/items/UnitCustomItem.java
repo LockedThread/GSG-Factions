@@ -47,7 +47,7 @@ public class UnitCustomItem extends Unit {
                             for (int i = 0; i < amount; i++) {
                                 target.getInventory().addItem(customItem.getItemStack());
                             }
-                            c.reply("&eYou have given " + target.getName() + " " + amount + " " + customItem + "s");
+                            c.reply("&eYou have given " + target.getName() + " " + amount + " " + customItem.getName() + "s");
                         } else {
                             c.reply("&cInvalid argument");
                         }
