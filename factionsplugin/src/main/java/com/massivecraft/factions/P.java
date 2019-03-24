@@ -7,9 +7,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.massivecraft.factions.cmd.CmdAutoHelp;
 import com.massivecraft.factions.cmd.FCmdRoot;
+import com.massivecraft.factions.integration.CombatIntegration;
 import com.massivecraft.factions.integration.Econ;
 import com.massivecraft.factions.integration.Essentials;
 import com.massivecraft.factions.integration.Worldguard;
+import com.massivecraft.factions.integration.combat.impl.CombatTagPlusImpl;
 import com.massivecraft.factions.listeners.*;
 import com.massivecraft.factions.struct.ChatMode;
 import com.massivecraft.factions.units.UnitWorldBorder;
@@ -59,6 +61,7 @@ public class P extends MPlugin {
     private ClipPlaceholderAPIManager clipPlaceholderAPIManager;
     private boolean mvdwPlaceholderAPIManager = false;
     private int defaultTntBankBalance;
+    private CombatIntegration combatIntegration;
 
     public P() {
         p = this;
@@ -176,6 +179,11 @@ public class P extends MPlugin {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(TL.LOCK_IS_ENABLED.toString());
                     }).post(this);
+        }
+        Plugin combatTagPlus = getServer().getPluginManager().getPlugin("CombatTagPlus");
+        if (combatTagPlus != null) {
+            getLogger().info("Enabled CombatTagPlus Integration");
+            this.combatIntegration = new CombatTagPlusImpl(combatTagPlus);
         }
         this.loadSuccessful = true;
     }
@@ -440,5 +448,9 @@ public class P extends MPlugin {
 
     public int getDefaultTntBankBalance() {
         return defaultTntBankBalance;
+    }
+
+    public CombatIntegration getCombatIntegration() {
+        return combatIntegration;
     }
 }
