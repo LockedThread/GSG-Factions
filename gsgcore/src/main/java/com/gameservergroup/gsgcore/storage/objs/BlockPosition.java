@@ -1,9 +1,11 @@
 package com.gameservergroup.gsgcore.storage.objs;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 
 import java.util.Objects;
 
@@ -35,6 +37,18 @@ public class BlockPosition {
     public static BlockPosition of(World world, int x, int y, int z) {
         Objects.requireNonNull(world, "World must not be null for BlockPosition instantiation");
         return new BlockPosition(world.getName(), x, y, z);
+    }
+
+    public BlockPosition getRelative(BlockFace blockFace) {
+        return new BlockPosition(worldName, x + blockFace.getModX(), y + blockFace.getModY(), z + blockFace.getModZ());
+    }
+
+    public Chunk getChunk() {
+        return getWorld().getChunkAt(x >> 4, z >> 4);
+    }
+
+    public boolean isChunkLoaded() {
+        return getWorld().isChunkLoaded(x >> 4, z >> 4);
     }
 
     public World getWorld() {
