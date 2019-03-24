@@ -9,6 +9,7 @@ import com.gameservergroup.gsgprinter.integration.combat.impl.CombatTagPlusImpl;
 import com.gameservergroup.gsgprinter.integration.factions.impl.LockedThreadFactionsUUIDImpl;
 import com.gameservergroup.gsgprinter.integration.impl.selling.ConfigSellImpl;
 import com.gameservergroup.gsgprinter.integration.impl.selling.EssentialsSellImpl;
+import com.gameservergroup.gsgprinter.integration.impl.selling.ShopGUIPlusSellImpl;
 import com.gameservergroup.gsgprinter.units.UnitPrinter;
 import org.bukkit.plugin.Plugin;
 
@@ -45,6 +46,8 @@ public class GSGPrinter extends Module {
             sellIntegration = new EssentialsSellImpl(getServer().getPluginManager().getPlugin("Essentials"));
         } else if (getConfig().getString("sell-integration").equalsIgnoreCase("config")) {
             sellIntegration = new ConfigSellImpl(getDataFolder(), "prices.yml");
+        } else if (getConfig().getString("sell-integration").equalsIgnoreCase("shopguiplus")) {
+            sellIntegration = new ShopGUIPlusSellImpl();
         } else {
             getLogger().info("Unable to find a supported sell integration, either download one or change your sell-integration!");
             getPluginLoader().disablePlugin(this);

@@ -30,6 +30,13 @@
             <version>1.6.9.5-U0.2.2</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.shopguiplus</groupId>
+            <artifactId>ShopGUIPlus</artifactId>
+            <version>1.19.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/ShopGUIPlus-1.19.1-SNAPSHOT.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>

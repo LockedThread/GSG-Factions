@@ -9,9 +9,9 @@ public interface SellIntegration {
         return getBuyPrice(material) * amount;
     }
 
-    default double getBuyPrice(Material material) {
-        return getBuyPrice(new ItemStack(material));
-    }
+    double getBuyPrice(Material material);
 
-    double getBuyPrice(ItemStack itemStack);
+    default double getBuyPrice(ItemStack itemStack) {
+        return getBuyPrice(itemStack.getType());
+    }
 }

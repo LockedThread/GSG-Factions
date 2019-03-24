@@ -17,6 +17,7 @@ import com.massivecraft.factions.event.FactionDisbandEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventPriority;
@@ -181,7 +182,10 @@ public class UnitPrinter extends Unit {
                 .post(GSG_PRINTER);
 
         EventPost.of(ProjectileLaunchEvent.class, EventPriority.LOWEST)
+                .filter(event -> event.getEntity() != null && event.getEntity().getShooter() != null)
+                .filter(event -> event.getEntity() instanceof Arrow)
                 .filter(event -> event.getEntity().getShooter() instanceof Player)
+                .filter(event -> ((Player) event.getEntity().getShooter()).getUniqueId() != null)
                 .filter(event -> printingPlayers.contains(((Player) event.getEntity().getShooter()).getUniqueId()))
                 .handle(event -> {
                     event.getEntity().remove();

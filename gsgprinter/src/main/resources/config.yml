@@ -1,3 +1,9 @@
+shopguiplus:
+  blacklisted-shops:
+    - 'donator'
+    - 'special'
+
+
 enable-combattagplus-integration: true
 #Allows the breaking of blocks in printer
 enable-blockbreak: true
