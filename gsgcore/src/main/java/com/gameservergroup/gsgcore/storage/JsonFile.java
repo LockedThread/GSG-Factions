@@ -14,6 +14,9 @@ public class JsonFile<T> {
     private File file;
 
     public JsonFile(File directory, String fileName, TypeToken<T> typeToken) {
+        if (!fileName.endsWith(".json")) {
+            fileName += ".json";
+        }
         this.file = new File(directory, fileName);
         this.typeToken = typeToken;
     }
@@ -22,7 +25,6 @@ public class JsonFile<T> {
         try {
             if (!file.exists()) {
                 file.createNewFile();
-                return Optional.empty();
             }
             return Optional.ofNullable(GSGCore.getInstance().getGson().fromJson(getFileContents(), typeToken.getType()));
         } catch (IOException e) {
