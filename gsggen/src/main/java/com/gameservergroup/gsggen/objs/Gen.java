@@ -43,6 +43,30 @@ public class Gen {
         if (isBucket()) {
             customItem.setInteractEventConsumer(event -> {
                 if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    if (GSGGen.getInstance().getCombatIntegration() != null && GSGGen.getInstance().getCombatIntegration().isTagged(event.getPlayer())) {
+                        event.getPlayer().sendMessage(Text.toColor("&cYou can't place gens in combat"));
+                    } else {
+                        if (Module.getEconomy().has(event.getPlayer(), price)) {
+                            Module.getEconomy().withdrawPlayer(event.getPlayer(), price);
+                        } else {
+                            event.getPlayer().sendMessage(Text.toColor("&cYou don't have enough money to place this!"));
+                            event.setCancelled(true);
+                            return;
+                        }
+                        Block relative = event.getClickedBlock().getRelative(event.getBlockFace());
+                        event.setCancelled(true);
+                        relative.setType(getMaterial());
+                        event.getPlayer().updateInventory();
+                        getGeneration(relative, direction == Direction.HORIZONTAL ? event.getBlockFace() : direction.getBlockFaces()[0]).enable();
+                    }
+                }
+            });
+        } else {
+            customItem.setPlaceEventConsumer(event -> {
+                if (GSGGen.getInstance().getCombatIntegration() != null && GSGGen.getInstance().getCombatIntegration().isTagged(event.getPlayer())) {
+                    event.getPlayer().sendMessage(Text.toColor("&cYou can't place gens in combat"));
+                } else {
+                    event.getPlayer().setItemInHand(event.getItemInHand());
                     if (Module.getEconomy().has(event.getPlayer(), price)) {
                         Module.getEconomy().withdrawPlayer(event.getPlayer(), price);
                     } else {
@@ -50,24 +74,8 @@ public class Gen {
                         event.setCancelled(true);
                         return;
                     }
-                    Block relative = event.getClickedBlock().getRelative(event.getBlockFace());
-                    event.setCancelled(true);
-                    relative.setType(getMaterial());
-                    event.getPlayer().updateInventory();
-                    getGeneration(relative, direction == Direction.HORIZONTAL ? event.getBlockFace() : direction.getBlockFaces()[0]).enable();
+                    getGeneration(event.getBlockPlaced(), direction == Direction.HORIZONTAL ? event.getBlockAgainst().getFace(event.getBlockPlaced()) : direction.getBlockFaces()[0]).enable();
                 }
-            });
-        } else {
-            customItem.setPlaceEventConsumer(event -> {
-                event.getPlayer().setItemInHand(event.getItemInHand());
-                if (Module.getEconomy().has(event.getPlayer(), price)) {
-                    Module.getEconomy().withdrawPlayer(event.getPlayer(), price);
-                } else {
-                    event.getPlayer().sendMessage(Text.toColor("&cYou don't have enough money to place this!"));
-                    event.setCancelled(true);
-                    return;
-                }
-                getGeneration(event.getBlockPlaced(), direction == Direction.HORIZONTAL ? event.getBlockAgainst().getFace(event.getBlockPlaced()) : direction.getBlockFaces()[0]).enable();
             });
         }
     }

@@ -34,8 +34,8 @@ public class Generation {
     }
 
     public boolean generateVertical() {
-        if (!startingBlockPosition.getLocation().getWorld().isChunkLoaded(startingBlockPosition.getX() >> 4, startingBlockPosition.getZ() >> 4)) {
-            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), startingBlockPosition.getLocation().getChunk()::load);
+        if (startingBlockPosition.isChunkLoaded()) {
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), startingBlockPosition.getChunk()::load);
         }
         Block relative = getCurrentBlockPosition().getBlock().getRelative(blockFace);
         if (getLength() == 0) {
@@ -68,10 +68,11 @@ public class Generation {
     }
 
     public boolean generateHorizontal() {
-        Block relative = getCurrentBlockPosition().getBlock().getRelative(blockFace);
-        if (!relative.getWorld().isChunkLoaded(startingBlockPosition.getX() >> 4, startingBlockPosition.getZ() >> 4)) {
-            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), startingBlockPosition.getLocation().getChunk()::load);
+        BlockPosition blockPositionRelative = getCurrentBlockPosition().getRelative(blockFace);
+        if (startingBlockPosition.isChunkLoaded()) {
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), startingBlockPosition.getChunk()::load);
         }
+        Block relative = blockPositionRelative.getBlock();
         if (getLength() == 0) {
             return false;
         }
