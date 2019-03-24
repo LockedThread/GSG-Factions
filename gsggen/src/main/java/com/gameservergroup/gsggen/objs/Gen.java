@@ -5,11 +5,10 @@ import com.gameservergroup.gsgcore.items.CustomItem;
 import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.menus.MenuItem;
 import com.gameservergroup.gsgcore.plugin.Module;
+import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsgcore.utils.Text;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.generation.Generation;
-import com.gameservergroup.gsggen.generation.GenerationHorizontal;
-import com.gameservergroup.gsggen.generation.GenerationVertical;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -78,16 +77,7 @@ public class Gen {
     }
 
     public Generation getGeneration(Block startingBlock, BlockFace blockFace) {
-        switch (direction) {
-            case VERTICAL_UP:
-                return new GenerationVertical(startingBlock, this, Direction.VERTICAL_UP);
-            case VERTICAL_DOWN:
-                return new GenerationVertical(startingBlock, this, Direction.VERTICAL_DOWN);
-            case HORIZONTAL:
-                return new GenerationHorizontal(startingBlock, this, blockFace);
-            default:
-                return null;
-        }
+        return direction == Direction.VERTICAL_UP ? new Generation(BlockPosition.of(startingBlock), this, BlockFace.UP) : direction == Direction.VERTICAL_DOWN ? new Generation(BlockPosition.of(startingBlock), this, BlockFace.DOWN) : direction == Direction.HORIZONTAL ? new Generation(BlockPosition.of(startingBlock), this, blockFace) : null;
     }
 
     public CustomItem getCustomItem() {

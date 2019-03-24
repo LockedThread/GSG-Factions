@@ -1,0 +1,4 @@
+name: GSGVouchers
+main: com.gameservergroup.gsgvouchers.GSGVouchers
+version: 1.0
+depend: [GSGCore]

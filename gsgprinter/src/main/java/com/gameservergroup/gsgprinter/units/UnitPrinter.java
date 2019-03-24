@@ -92,7 +92,7 @@ public class UnitPrinter extends Unit {
         GSG_PRINTER.getFactionsIntegration().hookFlightDisable(new CallBack<Player>() {
             @Override
             public void call(Player player) {
-                if (printingPlayers.contains(player.getUniqueId())) {
+                if (player != null && printingPlayers.contains(player.getUniqueId())) {
                     disablePrinter(player, true, true);
                 }
             }

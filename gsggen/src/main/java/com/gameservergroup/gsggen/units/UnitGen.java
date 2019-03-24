@@ -3,10 +3,13 @@ package com.gameservergroup.gsggen.units;
 import com.gameservergroup.gsgcore.commands.post.CommandPost;
 import com.gameservergroup.gsgcore.enums.Direction;
 import com.gameservergroup.gsgcore.events.EventPost;
+import com.gameservergroup.gsgcore.storage.JsonFile;
 import com.gameservergroup.gsgcore.units.Unit;
+import com.gameservergroup.gsgcore.utils.CallBack;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.generation.Generation;
 import com.gameservergroup.gsggen.objs.Gen;
+import com.google.gson.reflect.TypeToken;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -21,18 +24,47 @@ public class UnitGen extends Unit {
     private static final GSGGen GSG_GEN = GSGGen.getInstance();
 
     private boolean closeInventoryOnPurchase, closeInventoryOnNoMoney, disableLavaBucketPlayerUse;
-    private Set<Generation> generations;
+    private HashSet<Generation> generations;
     private HashMap<String, Gen> genHashMap = new HashMap<>();
 
+    private JsonFile<HashSet<Generation>> generationJsonFile;
+
     public void setup() {
-        this.generations = new HashSet<>();
+        load();
+        this.generationJsonFile = new JsonFile<>(GSG_GEN.getDataFolder(), "gens.json", new TypeToken<HashSet<Generation>>() {
+        });
+        this.generations = generationJsonFile.load().orElse(new HashSet<>());
+        hookDisable(new CallBack() {
+            @Override
+            public void call() {
+                generationJsonFile.save(generations);
+            }
+        });
+        CommandPost.of()
+                .build()
+                .assertPlayer()
+                .handler(c -> c.getSender().openInventory(GSG_GEN.getGenMenu().getInventory()))
+                .post(GSG_GEN, "gen", "gens", "genblock", "genblocks", "gb", "genbucket", "genbuckets");
+
+        EventPost.of(PlayerBucketEmptyEvent.class)
+                .filter(event -> disableLavaBucketPlayerUse)
+                .filter(event -> event.getItemStack() != null && event.getItemStack().getType() == Material.LAVA_BUCKET)
+                .handle(event -> event.setCancelled(true));
+
+        EventPost.of(PlayerBucketFillEvent.class)
+                .filter(event -> disableLavaBucketPlayerUse)
+                .filter(event -> event.getItemStack() != null && event.getItemStack().getType() == Material.LAVA_BUCKET)
+                .handle(event -> event.setCancelled(true));
+    }
+
+    public void load() {
         this.closeInventoryOnNoMoney = GSG_GEN.getConfig().getBoolean("menu.options.close-inventory-on-no-money");
         this.closeInventoryOnPurchase = GSG_GEN.getConfig().getBoolean("menu.options.close-inventory-on-purchase");
         this.disableLavaBucketPlayerUse = GSG_GEN.getConfig().getBoolean("disable-lava-bucket-player-use");
-        for (String genKey : GSG_GEN
-                .getConfig()
-                .getConfigurationSection("gens")
-                .getKeys(false)) {
+        if (!genHashMap.isEmpty()) {
+            genHashMap.clear();
+        }
+        for (String genKey : GSG_GEN.getConfig().getConfigurationSection("gens").getKeys(false)) {
             int length = 0;
             double price = 0.0;
             Direction direction = null;
@@ -56,21 +88,6 @@ public class UnitGen extends Unit {
             }
             genHashMap.put(genKey, length <= 0 ? new Gen(section, direction, price, patch, material) : new Gen(section, direction, price, patch, length, material));
         }
-        CommandPost.of()
-                .build()
-                .assertPlayer()
-                .handler(c -> c.getSender().openInventory(GSG_GEN.getGenMenu().getInventory()))
-                .post(GSG_GEN, "gen", "gens", "genblock", "genblocks", "gb", "genbucket", "genbuckets");
-
-        EventPost.of(PlayerBucketEmptyEvent.class)
-                .filter(event -> disableLavaBucketPlayerUse)
-                .filter(event -> event.getItemStack() != null && event.getItemStack().getType() == Material.LAVA_BUCKET)
-                .handle(event -> event.setCancelled(true));
-
-        EventPost.of(PlayerBucketFillEvent.class)
-                .filter(event -> disableLavaBucketPlayerUse)
-                .filter(event -> event.getItemStack() != null && event.getItemStack().getType() == Material.LAVA_BUCKET)
-                .handle(event -> event.setCancelled(true));
     }
 
     public Set<Generation> getGenerations() {

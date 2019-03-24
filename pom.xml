@@ -16,6 +16,7 @@
         <module>gsgprinter</module>
         <module>gsgcrophopper</module>
         <module>gsgcollectors</module>
+        <module>gsgvouchers</module>
     </modules>
 
     <dependencies>

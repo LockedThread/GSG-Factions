@@ -21,6 +21,12 @@ public class GSGCollectors extends Module {
     }
 
     @Override
+    public void reload() {
+        reloadConfig();
+
+    }
+
+    @Override
     public void disable() {
         instance = null;
     }

@@ -14,12 +14,11 @@ import java.util.stream.Collectors;
 
 public class ConfigSellImpl implements SellIntegration {
 
-    private File file;
     private YamlConfiguration yamlConfiguration;
     private EnumMap<Material, Double> prices;
 
     public ConfigSellImpl(File dir, String fileName) {
-        this.file = new File(dir, fileName);
+        File file = new File(dir, fileName);
         if (!file.exists()) {
             try {
                 file.createNewFile();

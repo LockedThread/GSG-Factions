@@ -36,6 +36,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -43,6 +44,7 @@ import org.github.paperspigot.Title;
 
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 public class UnitCollectors extends Unit {
 
@@ -75,6 +77,14 @@ public class UnitCollectors extends Unit {
 
     @Override
     public void setup() {
+        if (GSG_COLLECTORS.getServer().getPluginManager().getPlugin("Factions") != null) {
+            if (GSG_COLLECTORS.getServer().getPluginManager().getPlugin("Factions").getDescription().getAuthors().contains("LockedThread")) {
+                this.factionsBankIntegration = new LockedThreadFactionsBankImpl();
+                GSG_COLLECTORS.getLogger().info("Enabled LockedThread FactionsBank implementation");
+            } else {
+                GSG_COLLECTORS.getLogger().severe("TNTBank will not work for you! Purchase LockedThread's FactionsFork for support!");
+            }
+        }
         this.jsonFile = new JsonFile<>(GSG_COLLECTORS.getDataFolder(), "collectors", new TypeToken<HashMap<ChunkPosition, Collector>>() {
         });
         this.collectorHashMap = jsonFile.load().orElse(new HashMap<>());
@@ -87,89 +97,7 @@ public class UnitCollectors extends Unit {
                 jsonFile.save(collectorHashMap);
             }
         });
-        this.collectorMenuSize = GSG_COLLECTORS.getConfig().getInt("menu.size");
-        this.collectorMenuName = GSG_COLLECTORS.getConfig().getString("menu.name");
-        this.atLeastRole = Role.fromString(GSG_COLLECTORS.getConfig().getString("options.at-least-role", "COLEADER"));
-        this.accessNotYours = GSG_COLLECTORS.getConfig().getBoolean("options.can-access-not-yours");
-        this.editWhilstFactionless = GSG_COLLECTORS.getConfig().getBoolean("options.can-edit-whilst-factionless");
-        this.roleRestricted = GSG_COLLECTORS.getConfig().getBoolean("options.is-role-restricted", true);
-        this.useTitles = GSG_COLLECTORS.getConfig().getBoolean("options.use-titles", true);
-        this.preventNormalFarms = GSG_COLLECTORS.getConfig().getBoolean("options.prevent-normal-farms", true);
-        if (this.fillMenu = GSG_COLLECTORS.getConfig().getBoolean("menu.fill.enabled")) {
-            if (GSG_COLLECTORS.getConfig().getBoolean("menu.fill.enchanted")) {
-                this.fillItemStack = ItemStackBuilder.of(Material.STAINED_GLASS_PANE)
-                        .setDyeColor(DyeColor.valueOf(GSG_COLLECTORS.getConfig().getString("menu.fill.glass-pane-color")))
-                        .setDisplayName(" ")
-                        .addItemFlags(ItemFlag.HIDE_ENCHANTS)
-                        .addEnchant(Enchantment.DURABILITY, 1)
-                        .build();
-            } else {
-                this.fillItemStack = ItemStackBuilder.of(Material.STAINED_GLASS_PANE)
-                        .setDyeColor(DyeColor.valueOf(GSG_COLLECTORS.getConfig().getString("menu.fill.glass-pane-color")))
-                        .setDisplayName(" ")
-                        .build();
-            }
-        }
-
-        this.collectorItem = CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("collector-item")).setPlaceEventConsumer(event -> {
-            Collector collector = getCollector(event.getBlockPlaced().getLocation());
-            if (collector == null) {
-                createCollector(event.getBlockPlaced().getLocation());
-                if (!CollectorMessages.TITLE_COLLECTOR_PLACE.toString().isEmpty()) {
-                    if (useTitles) {
-                        event.getPlayer().sendTitle(Title.builder().title(CollectorMessages.TITLE_COLLECTOR_PLACE.toString()).fadeIn(5).fadeOut(5).stay(25).build());
-                    } else {
-                        event.getPlayer().sendMessage(CollectorMessages.TITLE_COLLECTOR_PLACE.toString());
-                    }
-                }
-            } else {
-                collector.getBlockPosition().getBlock().setType(Material.AIR);
-                collector.setBlockPosition(BlockPosition.of(event.getBlockPlaced()));
-                event.getPlayer().sendMessage(CollectorMessages.UPDATED_COLLECTOR_BLOCKPOSITION.toString());
-            }
-        });
-        CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                Collector collector = getCollector(event.getClickedBlock().getLocation());
-                if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
-                    collector.sellAll(event.getPlayer());
-                    event.setCancelled(true);
-                }
-            }
-        });
-        CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("tntwand-item")).setInteractEventConsumer(event -> {
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                Collector collector = getCollector(event.getClickedBlock().getLocation());
-                if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
-                    collector.depositTnt(event.getPlayer());
-                    event.setCancelled(true);
-                }
-            }
-        });
-        if (GSG_COLLECTORS.getServer().getPluginManager().getPlugin("Factions") != null) {
-            if (GSG_COLLECTORS.getServer().getPluginManager().getPlugin("Factions").getDescription().getAuthors().contains("LockedThread")) {
-                this.factionsBankIntegration = new LockedThreadFactionsBankImpl();
-                GSG_COLLECTORS.getLogger().info("Enabled LockedThread FactionsBank implementation");
-            } else {
-                GSG_COLLECTORS.getLogger().severe("TNTBank will not work for you! Purchase LockedThread's FactionsFork for support!");
-            }
-        }
-        EnumSet<CollectionType> collectionTypes = EnumSet.noneOf(CollectionType.class);
-        ConfigurationSection collectionTypeSection = GSG_COLLECTORS.getConfig().getConfigurationSection("collection-types");
-        for (String key : collectionTypeSection.getKeys(false)) {
-            CollectionType collectionType;
-            try {
-                collectionType = CollectionType.valueOf(key.toUpperCase().replace("-", "_"));
-            } catch (IllegalArgumentException e) {
-                System.out.println("Unable to find CollectionType enum constant called " + key);
-                e.printStackTrace();
-                continue;
-            }
-            collectionType.init(key);
-            collectionTypes.add(collectionType);
-        }
-        this.collectionTypes = collectionTypes;
-
+        load();
         EventPost.of(BlockBreakEvent.class, EventPriority.HIGHEST)
                 .filter(EventFilters.getIgnoreCancelled())
                 .handle(event -> {
@@ -219,6 +147,15 @@ public class UnitCollectors extends Unit {
                         }
                     }
                 }).post(GSG_COLLECTORS);
+
+        EventPost.of(EntityExplodeEvent.class)
+                .filter(EventFilters.getIgnoreCancelled())
+                .handle(event -> event.blockList()
+                        .stream()
+                        .filter(block -> block.getType() == Material.BEACON)
+                        .forEach(block -> event.blockList().remove(block)))
+                .post(GSG_COLLECTORS);
+
         EventPost.of(BlockExplodeEvent.class)
                 .filter(EventFilters.getIgnoreCancelled())
                 .handle(event -> event.blockList()
@@ -274,6 +211,79 @@ public class UnitCollectors extends Unit {
                     }).post(GSG_COLLECTORS);
         }
 
+    }
+
+    public void load() {
+        this.collectorMenuSize = GSG_COLLECTORS.getConfig().getInt("menu.size");
+        this.collectorMenuName = GSG_COLLECTORS.getConfig().getString("menu.name");
+        this.atLeastRole = Role.fromString(GSG_COLLECTORS.getConfig().getString("options.at-least-role", "COLEADER"));
+        this.accessNotYours = GSG_COLLECTORS.getConfig().getBoolean("options.can-access-not-yours");
+        this.editWhilstFactionless = GSG_COLLECTORS.getConfig().getBoolean("options.can-edit-whilst-factionless");
+        this.roleRestricted = GSG_COLLECTORS.getConfig().getBoolean("options.is-role-restricted", true);
+        this.useTitles = GSG_COLLECTORS.getConfig().getBoolean("options.use-titles", true);
+        this.preventNormalFarms = GSG_COLLECTORS.getConfig().getBoolean("options.prevent-normal-farms", true);
+        if (this.fillMenu = GSG_COLLECTORS.getConfig().getBoolean("menu.fill.enabled")) {
+            this.fillItemStack = GSG_COLLECTORS.getConfig().getBoolean("menu.fill.enchanted") ? ItemStackBuilder.of(Material.STAINED_GLASS_PANE)
+                    .setDyeColor(DyeColor.valueOf(GSG_COLLECTORS.getConfig().getString("menu.fill.glass-pane-color")))
+                    .setDisplayName(" ")
+                    .addItemFlags(ItemFlag.HIDE_ENCHANTS)
+                    .addEnchant(Enchantment.DURABILITY, 1)
+                    .build() : ItemStackBuilder.of(Material.STAINED_GLASS_PANE)
+                    .setDyeColor(DyeColor.valueOf(GSG_COLLECTORS.getConfig().getString("menu.fill.glass-pane-color")))
+                    .setDisplayName(" ")
+                    .build();
+        }
+
+        this.collectorItem = CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("collector-item")).setPlaceEventConsumer(event -> {
+            Collector collector = getCollector(event.getBlockPlaced().getLocation());
+            if (collector == null) {
+                createCollector(event.getBlockPlaced().getLocation());
+                if (!CollectorMessages.TITLE_COLLECTOR_PLACE.toString().isEmpty()) {
+                    if (useTitles) {
+                        event.getPlayer().sendTitle(Title.builder().title(CollectorMessages.TITLE_COLLECTOR_PLACE.toString()).fadeIn(5).fadeOut(5).stay(25).build());
+                    } else {
+                        event.getPlayer().sendMessage(CollectorMessages.TITLE_COLLECTOR_PLACE.toString());
+                    }
+                }
+            } else {
+                collector.getBlockPosition().getBlock().setType(Material.AIR);
+                collector.setBlockPosition(BlockPosition.of(event.getBlockPlaced()));
+                event.getPlayer().sendMessage(CollectorMessages.UPDATED_COLLECTOR_BLOCKPOSITION.toString());
+            }
+        });
+        CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                Collector collector = getCollector(event.getClickedBlock().getLocation());
+                if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
+                    collector.sellAll(event.getPlayer());
+                    event.setCancelled(true);
+                }
+            }
+        });
+        CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("tntwand-item")).setInteractEventConsumer(event -> {
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                Collector collector = getCollector(event.getClickedBlock().getLocation());
+                if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
+                    collector.depositTnt(event.getPlayer());
+                    event.setCancelled(true);
+                }
+            }
+        });
+        EnumSet<CollectionType> collectionTypes = EnumSet.noneOf(CollectionType.class);
+        ConfigurationSection collectionTypeSection = GSG_COLLECTORS.getConfig().getConfigurationSection("collection-types");
+        for (String key : collectionTypeSection.getKeys(false)) {
+            CollectionType collectionType;
+            try {
+                collectionType = CollectionType.valueOf(key.toUpperCase().replace("-", "_"));
+            } catch (IllegalArgumentException e) {
+                System.out.println("Unable to find CollectionType enum constant called " + key);
+                e.printStackTrace();
+                continue;
+            }
+            collectionType.init(key);
+            collectionTypes.add(collectionType);
+        }
+        this.collectionTypes = collectionTypes;
     }
 
     private boolean canGrow(Block bukkitBlock) {

@@ -1,0 +1,15 @@
+vouchers:
+  diamond:
+    material: 'NAME_TAG'
+    name: '&d&lDiamond Voucher'
+    lore:
+      - ''
+      - ' &fRight click to redeem this voucher!'
+      - ''
+    enchants:
+      - 'DURABILITY:1'
+    itemflags:
+      - 'HIDE_ENCHANTS'
+    commands:
+      - 'give {player} diamond 64'
+      - '@broadcast {player} has won 64 diamonds'

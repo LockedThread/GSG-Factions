@@ -62,11 +62,8 @@ public class ArgumentRegistry implements IArgumentRegistry {
         });
     }
 
-    static ArgumentRegistry getInstance() {
-        if (instance == null) {
-            instance = new ArgumentRegistry();
-        }
-        return instance;
+    public static ArgumentRegistry getInstance() {
+        return instance == null ? instance = new ArgumentRegistry() : instance;
     }
 
     @SuppressWarnings("unchecked")
