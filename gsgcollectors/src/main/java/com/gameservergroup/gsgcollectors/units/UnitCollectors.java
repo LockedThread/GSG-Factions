@@ -44,7 +44,6 @@ import org.github.paperspigot.Title;
 
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.function.Consumer;
 
 public class UnitCollectors extends Unit {
 
@@ -85,7 +84,7 @@ public class UnitCollectors extends Unit {
                 GSG_COLLECTORS.getLogger().severe("TNTBank will not work for you! Purchase LockedThread's FactionsFork for support!");
             }
         }
-        this.jsonFile = new JsonFile<>(GSG_COLLECTORS.getDataFolder(), "collectors", new TypeToken<HashMap<ChunkPosition, Collector>>() {
+        this.jsonFile = new JsonFile<>(GSG_COLLECTORS.getDataFolder(), "collectors.json", new TypeToken<HashMap<ChunkPosition, Collector>>() {
         });
         this.collectorHashMap = jsonFile.load().orElse(new HashMap<>());
         TaskSave taskSave = new TaskSave(GSG_COLLECTORS.getConfig().getLong("options.save-task-delay"));
