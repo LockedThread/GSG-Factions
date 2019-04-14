@@ -20,7 +20,6 @@ public class GSGPrinter extends Module {
     private CombatIntegration combatIntegration;
     private SellIntegration sellIntegration;
     private FactionsIntegration factionsIntegration;
-    private UnitPrinter unitPrinter;
 
     public static GSGPrinter getInstance() {
         return instance;
@@ -74,7 +73,7 @@ public class GSGPrinter extends Module {
             }
         }
         saveConfig();
-        registerUnits(unitPrinter = new UnitPrinter());
+        registerUnits(new UnitPrinter());
     }
 
     @Override
@@ -101,10 +100,6 @@ public class GSGPrinter extends Module {
 
     public CombatIntegration getCombatIntegration() {
         return combatIntegration;
-    }
-
-    public UnitPrinter getUnitPrinter() {
-        return unitPrinter;
     }
 
     public boolean isEnableCombatTagPlusIntegration() {
