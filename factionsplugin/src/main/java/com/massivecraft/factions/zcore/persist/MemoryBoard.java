@@ -12,6 +12,7 @@ import com.massivecraft.factions.zcore.util.TagUtil;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -238,7 +239,11 @@ public abstract class MemoryBoard extends Board {
                     Faction factionHere = getFactionAt(flocationHere);
                     Relation relation = fplayer.getRelationTo(factionHere);
                     if (factionHere.isWilderness()) {
-                        row.then("-").color(Conf.colorWilderness).tooltip(Text.toColor("&eClick to claim")).command("f claimat " + flocationHere.getWorldName() + " " + flocationHere.getX() + " " + flocationHere.getZ());
+                        if (isOutsideBorder(flocationHere) && !Conf.showOutsideBorder) {
+                            row.then("+").color(Conf.colorWorldBorder);
+                        } else {
+                            row.then("-").color(Conf.colorWilderness).tooltip(Text.toColor("&eClick to claim")).command("f claimat " + flocationHere.getWorldName() + " " + flocationHere.getX() + " " + flocationHere.getZ());
+                        }
                     } else if (factionHere.isSafeZone()) {
                         row.then("+").color(Conf.colorSafezone);
                     } else if (factionHere.isWarZone()) {
@@ -272,6 +277,17 @@ public abstract class MemoryBoard extends Board {
         }
 
         return ret;
+    }
+
+    private boolean isOutsideBorder(FLocation fLocation) {
+        WorldBorder worldBorder = fLocation.getWorld().getWorldBorder();
+        double size = worldBorder.getSize() / 2.0;
+        double centerX = worldBorder.getCenter().getX();
+        double centerZ = worldBorder.getCenter().getZ();
+        return centerX - size > FLocation.chunkToBlock((int) fLocation.getX()) ||
+                centerX + size <= FLocation.chunkToBlock((int) fLocation.getX()) ||
+                centerZ - size > FLocation.chunkToBlock((int) fLocation.getZ()) ||
+                centerZ + size <= FLocation.chunkToBlock((int) fLocation.getZ());
     }
 
     //----------------------------------------------//

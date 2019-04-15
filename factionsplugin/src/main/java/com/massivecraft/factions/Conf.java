@@ -26,6 +26,7 @@ public class Conf {
     public static ChatColor colorWilderness = ChatColor.GRAY;
     public static ChatColor colorSafezone = ChatColor.GOLD;
     public static ChatColor colorWar = ChatColor.DARK_RED;
+    public static ChatColor colorWorldBorder = ChatColor.DARK_RED;
 
     // Power
     public static double powerPlayerMax = 10.0;
@@ -62,6 +63,7 @@ public class Conf {
     public static boolean showNeutralFactionsOnMap = true;
     public static boolean showEnemyFactionsOnMap = true;
     public static boolean showTruceFactionsOnMap = true;
+    public static boolean showOutsideBorder = false;
 
     // Disallow joining/leaving/kicking while power is negative
     public static boolean canLeaveWithNegativePower = true;
