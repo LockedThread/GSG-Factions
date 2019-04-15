@@ -3,9 +3,9 @@ package com.gameservergroup.gsgvouchers.units;
 import com.gameservergroup.gsgcore.commands.arguments.ArgumentRegistry;
 import com.gameservergroup.gsgcore.commands.post.CommandPost;
 import com.gameservergroup.gsgcore.units.Unit;
-import com.google.common.base.Joiner;
 import com.gameservergroup.gsgvouchers.GSGVouchers;
 import com.gameservergroup.gsgvouchers.objs.Voucher;
+import com.google.common.base.Joiner;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -25,7 +25,7 @@ public class UnitVouchers extends Unit {
         ArgumentRegistry.getInstance().register(Voucher.class, () -> s -> Optional.ofNullable(vouchers.get(s.toLowerCase())));
 
         CommandPost.of()
-                .build()
+                .builder()
                 .assertPermission("gsgvouchers.admin")
                 .handler(c -> {
                     if (c.getRawArgs().length == 0) {
