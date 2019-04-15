@@ -41,12 +41,10 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected Integer permanentPower;
     protected LazyLocation home;
     protected long foundedDate;
-    protected transient long lastPlayerLoggedOffTime;
     protected double money;
     protected double powerBoost;
     protected Map<String, Relation> relationWish = new HashMap<>();
     protected Map<FLocation, Set<String>> claimOwnership = new ConcurrentHashMap<>();
-    protected transient Set<FPlayer> fplayers = new HashSet<>();
     protected Set<String> invites = new HashSet<>();
     protected HashMap<String, List<String>> announcements = new HashMap<>();
     protected ConcurrentHashMap<String, LazyLocation> warps = new ConcurrentHashMap<>();
@@ -61,8 +59,12 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected int maxWarps;
     protected int maxMembers;
     protected Set<StrikeInfo> strikes = new HashSet<>();
-    protected transient Set<FPlayer> altPlayers = new HashSet<>();
     protected List<String> altInvites = new ArrayList<>();
+
+    protected transient long lastPlayerLoggedOffTime;
+    protected transient Set<FPlayer> fplayers = new HashSet<>();
+    protected transient Set<FPlayer> altPlayers = new HashSet<>();
+
     /**
      * LockedThread's ADDITIONS
      */

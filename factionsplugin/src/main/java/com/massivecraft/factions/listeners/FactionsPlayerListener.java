@@ -584,7 +584,7 @@ public class FactionsPlayerListener implements Listener {
         Faction factionTo = Board.getInstance().getFactionAt(to);
         boolean changedFaction = (factionFrom != factionTo);
 
-        if (p.getConfig().getBoolean("f-fly.enable", false) && changedFaction) {
+        if (me.getFaction().getAccess(me, PermissableAction.FLY) == Access.ALLOW && p.getConfig().getBoolean("f-fly.enable", false) && changedFaction) {
             boolean canFlyHere = me.canFlyAtLocation();
             if (!me.isAdminBypassing() && me.isFlying() && !canFlyHere) {
                 me.setFlying(false);

@@ -29,7 +29,6 @@ public enum PermissableAction {
     WITHDRAW("withdraw"),
     TERRITORY("territory"),
     ACCESS("access"),
-    DISBAND("disband"),
     PROMOTE("promote"),
     SETWARP("setwarp"),
     WARP("warp"),
@@ -40,7 +39,7 @@ public enum PermissableAction {
     TNTFILL("TNTFill"),
     F_PERMS("F Perms"),
     CHECK("F Check"),
-    INSPECT("F Inspect")
+    INSPECT("F Inspect"),
     ;
 
     private String name;

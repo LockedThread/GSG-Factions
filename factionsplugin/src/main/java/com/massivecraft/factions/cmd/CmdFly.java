@@ -4,8 +4,11 @@ import com.massivecraft.factions.Board;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.P;
 import com.massivecraft.factions.struct.Permission;
+import com.massivecraft.factions.struct.Role;
 import com.massivecraft.factions.util.FlightDisableUtil;
 import com.massivecraft.factions.util.WarmUpUtil;
+import com.massivecraft.factions.zcore.fperms.Access;
+import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.util.TL;
 
 public class CmdFly extends FCommand {
@@ -39,6 +42,11 @@ public class CmdFly extends FCommand {
     private void toggleFlight(final boolean toggle) {
         if (P.p.isSotw()) {
             msg(TL.SOTW_IS_ENABLED);
+            return;
+        }
+        Access access = myFaction.getAccess(fme, PermissableAction.FLY);
+        if (access == Access.DENY || (access == Access.UNDEFINED && !assertMinRole(Role.RECRUIT))) {
+            fme.msg(TL.GENERIC_NOPERMISSION, "fly");
             return;
         }
         // If false do nothing besides set

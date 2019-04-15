@@ -5,6 +5,9 @@
 
 # Made with love <3
 
+inspect:
+  enable: true
+
 default-tnt-bank-balance: 5000000
 
 # Debug
@@ -502,36 +505,33 @@ fperm-gui:
       # Start action slots
       build: 9
       destroy: 10
-      frost-walk: 11
-      pain-build: 12
-      door: 13
-      button: 14
-      lever: 15
-      container: 16
-      invite: 17
-      kick: 18
-      item: 19
-      sethome: 20
-      withdraw: 21
-      territory: 22
-      access: 23
-      promote: 24
-      setwarp: 25
-      warp: 26
-      ban: 27
-      disband: 28
-      fly: 29
-      chest: 30
-      tntbank: 31
-      tntfill: 33
-      claim: 34
-      check: 35
-      tag: 36
+      pain-build: 11
+      door: 12
+      button: 13
+      lever: 14
+      container: 15
+      invite: 16
+      kick: 17
+      item: 18
+      sethome: 19
+      withdraw: 20
+      territory: 21
+      access: 22
+      promote: 23
+      setwarp: 24
+      warp: 25
+      ban: 26
+      fly: 27
+      chest: 28
+      tntbank: 29
+      tntfill: 30
+      check: 31
+      tag: 32
+      inspect: 33
     # Material to show, if the material is colorable eg: Wool, Stained Clay it will update with it's access color
     materials:
       build: STAINED_CLAY
       destroy: STAINED_CLAY
-      frost-walk: STAINED_CLAY
       pain-build: STAINED_CLAY
       door: STAINED_CLAY
       button: STAINED_CLAY
@@ -548,14 +548,13 @@ fperm-gui:
       setwarp: STAINED_CLAY
       warp: STAINED_CLAY
       ban: STAINED_CLAY
-      disband: STAINED_CLAY
       fly: STAINED_CLAY
       chest: STAINED_CLAY
       tntbank: STAINED_CLAY
       tntfill: STAINED_CLAY
       check: STAINED_CLAY
-      claim: STAINED_CLAY
       tag: STAINED_CLAY
+      inspect: STAINED_CLAY
     # Same dummy items format as above
     dummy-items:
       '0':

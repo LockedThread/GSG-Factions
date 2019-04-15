@@ -102,6 +102,7 @@ public class FCmdRoot extends FCommand {
     public CmdSetMaxTNTBankBalance cmdSetMaxTNTBankBalance = new CmdSetMaxTNTBankBalance();
     public CmdMuteChat cmdMuteChat = new CmdMuteChat();
     public CmdCheck cmdCheck = new CmdCheck();
+    public CmdInspect cmdInspect = new CmdInspect();
 
     public FCmdRoot() {
         super();
@@ -213,6 +214,13 @@ public class FCmdRoot extends FCommand {
         this.addSubCommand(this.cmdSetMaxTNTBankBalance);
         this.addSubCommand(this.cmdMuteChat);
         this.addSubCommand(this.cmdCheck);
+
+        if (P.p.getConfig().getBoolean("inspect.enable")) {
+            this.addSubCommand(this.cmdInspect);
+            P.p.log(Level.INFO, "Enabling /f inspect command");
+        } else {
+            P.p.log(Level.WARNING, "Faction Inspect set to false in config.yml. Not enabling /f inspect command.");
+        }
 
         if (P.p.getConfig().getBoolean("f-fly.enable", false)) {
             this.addSubCommand(this.cmdFly);

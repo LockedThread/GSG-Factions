@@ -79,6 +79,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected transient boolean loginPvpDisabled;
     protected transient boolean shouldTakeFallDamage = true;
     protected transient long lastMapUse;
+    protected transient boolean inspecting = false;
 
     public MemoryFPlayer() {
     }
@@ -128,6 +129,16 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.mapHeight = Conf.mapHeight;
         this.notificationsEnabled = other.notificationsEnabled;
         this.altFactionId = other.altFactionId;
+    }
+
+    @Override
+    public boolean isInspecting() {
+        return inspecting;
+    }
+
+    @Override
+    public void setInspecting(boolean inspecting) {
+        this.inspecting = inspecting;
     }
 
     @Override
@@ -692,7 +703,6 @@ public abstract class MemoryFPlayer implements FPlayer {
      * Check if the scoreboard should be shown. Simple method to be used by above method.
      *
      * @param toShow Faction to be shown.
-     *
      * @return true if should show, otherwise false.
      */
     public boolean showInfoBoard(Faction toShow) {
@@ -1013,6 +1023,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     public boolean canFlyAtLocation() {
         return canFlyAtLocation(lastStoodAt);
     }
+
     public boolean canFlyAtLocation(FLocation location) {
         Faction faction = Board.getInstance().getFactionAt(location);
         if (faction.isWilderness()) {
