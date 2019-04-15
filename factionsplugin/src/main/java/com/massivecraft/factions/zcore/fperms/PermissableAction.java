@@ -25,7 +25,7 @@ public enum PermissableAction {
     INVITE("invite"),
     KICK("kick"),
     ITEM("items"), // generic for most items
-    SETHOME("faction sethome"),
+    SETHOME("Faction Sethome"),
     WITHDRAW("withdraw"),
     TERRITORY("territory"),
     ACCESS("access"),
@@ -36,10 +36,10 @@ public enum PermissableAction {
     FLY("fly"),
     CHEST("chest"),
     TAG("tag"),
-    TNTBANK("tntbank"),
-    TNTFILL("tntfill"),
-    F_PERMS("fperms"),
-    CHECK("fcheck")
+    TNTBANK("TNTBank"),
+    TNTFILL("TNTFill"),
+    F_PERMS("F Perms"),
+    CHECK("F Check")
     ;
 
     private String name;

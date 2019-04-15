@@ -42,21 +42,26 @@ public class PermissionsMapTypeAdapter implements JsonDeserializer<Map<Permissab
                     PermissableAction permissableAction = PermissableAction.fromString(entry2.getKey());
                     if (permissableAction == null) {
                         switch (entry2.getKey()) {
-                            case "painbuild":
                             case "pain build":
                                 permissableAction = PermissableAction.PAIN_BUILD;
                                 break;
                             case "items":
                                 permissableAction = PermissableAction.ITEM;
                                 break;
-                            case "fperms":
+                            case "F Perms":
                                 permissableAction = PermissableAction.F_PERMS;
                                 break;
-                            case "fcheck":
+                            case "F Check":
                                 permissableAction = PermissableAction.CHECK;
                                 break;
-                            case "faction sethome":
+                            case "Faction Sethome":
                                 permissableAction = PermissableAction.SETHOME;
+                                break;
+                            case "TNTFill":
+                                permissableAction = PermissableAction.TNTFILL;
+                                break;
+                            case "TNTBank":
+                                permissableAction = PermissableAction.TNTBANK;
                                 break;
                         }
                     }
