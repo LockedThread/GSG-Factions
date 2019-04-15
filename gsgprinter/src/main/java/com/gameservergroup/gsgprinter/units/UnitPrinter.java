@@ -35,14 +35,15 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Predicate;
 
 public class UnitPrinter extends Unit {
 
+    private static final DecimalFormat decimalFormat = new DecimalFormat("##.00");
     private static final GSGPrinter GSG_PRINTER = GSGPrinter.getInstance();
     private static final EnumSet<Material> BANNED_INTERACTABLES = EnumSet.of(Material.MONSTER_EGG, Material.EGG,
             Material.MOB_SPAWNER, Material.BEACON, Material.BEDROCK, Material.BOW, Material.POTION,
@@ -56,11 +57,7 @@ public class UnitPrinter extends Unit {
     private boolean useNcp;
     private HashSet<String> allowedCommands;
     private HashSet<String> blacklistedKeywords;
-    private Set<UUID> printingPlayers;
-
-    public static GSGPrinter getGsgPrinter() {
-        return GSG_PRINTER;
-    }
+    private HashMap<UUID, EnumMap<Material, Integer>> printingPlayers;
 
     private boolean startsWith(Collection<String> strings, String data) {
         return strings.stream().anyMatch(string -> string.toLowerCase().startsWith(data.toLowerCase()));
@@ -72,7 +69,6 @@ public class UnitPrinter extends Unit {
 
     private <T extends PlayerEvent> void cancelEvents(Predicate<T> predicate, Class<T>[] playerEvents) {
         for (Class<T> playerEvent : playerEvents) {
-            System.out.println("cancelling " + playerEvent.getSimpleName());
             EventPost.of(playerEvent)
                     .filter(predicate)
                     .handle(event -> {
@@ -93,7 +89,7 @@ public class UnitPrinter extends Unit {
         GSG_PRINTER.getFactionsIntegration().hookFlightDisable(new CallBack<Player>() {
             @Override
             public void call(Player player) {
-                if (player != null && printingPlayers.contains(player.getUniqueId())) {
+                if (player != null && printingPlayers.containsKey(player.getUniqueId())) {
                     disablePrinter(player, true, true);
                 }
             }
@@ -105,24 +101,24 @@ public class UnitPrinter extends Unit {
                         printingPlayers.remove(onlinePlayer.getUniqueId());
                     }
                 }).post(GSG_PRINTER);
-        this.printingPlayers = new HashSet<>();
+        this.printingPlayers = new HashMap<>();
         this.useNcp = GSG_PRINTER.getConfig().getBoolean("use-ncp");
         this.allowedCommands = new HashSet<>(GSG_PRINTER.getConfig().getStringList("allowed-commands"));
         this.blacklistedKeywords = new HashSet<>(GSG_PRINTER.getConfig().getStringList("blacklisted-keywords"));
         hookDisable(new CallBack() {
             @Override
             public void call() {
-                printingPlayers.forEach(uuid -> disablePrinter(Bukkit.getPlayer(uuid), false, false));
+                printingPlayers.keySet().forEach(uuid -> disablePrinter(Bukkit.getPlayer(uuid), false, false));
             }
         });
-        cancelEvents(event -> printingPlayers.contains(event.getPlayer().getUniqueId()), new Class[]{PlayerPickupItemEvent.class, PlayerDropItemEvent.class, PlayerFishEvent.class, PlayerInteractEntityEvent.class, PlayerItemConsumeEvent.class, PlayerBucketEmptyEvent.class, PlayerBucketFillEvent.class, PlayerInteractAtEntityEvent.class, PlayerArmorStandManipulateEvent.class, PlayerShearEntityEvent.class, PlayerEditBookEvent.class, PlayerEggThrowEvent.class});
+        cancelEvents(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()), new Class[]{PlayerPickupItemEvent.class, PlayerDropItemEvent.class, PlayerFishEvent.class, PlayerInteractEntityEvent.class, PlayerItemConsumeEvent.class, PlayerBucketEmptyEvent.class, PlayerBucketFillEvent.class, PlayerInteractAtEntityEvent.class, PlayerArmorStandManipulateEvent.class, PlayerShearEntityEvent.class, PlayerEditBookEvent.class, PlayerEggThrowEvent.class});
         CommandPost.of()
-                .build()
+                .builder()
                 .assertPlayer()
                 .assertPermission("gsgprinter.toggle")
                 .handler(commandContext -> {
                     Player player = commandContext.getSender();
-                    if (printingPlayers.contains(player.getUniqueId())) {
+                    if (printingPlayers.containsKey(player.getUniqueId())) {
                         disablePrinter(player, true);
                     } else if (GSG_PRINTER.isEnableCombatTagPlusIntegration() && GSG_PRINTER.getCombatIntegration().isTagged(player)) {
                         commandContext.reply(PrinterMessages.YOU_ARE_IN_COMBAT);
@@ -139,45 +135,39 @@ public class UnitPrinter extends Unit {
 
         EventPost.of(PlayerInteractEvent.class, EventPriority.LOWEST)
                 .filter(EventFilters.getIgnoreCancelled())
-                .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
-                .handle(event -> {
-                    ItemStack item = event.getItem();
-                    if (item != null && (BANNED_INTERACTABLES.contains(item.getType()) || (item.hasItemMeta() && (item.getItemMeta().hasLore() || item.getItemMeta().hasDisplayName()))) || event.getAction() == Action.LEFT_CLICK_AIR || event.getClickedBlock() != null && event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getState() instanceof InventoryHolder) {
-                        event.setCancelled(true);
-                    }
-                }).post(GSG_PRINTER);
+                .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
+                .filter(event -> event.getItem() != null && ((BANNED_INTERACTABLES.contains(event.getItem().getType())) || (event.getItem().hasItemMeta() && (event.getItem().getItemMeta().hasLore() || event.getItem().getItemMeta().hasDisplayName()))) || event.getAction() == Action.LEFT_CLICK_AIR || event.getClickedBlock() != null && event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getState() instanceof InventoryHolder && !event.getPlayer().isSneaking())
+                .handle(event -> event.setCancelled(true))
+                .post(GSG_PRINTER);
 
         EventPost.of(PlayerQuitEvent.class)
-                .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
+                .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
                 .handle(event -> disablePrinter(event.getPlayer(), true))
                 .post(GSG_PRINTER);
 
         EventPost.of(BlockPlaceEvent.class, EventPriority.HIGHEST)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> event.getBlockPlaced() != null)
-                .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
-                .handle(event -> {
-                    if (GSG_CORE.canBuild(event.getPlayer(), event.getBlockPlaced())) {
-                        if (!chargePlayer(event.getPlayer(), event.getBlockPlaced().getType())) {
-                            event.setCancelled(true);
-                        }
-                    }
-                }).post(GSG_PRINTER);
+                .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
+                .filter(event -> GSG_CORE.canBuild(event.getPlayer(), event.getBlockPlaced()))
+                .filter(event -> !chargePlayer(event.getPlayer(), event.getBlockPlaced().getType()))
+                .handle(event -> event.setCancelled(true))
+                .post(GSG_PRINTER);
 
         EventPost.of(PlayerExpChangeEvent.class)
-                .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
+                .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
                 .filter(event -> event.getAmount() > 0)
                 .handle(event -> event.setAmount(0))
                 .post(GSG_PRINTER);
 
         EventPost.of(PlayerChangedWorldEvent.class)
-                .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
+                .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
                 .handle(event -> disablePrinter(event.getPlayer(), true))
                 .post(GSG_PRINTER);
 
         EventPost.of(HangingBreakByEntityEvent.class)
                 .filter(event -> event.getRemover() instanceof Player)
-                .filter(event -> printingPlayers.contains(event.getRemover().getUniqueId()))
+                .filter(event -> printingPlayers.containsKey(event.getRemover().getUniqueId()))
                 .handle(event -> event.setCancelled(true))
                 .post(GSG_PRINTER);
 
@@ -186,14 +176,14 @@ public class UnitPrinter extends Unit {
                 .filter(event -> event.getEntity() instanceof Arrow)
                 .filter(event -> event.getEntity().getShooter() instanceof Player)
                 .filter(event -> ((Player) event.getEntity().getShooter()).getUniqueId() != null)
-                .filter(event -> printingPlayers.contains(((Player) event.getEntity().getShooter()).getUniqueId()))
+                .filter(event -> printingPlayers.containsKey(((Player) event.getEntity().getShooter()).getUniqueId()))
                 .handle(event -> {
                     event.getEntity().remove();
                     event.setCancelled(true);
                 }).post(GSG_PRINTER);
 
         EventPost.of(InventoryClickEvent.class, EventPriority.LOWEST)
-                .filter(event -> printingPlayers.contains(event.getWhoClicked().getUniqueId()))
+                .filter(event -> printingPlayers.containsKey(event.getWhoClicked().getUniqueId()))
                 .filter(event -> event.getView().getType() != InventoryType.CREATIVE)
                 .handle(event -> {
                     event.setCancelled(true);
@@ -201,7 +191,7 @@ public class UnitPrinter extends Unit {
                 }).post(GSG_PRINTER);
 
         EventPost.of(InventoryOpenEvent.class, EventPriority.LOWEST)
-                .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
+                .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
                 .filter(event -> event.getView().getType() != InventoryType.CREATIVE)
                 .handle(event -> {
                     event.setCancelled(true);
@@ -209,7 +199,7 @@ public class UnitPrinter extends Unit {
                 }).post(GSG_PRINTER);
 
         EventPost.of(PlayerCommandPreprocessEvent.class, EventPriority.LOWEST)
-                .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
+                .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
                 .handle(event -> {
                     String message = event.getMessage().toLowerCase().trim();
                     if (!startsWith(allowedCommands, message) || sift(blacklistedKeywords, message)) {
@@ -221,7 +211,7 @@ public class UnitPrinter extends Unit {
         EventPost.of(EntityDamageByEntityEvent.class, EventPriority.HIGHEST)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> event.getDamager() instanceof Player)
-                .filter(event -> printingPlayers.contains(event.getDamager().getUniqueId()))
+                .filter(event -> printingPlayers.containsKey(event.getDamager().getUniqueId()))
                 .handle(event -> {
                     event.setCancelled(true);
                     disablePrinter((Player) event.getDamager(), true);
@@ -229,7 +219,7 @@ public class UnitPrinter extends Unit {
 
         EventPost.of(PlayerInteractEntityEvent.class, EventPriority.LOWEST)
                 .filter(event -> event.getRightClicked() instanceof Player)
-                .filter(event -> printingPlayers.contains(event.getRightClicked().getUniqueId()))
+                .filter(event -> printingPlayers.containsKey(event.getRightClicked().getUniqueId()))
                 .handle(event -> {
                     event.setCancelled(true);
                     disablePrinter((Player) event.getRightClicked(), true);
@@ -243,7 +233,7 @@ public class UnitPrinter extends Unit {
                 .post(GSG_PRINTER);
 
         EventPost.of(InventoryCreativeEvent.class)
-                .filter(event -> printingPlayers.contains(event.getWhoClicked().getUniqueId()))
+                .filter(event -> printingPlayers.containsKey(event.getWhoClicked().getUniqueId()))
                 .filter(event -> (event.getCurrentItem() != null && event.getCurrentItem().hasItemMeta()) || (event.getCursor() != null && event.getCursor().hasItemMeta()))
                 .handle(event -> {
                     Bukkit.getOnlinePlayers()
@@ -256,7 +246,7 @@ public class UnitPrinter extends Unit {
                 }).post(GSG_PRINTER);
 
         EventPost.of(PlayerDeathEvent.class)
-                .filter(event -> printingPlayers.contains(event.getEntity().getUniqueId()))
+                .filter(event -> printingPlayers.containsKey(event.getEntity().getUniqueId()))
                 .handle(event -> {
                     event.getDrops().clear();
                     event.setDroppedExp(0);
@@ -265,25 +255,22 @@ public class UnitPrinter extends Unit {
         if (GSG_PRINTER.getConfig().getBoolean("enable-blockbreak")) {
             EventPost.of(BlockBreakEvent.class)
                     .filter(EventFilters.getIgnoreCancelled())
-                    .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
+                    .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
                     .handle(event -> event.setCancelled(true))
                     .post(GSG_PRINTER);
         } else {
             EventPost.of(BlockBreakEvent.class)
                     .filter(EventFilters.getIgnoreCancelled())
-                    .filter(event -> printingPlayers.contains(event.getPlayer().getUniqueId()))
-                    .filter(event -> BANNED_INTERACTABLES.contains(event.getBlock().getType()))
-                    .handle(event -> {
-                        if (BANNED_INTERACTABLES.contains(event.getBlock().getType()) || event.getBlock().getY() < 1) {
-                            event.setCancelled(true);
-                        }
-                    }).post(GSG_PRINTER);
+                    .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
+                    .filter(event -> BANNED_INTERACTABLES.contains(event.getBlock().getType()) || event.getBlock().getY() < 1)
+                    .handle(event -> event.setCancelled(true))
+                    .post(GSG_PRINTER);
         }
     }
 
     public void enablePrinter(Player player, boolean notify) {
         player.performCommand("f fly y");
-        printingPlayers.add(player.getUniqueId());
+        printingPlayers.put(player.getUniqueId(), new EnumMap<>(Material.class));
         player.setGameMode(GameMode.CREATIVE);
         player.closeInventory();
         player.getInventory().clear();
@@ -312,6 +299,13 @@ public class UnitPrinter extends Unit {
             disablePrinter(player, false);
             return false;
         }
+        getPrintingPlayers().computeIfPresent(player.getUniqueId(), (uuid, materialIntegerEnumMap) -> {
+            materialIntegerEnumMap.computeIfPresent(material, (material1, integer) -> integer + 1);
+            materialIntegerEnumMap.putIfAbsent(material, 1);
+            return materialIntegerEnumMap;
+        });
+
+        getPrintingPlayers().putIfAbsent(player.getUniqueId(), new EnumMap<>(Material.class));
         GSG_PRINTER.getServer().getScheduler().runTaskAsynchronously(GSG_PRINTER, () -> Module.getEconomy().withdrawPlayer(player, price));
         return true;
     }
@@ -321,6 +315,20 @@ public class UnitPrinter extends Unit {
     }
 
     public void disablePrinter(Player player, boolean notify, boolean nofall) {
+        if (notify) {
+            player.sendMessage(PrinterMessages.PRINTER_DISABLE.toString());
+            EnumMap<Material, Integer> map = printingPlayers.get(player.getUniqueId());
+            if (!map.isEmpty()) {
+                double total = 0.0;
+                player.sendMessage(PrinterMessages.SOLD_HEADER.toString());
+                for (Map.Entry<Material, Integer> entry : map.entrySet()) {
+                    double buyPrice = GSG_PRINTER.getSellIntegration().getBuyPrice(entry.getKey(), entry.getValue());
+                    player.sendMessage(PrinterMessages.SOLD_LINE.toString().replace("{material}", Utils.toTitleCasing(entry.getKey().name().replace("_", " "))).replace("{money}", decimalFormat.format(buyPrice)));
+                    total += buyPrice;
+                }
+                player.sendMessage(PrinterMessages.SOLD_TOTAL.toString().replace("{money}", decimalFormat.format(total)));
+            }
+        }
         printingPlayers.remove(player.getUniqueId());
         player.performCommand("f fly n");
         player.setGameMode(GameMode.SURVIVAL);
@@ -330,27 +338,12 @@ public class UnitPrinter extends Unit {
             player.setMetadata("nofalldamage", new FixedMetadataValue(GSG_PRINTER, true));
             GSG_PRINTER.getServer().getScheduler().runTaskLater(GSG_PRINTER, () -> player.removeMetadata("nofalldamage", GSG_PRINTER), 200L);
         }
-        if (notify) {
-            player.sendMessage(PrinterMessages.PRINTER_DISABLE.toString());
-        }
         if (useNcp) {
             GSG_PRINTER.getServer().dispatchCommand(GSG_PRINTER.getServer().getConsoleSender(), "ncp unexempt " + player.getName());
         }
     }
 
-    public boolean isUseNcp() {
-        return useNcp;
-    }
-
-    public HashSet<String> getAllowedCommands() {
-        return allowedCommands;
-    }
-
-    public HashSet<String> getBlacklistedKeywords() {
-        return blacklistedKeywords;
-    }
-
-    public Set<UUID> getPrintingPlayers() {
+    public HashMap<UUID, EnumMap<Material, Integer>> getPrintingPlayers() {
         return printingPlayers;
     }
 }
