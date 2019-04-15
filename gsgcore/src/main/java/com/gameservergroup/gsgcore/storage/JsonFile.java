@@ -35,6 +35,9 @@ public class JsonFile<T> {
 
     public void save(T t) {
         try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
             outputStreamWriter.write(GSGCore.getInstance().getGson().toJson(t, typeToken.getType()));
