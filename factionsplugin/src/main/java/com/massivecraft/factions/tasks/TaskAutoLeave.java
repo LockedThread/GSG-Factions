@@ -1,14 +1,15 @@
-package com.massivecraft.factions.util;
+package com.massivecraft.factions.tasks;
 
 import com.massivecraft.factions.Conf;
 import com.massivecraft.factions.P;
+import com.massivecraft.factions.util.AutoLeaveProcessTask;
 
-public class AutoLeaveTask implements Runnable {
+public class TaskAutoLeave implements Runnable {
 
     private static AutoLeaveProcessTask task;
-    double rate;
+    private double rate;
 
-    public AutoLeaveTask() {
+    public TaskAutoLeave() {
         this.rate = Conf.autoLeaveRoutineRunsEveryXMinutes;
     }
 
