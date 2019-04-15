@@ -75,7 +75,7 @@ public class Conf {
     public static String chatTagInsertAfterString = "";
     public static String chatTagInsertBeforeString = "";
     public static int chatTagInsertIndex = 0;
-    public static boolean chatTagPadBefore = false;
+    public static boolean chatTagPadBefore = true;
     public static boolean chatTagPadAfter = true;
     public static String chatTagFormat = "%s" + ChatColor.WHITE;
     public static boolean alwaysShowChatTag = true;
