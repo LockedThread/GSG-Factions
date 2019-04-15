@@ -196,7 +196,7 @@ public class Econ {
         }
 
         // Check if the new balance is over Essential's money cap.
-        if (Essentials.isOverBalCap(to, econ.getBalance(toAcc) + amount)) {
+        if (Essentials.isOverBalCap(econ.getBalance(toAcc) + amount)) {
             invoker.msg(TL.ECON_OVER_BAL_CAP, amount);
             return false;
         }
