@@ -41,7 +41,7 @@ public class UnitGen extends Unit {
             }
         });
         CommandPost.of()
-                .build()
+                .builder()
                 .assertPlayer()
                 .handler(c -> c.getSender().openInventory(GSG_GEN.getGenMenu().getInventory()))
                 .post(GSG_GEN, "gen", "gens", "genblock", "genblocks", "gb", "genbucket", "genbuckets");
