@@ -14,6 +14,7 @@ import com.massivecraft.factions.integration.Worldguard;
 import com.massivecraft.factions.integration.combat.impl.CombatTagPlusImpl;
 import com.massivecraft.factions.listeners.*;
 import com.massivecraft.factions.struct.ChatMode;
+import com.massivecraft.factions.tasks.TaskWallCheckReminder;
 import com.massivecraft.factions.units.UnitWorldBorder;
 import com.massivecraft.factions.util.*;
 import com.massivecraft.factions.zcore.MPlugin;
@@ -153,6 +154,9 @@ public class P extends MPlugin {
             (this.flightTask = new FlightDisableUtil()).runTaskTimer(this, 0, factionsFlightDelay);
             log(Level.INFO, "Enabling enemy radius check for f fly every %s seconds", factionsFlightDelay / 20);
         }
+
+        new TaskWallCheckReminder().runTaskTimerAsynchronously(this, 0L, 1200L);
+        log(Level.INFO, "Starting the Async Task Wall Check Reminder");
 
         new TitleAPI();
         setupPlaceholderAPI();

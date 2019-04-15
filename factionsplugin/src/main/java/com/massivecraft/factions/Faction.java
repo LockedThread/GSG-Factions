@@ -25,6 +25,12 @@ public interface Faction extends EconomyParticipator {
     /**
      * LockedThread's ADDITIONS
      */
+    public long getCheckReminderMinutes();
+
+    public void setCheckReminderMinutes(long minutes);
+
+    public void sendCheckRemind();
+
     public String getPayPal();
 
     public void setPayPal(String email);

@@ -101,6 +101,7 @@ public class FCmdRoot extends FCommand {
     public CmdSotw cmdSotw = new CmdSotw();
     public CmdSetMaxTNTBankBalance cmdSetMaxTNTBankBalance = new CmdSetMaxTNTBankBalance();
     public CmdMuteChat cmdMuteChat = new CmdMuteChat();
+    public CmdCheck cmdCheck = new CmdCheck();
 
     public FCmdRoot() {
         super();
@@ -211,6 +212,7 @@ public class FCmdRoot extends FCommand {
         this.addSubCommand(this.cmdSotw);
         this.addSubCommand(this.cmdSetMaxTNTBankBalance);
         this.addSubCommand(this.cmdMuteChat);
+        this.addSubCommand(this.cmdCheck);
 
         if (P.p.getConfig().getBoolean("f-fly.enable", false)) {
             this.addSubCommand(this.cmdFly);
