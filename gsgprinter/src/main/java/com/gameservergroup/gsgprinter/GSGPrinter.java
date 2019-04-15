@@ -3,9 +3,9 @@ package com.gameservergroup.gsgprinter;
 import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgprinter.enums.PrinterMessages;
 import com.gameservergroup.gsgprinter.integration.CombatIntegration;
-import com.gameservergroup.gsgprinter.integration.FactionsIntegration;
 import com.gameservergroup.gsgprinter.integration.SellIntegration;
 import com.gameservergroup.gsgprinter.integration.combat.impl.CombatTagPlusImpl;
+import com.gameservergroup.gsgprinter.integration.factions.impl.FactionsUUIDImpl;
 import com.gameservergroup.gsgprinter.integration.factions.impl.LockedThreadFactionsUUIDImpl;
 import com.gameservergroup.gsgprinter.integration.impl.selling.ConfigSellImpl;
 import com.gameservergroup.gsgprinter.integration.impl.selling.EssentialsSellImpl;
@@ -19,7 +19,7 @@ public class GSGPrinter extends Module {
     private boolean enableCombatTagPlusIntegration;
     private CombatIntegration combatIntegration;
     private SellIntegration sellIntegration;
-    private FactionsIntegration factionsIntegration;
+    private UnitPrinter unitPrinter;
 
     public static GSGPrinter getInstance() {
         return instance;
@@ -55,10 +55,10 @@ public class GSGPrinter extends Module {
         if (getServer().getPluginManager().getPlugin("Factions") != null) {
             if (getServer().getPluginManager().getPlugin("Factions").getDescription().getAuthors().contains("LockedThread")) {
                 getLogger().info("Using LockedThread's Factions Fork");
-                this.factionsIntegration = new LockedThreadFactionsUUIDImpl();
+                new LockedThreadFactionsUUIDImpl().hookFlightDisable();
             } else {
-                this.factionsIntegration = callBack -> {
-                };
+                getLogger().warning("Using FactionsUUID, consider switching to LockedThread's Faction fork for better performance.");
+                new FactionsUUIDImpl().hookFlightDisable();
             }
         } else {
             getLogger().severe("Unable to find factions plugin!");
@@ -73,7 +73,7 @@ public class GSGPrinter extends Module {
             }
         }
         saveConfig();
-        registerUnits(new UnitPrinter());
+        registerUnits(this.unitPrinter = new UnitPrinter());
     }
 
     @Override
@@ -106,7 +106,7 @@ public class GSGPrinter extends Module {
         return enableCombatTagPlusIntegration;
     }
 
-    public FactionsIntegration getFactionsIntegration() {
-        return factionsIntegration;
+    public UnitPrinter getUnitPrinter() {
+        return unitPrinter;
     }
 }

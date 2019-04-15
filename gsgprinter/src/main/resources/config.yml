@@ -3,12 +3,17 @@ shopguiplus:
     - 'donator'
     - 'special'
 
+#Enemy check in ticks when not using LockedThread's factions fork. This will cause unnecessary lag. Please switch to LockedThread's faction fork.
+flight-check:
+  interval: 40
+  radius: 25
+#Implements getting kicked out of combat whilst in printer.
 enable-combattagplus-integration: true
 #Allows the breaking of blocks in printer
 enable-blockbreak: true
 #Auto excludes them from printer related checks for no cheat plus.
 use-ncp: true
-#Can be config or essentials.
+#Can be config, shopguiplus, essentials.
 sell-integration: 'config'
 #Commands allowed
 allowed-commands:

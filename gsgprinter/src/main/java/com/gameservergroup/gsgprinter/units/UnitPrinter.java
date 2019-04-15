@@ -86,15 +86,6 @@ public class UnitPrinter extends Unit {
 
     @Override
     public void setup() {
-        GSG_PRINTER.getFactionsIntegration().hookFlightDisable(new CallBack<Player>() {
-            @Override
-            public void call(Player player) {
-                if (player != null && printingPlayers.containsKey(player.getUniqueId())) {
-                    disablePrinter(player, true, true);
-                }
-            }
-        });
-
         EventPost.of(FactionDisbandEvent.class)
                 .handle(factionDisbandEvent -> {
                     for (Player onlinePlayer : factionDisbandEvent.getFaction().getOnlinePlayers()) {
