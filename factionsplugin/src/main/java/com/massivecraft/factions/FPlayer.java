@@ -28,6 +28,10 @@ import java.util.List;
 
 public interface FPlayer extends EconomyParticipator {
 
+    public long getLastMapUse();
+
+    public void setLastMapUse(long lastMapUse);
+
     public boolean isSeeingChunk();
 
     public void setSeeingChunk(boolean seeingChunk);

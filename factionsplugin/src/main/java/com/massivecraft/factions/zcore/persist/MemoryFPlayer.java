@@ -78,6 +78,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected transient boolean autoWarZoneEnabled;
     protected transient boolean loginPvpDisabled;
     protected transient boolean shouldTakeFallDamage = true;
+    protected transient long lastMapUse;
 
     public MemoryFPlayer() {
     }
@@ -127,6 +128,16 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.mapHeight = Conf.mapHeight;
         this.notificationsEnabled = other.notificationsEnabled;
         this.altFactionId = other.altFactionId;
+    }
+
+    @Override
+    public long getLastMapUse() {
+        return lastMapUse;
+    }
+
+    @Override
+    public void setLastMapUse(long lastMapUse) {
+        this.lastMapUse = lastMapUse;
     }
 
     public boolean isSeeingChunk() {

@@ -30,6 +30,7 @@ public enum TL {
      * LockedThread's ADDITIONS
      */
     ENTERED_CORNER("&eType &6/f corner &eto claim all nearby chunks!"),
+    ENTERED_CORNER_TITLE("&4&lCORNER CLAIM"),
 
     COMMAND_TNT_FULL("&cYour tnt bank is full. Please upgrade your tnt bank."),
 

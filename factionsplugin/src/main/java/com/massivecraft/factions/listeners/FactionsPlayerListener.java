@@ -42,8 +42,6 @@ public class FactionsPlayerListener implements Listener {
     private final Cache<UUID, Byte> recentDamageCache = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.SECONDS).build();
     private final Set<FLocation> corners = new HashSet<>(12);
     private P p;
-    // Holds the next time a player can have a map shown.
-    private HashMap<UUID, Long> showTimes = new HashMap<>();
     // for handling people who repeatedly spam attempts to open a door (or similar) in another faction's territory
     private Map<String, InteractAttemptSpam> interactSpammers = new HashMap<>();
 
@@ -59,10 +57,10 @@ public class FactionsPlayerListener implements Listener {
             if (border != null) {
                 int cornerCoord = (int) ((border.getSize() - 1D) / 2D);
                 Set<FLocation> local = new HashSet<>(4);
-                local.add(new FLocation(world.getBlockAt(cornerCoord, 128, cornerCoord)));
-                local.add(new FLocation(world.getBlockAt(cornerCoord, 128, -cornerCoord)));
-                local.add(new FLocation(world.getBlockAt(-cornerCoord, 128, cornerCoord)));
-                local.add(new FLocation(world.getBlockAt(-cornerCoord, 128, -cornerCoord)));
+                local.add(new FLocation(world.getName(), FLocation.blockToChunk(cornerCoord), FLocation.blockToChunk(cornerCoord)));
+                local.add(new FLocation(world.getName(), FLocation.blockToChunk(cornerCoord), FLocation.blockToChunk(-cornerCoord)));
+                local.add(new FLocation(world.getName(), FLocation.blockToChunk(-cornerCoord), FLocation.blockToChunk(cornerCoord)));
+                local.add(new FLocation(world.getName(), FLocation.blockToChunk(-cornerCoord), FLocation.blockToChunk(-cornerCoord)));
 
                 // check if claimed
                 local.removeIf(floc -> {
@@ -446,8 +444,7 @@ public class FactionsPlayerListener implements Listener {
                 }
                 int count = attempt.increment();
                 if (count >= 10) {
-                    FPlayer me = FPlayers.getInstance().getByPlayer(player);
-                    me.msg(TL.PLAYER_OUCH);
+                    player.sendMessage(TL.PLAYER_OUCH.toString());
                     player.damage(NumberConversions.floor((double) count / 10));
                 }
             }
@@ -574,6 +571,16 @@ public class FactionsPlayerListener implements Listener {
         }
 
         if (me.isMapAutoUpdating()) {
+            if (me.getLastMapUse() > System.currentTimeMillis()) {
+                if (P.p.getConfig().getBoolean("findfactionsexploit.log", false)) {
+                    P.p.log(Level.WARNING, "%s tried to show a faction map too soon and triggered exploit blocker.", player.getName());
+                }
+            } else {
+                me.sendFancyMessage(Board.getInstance().getMap(me, to, player.getLocation().getYaw()));
+                me.setLastMapUse(System.currentTimeMillis() + P.p.getConfig().getLong("findfactionsexploit.cooldown", 2000));
+            }
+            // This is the old check for last map usage
+            /*
             if (showTimes.containsKey(player.getUniqueId()) && (showTimes.get(player.getUniqueId()) > System.currentTimeMillis())) {
                 if (P.p.getConfig().getBoolean("findfactionsexploit.log", false)) {
                     P.p.log(Level.WARNING, "%s tried to show a faction map too soon and triggered exploit blocker.", player.getName());
@@ -581,7 +588,7 @@ public class FactionsPlayerListener implements Listener {
             } else {
                 me.sendFancyMessage(Board.getInstance().getMap(me, to, player.getLocation().getYaw()));
                 showTimes.put(player.getUniqueId(), System.currentTimeMillis() + P.p.getConfig().getLong("findfactionsexploit.cooldown", 2000));
-            }
+            }*/
         } else {
             Faction myFaction = me.getFaction();
             final String ownersTo = myFaction.getOwnerListString(to);
@@ -617,10 +624,8 @@ public class FactionsPlayerListener implements Listener {
                 Board.getInstance().setFactionAt(Factions.getInstance().getWarZone(), to);
                 me.msg(TL.PLAYER_WARAUTO);
             }
-        } else if (corners.contains(to) && me.hasFaction() && me.canClaimForFaction(me.getFaction())) {
-            if (factionTo == null || factionTo.isWilderness()) {
-                TitleAPI.getInstance().sendTitle(player, Text.toColor("&4&lCORNER CLAIM"), Text.toColor(TL.ENTERED_CORNER.toString()), 0, 60, 20);
-            }
+        } else if (corners.contains(to) && me.hasFaction() && me.canClaimForFaction(me.getFaction()) && (factionTo == null || factionTo.isWilderness())) {
+            TitleAPI.getInstance().sendTitle(player, Text.toColor(TL.ENTERED_CORNER_TITLE.toString()), Text.toColor(TL.ENTERED_CORNER.toString()), 0, 60, 20);
         }
     }
 
@@ -628,7 +633,7 @@ public class FactionsPlayerListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         FPlayer me = FPlayers.getInstance().getByPlayer(event.getPlayer());
 
-        me.getPower();  // update power, so they won't have gained any while dead
+        me.updatePower();  // update power, so they won't have gained any while dead
 
         Location home = me.getFaction().getHome();
         if (Conf.homesEnabled &&
