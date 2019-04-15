@@ -1,5 +1,6 @@
 package com.massivecraft.factions;
 
+import com.google.common.collect.Sets;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -152,8 +153,6 @@ public class Conf {
 
     public static double considerFactionsReallyOfflineAfterXMinutes = 0.0;
 
-    public static int actionDeniedPainAmount = 1;
-
     // commands which will be prevented if the player is a member of a permanent faction
     public static Set<String> permanentFactionMemberDenyCommands = new LinkedHashSet<>();
 
@@ -228,8 +227,6 @@ public class Conf {
     // for claimed areas where further faction-member ownership can be defined
     public static boolean ownedAreasEnabled = true;
     public static int ownedAreasLimitPerFaction = 0;
-    public static boolean ownedAreasModeratorsCanSet = false;
-    public static boolean ownedAreaModeratorsBypass = true;
     public static boolean ownedAreaDenyBuild = true;
     public static boolean ownedAreaPainBuild = false;
     public static boolean ownedAreaProtectMaterials = true;
@@ -241,7 +238,7 @@ public class Conf {
 
     public static boolean pistonProtectionThroughDenyBuild = true;
 
-    public static Set<Material> territoryProtectedMaterials = EnumSet.noneOf(Material.class);
+    public static Set<Material> territoryProtectedMaterials = Sets.newHashSet();
     public static Set<Material> territoryDenyUseageMaterials = EnumSet.noneOf(Material.class);
     public static Set<Material> territoryProtectedMaterialsWhenOffline = EnumSet.noneOf(Material.class);
     public static Set<Material> territoryDenyUseageMaterialsWhenOffline = EnumSet.noneOf(Material.class);
@@ -252,7 +249,6 @@ public class Conf {
     public static String econUniverseAccount = "";
     public static double econCostClaimWilderness = 30.0;
     public static double econCostClaimFromFactionBonus = 30.0;
-    public static double econOverclaimRewardMultiplier = 0.0;
     public static double econClaimAdditionalMultiplier = 0.5;
     public static double econClaimRefundMultiplier = 0.7;
     public static double econCostCreate = 100.0;
@@ -269,7 +265,6 @@ public class Conf {
     public static double econCostMap = 0.0;
     public static double econCostPower = 0.0;
     public static double econCostShow = 0.0;
-    public static double econCostStuck = 0.0;
     public static double econCostOpen = 0.0;
     public static double econCostAlly = 0.0;
     public static double econCostTruce = 0.0;
