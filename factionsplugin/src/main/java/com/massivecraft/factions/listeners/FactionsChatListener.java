@@ -165,13 +165,8 @@ public class FactionsChatListener implements Listener {
                     return;
                 }
             }
-
-            // Write to the log... We will write the non colored message.
-            String nonColoredMsg = ChatColor.stripColor(String.format(nonColoredMsgFormat, talkingPlayer.getDisplayName(), msg));
-            Bukkit.getLogger().log(Level.INFO, nonColoredMsg);
-        } else {
-            // No relation color.
-            event.setFormat(nonColoredMsgFormat);
+            event.getRecipients().clear();
         }
+        event.setFormat(nonColoredMsgFormat);
     }
 }
