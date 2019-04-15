@@ -1002,26 +1002,14 @@ public abstract class MemoryFPlayer implements FPlayer {
     public boolean canFlyAtLocation() {
         return canFlyAtLocation(lastStoodAt);
     }
-
     public boolean canFlyAtLocation(FLocation location) {
-        if (location == null || getPlayer() == null)
-            return false;
-        if (getPlayer().hasPermission("factions.fly.bypass")) {
-            return true;
-        }
-
         Faction faction = Board.getInstance().getFactionAt(location);
-
         if (faction.isWilderness()) {
-            return getPlayer().hasPermission("factions.fly.wilderness");
-        }
-
-        if (faction.isSafeZone()) {
-            return getPlayer().hasPermission("factions.fly.safezone");
-        }
-
-        if (faction.isWarZone()) {
-            return getPlayer().hasPermission("factions.fly.warzone");
+            return Permission.FLY_WILDERNESS.has(getPlayer());
+        } else if (faction.isSafeZone()) {
+            return Permission.FLY_SAFEZONE.has(getPlayer());
+        } else if (faction.isWarZone()) {
+            return Permission.FLY_WARZONE.has(getPlayer());
         }
 
         // Admins can always fly in their territory.
@@ -1030,13 +1018,10 @@ public abstract class MemoryFPlayer implements FPlayer {
             return true;
         }
 
-        // alts can always fly in their own land
-        if (hasAltFaction() && faction.getId().equals(altFactionId)) {
-            return true;
-        }
-
         Access access = faction.getAccess(this, PermissableAction.FLY);
+
         if (access == null || access == Access.UNDEFINED) {
+
             // If access is null or undefined, we'll default to the conf.json
             switch (faction.getRelationTo(getFaction())) {
                 case ENEMY:

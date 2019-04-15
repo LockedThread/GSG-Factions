@@ -107,7 +107,10 @@ public enum Permission {
     PAYPAL("paypal"),
     SET_PAYPAL("setpaypal"),
     MUTECHAT("mutechat"),
-    CHECK("check");
+    CHECK("check"),
+    FLY_WILDERNESS("fly.wilderness"),
+    FLY_SAFEZONE("fly.safezone"),
+    FLY_WARZONE("fly.warzone");
 
     public final String node;
 
