@@ -120,6 +120,9 @@ permissions:
       factions.announce: true
       factions.permissions: true
       factions.promote: true
+      factions.mutechat: true
+  factions.mutechat:
+    description: Allows players to mute global chat
   factions.promote:
     description: Allows you to promote players in your faction
   factions.admin:

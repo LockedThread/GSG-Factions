@@ -41,6 +41,10 @@ public enum TL {
     COMMAND_SOTW_BROADCAST_ON("\n&cSOTW has started and factions flight is disabled!\n"),
     COMMAND_SOTW_BROADCAST_OFF("\n&cSOTW has ended and factions flight is enabled!\n"),
 
+    COMMAND_MUTECHAT_DESCRIPTION("Allows players to mute global chat"),
+    COMMAND_MUTECHAT_ENABLED("&eYou have muted global chat"),
+    COMMAND_MUTECHAT_DISABLED("&eYou have unmuted global chat"),
+
     LOCK_IS_ENABLED("&cFactions are currently locked, you can't place or break spawners!"),
 
     COMMAND_LOCK_LOCKED("&eFactions is now locked"),

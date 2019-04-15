@@ -28,6 +28,10 @@ import java.util.List;
 
 public interface FPlayer extends EconomyParticipator {
 
+    public boolean isMutedChatEnabled();
+
+    public void setMutedChat(boolean mutedChat);
+
     public void login();
 
     public void logout();

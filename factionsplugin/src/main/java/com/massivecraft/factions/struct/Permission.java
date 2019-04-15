@@ -105,7 +105,8 @@ public enum Permission {
     WARP("warp"),
     STEALTH("stealth"),
     PAYPAL("paypal"),
-    SET_PAYPAL("setpaypal");
+    SET_PAYPAL("setpaypal"),
+    MUTECHAT("mutechat");
 
     public final String node;
 

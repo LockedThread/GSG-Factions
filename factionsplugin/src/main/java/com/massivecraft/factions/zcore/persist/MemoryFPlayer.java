@@ -68,6 +68,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected boolean isStealth = false;
     protected boolean notificationsEnabled = true;
     protected String altFactionId;
+    protected boolean mutedChat = false;
 
     protected transient FLocation lastStoodAt;
     protected transient boolean mapAutoUpdating;
@@ -125,6 +126,16 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.mapHeight = Conf.mapHeight;
         this.notificationsEnabled = other.notificationsEnabled;
         this.altFactionId = other.altFactionId;
+    }
+
+    @Override
+    public void setMutedChat(boolean mutedChat) {
+        this.mutedChat = mutedChat;
+    }
+
+    @Override
+    public boolean isMutedChatEnabled() {
+        return mutedChat;
     }
 
     public void login() {
