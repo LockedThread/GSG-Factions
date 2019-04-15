@@ -9,7 +9,7 @@ public class UnitReload extends Unit {
     @Override
     public void setup() {
         CommandPost.of()
-                .build()
+                .builder()
                 .assertPermission("gsgcore.reload")
                 .handler(c -> {
                     if (c.getRawArgs().length == 0) {

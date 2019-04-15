@@ -16,7 +16,7 @@ public class UnitCustomItem extends Unit {
     @Override
     public void setup() {
         CommandPost.of()
-                .build()
+                .builder()
                 .assertPermission("gsg.customitem")
                 .handler(c -> {
                     if (c.getRawArgs().length == 0) {
