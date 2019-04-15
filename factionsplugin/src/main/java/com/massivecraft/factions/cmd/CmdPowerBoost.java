@@ -11,6 +11,7 @@ public class CmdPowerBoost extends FCommand {
     public CmdPowerBoost() {
         super();
         this.aliases.add("powerboost");
+        this.aliases.add("pb");
 
         this.requiredArgs.add("p|f|player|faction");
         this.requiredArgs.add("name");
