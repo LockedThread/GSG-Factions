@@ -20,6 +20,9 @@ import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.persist.MemoryFPlayer;
 import com.massivecraft.factions.zcore.util.TL;
 import com.massivecraft.factions.zcore.util.TextUtil;
+import net.coreprotect.CoreProtect;
+import net.coreprotect.CoreProtectAPI;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -33,6 +36,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.util.NumberConversions;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -457,6 +461,26 @@ public class FactionsPlayerListener implements Listener {
 
         if (!playerCanUseItemHere(player, block.getLocation(), event.getMaterial(), false)) {
             event.setCancelled(true);
+        } else {
+            FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
+            if (fPlayer.isInspecting()) {
+                event.setCancelled(true);
+                CoreProtectAPI coreProtectAPI = CoreProtect.getInstance().getAPI();
+                List<String[]> info = coreProtectAPI.blockLookup(event.getClickedBlock(), 604800);
+                if (info.isEmpty()) {
+                    player.sendMessage(TL.INSPECT_NO_DATA.toString());
+                } else {
+                    player.sendMessage(p.txt.titleize(event.getClickedBlock().getX() + "x, " + event.getClickedBlock().getY() + "y, " + event.getClickedBlock().getZ() + "z"));
+                    coreProtectAPI.blockLookup(event.getClickedBlock(), 604800).stream().map(coreProtectAPI::parseResult).forEach(result -> player.sendMessage(
+                            TL.INSPECT_ROW.format(
+                                    result.getPlayer(),
+                                    new SimpleDateFormat("d MMM HH:mm:ss").format(new Date(System.currentTimeMillis() - (result.getTime() * 1000))),
+                                    result.getActionString(),
+                                    StringUtils.capitalize(result.getType().name().toLowerCase()))
+                            )
+                    );
+                }
+            }
         }
     }
 

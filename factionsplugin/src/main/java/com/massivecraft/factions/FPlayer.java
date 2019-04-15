@@ -28,6 +28,10 @@ import java.util.List;
 
 public interface FPlayer extends EconomyParticipator {
 
+    public boolean isInspecting();
+
+    public void setInspecting(boolean inspecting);
+
     public long getLastMapUse();
 
     public void setLastMapUse(long lastMapUse);

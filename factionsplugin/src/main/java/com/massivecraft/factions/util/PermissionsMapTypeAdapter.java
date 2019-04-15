@@ -63,6 +63,9 @@ public class PermissionsMapTypeAdapter implements JsonDeserializer<Map<Permissab
                             case "TNTBank":
                                 permissableAction = PermissableAction.TNTBANK;
                                 break;
+                            case "F Inspect":
+                                permissableAction = PermissableAction.INSPECT;
+                                break;
                         }
                     }
                     Access access = Access.fromString(entry2.getValue().getAsString());

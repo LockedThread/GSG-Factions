@@ -39,7 +39,8 @@ public enum PermissableAction {
     TNTBANK("TNTBank"),
     TNTFILL("TNTFill"),
     F_PERMS("F Perms"),
-    CHECK("F Check")
+    CHECK("F Check"),
+    INSPECT("F Inspect")
     ;
 
     private String name;
