@@ -21,12 +21,9 @@ public class WarmUpUtil {
                 player.msg(TL.WARMUPS_ALREADY);
             } else {
                 player.msg(translationKey.format(action, delay));
-                int id = P.p.getServer().getScheduler().runTaskLater(P.p, new Runnable() {
-                    @Override
-                    public void run() {
-                        player.stopWarmup();
-                        runnable.run();
-                    }
+                int id = P.p.getServer().getScheduler().runTaskLater(P.p, () -> {
+                    player.stopWarmup();
+                    runnable.run();
                 }, delay * 20).getTaskId();
                 player.addWarmup(warmup, id);
             }
@@ -36,7 +33,7 @@ public class WarmUpUtil {
     }
 
     public enum Warmup {
-        HOME, WARP, FLIGHT;
+        HOME, WARP, FLIGHT
     }
 
 }

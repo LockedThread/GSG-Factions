@@ -98,14 +98,11 @@ public class WarpGUI implements InventoryHolder, FactionGUI {
     }
 
     private void doWarmup(final String warp) {
-        WarmUpUtil.process(fme, WarmUpUtil.Warmup.WARP, TL.WARMUPS_NOTIFY_TELEPORT, warp, new Runnable() {
-            @Override
-            public void run() {
-                Player player = Bukkit.getPlayer(fme.getPlayer().getUniqueId());
-                if (player != null) {
-                    player.teleport(fme.getFaction().getWarp(warp).getLocation());
-                    fme.msg(TL.COMMAND_FWARP_WARPED, warp);
-                }
+        WarmUpUtil.process(fme, WarmUpUtil.Warmup.WARP, TL.WARMUPS_NOTIFY_TELEPORT, warp, () -> {
+            Player player = Bukkit.getPlayer(fme.getPlayer().getUniqueId());
+            if (player != null) {
+                player.teleport(fme.getFaction().getWarp(warp).getLocation());
+                fme.msg(TL.COMMAND_FWARP_WARPED, warp);
             }
         }, P.p.getConfig().getLong("warmups.f-warp", 0));
     }
@@ -117,15 +114,8 @@ public class WarpGUI implements InventoryHolder, FactionGUI {
 
         double cost = P.p.getConfig().getDouble("warp-cost.warp", 5);
 
-        if (!Econ.shouldBeUsed() || this.fme == null || cost == 0.0 || fme.isAdminBypassing()) {
-            return true;
-        }
+        return !Econ.shouldBeUsed() || this.fme == null || cost == 0.0 || fme.isAdminBypassing() || (Conf.bankEnabled && Conf.bankFactionPaysCosts && fme.hasFaction() ? Econ.modifyMoney(fme.getFaction(), -cost, TL.COMMAND_FWARP_TOWARP.toString(), TL.COMMAND_FWARP_FORWARPING.toString()) : Econ.modifyMoney(fme, -cost, TL.COMMAND_FWARP_TOWARP.toString(), TL.COMMAND_FWARP_FORWARPING.toString()));
 
-        if (Conf.bankEnabled && Conf.bankFactionPaysCosts && fme.hasFaction()) {
-            return Econ.modifyMoney(fme.getFaction(), -cost, TL.COMMAND_FWARP_TOWARP.toString(), TL.COMMAND_FWARP_FORWARPING.toString());
-        } else {
-            return Econ.modifyMoney(fme, -cost, TL.COMMAND_FWARP_TOWARP.toString(), TL.COMMAND_FWARP_FORWARPING.toString());
-        }
     }
 
     private ItemStack buildItem(String warp) {
