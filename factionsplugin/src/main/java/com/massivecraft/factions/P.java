@@ -14,6 +14,7 @@ import com.massivecraft.factions.integration.Worldguard;
 import com.massivecraft.factions.integration.combat.impl.CombatTagPlusImpl;
 import com.massivecraft.factions.listeners.*;
 import com.massivecraft.factions.struct.ChatMode;
+import com.massivecraft.factions.tasks.TaskAutoLeave;
 import com.massivecraft.factions.tasks.TaskWallCheckReminder;
 import com.massivecraft.factions.units.UnitWorldBorder;
 import com.massivecraft.factions.util.*;
@@ -275,7 +276,7 @@ public class P extends MPlugin {
 
         if (Conf.autoLeaveRoutineRunsEveryXMinutes > 0.0) {
             long ticks = (long) (20 * 60 * Conf.autoLeaveRoutineRunsEveryXMinutes);
-            autoLeaveTask = getServer().getScheduler().scheduleSyncRepeatingTask(this, new AutoLeaveTask(), ticks, ticks);
+            autoLeaveTask = getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskAutoLeave(), ticks, ticks);
         }
     }
 
