@@ -153,6 +153,7 @@ public class FactionsChatListener implements Listener {
 
             for (Player listeningPlayer : event.getRecipients()) {
                 FPlayer you = FPlayers.getInstance().getByPlayer(listeningPlayer);
+                if (you.isMutedChatEnabled()) continue;
                 String yourFormat = formatStart + me.getChatTag(you).trim() + formatEnd;
                 try {
                     listeningPlayer.sendMessage(String.format(yourFormat, talkingPlayer.getDisplayName(), msg));
