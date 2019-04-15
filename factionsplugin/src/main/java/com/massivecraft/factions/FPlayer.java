@@ -28,6 +28,10 @@ import java.util.List;
 
 public interface FPlayer extends EconomyParticipator {
 
+    public boolean isSeeingChunk();
+
+    public void setSeeingChunk(boolean seeingChunk);
+
     public boolean isMutedChatEnabled();
 
     public void setMutedChat(boolean mutedChat);

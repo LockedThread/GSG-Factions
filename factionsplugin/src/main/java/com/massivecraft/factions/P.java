@@ -63,6 +63,7 @@ public class P extends MPlugin {
     private boolean mvdwPlaceholderAPIManager = false;
     private int defaultTntBankBalance;
     private CombatIntegration combatIntegration;
+    public SeeChunkUtil seeChunkUtil;
 
     public P() {
         p = this;
@@ -153,6 +154,12 @@ public class P extends MPlugin {
         } else if (getConfig().getBoolean("f-fly.enabled", true)) {
             (this.flightTask = new FlightDisableUtil()).runTaskTimer(this, 0, factionsFlightDelay);
             log(Level.INFO, "Enabling enemy radius check for f fly every %s seconds", factionsFlightDelay / 20);
+        }
+
+        if (P.p.getConfig().getBoolean("see-chunk.particles", true)) {
+            double delay = Math.floor(getConfig().getDouble("f-fly.radius-check", 0.75) * 20);
+            seeChunkUtil = new SeeChunkUtil();
+            seeChunkUtil.runTaskTimer(this, 0, (long) delay);
         }
 
         new TaskWallCheckReminder().runTaskTimerAsynchronously(this, 0L, 1200L);

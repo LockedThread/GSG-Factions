@@ -574,6 +574,10 @@ public enum TL {
 
     COMMAND_VAULT_DESCRIPTION("/f vault to open one of your Faction's vaults."),
 
+    // Pulled from https://github.com/drtshock/Factions/commit/605f6c8a82c46d82bbe61f29a3ea6fd54bea0abd
+    COMMAND_SEECHUNK_DESCRIPTION("Show chunk boundaries"),
+    COMMAND_SEECHUNK_TOGGLE("&eSeechunk &d%1$s"),
+
     COMMAND_SHOW_NOFACTION_SELF("You are not in a faction"),
     COMMAND_SHOW_NOFACTION_OTHER("That's not a faction"),
     COMMAND_SHOW_TOSHOW("to show faction information"),

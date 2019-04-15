@@ -69,6 +69,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected boolean notificationsEnabled = true;
     protected String altFactionId;
     protected boolean mutedChat = false;
+    protected boolean seeingChunk = false;
 
     protected transient FLocation lastStoodAt;
     protected transient boolean mapAutoUpdating;
@@ -126,6 +127,15 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.mapHeight = Conf.mapHeight;
         this.notificationsEnabled = other.notificationsEnabled;
         this.altFactionId = other.altFactionId;
+    }
+
+    public boolean isSeeingChunk() {
+        return seeingChunk;
+    }
+
+    public void setSeeingChunk(boolean seeingChunk) {
+        this.seeingChunk = seeingChunk;
+        P.p.seeChunkUtil.updatePlayerInfo(UUID.fromString(getId()), seeingChunk);
     }
 
     @Override
