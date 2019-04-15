@@ -78,7 +78,7 @@ warp-cost:
 f-fly:
   # Enable Faction Fly:
   enable: true
-  # If a player leaves impl (out of territory or took damage)
+  # If a player leaves fly (out of territory or took damage)
   # how long should they not take fall damage for?
   # Set to 0 to have them always take fall damage.
   falldamage-cooldown: 3
@@ -221,7 +221,7 @@ warmups:
   f-home: 0
   # Delay for /f warp
   f-warp: 0
-  # Delay for /f impl
+  # Delay for /f fly
   f-fly: 0
 
 ######################################################
