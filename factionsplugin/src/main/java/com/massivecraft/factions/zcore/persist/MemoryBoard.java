@@ -132,7 +132,6 @@ public abstract class MemoryBoard extends Board {
      * @param flocation - center location.
      * @param faction   - faction checking for.
      * @param radius    - chunk radius to check.
-     *
      * @return true if another Faction is within the radius, otherwise false.
      */
     public boolean hasFactionWithin(FLocation flocation, Faction faction, int radius) {
@@ -246,7 +245,8 @@ public abstract class MemoryBoard extends Board {
                         row.then("+").color(Conf.colorWar);
                     } else if (factionHere == faction || factionHere == factionLoc || relation.isAtLeast(Relation.ALLY) ||
                             (Conf.showNeutralFactionsOnMap && relation.equals(Relation.NEUTRAL)) ||
-                            (Conf.showEnemyFactionsOnMap && relation.equals(Relation.ENEMY))) {
+                            (Conf.showEnemyFactionsOnMap && relation.equals(Relation.ENEMY)) ||
+                            Conf.showTruceFactionsOnMap && relation.equals(Relation.TRUCE)) {
                         if (!fList.containsKey(factionHere.getTag())) {
                             fList.put(factionHere.getTag(), Conf.mapKeyChrs[Math.min(chrIdx++, Conf.mapKeyChrs.length - 1)]);
                         }
