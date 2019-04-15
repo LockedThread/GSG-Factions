@@ -1,7 +1,6 @@
 package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.Conf;
-import com.massivecraft.factions.P;
 import com.massivecraft.factions.zcore.util.TL;
 
 import java.util.Collections;
@@ -215,19 +214,19 @@ public class FCmdRoot extends FCommand {
         this.addSubCommand(this.cmdMuteChat);
         this.addSubCommand(this.cmdCheck);
 
-        if (P.p.getConfig().getBoolean("inspect.enable")) {
+        if (p.getConfig().getBoolean("inspect.enable") && p.getServer().getPluginManager().getPlugin("CoreProtect") != null) {
             this.addSubCommand(this.cmdInspect);
-            P.p.log(Level.INFO, "Enabling /f inspect command");
+            p.log(Level.INFO, "Enabling /f inspect command");
         } else {
-            P.p.log(Level.WARNING, "Faction Inspect set to false in config.yml. Not enabling /f inspect command.");
+            p.log(Level.WARNING, "Faction Inspect set to false in config.yml. Not enabling /f inspect command.");
         }
 
-        if (P.p.getConfig().getBoolean("f-fly.enable", false)) {
+        if (p.getConfig().getBoolean("f-fly.enable", false)) {
             this.addSubCommand(this.cmdFly);
             this.addSubCommand(this.cmdStealth);
-            P.p.log(Level.INFO, "Enabling /f fly command");
+            p.log(Level.INFO, "Enabling /f fly command");
         } else {
-            P.p.log(Level.WARNING, "Faction flight set to false in config.yml. Not enabling /f fly command.");
+            p.log(Level.WARNING, "Faction flight set to false in config.yml. Not enabling /f fly command.");
         }
     }
 
