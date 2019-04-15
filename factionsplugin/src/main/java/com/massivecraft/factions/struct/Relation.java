@@ -11,8 +11,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 
 
 public enum Relation implements Permissable {
@@ -31,6 +30,7 @@ public enum Relation implements Permissable {
     }
 
     public static com.massivecraft.factions.struct.Relation fromString(String s) {
+        /*
         // Because Java 6 doesn't allow String switches :(
         if (s.equalsIgnoreCase(MEMBER.nicename)) {
             return MEMBER;
@@ -42,7 +42,15 @@ public enum Relation implements Permissable {
             return ENEMY;
         } else {
             return NEUTRAL; // If they somehow mess things up, go back to default behavior.
+        }*/
+
+        // The above is the old method which is quite redundant. Just replaced with a for.
+        for (Relation relation : values()) {
+            if (relation.nicename.equalsIgnoreCase(s)) {
+                return relation;
+            }
         }
+        return NEUTRAL;
     }
 
     @Override
@@ -96,102 +104,29 @@ public enum Relation implements Permissable {
     }
 
     public ChatColor getColor() {
-        if (this == MEMBER) {
-            return Conf.colorMember;
-        } else if (this == ALLY) {
-            return Conf.colorAlly;
-        } else if (this == NEUTRAL) {
-            return Conf.colorNeutral;
-        } else if (this == TRUCE) {
-            return Conf.colorTruce;
-        } else {
-            return Conf.colorEnemy;
-        }
+        // Replaced with ternary expression
+        return this == MEMBER ? Conf.colorMember : this == ALLY ? Conf.colorAlly : this == NEUTRAL ? Conf.colorNeutral : this == TRUCE ? Conf.colorTruce : Conf.colorEnemy;
     }
 
     // return appropriate Conf setting for DenyBuild based on this relation and their online status
     public boolean confDenyBuild(boolean online) {
-        if (isMember()) {
-            return false;
-        }
-
-        if (online) {
-            if (isEnemy()) {
-                return Conf.territoryEnemyDenyBuild;
-            } else if (isAlly()) {
-                return Conf.territoryAllyDenyBuild;
-            } else if (isTruce()) {
-                return Conf.territoryTruceDenyBuild;
-            } else {
-                return Conf.territoryDenyBuild;
-            }
-        } else {
-            if (isEnemy()) {
-                return Conf.territoryEnemyDenyBuildWhenOffline;
-            } else if (isAlly()) {
-                return Conf.territoryAllyDenyBuildWhenOffline;
-            } else if (isTruce()) {
-                return Conf.territoryTruceDenyBuildWhenOffline;
-            } else {
-                return Conf.territoryDenyBuildWhenOffline;
-            }
-        }
+        // Replaced with ternary expression
+        return !isMember() && (online ? isEnemy() ? Conf.territoryEnemyDenyBuild : isAlly() ? Conf.territoryAllyDenyBuild : isTruce() ? Conf.territoryTruceDenyBuild : Conf.territoryDenyBuild : isEnemy() ? Conf.territoryEnemyDenyBuildWhenOffline : isAlly() ? Conf.territoryAllyDenyBuildWhenOffline : isTruce() ? Conf.territoryTruceDenyBuildWhenOffline : Conf.territoryDenyBuildWhenOffline);
     }
 
     // return appropriate Conf setting for PainBuild based on this relation and their online status
     public boolean confPainBuild(boolean online) {
-        if (isMember()) {
-            return false;
-        }
+        return !isMember() && (online ? isEnemy() ? Conf.territoryEnemyPainBuild : isAlly() ? Conf.territoryAllyPainBuild : isTruce() ? Conf.territoryTrucePainBuild : Conf.territoryPainBuild : isEnemy() ? Conf.territoryEnemyPainBuildWhenOffline : isAlly() ? Conf.territoryAllyPainBuildWhenOffline : isTruce() ? Conf.territoryTrucePainBuildWhenOffline : Conf.territoryPainBuildWhenOffline);
 
-        if (online) {
-            if (isEnemy()) {
-                return Conf.territoryEnemyPainBuild;
-            } else if (isAlly()) {
-                return Conf.territoryAllyPainBuild;
-            } else if (isTruce()) {
-                return Conf.territoryTrucePainBuild;
-            } else {
-                return Conf.territoryPainBuild;
-            }
-        } else {
-            if (isEnemy()) {
-                return Conf.territoryEnemyPainBuildWhenOffline;
-            } else if (isAlly()) {
-                return Conf.territoryAllyPainBuildWhenOffline;
-            } else if (isTruce()) {
-                return Conf.territoryTrucePainBuildWhenOffline;
-            } else {
-                return Conf.territoryPainBuildWhenOffline;
-            }
-        }
     }
 
     // return appropriate Conf setting for DenyUseage based on this relation
     public boolean confDenyUseage() {
-        if (isMember()) {
-            return false;
-        } else if (isEnemy()) {
-            return Conf.territoryEnemyDenyUseage;
-        } else if (isAlly()) {
-            return Conf.territoryAllyDenyUseage;
-        } else if (isTruce()) {
-            return Conf.territoryTruceDenyUseage;
-        } else {
-            return Conf.territoryDenyUseage;
-        }
+        return !isMember() && (isEnemy() ? Conf.territoryEnemyDenyUseage : isAlly() ? Conf.territoryAllyDenyUseage : isTruce() ? Conf.territoryTruceDenyUseage : Conf.territoryDenyUseage);
     }
 
     public double getRelationCost() {
-        if (isEnemy()) {
-            return Conf.econCostEnemy;
-        } else if (isAlly()) {
-            return Conf.econCostAlly;
-        } else if (isTruce()) {
-            return Conf.econCostTruce;
-        } else {
-            return Conf.econCostNeutral;
-        }
+        return isEnemy() ? Conf.econCostEnemy : isAlly() ? Conf.econCostAlly : isTruce() ? Conf.econCostTruce : Conf.econCostNeutral;
     }
 
     // Utility method to build items for F Perm GUI
@@ -200,7 +135,6 @@ public enum Relation implements Permissable {
         final ConfigurationSection RELATION_CONFIG = P.p.getConfig().getConfigurationSection("fperm-gui.relation");
 
         String displayName = replacePlaceholders(RELATION_CONFIG.getString("placeholder-item.name", ""));
-        List<String> lore = new ArrayList<>();
 
         Material material = Material.matchMaterial(RELATION_CONFIG.getString("materials." + name().toLowerCase()));
         if (material == null) {
@@ -210,12 +144,8 @@ public enum Relation implements Permissable {
         ItemStack item = new ItemStack(material);
         ItemMeta itemMeta = item.getItemMeta();
 
-        for (String loreLine : RELATION_CONFIG.getStringList("placeholder-item.lore")) {
-            lore.add(replacePlaceholders(loreLine));
-        }
-
         itemMeta.setDisplayName(displayName);
-        itemMeta.setLore(lore);
+        itemMeta.setLore(RELATION_CONFIG.getStringList("placeholder-item.lore").stream().map(this::replacePlaceholders).collect(Collectors.toList()));
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(itemMeta);
 
