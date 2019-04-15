@@ -6,7 +6,6 @@ import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
-import com.massivecraft.factions.zcore.util.TL;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -92,26 +91,9 @@ public class FactionsBlockListener implements Listener {
 //        boolean pain = !justCheck && rel.confPainBuild(online);
         boolean deny = rel.confDenyBuild(true); // online status doesn't matter for us
 
-        // hurt the player for building/destroying in other territory?
-//        if (pain) {
-//            player.damage(Conf.actionDeniedPainAmount);
-//
-//            if (!deny) {
-//                me.msg("<b>It is painful to try to " + action + " in the territory of " + otherFaction.getTag(myFaction));
-//            }
-//        }
-
         Access access = otherFaction.getAccess(me, PermissableAction.fromString(action));
-        if (access != null && access != Access.UNDEFINED) {
-            if (access == Access.DENY && !otherFaction.playerHasExplicitOwnershipRights(me, loc)) {
-                me.msg(TL.GENERIC_NOPERMISSION, action);
-                return false;
-            }
-
-            // if there's no /f owner for this chunk, allow this action implicitly
-            if (otherFaction.playerHasOwnershipRights(me, loc)) {
-                return true;
-            }
+        if (access == Access.ALLOW) {
+            return true;
         }
 
         // cancel building/destroying in other territory?
