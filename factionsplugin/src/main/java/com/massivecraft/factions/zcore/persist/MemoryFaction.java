@@ -69,6 +69,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
 
     protected String payPalEmail;
     private long lastDeath;
+    protected long checkReminderMinutes = 0;
 
     // -------------------------------------------- //
     // Construct
@@ -98,6 +99,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.altInvites = new ArrayList<>();
         this.factionChest = new FactionChest(3);
         this.payPalEmail = "";
+        this.checkReminderMinutes = 0;
         resetPerms(); // Reset on new Faction so it has default values.
     }
 
@@ -130,7 +132,23 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.altInvites = new ArrayList<>();
         this.factionChest = new FactionChest(3);
         this.payPalEmail = "";
+        this.checkReminderMinutes = 0;
         resetPerms(); // Reset on new Faction so it has default values.
+    }
+
+    @Override
+    public long getCheckReminderMinutes() {
+        return checkReminderMinutes;
+    }
+
+    @Override
+    public void setCheckReminderMinutes(long minutes) {
+        this.checkReminderMinutes = minutes;
+    }
+
+    @Override
+    public void sendCheckRemind() {
+        sendMessage(TL.CHECK_REMIND_MESSAGE.toString());
     }
 
     @Override
@@ -550,7 +568,6 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
      *
      * @param player
      * @param permissableAction
-     *
      * @return
      */
     public Access getAccess(FPlayer player, PermissableAction permissableAction) {

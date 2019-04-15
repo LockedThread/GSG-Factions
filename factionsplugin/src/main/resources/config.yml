@@ -520,10 +520,9 @@ fperm-gui:
       fly: 29
       chest: 30
       tntbank: 31
-      claim: 32
-      gen-bucket: 33
-      utilities: 34
-      inspector: 35
+      tntfill: 33
+      claim: 34
+      check: 35
       tag: 36
     # Material to show, if the material is colorable eg: Wool, Stained Clay it will update with it's access color
     materials:
@@ -550,10 +549,9 @@ fperm-gui:
       fly: STAINED_CLAY
       chest: STAINED_CLAY
       tntbank: STAINED_CLAY
+      tntfill: STAINED_CLAY
+      check: STAINED_CLAY
       claim: STAINED_CLAY
-      gen-bucket: STAINED_CLAY
-      utilities: STAINED_CLAY
-      inspector: STAINED_CLAY
       tag: STAINED_CLAY
     # Same dummy items format as above
     dummy-items:

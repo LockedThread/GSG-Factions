@@ -127,12 +127,10 @@ public class FactionsPlayerListener implements Listener {
             case FURNACE:
             case HOPPER:
             case DISPENSER:
-                action = PermissableAction.CONTAINER;
-                break;
             case ANVIL:
             case ENCHANTMENT_TABLE:
             case WORKBENCH:
-                action = PermissableAction.UTILITIES;
+                action = PermissableAction.CONTAINER;
                 break;
             default:
                 // Check for doors that might have diff material name in old version.

@@ -41,6 +41,11 @@ public enum TL {
     COMMAND_SOTW_BROADCAST_ON("\n&cSOTW has started and factions flight is disabled!\n"),
     COMMAND_SOTW_BROADCAST_OFF("\n&cSOTW has ended and factions flight is enabled!\n"),
 
+    COMMAND_CHECK_DESCRIPTION("Allows faction leaders to add an automated wall check reminder"),
+    COMMAND_CHECK_SUCCESS("&eYou have successfully set your wall check reminder to &f%1$d &eminutes!"),
+    COMMAND_CHECK_NEGATIVE_MINUTES("&cYou can't set your wall check reminder to a non positive number!"),
+    CHECK_REMIND_MESSAGE("\n&c&lWall Check Reminder: &cMake sure to check the walls!\n"),
+
     COMMAND_MUTECHAT_DESCRIPTION("Allows players to mute global chat"),
     COMMAND_MUTECHAT_ENABLED("&eYou have muted global chat"),
     COMMAND_MUTECHAT_DISABLED("&eYou have unmuted global chat"),

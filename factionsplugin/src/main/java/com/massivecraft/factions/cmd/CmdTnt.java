@@ -40,7 +40,7 @@ public class CmdTnt extends FCommand {
     public void perform() {
         Faction faction = fme.getFaction();
 
-        Access access = faction.getAccess(fme, PermissableAction.TNT);
+        Access access = faction.getAccess(fme, PermissableAction.TNTBANK);
         if (access == Access.DENY || (access == Access.UNDEFINED && !fme.getRole().isAtLeast(Role.MODERATOR))) {
             fme.msg(TL.GENERIC_NOPERMISSION, "tnt");
             return;

@@ -43,6 +43,7 @@ public class PermissionsMapTypeAdapter implements JsonDeserializer<Map<Permissab
                     if (permissableAction == null) {
                         switch (entry2.getKey()) {
                             case "painbuild":
+                            case "pain build":
                                 permissableAction = PermissableAction.PAIN_BUILD;
                                 break;
                             case "items":
@@ -51,8 +52,12 @@ public class PermissionsMapTypeAdapter implements JsonDeserializer<Map<Permissab
                             case "fperms":
                                 permissableAction = PermissableAction.F_PERMS;
                                 break;
-                            case "genbucket":
-                                permissableAction = PermissableAction.GEN_BUCKET;
+                            case "fcheck":
+                                permissableAction = PermissableAction.CHECK;
+                                break;
+                            case "faction sethome":
+                                permissableAction = PermissableAction.SETHOME;
+                                break;
                         }
                     }
                     Access access = Access.fromString(entry2.getValue().getAsString());

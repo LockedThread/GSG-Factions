@@ -11,7 +11,6 @@ public class Conf {
     // /F corner
     public static int bufferSize = 20;
 
-
     public static List<String> baseCommandAliases = new ArrayList<>();
     public static boolean allowNoSlashCommand = true;
 

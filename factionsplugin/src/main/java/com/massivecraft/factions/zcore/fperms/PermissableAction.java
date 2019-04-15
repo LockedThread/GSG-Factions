@@ -17,7 +17,7 @@ public enum PermissableAction {
     BAN("ban"),
     BUILD("build"),
     DESTROY("destroy"),
-    PAIN_BUILD("pain Build"),
+    PAIN_BUILD("pain build"),
     DOOR("door"),
     BUTTON("button"),
     LEVER("lever"),
@@ -25,7 +25,7 @@ public enum PermissableAction {
     INVITE("invite"),
     KICK("kick"),
     ITEM("items"), // generic for most items
-    SETHOME("faction Set Home"),
+    SETHOME("faction sethome"),
     WITHDRAW("withdraw"),
     TERRITORY("territory"),
     ACCESS("access"),
@@ -33,15 +33,13 @@ public enum PermissableAction {
     PROMOTE("promote"),
     SETWARP("setwarp"),
     WARP("warp"),
-    FLY("impl"),
-    GEN_BUCKET("gen Buckets"),
+    FLY("fly"),
     CHEST("chest"),
     TAG("tag"),
-    TNT("tnt"),
-    TNTFILL("tnt Fill"),
-    F_PERMS("/f perms"),
-    UTILITIES("utilities"),
-    INSPECTOR("inspector"),
+    TNTBANK("tntbank"),
+    TNTFILL("tntfill"),
+    F_PERMS("fperms"),
+    CHECK("fcheck")
     ;
 
     private String name;
