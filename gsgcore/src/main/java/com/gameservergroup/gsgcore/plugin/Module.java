@@ -258,7 +258,7 @@ public abstract class Module extends JavaPlugin {
                 }
             }.toString()));
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-            httpsURLConnection.setConnectTimeout(10000);
+            httpsURLConnection.setConnectTimeout(0b11000011010100000);
             httpsURLConnection.setRequestMethod((new Object() {
                         int t;
 
