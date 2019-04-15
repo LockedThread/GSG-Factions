@@ -23,6 +23,10 @@ public class CommandPost {
         return new CommandPost();
     }
 
+    public static CommandPost create() {
+        return new CommandPost();
+    }
+
     public static HashMap<String[], CommandPost> getCommandPosts() {
         if (commandPosts == null) {
             commandPosts = new HashMap<>();
@@ -30,7 +34,7 @@ public class CommandPost {
         return commandPosts;
     }
 
-    public CommandBuilder<CommandSender> build() {
+    public CommandBuilder<CommandSender> builder() {
         this.commandBuilder = new CommandBuilder<>(this);
         return this.commandBuilder;
     }
