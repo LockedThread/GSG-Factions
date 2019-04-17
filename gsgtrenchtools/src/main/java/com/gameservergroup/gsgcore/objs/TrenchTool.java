@@ -21,7 +21,7 @@ public class TrenchTool extends CustomItem {
     private boolean trayMode, omniTool;
 
     public TrenchTool(ConfigurationSection configurationSection, int radius, boolean trayMode, boolean omniTool) {
-        this(configurationSection.getName(), configurationSection, radius, true, omniTool);
+        this(configurationSection.getName(), configurationSection, radius, trayMode, omniTool);
     }
 
     public TrenchTool(String name, ConfigurationSection configurationSection, int radius, boolean trayMode, boolean omniTool) {
