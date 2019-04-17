@@ -3,6 +3,7 @@ package com.gameservergroup.gsgcore.units;
 import com.gameservergroup.gsgcore.GSGTrenchTools;
 import com.gameservergroup.gsgcore.enums.TrenchMessages;
 import com.gameservergroup.gsgcore.objs.TrenchTool;
+import com.gameservergroup.gsgcore.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,29 +15,16 @@ import org.bukkit.inventory.ItemStack;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class UnitTrenchTools extends Unit {
-
-    private static final Supplier<EnumSet<Material>> ENUM_SET_SUPPLIER = () -> EnumSet.noneOf(Material.class);
 
     private EnumSet<Material> trayMaterials, shovelMaterials, blackListedMaterials;
 
     @Override
     public void setup() {
-        this.trayMaterials = GSGTrenchTools.getInstance().getConfig().getStringList("tray-materials")
-                .stream()
-                .map(Material::matchMaterial)
-                .collect(Collectors.toCollection(ENUM_SET_SUPPLIER));
-        this.shovelMaterials = GSGTrenchTools.getInstance().getConfig().getStringList("shovel-materials")
-                .stream()
-                .map(Material::matchMaterial)
-                .collect(Collectors.toCollection(ENUM_SET_SUPPLIER));
-        this.blackListedMaterials = GSGTrenchTools.getInstance().getConfig().getStringList("blacklisted-materials")
-                .stream()
-                .map(Material::matchMaterial)
-                .collect(Collectors.toCollection(ENUM_SET_SUPPLIER));
+        this.trayMaterials = Utils.parseStringListAsEnumSet(GSGTrenchTools.getInstance().getConfig().getStringList("tray-materials"));
+        this.shovelMaterials = Utils.parseStringListAsEnumSet(GSGTrenchTools.getInstance().getConfig().getStringList("shovel-materials"));
+        this.blackListedMaterials = Utils.parseStringListAsEnumSet(GSGTrenchTools.getInstance().getConfig().getStringList("blacklisted-materials"));
 
         ConfigurationSection section = GSGTrenchTools.getInstance().getConfig().getConfigurationSection("tools");
         for (String key : section.getKeys(false)) {
