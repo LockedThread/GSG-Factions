@@ -19,6 +19,7 @@ public class CustomItem {
     private Consumer<PlayerInteractEvent> interactEventConsumer;
     private Consumer<BlockBreakEvent> breakEventConsumer;
     private Consumer<BlockPlaceEvent> placeEventConsumer;
+    private ItemEdit itemEdit;
 
     public CustomItem(CustomItem customItem) {
         this.name = customItem.getName();
@@ -26,6 +27,8 @@ public class CustomItem {
         this.interactEventConsumer = customItem.getInteractEventConsumer();
         this.breakEventConsumer = customItem.getBreakEventConsumer();
         this.placeEventConsumer = customItem.getPlaceEventConsumer();
+        this.itemEdit = customItem.getItemEdit();
+        customItems.put(name, this);
     }
 
     private CustomItem(String name, ItemStack itemStack) {
@@ -64,6 +67,10 @@ public class CustomItem {
     }
 
     public ItemStack getItemStack() {
+        return itemEdit != null ? itemEdit.getEditedItemStack() : itemStack;
+    }
+
+    public ItemStack getOriginalItemStack() {
         return itemStack;
     }
 
@@ -124,5 +131,19 @@ public class CustomItem {
                 ", breakEventConsumer=" + breakEventConsumer +
                 ", placeEventConsumer=" + placeEventConsumer +
                 '}';
+    }
+
+    public ItemEdit getItemEdit() {
+        return itemEdit;
+    }
+
+    public void setItemEdit(ItemEdit itemEdit) {
+        this.itemEdit = itemEdit;
+    }
+
+    public interface ItemEdit {
+
+        ItemStack getEditedItemStack();
+
     }
 }
