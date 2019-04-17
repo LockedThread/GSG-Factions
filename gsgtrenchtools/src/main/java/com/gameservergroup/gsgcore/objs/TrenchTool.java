@@ -3,10 +3,11 @@ package com.gameservergroup.gsgcore.objs;
 import com.gameservergroup.gsgcore.items.CustomItem;
 import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.utils.NBTItem;
-import org.bukkit.ChatColor;
+import com.gameservergroup.gsgcore.utils.Text;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -35,24 +36,23 @@ public class TrenchTool extends CustomItem {
 
     // TODO: Figure out a better way of doing this, maybe a trait based system for tools.
     public ItemStack buildItemStack(boolean trayMode) {
-        ItemStackBuilder itemStackBuilder = ItemStackBuilder.of(getOriginalItemStack()).setLore(getOriginalItemStack().getItemMeta().getLore()
+        return setToolTrayMode(ItemStackBuilder.of(getOriginalItemStack())
+                .consumeItemMeta(itemMeta -> itemMeta.setLore(getTrayModeLore(trayMode)))
+                .build(), trayMode);
+    }
+
+    public List<String> getTrayModeLore(boolean trayMode) {
+        return getOriginalItemStack()
+                .getItemMeta()
+                .getLore()
                 .stream()
-                .map(s -> ChatColor.translateAlternateColorCodes('&', s.replace("{traymode}", (trayMode ? "&aEnabled" : "&cDisabled"))))
-                .collect(Collectors.toList()));
-        return setToolTrayMode(itemStackBuilder.build(), trayMode);
-        /*
-        return itemStackBuilder
-                .consumeItemMeta(itemMeta -> itemMeta.setLore(itemMeta.getLore()
-                        .stream()
-                        .map(s -> ChatColor.translateAlternateColorCodes('&', s.replace("{traymode}", (trayMode ? "&aEnabled" : "&cDisabled"))))
-                        .collect(Collectors.toList())))
-                .build();*/
+                .map(s -> Text.toColor(s.replace("{traymode}", (trayMode ? "&aEnabled" : "&cDisabled"))))
+                .collect(Collectors.toList());
     }
 
     // Precondition: The NBTItem#getBoolean already checks for nullity
     public boolean getToolTrayMode(ItemStack itemStack) {
-        NBTItem nbtItem = new NBTItem(itemStack);
-        return nbtItem.getBoolean("tray-mode");
+        return new NBTItem(itemStack).getBoolean("tray-mode");
     }
 
     public boolean isTrayMode() {
@@ -69,12 +69,5 @@ public class TrenchTool extends CustomItem {
 
     public ItemStack setToolTrayMode(ItemStack itemStack, boolean trayMode) {
         return new NBTItem(itemStack).set("tray-mode", trayMode).buildItemStack();
-    }
-
-    public ItemStack toggleTrayMode(ItemStack itemStack) {
-        NBTItem nbtItem = new NBTItem(itemStack);
-        nbtItem.set("tray-mode", !nbtItem.getBoolean("tray-mode"));
-
-        return nbtItem.buildItemStack();
     }
 }

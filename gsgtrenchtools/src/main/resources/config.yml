@@ -17,6 +17,7 @@ shovel-materials:
 tray-materials:
   - 'DIRT'
   - 'NETHERRACK'
+  - 'GRASS'
 
 tools:
   3x3:

@@ -2,6 +2,7 @@ package com.gameservergroup.gsgcore.units;
 
 import com.gameservergroup.gsgcore.GSGTrenchTools;
 import com.gameservergroup.gsgcore.enums.TrenchMessages;
+import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.objs.TrenchTool;
 import com.gameservergroup.gsgcore.utils.Utils;
 import org.bukkit.Location;
@@ -11,6 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -28,7 +30,7 @@ public class UnitTrenchTools extends Unit {
 
         ConfigurationSection section = GSGTrenchTools.getInstance().getConfig().getConfigurationSection("tools");
         for (String key : section.getKeys(false)) {
-            TrenchTool trenchTool = new TrenchTool(key, section.getConfigurationSection(key + ".item"), section.getInt(key + ".radius"), section.getBoolean(key + ".traypick"), section.getBoolean(key + ".omni-tool"));
+            TrenchTool trenchTool = new TrenchTool(key, section.getConfigurationSection(key + ".item"), section.getInt(key + ".radius"), section.getBoolean(key + ".traymode"), section.getBoolean(key + ".omni-tool"));
             trenchTool.setItemEdit(() -> trenchTool.buildItemStack(false));
             trenchTool.setBreakEventConsumer(event -> {
                 if (GSG_CORE.canBuild(event.getPlayer(), event.getBlock())) {
@@ -41,7 +43,17 @@ public class UnitTrenchTools extends Unit {
                 Player player = event.getPlayer();
                 ItemStack hand = player.getItemInHand();
                 if (player.isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-                    player.setItemInHand(trenchTool.buildItemStack(!trenchTool.getToolTrayMode(hand)));
+                    if (trenchTool.isTrayMode()) {
+                        final boolean toolTrayMode = trenchTool.getToolTrayMode(hand);
+
+                        ItemStack itemStack = ItemStackBuilder.of(player.getItemInHand()).setLore(trenchTool.getTrayModeLore(!toolTrayMode)).build();
+                        ItemMeta meta = itemStack.getItemMeta();
+                        meta.setLore(trenchTool.getTrayModeLore(!toolTrayMode));
+                        itemStack.setItemMeta(meta);
+
+                        player.setItemInHand(trenchTool.setToolTrayMode(itemStack, !toolTrayMode));
+                        player.updateInventory();
+                    }
                 } else if (event.getAction() == Action.LEFT_CLICK_BLOCK && trenchTool.isOmniTool() && event.getClickedBlock() != null) {
                     final boolean pickaxe = isPickaxe(hand);
                     if (GSGTrenchTools.getInstance().getMcMMOIntegration() != null) {
@@ -65,12 +77,16 @@ public class UnitTrenchTools extends Unit {
                         if (shovelMaterials.contains(material)) {
                             final short durability = hand.getDurability();
                             hand.setType(getTranslatedMaterial(hand));
-                            hand.setDurability(durability);
+                            if (!hand.getItemMeta().spigot().isUnbreakable()) {
+                                hand.setDurability(durability);
+                            }
                         }
                     } else if (!shovelMaterials.contains(material)) {
                         final short durability = hand.getDurability();
                         hand.setType(getTranslatedMaterial(hand));
-                        hand.setDurability(durability);
+                        if (!hand.getItemMeta().spigot().isUnbreakable()) {
+                            hand.setDurability(durability);
+                        }
                     }
                 }
             });
