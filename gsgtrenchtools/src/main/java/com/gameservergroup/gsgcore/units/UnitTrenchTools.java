@@ -111,7 +111,7 @@ public class UnitTrenchTools extends Unit {
             for (int y = center.getBlockY() - radius; y <= radius + center.getBlockY(); y++) {
                 for (int z = center.getBlockZ() - radius; z <= radius + center.getBlockZ(); z++) {
                     Block block = center.getWorld().getBlockAt(x, y, z);
-                    if (blackListedMaterials.contains(block.getType()) && GSG_CORE.canBuild(player, block)) {
+                    if (!blackListedMaterials.contains(block.getType()) && GSG_CORE.canBuild(player, block)) {
                         if (trayMode) {
                             if (trayMaterials.contains(block.getType())) {
                                 if (amounts != null) {
