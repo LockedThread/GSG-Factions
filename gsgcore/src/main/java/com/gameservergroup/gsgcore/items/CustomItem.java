@@ -20,6 +20,14 @@ public class CustomItem {
     private Consumer<BlockBreakEvent> breakEventConsumer;
     private Consumer<BlockPlaceEvent> placeEventConsumer;
 
+    public CustomItem(CustomItem customItem) {
+        this.name = customItem.getName();
+        this.itemStack = customItem.getItemStack();
+        this.interactEventConsumer = customItem.getInteractEventConsumer();
+        this.breakEventConsumer = customItem.getBreakEventConsumer();
+        this.placeEventConsumer = customItem.getPlaceEventConsumer();
+    }
+
     private CustomItem(String name, ItemStack itemStack) {
         this.name = name;
         this.itemStack = itemStack;
