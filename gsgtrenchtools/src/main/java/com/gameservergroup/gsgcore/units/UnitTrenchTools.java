@@ -57,7 +57,11 @@ public class UnitTrenchTools extends Unit {
     }
 
     private Material getTranslatedMaterial(ItemStack itemStack) {
-        return Material.valueOf(itemStack.getType().name().split("_")[0] + "_" + (isPickaxe(itemStack) ? "SPADE" : "PICKAXE"));
+        try {
+            return Material.valueOf(itemStack.getType().name().split("_")[0] + "_" + (isPickaxe(itemStack) ? "SPADE" : "PICKAXE"));
+        } catch (IllegalArgumentException ex) {
+            throw new RuntimeException("Please report error to LockedThread.", ex);
+        }
     }
 
     private boolean isPickaxe(ItemStack itemStack) {
