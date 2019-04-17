@@ -17,6 +17,7 @@
         <module>gsgcrophopper</module>
         <module>gsgcollectors</module>
         <module>gsgvouchers</module>
+        <module>gsgtrenchtools</module>
     </modules>
 
     <dependencies>
