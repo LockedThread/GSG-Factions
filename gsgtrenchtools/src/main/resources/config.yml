@@ -1,7 +1,7 @@
 drop-items: false
 # Don't remove AIR for performance reasons.
 blacklisted-materials:
-  - 'BEACONS'
+  - 'BEACON'
   - 'BEDROCK'
   - 'AIR'
   - 'MOB_SPAWNER'
