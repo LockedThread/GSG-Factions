@@ -106,7 +106,7 @@ tools:
     item:
       amount: 1
       material: 'DIAMOND_PICKAXE'
-      name: '&d&lTrenchTool &8(&f11x1&8)'
+      name: '&d&lTrenchTool &8(&f11x11&8)'
       lore:
         - ''
         - ' &eThis tools mines a 11x11 area.'
