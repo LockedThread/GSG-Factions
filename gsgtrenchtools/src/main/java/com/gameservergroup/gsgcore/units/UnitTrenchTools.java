@@ -38,18 +38,39 @@ public class UnitTrenchTools extends Unit {
                     event.setCancelled(true);
                 }
             }).setInteractEventConsumer(event -> {
-                if (event.getPlayer().isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-                    event.getPlayer().setItemInHand(trenchTool.buildItemStack(!trenchTool.getToolTrayMode(event.getPlayer().getItemInHand())));
+                Player player = event.getPlayer();
+                ItemStack hand = player.getItemInHand();
+                if (player.isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+                    player.setItemInHand(trenchTool.buildItemStack(!trenchTool.getToolTrayMode(hand)));
                 } else if (event.getAction() == Action.LEFT_CLICK_BLOCK && trenchTool.isOmniTool() && event.getClickedBlock() != null) {
+                    final boolean pickaxe = isPickaxe(hand);
+                    if (GSGTrenchTools.getInstance().getMcMMOIntegration() != null) {
+                        if (pickaxe) {
+                            if (GSGTrenchTools.getInstance().getMcMMOIntegration().isSuperBreakerEnabled(player)) {
+                                player.sendMessage(TrenchMessages.YOU_CANT_HAVE_SUPER_BREAKER_ENABLED.toString());
+                                event.setCancelled(true);
+                                return;
+                            }
+                        } else if (GSGTrenchTools.getInstance().getMcMMOIntegration().isGigaDrillEnabled(player)) {
+                            player.sendMessage(TrenchMessages.YOU_CANT_HAVE_GIGADRILL_ENABLED.toString());
+                            event.setCancelled(true);
+                            return;
+                        }
+                    }
+
                     Material material = event.getClickedBlock().getType();
 
                     // TODO: Make this look nicer
-                    if (isPickaxe(event.getPlayer().getItemInHand())) {
+                    if (pickaxe) {
                         if (shovelMaterials.contains(material)) {
-                            event.getPlayer().getItemInHand().setType(getTranslatedMaterial(event.getPlayer().getItemInHand()));
+                            final short durability = hand.getDurability();
+                            hand.setType(getTranslatedMaterial(hand));
+                            hand.setDurability(durability);
                         }
                     } else if (!shovelMaterials.contains(material)) {
-                        event.getPlayer().getItemInHand().setType(getTranslatedMaterial(event.getPlayer().getItemInHand()));
+                        final short durability = hand.getDurability();
+                        hand.setType(getTranslatedMaterial(hand));
+                        hand.setDurability(durability);
                     }
                 }
             });
