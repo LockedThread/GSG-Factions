@@ -77,7 +77,6 @@ public class CustomItem {
 
     public CustomItem setInteractEventConsumer(Consumer<PlayerInteractEvent> interactEventConsumer) {
         this.interactEventConsumer = interactEventConsumer;
-        System.out.println("setInteractEventConsumer");
         return this;
     }
 
