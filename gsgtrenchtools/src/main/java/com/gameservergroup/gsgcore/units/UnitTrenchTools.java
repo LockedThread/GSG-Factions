@@ -2,7 +2,6 @@ package com.gameservergroup.gsgcore.units;
 
 import com.gameservergroup.gsgcore.GSGTrenchTools;
 import com.gameservergroup.gsgcore.enums.TrenchMessages;
-import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.objs.TrenchTool;
 import com.gameservergroup.gsgcore.utils.Utils;
 import org.bukkit.Location;
@@ -16,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 
 public class UnitTrenchTools extends Unit {
@@ -45,12 +45,11 @@ public class UnitTrenchTools extends Unit {
                 if (player.isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
                     if (trenchTool.isTrayMode()) {
                         final boolean toolTrayMode = trenchTool.getToolTrayMode(hand);
-
-                        ItemStack itemStack = ItemStackBuilder.of(player.getItemInHand()).setLore(trenchTool.getTrayModeLore(!toolTrayMode)).build();
+                        ItemStack itemStack = player.getItemInHand().clone();
                         ItemMeta meta = itemStack.getItemMeta();
-                        meta.setLore(trenchTool.getTrayModeLore(!toolTrayMode));
+                        List<String> trayModeLore = trenchTool.getTrayModeLore(!toolTrayMode);
+                        meta.setLore(trayModeLore);
                         itemStack.setItemMeta(meta);
-
                         player.setItemInHand(trenchTool.setToolTrayMode(itemStack, !toolTrayMode));
                         player.updateInventory();
                     }
@@ -134,7 +133,7 @@ public class UnitTrenchTools extends Unit {
                                     amounts.computeIfPresent(block.getType(), (material, integer) -> integer + 1);
                                     amounts.putIfAbsent(block.getType(), 1);
                                 }
-                                block.setTypeIdAndData(0, (byte) 0, false);
+                                block.setTypeIdAndData(0, (byte) 0, true);
                             }
                             continue;
                         }

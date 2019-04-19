@@ -5,8 +5,8 @@ import com.gameservergroup.gsgcore.utils.Text;
 public enum TrenchMessages {
 
     CANT_BREAK("&cSorry, you can't break blocks here!"),
-    YOU_CANT_HAVE_GIGADRILL_ENABLED("&cYou can't have giga drill enabled when switching modes."),
-    YOU_CANT_HAVE_SUPER_BREAKER_ENABLED("&cYou can't have berserk enabled when switching modes."),
+    YOU_CANT_HAVE_GIGADRILL_ENABLED("&cYou can't have giga drill enabled when using this."),
+    YOU_CANT_HAVE_SUPER_BREAKER_ENABLED("&cYou can't have berserk enabled when using this."),
     ;
 
 
