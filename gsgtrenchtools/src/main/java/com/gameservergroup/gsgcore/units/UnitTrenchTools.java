@@ -108,14 +108,6 @@ public class UnitTrenchTools extends Unit {
                 itemStack.getType() == Material.WOOD_PICKAXE;
     }
 
-    private boolean isShovel(ItemStack itemStack) {
-        return itemStack.getType() == Material.DIAMOND_SPADE ||
-                itemStack.getType() == Material.GOLD_SPADE ||
-                itemStack.getType() == Material.IRON_SPADE ||
-                itemStack.getType() == Material.STONE_SPADE ||
-                itemStack.getType() == Material.WOOD_SPADE;
-    }
-
     private void removeBlocksInRadius(Player player, Location center, int radius, boolean trayMode) {
         EnumMap<Material, Integer> amounts = null;
         if (GSGTrenchTools.getInstance().getConfig().getBoolean("drop-items")) {
