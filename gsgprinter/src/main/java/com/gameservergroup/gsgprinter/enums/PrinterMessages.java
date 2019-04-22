@@ -15,7 +15,8 @@ public enum PrinterMessages {
     YOU_ARE_FACTIONLESS("&cYou can't enable printer whilst being factionless!"),
     SOLD_HEADER("&aYou have sold:"),
     SOLD_LINE("&a{material} &f- &c{money}"),
-    SOLD_TOTAL("\n&eYour total amount sold was {money}");
+    SOLD_TOTAL("\n&eYour total amount sold was {money}"),
+    TIME_SPENT("&eYou spent {time} in PrinterMode");
 
     private String message;
 
