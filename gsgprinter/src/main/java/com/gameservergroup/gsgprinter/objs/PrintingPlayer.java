@@ -4,28 +4,26 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.EnumMap;
 import java.util.Objects;
 import java.util.UUID;
 
 public class PrintingPlayer {
 
-    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
-
     private final UUID uuid;
     private final EnumMap<Material, Integer> placedBlocks;
-    private final long startTime;
+    private final Instant startTime;
 
     public PrintingPlayer(UUID uuid, EnumMap<Material, Integer> placedBlocks) {
         this.uuid = uuid;
         this.placedBlocks = placedBlocks;
-        this.startTime = System.currentTimeMillis();
+        this.startTime = Instant.now();
     }
 
     public String getTime() {
-        return SIMPLE_DATE_FORMAT.format(new Date(System.currentTimeMillis() - startTime));
+        return ((double) (Duration.between(startTime, Instant.now()).getSeconds() / 60)) + " minutes";
     }
 
     public Player getPlayer() {
@@ -40,7 +38,7 @@ public class PrintingPlayer {
         return placedBlocks;
     }
 
-    public long getStartTime() {
+    public Instant getStartTime() {
         return startTime;
     }
 
@@ -60,14 +58,7 @@ public class PrintingPlayer {
 
         PrintingPlayer that = (PrintingPlayer) o;
 
-        return startTime == that.startTime && Objects.equals(uuid, that.uuid);
+        return startTime.equals(that.startTime) && Objects.equals(uuid, that.uuid);
 
-    }
-
-    @Override
-    public int hashCode() {
-        int result = uuid != null ? uuid.hashCode() : 0;
-        result = 31 * result + (int) (startTime ^ (startTime >>> 32));
-        return result;
     }
 }
