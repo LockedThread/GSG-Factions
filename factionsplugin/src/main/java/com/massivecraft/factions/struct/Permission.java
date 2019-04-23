@@ -110,7 +110,8 @@ public enum Permission {
     CHECK("check"),
     FLY_WILDERNESS("fly.wilderness"),
     FLY_SAFEZONE("fly.safezone"),
-    FLY_WARZONE("fly.warzone");
+    FLY_WARZONE("fly.warzone"),
+    UPGRADES("upgrades");
 
     public final String node;
 

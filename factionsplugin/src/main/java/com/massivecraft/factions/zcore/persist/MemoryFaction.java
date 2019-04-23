@@ -11,6 +11,7 @@ import com.massivecraft.factions.util.Message;
 import com.massivecraft.factions.util.MiscUtil;
 import com.massivecraft.factions.util.RelationUtil;
 import com.massivecraft.factions.zcore.factionchest.FactionChest;
+import com.massivecraft.factions.zcore.factionupgrades.FactionUpgrade;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
@@ -72,6 +73,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected String payPalEmail;
     private long lastDeath;
     protected long checkReminderMinutes = 0;
+    protected EnumMap<FactionUpgrade, Integer> upgradeMap;
 
     // -------------------------------------------- //
     // Construct
@@ -102,6 +104,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.factionChest = new FactionChest(3);
         this.payPalEmail = "";
         this.checkReminderMinutes = 0;
+        this.upgradeMap = new EnumMap<>(FactionUpgrade.class);
         resetPerms(); // Reset on new Faction so it has default values.
     }
 
@@ -135,7 +138,13 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.factionChest = new FactionChest(3);
         this.payPalEmail = "";
         this.checkReminderMinutes = 0;
+        this.upgradeMap = new EnumMap<>(FactionUpgrade.class);
         resetPerms(); // Reset on new Faction so it has default values.
+    }
+
+    @Override
+    public EnumMap<FactionUpgrade, Integer> getUpgrades() {
+        return upgradeMap;
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.massivecraft.factions.struct.Role;
 import com.massivecraft.factions.struct.StrikeInfo;
 import com.massivecraft.factions.util.LazyLocation;
 import com.massivecraft.factions.zcore.factionchest.FactionChest;
+import com.massivecraft.factions.zcore.factionupgrades.FactionUpgrade;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
@@ -25,6 +26,9 @@ public interface Faction extends EconomyParticipator {
     /**
      * LockedThread's ADDITIONS
      */
+
+    public EnumMap<FactionUpgrade, Integer> getUpgrades();
+
     public long getCheckReminderMinutes();
 
     public void setCheckReminderMinutes(long minutes);

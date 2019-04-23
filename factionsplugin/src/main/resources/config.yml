@@ -5,6 +5,78 @@
 
 # Made with love <3
 
+
+faction-upgrades:
+  enabled: true
+  gui:
+    name: '&cFaction Upgrades'
+    size: 9
+    fill:
+      enabled: true
+      enchanted: false
+      color: 'BLACK'
+    sounds:
+      cant-afford:
+        sound: 'BLOCK_GRASS_BREAK'
+        pitch: 1.0
+        volume: 1.0
+      upgraded:
+        sound: 'BLOCK_GRASS_BREAK'
+        pitch: 1.0
+        volume: 1.0
+  types:
+    chunk-spawner-limit:
+      enabled: true
+      slot: 4
+      gui-item:
+        amount: 1
+        material: 'SPAWNER'
+        data: 99
+        name: '&c&l✗ &fChunk Spawner Limit &c&l✗'
+        lore:
+          - ''
+          - ' &fCurrent Level: &c{level}'
+          - ''
+          - ' &fLevel 1: &c$500 - 100 Spawners'
+          - ' &fLevel 2: &c$500 - 200 Spawners'
+          - ' &fLevel 3: &c$500 - 350 Spawners'
+          - ' &fLevel 4: &c$500 - 400 Spawners'
+          - ' &fLevel 5: &c$500 - 500 Spawners'
+          - ''
+        enchants:
+          - 'DIG_SPEED:5'
+          - 'DURABILITY:4'
+        itemflags: []
+        unbreakable: true
+      levels:
+        default:
+          amount: 100
+        1:
+          amount: 100
+          cost:
+            cost-type: 'MONEY'
+            amount: 500
+        2:
+          amount: 200
+          cost:
+            cost-type: 'MONEY'
+            amount: 1000
+        3:
+          amount: 350
+          cost:
+            cost-type: 'MONEY'
+            amount: 2500
+        4:
+          amount: 400
+          cost:
+            cost-type: 'MONEY'
+            amount: 5000
+        5:
+          amount: 500
+          cost:
+            cost-type: 'MONEY'
+            amount: 10000
+
 inspect:
   enable: true
 
@@ -700,5 +772,5 @@ fwarp-gui:
           # - {total-online}  : Total # of players on the server
           # - {max-warps}     : Max # of warps a faction can set
           # - {max-allies}    : Max # of allies a faction can have
-          # - {max-enemies}   : Max # of enemies a faction can have
+        # - {max-enemies}   : Max # of enemies a faction can have
         # - {factionless}   : Count of all factionless players online

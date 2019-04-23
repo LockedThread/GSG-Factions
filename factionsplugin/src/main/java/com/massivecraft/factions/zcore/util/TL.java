@@ -30,6 +30,12 @@ public enum TL {
      * LockedThread's ADDITIONS
      */
 
+    COMMAND_UPGRADES_DESCRIPTION("Allows faction members to upgrade their faction."),
+
+    FACTION_UPGRADES_CHUNK_SPAWNER_LIMIT_DENY("&cYou can't place anymore spawners in this chunk because you've reached your max. Please upgrade in /f upgrades."),
+    FACTION_UPGRADES_CANT_AFFORD("&cYou cant afford level %1$d of $s. Cost: $%2$d"),
+    FACTION_UPGRADES_CANT_MAX_LEVEL("&cYou can no longer upgrade this anymore. You are at the max upgrade!"),
+
     COMMAND_INSPECT_DESCRIPTION("Allows players to view usages of their blocks in their claim."),
     COMMAND_INSPECT_DISABLED("&cYou have disabled faction inspect!"),
     COMMAND_INSPECT_ENABLED("&aYou have enabled faction inspect!"),
@@ -275,9 +281,9 @@ public enum TL {
     COMMAND_FLY_DESCRIPTION("Enter or leave Faction flight mode"),
     COMMAND_FLY_CHANGE("&eFaction flight &d%1$s"),
     COMMAND_FLY_DAMAGE("&eFaction flight &ddisabled&e due to entering combat"),
-    COMMAND_FLY_NO_ACCESS("&cCannot impl in territory of %1$s"),
-    COMMAND_FLY_ENEMY_NEARBY("&cCannot enable impl, enemy nearby"),
-    COMMAND_FLY_ENEMY_DISABLE("&cEnemy nearby, disabling impl"),
+    COMMAND_FLY_NO_ACCESS("&cCannot fly in territory of %1$s"),
+    COMMAND_FLY_ENEMY_NEARBY("&cCannot enable fly, enemy nearby"),
+    COMMAND_FLY_ENEMY_DISABLE("&cEnemy nearby, disabling fly"),
     COMMAND_FLY_STEALH_DESCRIPTION("Allows for flight around enemies"),
 
     COMMAND_NOTIFICATIONS_DESCRIPTION("Toggle territory chat notifications on or off"),

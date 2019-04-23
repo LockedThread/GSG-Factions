@@ -28,6 +28,10 @@ import java.util.List;
 
 public interface FPlayer extends EconomyParticipator {
 
+    public boolean isViewingUpgradeMenu();
+
+    public void setViewingUpgradeMenu(boolean viewingUpgradeMenu);
+
     public boolean isInspecting();
 
     public void setInspecting(boolean inspecting);

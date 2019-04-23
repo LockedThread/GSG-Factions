@@ -3,6 +3,7 @@ package com.massivecraft.factions.zcore;
 import com.gameservergroup.gsgcore.plugin.Module;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.InstanceCreator;
 import com.google.gson.reflect.TypeToken;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.Conf;
@@ -21,6 +22,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.Map.Entry;
@@ -31,6 +33,7 @@ public abstract class MPlugin extends Module {
 
     // Persist related
     public final Gson gson = this.getGsonBuilder()
+            .registerTypeAdapter(EnumMap.class, (InstanceCreator<EnumMap>) type -> new EnumMap((Class<?>) (((ParameterizedType) type).getActualTypeArguments())[0]))
             .registerTypeAdapter(FactionChest.class, new FactionChestAdapter())
             .create();
     // Some utils

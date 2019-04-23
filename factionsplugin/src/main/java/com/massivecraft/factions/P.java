@@ -16,6 +16,7 @@ import com.massivecraft.factions.listeners.*;
 import com.massivecraft.factions.struct.ChatMode;
 import com.massivecraft.factions.tasks.TaskAutoLeave;
 import com.massivecraft.factions.tasks.TaskWallCheckReminder;
+import com.massivecraft.factions.units.UnitFactionUpgrade;
 import com.massivecraft.factions.units.UnitWorldBorder;
 import com.massivecraft.factions.util.*;
 import com.massivecraft.factions.zcore.MPlugin;
@@ -140,7 +141,7 @@ public class P extends MPlugin {
         getServer().getPluginManager().registerEvents(new FactionsEntityListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsExploitListener(), this);
         getServer().getPluginManager().registerEvents(new FactionsBlockListener(this), this);
-        registerUnits(new UnitWorldBorder());
+        registerUnits(new UnitWorldBorder(), new UnitFactionUpgrade());
 
         // since some other plugins execute commands directly through this command interface, provide it
         this.getCommand(this.refCommand).setExecutor(this);
