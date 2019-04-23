@@ -66,4 +66,9 @@ public abstract class Menu implements InventoryHolder {
     public void setInventoryCloseEventConsumer(Consumer<InventoryCloseEvent> inventoryCloseEventConsumer) {
         this.inventoryCloseEventConsumer = inventoryCloseEventConsumer;
     }
+
+    public void clear() {
+        inventory.clear();
+        menuItems.clear();
+    }
 }
