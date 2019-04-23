@@ -17,11 +17,11 @@ faction-upgrades:
       color: 'BLACK'
     sounds:
       cant-afford:
-        sound: 'BLOCK_GRASS_BREAK'
+        sound: 'DIG_GRASS'
         pitch: 1.0
         volume: 1.0
       upgraded:
-        sound: 'BLOCK_GRASS_BREAK'
+        sound: 'LEVEL_UP'
         pitch: 1.0
         volume: 1.0
   types:
