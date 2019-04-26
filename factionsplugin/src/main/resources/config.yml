@@ -257,37 +257,37 @@ faction-upgrades:
           - ''
           - ' &fCurrent Level: &c{level}'
           - ''
-          - ' &fLevel 1: &c$500 - 4 Warps'
-          - ' &fLevel 2: &c$1,000 - 6 Warps'
-          - ' &fLevel 3: &c$2,500 - 8 Warps'
-          - ' &fLevel 4: &c$5,000 - 10 Warps'
-          - ' &fLevel 5: &c$10,000 - 15 Warps'
+          - ' &fLevel 1: &c$500 - 5 Warps'
+          - ' &fLevel 2: &c$1,000 - 7 Warps'
+          - ' &fLevel 3: &c$2,500 - 12 Warps'
+          - ' &fLevel 4: &c$5,000 - 15 Warps'
+          - ' &fLevel 5: &c$10,000 - 25 Warps'
           - ''
       levels:
         default:
-          amount: 1
+          amount: 3
         1:
-          amount: 2
+          amount: 5
           cost:
             cost-type: 'MONEY'
             amount: 500.0
         2:
-          amount: 3
+          amount: 7
           cost:
             cost-type: 'MONEY'
             amount: 1000.0
         3:
-          amount: 4
+          amount: 12
           cost:
             cost-type: 'MONEY'
             amount: 2500.0
         4:
-          amount: 5
+          amount: 15
           cost:
             cost-type: 'MONEY'
             amount: 5000.0
         5:
-          amount: 6
+          amount: 25
           cost:
             cost-type: 'MONEY'
             amount: 10000.0
