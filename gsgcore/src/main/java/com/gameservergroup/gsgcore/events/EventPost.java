@@ -4,7 +4,7 @@ import com.gameservergroup.gsgcore.plugin.Module;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -12,14 +12,14 @@ public class EventPost<T extends Event> {
 
     private boolean disabled = false;
     private Class<T> eventClass;
-    private HashSet<Predicate<T>> filters;
+    private LinkedList<Predicate<T>> filters;
     private EventPriority eventPriority;
     private Consumer<T> eventConsumer;
 
     private EventPost(Class<T> eventClass, EventPriority eventPriority) {
         this.eventClass = eventClass;
         this.eventPriority = eventPriority;
-        this.filters = new HashSet<>();
+        this.filters = new LinkedList<>();
     }
 
     public static <T extends Event> EventPost<T> of(Class<T> eventClass, EventPriority eventPriority) {
@@ -35,7 +35,7 @@ public class EventPost<T extends Event> {
         return this;
     }
 
-    HashSet<Predicate<T>> getFilters() {
+    LinkedList<Predicate<T>> getFilters() {
         return filters;
     }
 

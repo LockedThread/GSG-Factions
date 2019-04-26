@@ -9,16 +9,16 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.function.Predicate;
 
 public class CommandBuilder<T extends CommandSender> {
 
-    private HashSet<Predicate<ICommandHandler<? extends CommandSender>>> predicates;
+    private LinkedList<Predicate<ICommandHandler<? extends CommandSender>>> predicates;
     private CommandPost commandPost;
     private FunctionalCommandHandler<T> functionalCommandHandler;
 
-    private CommandBuilder(HashSet<Predicate<ICommandHandler<? extends CommandSender>>> predicates, CommandPost commandPost, FunctionalCommandHandler<T> functionalCommandHandler) {
+    private CommandBuilder(LinkedList<Predicate<ICommandHandler<? extends CommandSender>>> predicates, CommandPost commandPost, FunctionalCommandHandler<T> functionalCommandHandler) {
         this.predicates = predicates;
         this.commandPost = commandPost;
         this.functionalCommandHandler = functionalCommandHandler;
@@ -26,7 +26,7 @@ public class CommandBuilder<T extends CommandSender> {
 
     public CommandBuilder(CommandPost commandPost) {
         this.commandPost = commandPost;
-        this.predicates = new HashSet<>();
+        this.predicates = new LinkedList<>();
     }
 
     public CommandBuilder<T> assertPermission(String permission) {
@@ -78,7 +78,7 @@ public class CommandBuilder<T extends CommandSender> {
         CommandMapUtil.registerCommand(plugin, aliases);
     }
 
-    public HashSet<Predicate<ICommandHandler<? extends CommandSender>>> getPredicates() {
+    public LinkedList<Predicate<ICommandHandler<? extends CommandSender>>> getPredicates() {
         return predicates;
     }
 
