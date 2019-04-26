@@ -556,7 +556,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     }
 
     public int getMaxWarps() {
-        return maxWarps < 5 ? 5 : maxWarps;
+        return maxWarps;
     }
 
     // -------------------------------------------- //
