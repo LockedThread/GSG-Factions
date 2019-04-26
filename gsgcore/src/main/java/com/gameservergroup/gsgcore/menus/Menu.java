@@ -46,6 +46,15 @@ public abstract class Menu implements InventoryHolder {
         return menuItems;
     }
 
+    public void setInventory(String name, int size) {
+        this.inventory = Bukkit.createInventory(this, size, Text.toColor(name));
+        this.menuItems.clear();
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
     @Override
     public Inventory getInventory() {
         return inventory;
