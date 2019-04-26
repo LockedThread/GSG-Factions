@@ -4,7 +4,6 @@ import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.P;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.util.WarmUpUtil;
-import com.massivecraft.factions.util.WarpGUI;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.util.TL;
@@ -39,10 +38,7 @@ public class CmdFWarp extends FCommand {
         }
 
         if (args.size() == 0) {
-            WarpGUI warpGUI = new WarpGUI(fme);
-            warpGUI.build();
-
-            me.openInventory(warpGUI.getInventory());
+            me.openInventory(myFaction.getWarpMenu().getInventory());
         } else if (args.size() > 2) {
             fme.msg(TL.COMMAND_FWARP_COMMANDFORMAT);
         } else {
@@ -62,14 +58,11 @@ public class CmdFWarp extends FCommand {
                 }
                 final FPlayer fPlayer = fme;
                 final UUID uuid = fme.getPlayer().getUniqueId();
-                this.doWarmUp(WarmUpUtil.Warmup.WARP, TL.WARMUPS_NOTIFY_TELEPORT, warpName, new Runnable() {
-                    @Override
-                    public void run() {
-                        Player player = Bukkit.getPlayer(uuid);
-                        if (player != null) {
-                            player.teleport(fPlayer.getFaction().getWarp(warpName).getLocation());
-                            fPlayer.msg(TL.COMMAND_FWARP_WARPED, warpName);
-                        }
+                this.doWarmUp(WarmUpUtil.Warmup.WARP, TL.WARMUPS_NOTIFY_TELEPORT, warpName, () -> {
+                    Player player = Bukkit.getPlayer(uuid);
+                    if (player != null) {
+                        player.teleport(fPlayer.getFaction().getWarp(warpName).getLocation());
+                        fPlayer.msg(TL.COMMAND_FWARP_WARPED, warpName);
                     }
                 }, this.p.getConfig().getLong("warmups.f-warp", 0));
             } else {

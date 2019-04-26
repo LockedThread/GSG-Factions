@@ -40,10 +40,6 @@ public class CmdTntfill extends FCommand {
     @Override
     public void perform() {
         Faction faction = fme.getFaction();
-        if (!faction.isTntBankAllowed()) {
-            msg("<b>Your Faction has had /f tntfill access blocked by an Administrator! Try again later.");
-            return;
-        }
 
         Access access = faction.getAccess(fme, PermissableAction.TNTFILL);
         if (access == Access.DENY || (access == Access.UNDEFINED && !fme.getRole().isAtLeast(Role.MODERATOR))) {

@@ -1,5 +1,10 @@
 package com.massivecraft.factions.util;
 
+//
+// The old warp gui
+//
+
+/*
 import com.massivecraft.factions.Conf;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.Faction;
@@ -180,7 +185,6 @@ public class WarpGUI implements InventoryHolder, FactionGUI {
                     P.p.log(Level.WARNING, "Invalid slot: " + slot + " for dummy item: " + key);
                     continue;
                 }
-                dummySlots.add(slot);
                 warpGUI.setItem(slot, dummyItem);
             }
         }
@@ -231,3 +235,4 @@ public class WarpGUI implements InventoryHolder, FactionGUI {
     }
 
 }
+*/

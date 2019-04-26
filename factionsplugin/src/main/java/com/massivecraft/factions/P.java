@@ -101,6 +101,9 @@ public class P extends MPlugin {
             getServer().getPluginManager().registerEvents(new EssentialsListener(ess), this);
         }
 
+        // Register units so that factionupgrades are loaded before factions are
+        registerUnits(new UnitWorldBorder(), new UnitFactionUpgrade());
+
         FPlayers.getInstance().load();
         Factions.getInstance().load();
         for (FPlayer fPlayer : FPlayers.getInstance().getAllFPlayers()) {
@@ -141,7 +144,6 @@ public class P extends MPlugin {
         getServer().getPluginManager().registerEvents(new FactionsEntityListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsExploitListener(), this);
         getServer().getPluginManager().registerEvents(new FactionsBlockListener(this), this);
-        registerUnits(new UnitWorldBorder(), new UnitFactionUpgrade());
 
         // since some other plugins execute commands directly through this command interface, provide it
         this.getCommand(this.refCommand).setExecutor(this);

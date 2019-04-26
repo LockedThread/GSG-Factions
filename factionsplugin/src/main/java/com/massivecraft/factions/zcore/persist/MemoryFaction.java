@@ -12,6 +12,8 @@ import com.massivecraft.factions.util.MiscUtil;
 import com.massivecraft.factions.util.RelationUtil;
 import com.massivecraft.factions.zcore.factionchest.FactionChest;
 import com.massivecraft.factions.zcore.factionupgrades.FactionUpgrade;
+import com.massivecraft.factions.zcore.factionupgrades.FactionUpgradeMenu;
+import com.massivecraft.factions.zcore.factionwarps.WarpMenu;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
@@ -23,7 +25,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.time.Instant;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,7 +56,6 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected Set<BanInfo> bans = new HashSet<>();
     protected int tntBankBalance;
     protected int tntBankLimit;
-    protected long tntBankOpensAfter;
     protected FactionChest factionChest;
     protected int maxWarps;
     protected int maxMembers;
@@ -74,6 +74,9 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     private long lastDeath;
     protected long checkReminderMinutes = 0;
     protected EnumMap<FactionUpgrade, Integer> upgradeMap;
+
+    protected transient WarpMenu warpMenu;
+    protected transient FactionUpgradeMenu factionUpgradeMenu;
 
     // -------------------------------------------- //
     // Construct
@@ -95,13 +98,12 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.foundedDate = System.currentTimeMillis();
         this.defaultRole = Role.NORMAL;
         this.tntBankBalance = 0;
-        this.tntBankLimit = P.p.getDefaultTntBankBalance();
-        this.tntBankOpensAfter = 0L;
-        this.maxWarps = -1;
-        this.maxMembers = -1;
+        this.tntBankLimit = FactionUpgrade.FACTION_TNTBANK_STORAGE.isEnabled() ? FactionUpgrade.FACTION_TNTBANK_STORAGE.getMetaInteger("default-amount") : P.p.getDefaultTntBankBalance();
+        this.maxWarps = FactionUpgrade.FACTION_WARP_LIMIT.isEnabled() ? FactionUpgrade.FACTION_WARP_LIMIT.getMetaInteger("default-amount") : -1;
+        this.maxMembers = FactionUpgrade.FACTION_MEMBER_LIMIT.isEnabled() ? FactionUpgrade.FACTION_MEMBER_LIMIT.getMetaInteger("default-members") : -1;
+        this.factionChest = new FactionChest(FactionUpgrade.FACTION_CHEST_ROWS.isEnabled() ? FactionUpgrade.FACTION_CHEST_ROWS.getMetaInteger("default-rows") : Conf.defaultFactionChestRows);
         this.altPlayers = new HashSet<>();
         this.altInvites = new ArrayList<>();
-        this.factionChest = new FactionChest(3);
         this.payPalEmail = "";
         this.checkReminderMinutes = 0;
         this.upgradeMap = new EnumMap<>(FactionUpgrade.class);
@@ -129,17 +131,27 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         announcements = old.announcements;
         this.defaultRole = Role.NORMAL;
         this.tntBankBalance = 0;
-        this.tntBankLimit = P.p.getDefaultTntBankBalance();
-        this.tntBankOpensAfter = 0L;
-        this.maxWarps = -1;
-        this.maxMembers = -1;
+        this.tntBankLimit = FactionUpgrade.FACTION_TNTBANK_STORAGE.isEnabled() ? FactionUpgrade.FACTION_TNTBANK_STORAGE.getMetaInteger("default-amount") : P.p.getDefaultTntBankBalance();
+        this.maxWarps = FactionUpgrade.FACTION_WARP_LIMIT.isEnabled() ? FactionUpgrade.FACTION_WARP_LIMIT.getMetaInteger("default-amount") : -1;
+        this.maxMembers = FactionUpgrade.FACTION_MEMBER_LIMIT.isEnabled() ? FactionUpgrade.FACTION_MEMBER_LIMIT.getMetaInteger("default-members") : -1;
+        this.factionChest = new FactionChest(FactionUpgrade.FACTION_CHEST_ROWS.isEnabled() ? FactionUpgrade.FACTION_CHEST_ROWS.getMetaInteger("default-rows") : Conf.defaultFactionChestRows);
         this.altPlayers = new HashSet<>();
         this.altInvites = new ArrayList<>();
-        this.factionChest = new FactionChest(3);
         this.payPalEmail = "";
         this.checkReminderMinutes = 0;
         this.upgradeMap = new EnumMap<>(FactionUpgrade.class);
         resetPerms(); // Reset on new Faction so it has default values.
+    }
+
+
+    @Override
+    public WarpMenu getWarpMenu() {
+        return warpMenu == null ? warpMenu = new WarpMenu(this) : warpMenu;
+    }
+
+    @Override
+    public FactionUpgradeMenu getFactionUpgradeMenu() {
+        return factionUpgradeMenu == null ? factionUpgradeMenu = new FactionUpgradeMenu(this) : factionUpgradeMenu;
     }
 
     @Override
@@ -217,6 +229,13 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
 
     public void setWarp(String name, LazyLocation loc) {
         this.warps.put(name, loc);
+        WarpMenu warpMenu = getWarpMenu();
+        if (warpMenu.getInventory().firstEmpty() == -1) {
+            warpMenu.setInventory(warpMenu.getInventory().getName(), WarpMenu.getSlots(this));
+            warpMenu.initialize();
+        } else {
+            warpMenu.setItem(warpMenu.getInventory().firstEmpty(), warpMenu.buildItem(name));
+        }
     }
 
     public boolean isWarp(String name) {
@@ -526,14 +545,6 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
 
     public void setTntBankLimit(int tntBankLimit) {
         this.tntBankLimit = tntBankLimit;
-    }
-
-    public boolean isTntBankAllowed() {
-        return tntBankOpensAfter < System.currentTimeMillis();
-    }
-
-    public void setTntBankAllowedAfter(Instant timestamp) {
-        this.tntBankOpensAfter = timestamp.toEpochMilli();
     }
 
     public int getVaultRows() {

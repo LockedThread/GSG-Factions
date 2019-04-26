@@ -9,6 +9,8 @@ import com.massivecraft.factions.struct.StrikeInfo;
 import com.massivecraft.factions.util.LazyLocation;
 import com.massivecraft.factions.zcore.factionchest.FactionChest;
 import com.massivecraft.factions.zcore.factionupgrades.FactionUpgrade;
+import com.massivecraft.factions.zcore.factionupgrades.FactionUpgradeMenu;
+import com.massivecraft.factions.zcore.factionwarps.WarpMenu;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
@@ -17,7 +19,6 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,6 +27,10 @@ public interface Faction extends EconomyParticipator {
     /**
      * LockedThread's ADDITIONS
      */
+
+    public WarpMenu getWarpMenu();
+
+    public FactionUpgradeMenu getFactionUpgradeMenu();
 
     public EnumMap<FactionUpgrade, Integer> getUpgrades();
 
@@ -194,10 +199,6 @@ public interface Faction extends EconomyParticipator {
     public int getTntBankLimit();
 
     public void setTntBankLimit(int tntBankLimit);
-
-    public boolean isTntBankAllowed();
-
-    public void setTntBankAllowedAfter(Instant timestamp);
 
     public int getVaultRows();
 

@@ -22,9 +22,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public enum FactionUpgrade {
+public enum FactionUpgrade implements FactionUpgradeUpdate {
 
-    CHUNK_SPAWNER_LIMIT;
+    CHUNK_SPAWNER_LIMIT,
+    FACTION_TNTBANK_STORAGE,
+    FACTION_MEMBER_LIMIT,
+    FACTION_CHEST_ROWS,
+    FACTION_WARP_LIMIT;
 
     private transient boolean enabled = false;
     private transient int slot;
@@ -40,78 +44,13 @@ public enum FactionUpgrade {
         }
     }
 
-    public Pair<CostType, Double> getCostPair(int index) {
-        return upgradeCosts.get(index);
-    }
-
-    public void loadValues(ConfigurationSection root) {
-        if (this.enabled = root.getBoolean("enabled")) {
-            this.upgradeCosts = new Int2ObjectOpenHashMap<>();
-            this.metadata = new HashMap<>();
-            this.slot = root.getInt("slot");
-            this.menuItem = MenuItem.of(ItemStackBuilder.of(root.getConfigurationSection("gui-item")).build()).setInventoryClickEventConsumer(event -> {
-                Player player = (Player) event.getWhoClicked();
-                FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
-                Faction faction = fPlayer.getFaction();
-                Integer integer = faction.getUpgrades().get(FactionUpgrade.this);
-                if (integer == null) {
-                    Pair<CostType, Double> costPair = getCostPair(0);
-                    if (costPair.getLeft().purchase(player, costPair.getRight())) {
-                        for (FPlayer fPlayer1 : faction.getFPlayersWhereOnline(true)) {
-                            if (fPlayer1.isViewingUpgradeMenu()) {
-                                Player player1 = fPlayer1.getPlayer();
-                                Menu menu = (Menu) player1.getOpenInventory().getTopInventory().getHolder();
-                                menu.clear();
-                                menu.initialize();
-                                player1.updateInventory();
-                            }
-                        }
-                        player.playSound(player.getLocation(), UnitFactionUpgrade.upgraded.getLeft(), UnitFactionUpgrade.upgraded.getMiddle(), UnitFactionUpgrade.upgraded.getRight());
-                        faction.getUpgrades().computeIfPresent(this, (factionUpgrade, integer1) -> integer1 + 1);
-                    } else {
-                        player.sendMessage(TL.FACTION_UPGRADES_CANT_AFFORD.format(1, getPrettyName(), costPair.getRight()));
-                    }
-                } else if (integer >= getLevels()) {
-                    player.playSound(player.getLocation(), UnitFactionUpgrade.cantAfford.getLeft(), UnitFactionUpgrade.cantAfford.getMiddle(), UnitFactionUpgrade.cantAfford.getRight());
-                    player.sendMessage(TL.FACTION_UPGRADES_CANT_MAX_LEVEL.toString());
-                    player.closeInventory();
-                } else {
-                    int nextUpgrade = integer + 1;
-                    Pair<CostType, Double> costPair = getCostPair(nextUpgrade);
-                    if (costPair.getLeft().purchase(player, costPair.getRight())) {
-                        for (FPlayer fPlayer1 : faction.getFPlayersWhereOnline(true)) {
-                            if (fPlayer1.isViewingUpgradeMenu()) {
-                                Player player1 = fPlayer1.getPlayer();
-                                Menu menu = (Menu) player1.getOpenInventory().getTopInventory().getHolder();
-                                menu.clear();
-                                menu.initialize();
-                                player1.updateInventory();
-                            }
-                        }
-                        player.playSound(player.getLocation(), UnitFactionUpgrade.upgraded.getLeft(), UnitFactionUpgrade.upgraded.getMiddle(), UnitFactionUpgrade.upgraded.getRight());
-                        faction.getUpgrades().computeIfPresent(this, (factionUpgrade, integer1) -> integer1 + 1);
-                    } else {
-                        player.sendMessage(TL.FACTION_UPGRADES_CANT_AFFORD.format(1, getPrettyName(), costPair.getRight()));
-                    }
-                }
-            });
-            ConfigurationSection levels = root.getConfigurationSection("levels");
-            for (String key : levels.getKeys(false)) {
-                ConfigurationSection level = levels.getConfigurationSection(key);
-                for (String levelKey : level.getKeys(false)) {
-                    if (levelKey.equalsIgnoreCase("cost")) {
-                        ConfigurationSection cost = level.getConfigurationSection("cost");
-                        CostType costType = CostType.fromString(cost.getString("cost-type"));
-                        if (costType == null) {
-                            throw new RuntimeException("Unable to parse \"" + cost.getString("cost-type") + "\" as a CostType.");
-                        }
-                        upgradeCosts.put(key.equalsIgnoreCase("default") ? 0 : Integer.parseInt(key), Pair.of(costType, cost.getDouble("amount")));
-                    } else {
-                        metadata.put(key + "-" + levelKey.toLowerCase(), level.get(levelKey));
-                    }
-                }
+    public static FactionUpgrade getFactionUpgradeBySlot(int slot) {
+        for (FactionUpgrade factionUpgrade : values()) {
+            if (factionUpgrade.getSlot() == slot) {
+                return factionUpgrade;
             }
         }
+        return null;
     }
 
     public int getLevels() {
@@ -166,19 +105,107 @@ public enum FactionUpgrade {
         return menuItem;
     }
 
+    @Override
+    public void update(Faction faction, int newLevel) {
+        switch (this) {
+            case FACTION_TNTBANK_STORAGE:
+                faction.setTntBankLimit(getMetaInteger(newLevel + "-amount"));
+                break;
+            case FACTION_MEMBER_LIMIT:
+                faction.setMaxMembers(getMetaInteger(newLevel + "-members"));
+                break;
+            case FACTION_CHEST_ROWS:
+                faction.getFactionChest().setRows(getMetaInteger(newLevel + "-rows"));
+                break;
+            case FACTION_WARP_LIMIT:
+                faction.setMaxWarps(getMetaInteger(newLevel + "-amount"));
+                break;
+            default:
+                break;
+        }
+    }
+
+    public String getPrettyName() {
+        return StringUtils.capitalize(name().replace("_", " ").toLowerCase());
+    }
+
+    public void loadValues(ConfigurationSection root) {
+        if (this.enabled = root.getBoolean("enabled")) {
+            this.upgradeCosts = new Int2ObjectOpenHashMap<>();
+            this.metadata = new HashMap<>();
+            this.slot = root.getInt("slot");
+            this.menuItem = MenuItem.of(ItemStackBuilder.of(root.getConfigurationSection("gui-item")).build()).setInventoryClickEventConsumer(event -> {
+                Player player = (Player) event.getWhoClicked();
+                FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
+                Faction faction = fPlayer.getFaction();
+                Integer integer = faction.getUpgrades().get(FactionUpgrade.this);
+                event.setCancelled(true);
+                if (integer == null) {
+                    Pair<CostType, Double> costPair = getCostPair(1);
+
+                    if (costPair.getLeft().purchase(player, costPair.getRight())) {
+                        player.playSound(player.getLocation(), UnitFactionUpgrade.upgraded.getLeft(), UnitFactionUpgrade.upgraded.getMiddle(), UnitFactionUpgrade.upgraded.getRight());
+                        faction.getUpgrades().put(this, 1);
+                        Menu menu = (Menu) event.getClickedInventory().getHolder();
+                        //noinspection ConstantConditions
+                        menu.setItem(event.getRawSlot(), getFactionUpgradeBySlot(event.getRawSlot()).getMenuItem(faction));
+                        update(faction, 1);
+                    } else {
+                        player.sendMessage(TL.FACTION_UPGRADES_CANT_AFFORD.toString().replace("{level}", String.valueOf(1)).replace("{upgrade}", getPrettyName()).replace("{cost}", String.valueOf(costPair.getRight())));
+                    }
+                } else if (integer >= getLevels()) {
+                    player.playSound(player.getLocation(), UnitFactionUpgrade.cantAfford.getLeft(), UnitFactionUpgrade.cantAfford.getMiddle(), UnitFactionUpgrade.cantAfford.getRight());
+                    player.sendMessage(TL.FACTION_UPGRADES_CANT_MAX_LEVEL.toString());
+                } else {
+                    int nextUpgrade = integer + 1;
+                    Pair<CostType, Double> costPair = getCostPair(nextUpgrade);
+                    if (costPair.getLeft().purchase(player, costPair.getRight())) {
+                        faction.getUpgrades().put(this, nextUpgrade);
+                        player.playSound(player.getLocation(), UnitFactionUpgrade.upgraded.getLeft(), UnitFactionUpgrade.upgraded.getMiddle(), UnitFactionUpgrade.upgraded.getRight());
+                        Menu menu = (Menu) event.getClickedInventory().getHolder();
+                        //noinspection ConstantConditions
+                        menu.setItem(event.getRawSlot(), getFactionUpgradeBySlot(event.getRawSlot()).getMenuItem(faction));
+                        update(faction, nextUpgrade);
+                    } else {
+                        player.sendMessage(TL.FACTION_UPGRADES_CANT_AFFORD.toString().replace("{level}", String.valueOf(1)).replace("{upgrade}", getPrettyName()).replace("{cost}", String.valueOf(costPair.getRight())));
+                    }
+                }
+            });
+            ConfigurationSection levels = root.getConfigurationSection("levels");
+            for (String key : levels.getKeys(false)) {
+                ConfigurationSection level = levels.getConfigurationSection(key);
+                for (String levelKey : level.getKeys(false)) {
+                    if (levelKey.equalsIgnoreCase("cost")) {
+                        ConfigurationSection cost = level.getConfigurationSection("cost");
+                        CostType costType = CostType.fromString(cost.getString("cost-type"));
+                        if (costType == null) {
+                            throw new RuntimeException("Unable to parse \"" + cost.getString("cost-type") + "\" as a CostType.");
+                        }
+                        upgradeCosts.put(key.equalsIgnoreCase("default") ? 0 : Integer.parseInt(key), Pair.of(costType, cost.getDouble("amount")));
+                    } else {
+                        metadata.put(key + "-" + levelKey.toLowerCase(), level.get(levelKey));
+                    }
+                }
+            }
+        }
+    }
+
     public MenuItem getMenuItem(Faction faction) {
         ItemStack clone = menuItem.getItemStack().clone();
         ItemMeta itemMeta = clone.getItemMeta();
         List<String> lore = itemMeta.getLore()
                 .stream()
-                .map(s -> ChatColor.translateAlternateColorCodes('&', s.replace("{level}", String.valueOf(faction.getUpgrades().getOrDefault(this, 1)))))
+                .map(s -> {
+                    Integer integer = faction.getUpgrades().getOrDefault(this, 0);
+                    return ChatColor.translateAlternateColorCodes('&', s.replace("{level}", integer == 0 ? "default" : String.valueOf(integer)));
+                })
                 .collect(Collectors.toList());
         itemMeta.setLore(lore);
         clone.setItemMeta(itemMeta);
         return MenuItem.of(clone).setInventoryClickEventConsumer(menuItem.getInventoryClickEventConsumer());
     }
 
-    public String getPrettyName() {
-        return StringUtils.capitalize(name().replace("_", " ").toLowerCase());
+    public Pair<CostType, Double> getCostPair(int index) {
+        return upgradeCosts.get(index);
     }
 }

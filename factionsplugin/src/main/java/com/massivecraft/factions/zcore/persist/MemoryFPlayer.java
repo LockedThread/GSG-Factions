@@ -133,6 +133,15 @@ public abstract class MemoryFPlayer implements FPlayer {
     }
 
     @Override
+    public void openFactionUpgradeMenu() {
+        if (hasFaction()) {
+            Faction faction = getFaction();
+            getPlayer().openInventory(faction.getFactionUpgradeMenu().getInventory());
+            setViewingUpgradeMenu(true);
+        }
+    }
+
+    @Override
     public boolean isViewingUpgradeMenu() {
         return viewingUpgradeMenu;
     }

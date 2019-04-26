@@ -122,6 +122,7 @@ permissions:
       factions.promote: true
       factions.mutechat: true
       factions.check: true
+      factions.upgrades: true
   factions.check:
     description: Allows players to edit the automated wall check reminder time for their faction
   factions.mutechat:

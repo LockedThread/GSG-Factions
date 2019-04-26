@@ -33,7 +33,7 @@ public enum TL {
     COMMAND_UPGRADES_DESCRIPTION("Allows faction members to upgrade their faction."),
 
     FACTION_UPGRADES_CHUNK_SPAWNER_LIMIT_DENY("&cYou can't place anymore spawners in this chunk because you've reached your max. Please upgrade in /f upgrades."),
-    FACTION_UPGRADES_CANT_AFFORD("&cYou cant afford level %1$d of $s. Cost: $%2$d"),
+    FACTION_UPGRADES_CANT_AFFORD("&cYou cant afford level {level} of {upgrade}. Cost: {cost}"),
     FACTION_UPGRADES_CANT_MAX_LEVEL("&cYou can no longer upgrade this anymore. You are at the max upgrade!"),
 
     COMMAND_INSPECT_DESCRIPTION("Allows players to view usages of their blocks in their claim."),

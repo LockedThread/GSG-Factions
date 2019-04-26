@@ -11,8 +11,13 @@ public enum CostType implements UpgradePurchase {
         try {
             return valueOf(s.toUpperCase().replace("-", "_"));
         } catch (IllegalArgumentException e) {
-            return null;
+            for (CostType costType : values()) {
+                if (costType.name().equalsIgnoreCase(s.replace("-", "_"))) {
+                    return costType;
+                }
+            }
         }
+        return null;
     }
 
     @Override

@@ -35,13 +35,11 @@ public class CmdStealth extends FCommand {
         if (!toggle) {
             fme.setStealth(false);
             fme.sendMessage(ChatColor.YELLOW + "Faction stealth " + ChatColor.LIGHT_PURPLE + "disabled");
+        } else if (FlightDisableUtil.enemiesNearby(fme, P.p.getConfig().getInt("f-fly.enemy-radius"))) {
+            msg("&cYou can not do that while around enemies.");
         } else {
-            if (FlightDisableUtil.enemiesNearby(fme, P.p.getConfig().getInt("f-impl.enemy-radius"))) {
-                msg("&cYou can not do that while around enemies.");
-            } else {
-                fme.setStealth(true);
-                fme.sendMessage(ChatColor.YELLOW + "Faction stealth " + ChatColor.LIGHT_PURPLE + "enabled");
-            }
+            fme.setStealth(true);
+            fme.sendMessage(ChatColor.YELLOW + "Faction stealth " + ChatColor.LIGHT_PURPLE + "enabled");
         }
     }
 

@@ -1,7 +1,6 @@
 package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.struct.Permission;
-import com.massivecraft.factions.zcore.factionupgrades.FactionUpgradeMenu;
 import com.massivecraft.factions.zcore.util.TL;
 
 public class CmdUpgrades extends FCommand {
@@ -20,7 +19,7 @@ public class CmdUpgrades extends FCommand {
 
     @Override
     public void perform() {
-        me.openInventory(new FactionUpgradeMenu().getInventory());
+        fme.openFactionUpgradeMenu();
     }
 
     @Override

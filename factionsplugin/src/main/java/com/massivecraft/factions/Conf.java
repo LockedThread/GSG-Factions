@@ -9,8 +9,11 @@ import java.util.*;
 
 public class Conf {
 
-    // /F corner
+    // /f corner
     public static int bufferSize = 20;
+
+    // /f Chest
+    public static int defaultFactionChestRows = 3;
 
     public static List<String> baseCommandAliases = new ArrayList<>();
     public static boolean allowNoSlashCommand = true;

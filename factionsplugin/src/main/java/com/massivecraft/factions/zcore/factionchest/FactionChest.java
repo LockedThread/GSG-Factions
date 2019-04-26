@@ -2,6 +2,7 @@ package com.massivecraft.factions.zcore.factionchest;
 
 import com.gameservergroup.gsgcore.utils.Text;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -41,5 +42,9 @@ public class FactionChest implements InventoryHolder {
         Inventory upgradedInventory = Bukkit.createInventory(this, rows * 9, Text.toColor("&eFaction Chest"));
         upgradedInventory.setContents(contents);
         this.inventory = upgradedInventory;
+        for (HumanEntity viewer : inventory.getViewers()) {
+            viewer.closeInventory();
+            viewer.openInventory(getInventory());
+        }
     }
 }
