@@ -156,7 +156,7 @@ public class ItemStackBuilder {
     }
 
     public ItemStackBuilder setDyeColor(DyeColor dyeColor) {
-        itemStack.setDurability(itemStack.getType() == Material.WOOL ? dyeColor.getWoolData() : dyeColor.getDyeData());
+        itemStack.setDurability((itemStack.getType() == Material.WOOL || itemStack.getType() == Material.STAINED_GLASS_PANE || itemStack.getType() == Material.STAINED_GLASS) ? dyeColor.getWoolData() : dyeColor.getDyeData());
         return this;
     }
 
