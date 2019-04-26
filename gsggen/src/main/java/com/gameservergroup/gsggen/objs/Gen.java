@@ -9,6 +9,7 @@ import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsgcore.utils.Text;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.generation.Generation;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -46,18 +47,17 @@ public class Gen {
                     if (GSGGen.getInstance().getCombatIntegration() != null && GSGGen.getInstance().getCombatIntegration().isTagged(event.getPlayer())) {
                         event.getPlayer().sendMessage(Text.toColor("&cYou can't place gens in combat"));
                     } else {
-                        if (Module.getEconomy().has(event.getPlayer(), price)) {
-                            Module.getEconomy().withdrawPlayer(event.getPlayer(), price);
+                        EconomyResponse economyResponse = Module.getEconomy().withdrawPlayer(event.getPlayer(), price);
+                        if (economyResponse.transactionSuccess()) {
+                            Block relative = event.getClickedBlock().getRelative(event.getBlockFace());
+                            event.setCancelled(true);
+                            relative.setType(getMaterial());
+                            event.getPlayer().updateInventory();
+                            getGeneration(relative, direction == Direction.HORIZONTAL ? event.getBlockFace() : direction.getBlockFaces()[0]).enable();
                         } else {
                             event.getPlayer().sendMessage(Text.toColor("&cYou don't have enough money to place this!"));
                             event.setCancelled(true);
-                            return;
                         }
-                        Block relative = event.getClickedBlock().getRelative(event.getBlockFace());
-                        event.setCancelled(true);
-                        relative.setType(getMaterial());
-                        event.getPlayer().updateInventory();
-                        getGeneration(relative, direction == Direction.HORIZONTAL ? event.getBlockFace() : direction.getBlockFaces()[0]).enable();
                     }
                 }
             });
@@ -67,14 +67,13 @@ public class Gen {
                     event.getPlayer().sendMessage(Text.toColor("&cYou can't place gens in combat"));
                 } else {
                     event.getPlayer().setItemInHand(event.getItemInHand());
-                    if (Module.getEconomy().has(event.getPlayer(), price)) {
-                        Module.getEconomy().withdrawPlayer(event.getPlayer(), price);
+                    EconomyResponse economyResponse = Module.getEconomy().withdrawPlayer(event.getPlayer(), price);
+                    if (economyResponse.transactionSuccess()) {
+                        getGeneration(event.getBlockPlaced(), direction == Direction.HORIZONTAL ? event.getBlockAgainst().getFace(event.getBlockPlaced()) : direction.getBlockFaces()[0]).enable();
                     } else {
                         event.getPlayer().sendMessage(Text.toColor("&cYou don't have enough money to place this!"));
                         event.setCancelled(true);
-                        return;
                     }
-                    getGeneration(event.getBlockPlaced(), direction == Direction.HORIZONTAL ? event.getBlockAgainst().getFace(event.getBlockPlaced()) : direction.getBlockFaces()[0]).enable();
                 }
             });
         }
