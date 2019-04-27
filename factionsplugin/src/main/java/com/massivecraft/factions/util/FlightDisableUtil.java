@@ -48,7 +48,7 @@ public class FlightDisableUtil extends BukkitRunnable {
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             FPlayer pilot = FPlayers.getInstance().getByPlayer(player);
-            if (pilot.isFlying() && !pilot.isAdminBypassing() && pilot.getPlayer().getGameMode() != GameMode.SPECTATOR && !pilot.getPlayer().isOp() && ((P.p.getCombatIntegration() != null && P.p.getCombatIntegration().isTagged(player)) || enemiesNearby(pilot, P.p.getConfig().getInt("f-fly.enemy-radius")))) {
+            if (pilot.canFlyAtLocation() && pilot.isFlying() && !pilot.isAdminBypassing() && pilot.getPlayer().getGameMode() != GameMode.SPECTATOR && !pilot.getPlayer().isOp() && ((P.p.getCombatIntegration() != null && P.p.getCombatIntegration().isTagged(player)) || enemiesNearby(pilot, P.p.getConfig().getInt("f-fly.enemy-radius")))) {
                 pilot.msg(TL.COMMAND_FLY_ENEMY_DISABLE);
                 pilot.setFlying(false);
             }

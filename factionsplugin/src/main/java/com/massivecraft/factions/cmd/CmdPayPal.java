@@ -25,7 +25,7 @@ public class CmdPayPal extends FCommand {
             if (myFaction.getPayPal().isEmpty()) {
                 msg(TL.COMMAND_PAYPAL_NO_PAYPAL_SET);
             } else {
-                msg(TL.COMMNAD_PAYPAL_INFO, myFaction.getPayPal());
+                msg(TL.COMMAND_PAYPAL_INFO, myFaction.getPayPal());
             }
         } else if (args.size() == 1) {
             if (fme.isAdminBypassing() && Permission.BYPASS.has(me)) {

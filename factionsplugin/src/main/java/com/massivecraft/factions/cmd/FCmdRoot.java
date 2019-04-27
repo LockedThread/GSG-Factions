@@ -102,6 +102,8 @@ public class FCmdRoot extends FCommand {
     public CmdMuteChat cmdMuteChat = new CmdMuteChat();
     public CmdCheck cmdCheck = new CmdCheck();
     public CmdUpgrades cmdUpgrades = new CmdUpgrades();
+    public CmdCornerList cmdCornerList = new CmdCornerList();
+    public CmdCornerReload cmdCornerReload = new CmdCornerReload();
 
     public FCmdRoot() {
         super();
@@ -214,6 +216,8 @@ public class FCmdRoot extends FCommand {
         this.addSubCommand(this.cmdMuteChat);
         this.addSubCommand(this.cmdCheck);
         this.addSubCommand(this.cmdUpgrades);
+        this.addSubCommand(this.cmdCornerList);
+        this.addSubCommand(this.cmdCornerReload);
 
         if (p.getConfig().getBoolean("inspect.enable") && p.getServer().getPluginManager().getPlugin("CoreProtect") != null) {
             this.addSubCommand(new CmdInspect());

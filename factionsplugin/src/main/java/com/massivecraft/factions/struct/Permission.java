@@ -4,6 +4,7 @@ import com.massivecraft.factions.P;
 import org.bukkit.command.CommandSender;
 
 public enum Permission {
+
     MANAGE_SAFE_ZONE("managesafezone"),
     MANAGE_WAR_ZONE("managewarzone"),
     OWNERSHIP_BYPASS("ownershipbypass"),
@@ -38,7 +39,7 @@ public enum Permission {
     DESCRIPTION("description"),
     DISBAND("disband"),
     DISBAND_ANY("disband.any"),
-    FLY("fly"),
+    FLY("fly.member"),
     HELP("help"),
     HOME("home"),
     INVITE("invite"),
@@ -111,7 +112,8 @@ public enum Permission {
     FLY_WILDERNESS("fly.wilderness"),
     FLY_SAFEZONE("fly.safezone"),
     FLY_WARZONE("fly.warzone"),
-    UPGRADES("upgrades");
+    UPGRADES("upgrades"),
+    CORNER_LIST("cornerlist");
 
     public final String node;
 
