@@ -9,7 +9,7 @@ public class CmdCornerList extends FCommand {
 
     public CmdCornerList() {
         super();
-        this.aliases.add("cornerreload");
+        this.aliases.add("cornerlist");
 
         this.permission = Permission.CORNER_LIST.node;
 
