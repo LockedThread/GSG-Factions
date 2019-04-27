@@ -81,7 +81,7 @@ public enum TL {
 
     COMMAND_PAYPAL_DESCRIPTION("Allows faction leaders to see their PayPal"),
     COMMAND_PAYPAL_NO_PAYPAL_SET("&cYou don't have a PayPal set. Execute /setpaypal [email] to set it."),
-    COMMNAD_PAYPAL_INFO("&eYour faction's PayPal is &f%1$s"),
+    COMMAND_PAYPAL_INFO("&eYour faction's PayPal is &f%1$s"),
     COMMAND_PAYPAL_ADMIN_INFO("&e%1$s's faction's PayPal is &f%2$s"),
     COMMAND_PAYPAL_ADMIN_NO_PAYPAL_SET("&c%1$s doesn't have a PayPal email set!"),
 
