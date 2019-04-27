@@ -96,7 +96,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.money = 0.0;
         this.powerBoost = 0.0;
         this.foundedDate = System.currentTimeMillis();
-        this.defaultRole = Role.NORMAL;
+        this.defaultRole = Role.RECRUIT;
         this.tntBankBalance = 0;
         this.tntBankLimit = FactionUpgrade.FACTION_TNTBANK_STORAGE.isEnabled() ? FactionUpgrade.FACTION_TNTBANK_STORAGE.getMetaInteger("default-amount") : P.p.getDefaultTntBankBalance();
         this.maxWarps = FactionUpgrade.FACTION_WARP_LIMIT.isEnabled() ? FactionUpgrade.FACTION_WARP_LIMIT.getMetaInteger("default-amount") : -1;
@@ -129,7 +129,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         fplayers = new HashSet<>();
         invites = old.invites;
         announcements = old.announcements;
-        this.defaultRole = Role.NORMAL;
+        this.defaultRole = Role.RECRUIT;
         this.tntBankBalance = 0;
         this.tntBankLimit = FactionUpgrade.FACTION_TNTBANK_STORAGE.isEnabled() ? FactionUpgrade.FACTION_TNTBANK_STORAGE.getMetaInteger("default-amount") : P.p.getDefaultTntBankBalance();
         this.maxWarps = FactionUpgrade.FACTION_WARP_LIMIT.isEnabled() ? FactionUpgrade.FACTION_WARP_LIMIT.getMetaInteger("default-amount") : -1;

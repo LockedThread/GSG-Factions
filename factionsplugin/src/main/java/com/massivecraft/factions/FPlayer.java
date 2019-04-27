@@ -30,10 +30,6 @@ public interface FPlayer extends EconomyParticipator {
 
     public void openFactionUpgradeMenu();
 
-    public boolean isViewingUpgradeMenu();
-
-    public void setViewingUpgradeMenu(boolean viewingUpgradeMenu);
-
     public boolean isInspecting();
 
     public void setInspecting(boolean inspecting);

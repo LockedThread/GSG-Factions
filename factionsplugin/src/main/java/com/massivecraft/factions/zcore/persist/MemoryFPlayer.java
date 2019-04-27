@@ -80,7 +80,6 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected transient boolean shouldTakeFallDamage = true;
     protected transient long lastMapUse;
     protected transient boolean inspecting = false;
-    protected transient boolean viewingUpgradeMenu = false;
 
     public MemoryFPlayer() {
     }
@@ -137,18 +136,7 @@ public abstract class MemoryFPlayer implements FPlayer {
         if (hasFaction()) {
             Faction faction = getFaction();
             getPlayer().openInventory(faction.getFactionUpgradeMenu().getInventory());
-            setViewingUpgradeMenu(true);
         }
-    }
-
-    @Override
-    public boolean isViewingUpgradeMenu() {
-        return viewingUpgradeMenu;
-    }
-
-    @Override
-    public void setViewingUpgradeMenu(boolean viewingUpgradeMenu) {
-        this.viewingUpgradeMenu = viewingUpgradeMenu;
     }
 
     @Override
