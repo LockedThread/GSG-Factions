@@ -30,6 +30,9 @@ public enum TL {
      * LockedThread's ADDITIONS
      */
 
+    COMMAND_CORNER_RELOAD_DESCRIPTION("Allows administrators to reload corner claim positions."),
+    COMMAND_CORNERLIST_DESCRIPTION("Allows players to view all of the claimed corners."),
+
     COMMAND_UPGRADES_DESCRIPTION("Allows faction members to upgrade their faction."),
 
     FACTION_UPGRADES_CHUNK_SPAWNER_LIMIT_DENY("&cYou can't place anymore spawners in this chunk because you've reached your max. Please upgrade in /f upgrades."),
