@@ -15,6 +15,7 @@ import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.event.FactionDisbandEvent;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -285,8 +286,9 @@ public class UnitPrinter extends Unit {
             player.sendMessage(PrinterMessages.THIS_BLOCK_ISNT_PLACEABLE.toString());
             return false;
         }
-        double balance = Module.getEconomy().getBalance(player);
-        if (balance < price) {
+
+        EconomyResponse economyResponse = Module.getEconomy().withdrawPlayer(player, price);
+        if (!economyResponse.transactionSuccess()) {
             player.sendMessage(PrinterMessages.YOU_DONT_HAVE_ENOUGH_MONEY.toString().replace("{material}", material.name().toLowerCase().replace("_", " ")));
             disablePrinter(player, false);
             return false;
@@ -296,8 +298,6 @@ public class UnitPrinter extends Unit {
             printingPlayer.getPlacedBlocks().putIfAbsent(material, 1);
             return printingPlayer;
         });
-
-        GSG_PRINTER.getServer().getScheduler().runTaskAsynchronously(GSG_PRINTER, () -> Module.getEconomy().withdrawPlayer(player, price));
         return true;
     }
 
