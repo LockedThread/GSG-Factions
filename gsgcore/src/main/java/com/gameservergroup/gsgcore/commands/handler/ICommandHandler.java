@@ -26,6 +26,10 @@ public interface ICommandHandler<T extends CommandSender> {
 
     String getRawArg(int index);
 
+    boolean isPlayer();
+
+    boolean isConsole();
+
     String getLabel();
 
 }

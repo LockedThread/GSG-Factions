@@ -2,6 +2,8 @@ package com.gameservergroup.gsgcore.commands.handler;
 
 import com.gameservergroup.gsgcore.commands.arguments.Argument;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -40,6 +42,16 @@ public class CommandHandler<T extends CommandSender> implements ICommandHandler<
         } catch (ArrayIndexOutOfBoundsException e) {
             return null;
         }
+    }
+
+    @Override
+    public boolean isPlayer() {
+        return sender instanceof Player;
+    }
+
+    @Override
+    public boolean isConsole() {
+        return sender instanceof ConsoleCommandSender;
     }
 
     @Override
