@@ -21,6 +21,10 @@ public enum CollectorMessages {
         this.message = message;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public String getKey() {
         return name().toLowerCase().replace("_", "-");
     }
