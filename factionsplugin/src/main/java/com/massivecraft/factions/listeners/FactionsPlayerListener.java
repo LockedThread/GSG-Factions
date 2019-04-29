@@ -60,21 +60,10 @@ public class FactionsPlayerListener implements Listener {
             WorldBorder border = world.getWorldBorder();
             if (border != null) {
                 int cornerCoord = (int) ((border.getSize() - 1D) / 2D);
-                Set<FLocation> local = new HashSet<>(4);
-                local.add(new FLocation(world.getName(), FLocation.blockToChunk(cornerCoord), FLocation.blockToChunk(cornerCoord)));
-                local.add(new FLocation(world.getName(), FLocation.blockToChunk(cornerCoord), FLocation.blockToChunk(-cornerCoord)));
-                local.add(new FLocation(world.getName(), FLocation.blockToChunk(-cornerCoord), FLocation.blockToChunk(cornerCoord)));
-                local.add(new FLocation(world.getName(), FLocation.blockToChunk(-cornerCoord), FLocation.blockToChunk(-cornerCoord)));
-
-                // check if claimed
-                local.removeIf(floc -> {
-                    Faction at = Board.getInstance().getFactionAt(floc);
-                    return at != null && at.isNormal();
-                });
-
-                if (local.size() > 0) {
-                    this.corners.addAll(local);
-                }
+                corners.add(new FLocation(world.getName(), FLocation.blockToChunk(cornerCoord), FLocation.blockToChunk(cornerCoord)));
+                corners.add(new FLocation(world.getName(), FLocation.blockToChunk(cornerCoord), FLocation.blockToChunk(-cornerCoord)));
+                corners.add(new FLocation(world.getName(), FLocation.blockToChunk(-cornerCoord), FLocation.blockToChunk(cornerCoord)));
+                corners.add(new FLocation(world.getName(), FLocation.blockToChunk(-cornerCoord), FLocation.blockToChunk(-cornerCoord)));
             }
         }
     }
