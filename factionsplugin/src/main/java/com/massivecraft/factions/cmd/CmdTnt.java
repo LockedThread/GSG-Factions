@@ -23,6 +23,7 @@ public class CmdTnt extends FCommand {
         this.addSubCommand(new CmdTntfill("f", "fill"));
 
         this.aliases.add("tnt");
+        this.aliases.add("tntbank");
 
         this.requiredArgs.add("balance|withdraw|deposit|fill");
         this.optionalArgs.put("amount", "");
