@@ -1,6 +1,7 @@
 package com.gameservergroup.gsgcore.commands.arguments;
 
 import com.gameservergroup.gsgcore.items.CustomItem;
+import com.gameservergroup.gsgcore.items.migration.MigrationType;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -57,6 +58,14 @@ public class ArgumentRegistry implements IArgumentRegistry {
             try {
                 return Optional.of(UUID.fromString(s));
             } catch (Exception e) {
+                return Optional.empty();
+            }
+        });
+
+        register(MigrationType.class, () -> s -> {
+            try {
+                return Optional.of(MigrationType.valueOf(s.toUpperCase()));
+            } catch (IllegalArgumentException e) {
                 return Optional.empty();
             }
         });

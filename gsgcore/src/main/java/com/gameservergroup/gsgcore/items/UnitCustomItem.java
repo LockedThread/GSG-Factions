@@ -3,13 +3,19 @@ package com.gameservergroup.gsgcore.items;
 import com.gameservergroup.gsgcore.commands.post.CommandPost;
 import com.gameservergroup.gsgcore.events.EventFilters;
 import com.gameservergroup.gsgcore.events.EventPost;
+import com.gameservergroup.gsgcore.items.migration.Migration;
+import com.gameservergroup.gsgcore.items.migration.MigrationType;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.google.common.base.Joiner;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
 
 public class UnitCustomItem extends Unit {
 
@@ -39,7 +45,7 @@ public class UnitCustomItem extends Unit {
                         } else {
                             c.reply("&cInvalid argument");
                         }
-                    } else if (c.getRawArgs().length == 3 || c.getRawArgs().length == 4) {
+                    } else if (c.getRawArgs().length >= 3) {
                         if (c.getRawArg(0).equalsIgnoreCase("give")) {
                             Player target = c.getArg(1).forceParse(Player.class);
                             CustomItem customItem = c.getArg(2).forceParse(CustomItem.class);
@@ -48,6 +54,25 @@ public class UnitCustomItem extends Unit {
                                 target.getInventory().addItem(customItem.getItemStack());
                             }
                             c.reply("&eYou have given " + target.getName() + " " + amount + " " + customItem.getName() + "s");
+                        } else if (c.getRawArg(0).equalsIgnoreCase("migrate")) {
+                            CustomItem customItem = c.getArg(1).forceParse(CustomItem.class);
+                            Migration migration = new Migration(c.getArg(2).forceParse(MigrationType.class), Arrays.copyOfRange(c.getRawArgs(), 3, c.getRawArgs().length));
+                            int count = 0;
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                if (c.isPlayer() && player.getName().equals(c.getSender().getName())) {
+                                    continue;
+                                }
+                                for (int i = 0; i < player.getInventory().getContents().length; i++) {
+                                    ItemStack itemStack = player.getInventory().getItem(i);
+                                    if (itemStack != null) {
+                                        if (migration.getMigrationType().isMigratableItemStack(itemStack, migration)) {
+                                            player.getInventory().setItem(i, customItem.getItemStack());
+                                            count++;
+                                        }
+                                    }
+                                }
+                            }
+                            c.reply("Migrated " + count + " ItemStacks to " + customItem.getName());
                         } else {
                             c.reply("&cInvalid argument");
                         }
@@ -76,7 +101,7 @@ public class UnitCustomItem extends Unit {
                     }
                 }).post(GSG_CORE);
 
-        EventPost.of(PlayerInteractEvent.class, EventPriority.HIGH)
+        EventPost.of(PlayerInteractEvent.class, EventPriority.LOWEST)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(EventFilters.getIgnoreHandNull())
                 .handle(event -> {
