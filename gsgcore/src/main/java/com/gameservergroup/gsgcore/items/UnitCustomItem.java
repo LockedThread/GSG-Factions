@@ -26,7 +26,7 @@ public class UnitCustomItem extends Unit {
                 .assertPermission("gsg.customitem")
                 .handler(c -> {
                     if (c.getRawArgs().length == 0) {
-                        c.reply("", "&d/customitem list", "&d/customitem give [player] [item] {amount}", "&d/customitem info [item]", "");
+                        c.reply("", "&d/customitem list", "&d/customitem give [player] [item] {amount}", "&d/customitem info [item]", "&d/customitem migrate [customitem] [migration-type] [arguments] - Ask locked for help!", "\n");
                     } else if (c.getRawArgs().length == 1) {
                         if (c.getRawArg(0).equalsIgnoreCase("list")) {
                             c.reply("", "&dCustomItems: &f" + Joiner.on(", ").skipNulls().join(CustomItem.getCustomItems().keySet()), "");
