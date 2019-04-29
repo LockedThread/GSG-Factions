@@ -2,6 +2,7 @@ package com.gameservergroup.gsgcore.units;
 
 import com.gameservergroup.gsgcore.GSGTrenchTools;
 import com.gameservergroup.gsgcore.enums.TrenchMessages;
+import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.objs.TrenchTool;
 import com.gameservergroup.gsgcore.utils.Utils;
 import org.bukkit.Location;
@@ -11,11 +12,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Map;
 
 public class UnitTrenchTools extends Unit {
@@ -45,12 +44,12 @@ public class UnitTrenchTools extends Unit {
                 if (player.isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
                     if (trenchTool.isTrayMode()) {
                         final boolean toolTrayMode = trenchTool.getToolTrayMode(hand);
-                        ItemStack itemStack = player.getItemInHand().clone();
+                        /*ItemStack itemStack = player.getItemInHand().clone();
                         ItemMeta meta = itemStack.getItemMeta();
                         List<String> trayModeLore = trenchTool.getTrayModeLore(!toolTrayMode);
                         meta.setLore(trayModeLore);
-                        itemStack.setItemMeta(meta);
-                        player.setItemInHand(trenchTool.setToolTrayMode(itemStack, !toolTrayMode));
+                        itemStack.setItemMeta(meta);*/
+                        player.setItemInHand(trenchTool.setToolTrayMode(ItemStackBuilder.of(player.getItemInHand()).setLore(trenchTool.getTrayModeLore(!toolTrayMode)).build(), !toolTrayMode));
                         player.updateInventory();
                     }
                 } else if (event.getAction() == Action.LEFT_CLICK_BLOCK && trenchTool.isOmniTool() && event.getClickedBlock() != null) {
