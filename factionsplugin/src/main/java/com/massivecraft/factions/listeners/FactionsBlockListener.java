@@ -81,6 +81,25 @@ public class FactionsBlockListener implements Listener {
 
             return false;
         }
+
+        // Also cancel and/or cause pain if player doesn't have ownership rights for this claim
+        if (Conf.ownedAreasEnabled && (Conf.ownedAreaDenyBuild || Conf.ownedAreaPainBuild) && !otherFaction.playerHasOwnershipRights(me, loc)) {
+//            if (!pain && Conf.ownedAreaPainBuild && !justCheck) {
+//                player.damage(Conf.actionDeniedPainAmount);
+//
+//                if (!Conf.ownedAreaDenyBuild) {
+//                    me.msg("<b>It is painful to try to " + action + " in this territory, it is owned by: " + otherFaction.getOwnerListString(loc));
+//                }
+//            }
+            if (Conf.ownedAreaDenyBuild) {
+                if (!justCheck) {
+                    me.msg("<b>You can't " + action + " in this territory, it is owned by: " + otherFaction.getOwnerListString(loc));
+                }
+
+                return false;
+            }
+        }
+
 //        if (P.p.getConfig().getBoolean("hcf.raidable", false) && otherFaction.getLandRounded() >= otherFaction.getPowerRounded()) {
 //            return true;
 //        }
@@ -103,24 +122,6 @@ public class FactionsBlockListener implements Listener {
             }
 
             return false;
-        }
-
-        // Also cancel and/or cause pain if player doesn't have ownership rights for this claim
-        if (Conf.ownedAreasEnabled && (Conf.ownedAreaDenyBuild || Conf.ownedAreaPainBuild) && !otherFaction.playerHasOwnershipRights(me, loc)) {
-//            if (!pain && Conf.ownedAreaPainBuild && !justCheck) {
-//                player.damage(Conf.actionDeniedPainAmount);
-//
-//                if (!Conf.ownedAreaDenyBuild) {
-//                    me.msg("<b>It is painful to try to " + action + " in this territory, it is owned by: " + otherFaction.getOwnerListString(loc));
-//                }
-//            }
-            if (Conf.ownedAreaDenyBuild) {
-                if (!justCheck) {
-                    me.msg("<b>You can't " + action + " in this territory, it is owned by: " + otherFaction.getOwnerListString(loc));
-                }
-
-                return false;
-            }
         }
 
         return true;
