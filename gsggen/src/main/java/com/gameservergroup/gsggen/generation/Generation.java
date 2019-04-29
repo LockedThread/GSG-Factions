@@ -34,9 +34,42 @@ public class Generation {
     }
 
     public boolean generateVertical() {
+        if (!getCurrentBlockPosition().isChunkLoaded()) {
+            getCurrentBlockPosition().getChunk().load();
+        }
+        Block relative = getCurrentBlockPosition().getBlock().getRelative(blockFace);
+        if (getLength() == 0) {
+            return false;
+        }
+        if (getCurrentBlockPosition().getBlock().getType() != getMaterial()) {
+            return false;
+        }
+        if (relative.getY() == 255) {
+            return false;
+        }
+        if (relative.getType() != Material.AIR && !isPatch()) {
+            return false;
+        }
+        if (isPatch() && relative.getType() != Material.WATER &&
+                relative.getType() != Material.STATIONARY_WATER &&
+                relative.getType() != Material.LAVA &&
+                relative.getType() != Material.STATIONARY_LAVA &&
+                relative.getType() != Material.OBSIDIAN &&
+                relative.getType() != Material.SAND &&
+                relative.getType() != Material.GRAVEL &&
+                relative.getType() != Material.AIR &&
+                relative.getType() != Material.COBBLESTONE) {
+            return false;
+        }
+        setLength(getLength() - 1);
+        GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid()));
+        setCurrentBlockPosition(BlockPosition.of(relative));
+        return true;
+        /*
         if (startingBlockPosition.isChunkLoaded()) {
             GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), startingBlockPosition.getChunk()::load);
         }
+        getCurrentBlockPosition().getBlock().getRelative(blockFace);
         Block relative = getCurrentBlockPosition().getBlock().getRelative(blockFace);
         if (getLength() == 0) {
             return false;
@@ -64,13 +97,13 @@ public class Generation {
         setLength(getLength() - 1);
         GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid()));
         setCurrentBlockPosition(BlockPosition.of(relative));
-        return true;
+        return true;*/
     }
 
     public boolean generateHorizontal() {
         BlockPosition blockPositionRelative = getCurrentBlockPosition().getRelative(blockFace);
-        if (startingBlockPosition.isChunkLoaded()) {
-            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), startingBlockPosition.getChunk()::load);
+        if (!startingBlockPosition.isChunkLoaded()) {
+            startingBlockPosition.getChunk().load();
         }
         Block relative = blockPositionRelative.getBlock();
         if (getLength() == 0) {

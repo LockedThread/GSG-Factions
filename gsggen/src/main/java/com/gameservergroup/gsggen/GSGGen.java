@@ -37,7 +37,7 @@ public class GSGGen extends Module {
         }
         registerUnits(unitGen = new UnitGen());
         this.genMenu = new GenMenu();
-        getServer().getScheduler().runTaskTimerAsynchronously(this, () -> getUnitGen().getGenerations().removeIf(generation -> generation.isVertical() ? !generation.generateVertical() : !generation.generateHorizontal()), getConfig().getLong("interval"), getConfig().getLong("interval"));
+        getServer().getScheduler().runTaskTimer(this, () -> getUnitGen().getGenerations().removeIf(generation -> generation.isVertical() ? !generation.generateVertical() : !generation.generateHorizontal()), getConfig().getLong("interval"), getConfig().getLong("interval"));
     }
 
     @Override

@@ -4,8 +4,8 @@
 #Material - (http://docs.codelanx.com/Bukkit/1.8/org/bukkit/Material.html)
 #DyeColor (Colors used for glass panes, wool, and glass) - (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html)
 
-#Interval in which gens flow in ticks, 20tps = 20 ticks per second therefore around 3 gens per second by default.
-interval: 6
+#Interval in which gens flow in ticks, 20tps = 20 ticks per second therefore around 1 gen per second by default.
+interval: 20
 enable-combattagplus-integration: true
 #May cause issues with minecraft clients, this is not fixable without causing mas amount of ItemStack instantiations.
 disable-lava-bucket-player-use: true
