@@ -17,6 +17,7 @@ import com.massivecraft.factions.struct.Role;
 import com.massivecraft.factions.util.RelationUtil;
 import com.massivecraft.factions.util.TitleAPI;
 import com.massivecraft.factions.util.WarmUpUtil;
+import com.massivecraft.factions.zcore.factionstatistics.FactionStatistic;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.util.TL;
@@ -25,10 +26,7 @@ import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -61,7 +59,6 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected WarmUpUtil.Warmup warmup;
     protected int warmupTask;
     protected boolean isAdminBypassing = false;
-    protected int kills, deaths;
     protected boolean willAutoLeave = true;
     protected int mapHeight = 8; // default to old value
     protected boolean isFlying = false;
@@ -70,6 +67,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected String altFactionId;
     protected boolean mutedChat = false;
     protected boolean seeingChunk = false;
+    protected EnumMap<FactionStatistic, Integer> factionStatisticMap;
 
     protected transient FLocation lastStoodAt;
     protected transient boolean mapAutoUpdating;
@@ -96,8 +94,7 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.autoWarZoneEnabled = false;
         this.loginPvpDisabled = Conf.noPVPDamageToOthersForXSecondsAfterLogin > 0;
         this.powerBoost = 0.0;
-        this.kills = 0;
-        this.deaths = 0;
+        this.factionStatisticMap = new EnumMap<>(FactionStatistic.class);
         this.mapHeight = Conf.mapHeight;
         this.notificationsEnabled = true;
         this.altFactionId = null;
@@ -124,11 +121,15 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.spyingChat = other.spyingChat;
         this.lastStoodAt = other.lastStoodAt;
         this.isAdminBypassing = other.isAdminBypassing;
-        this.kills = other.kills;
-        this.deaths = other.deaths;
+        this.factionStatisticMap = new EnumMap<>(FactionStatistic.class);
         this.mapHeight = Conf.mapHeight;
         this.notificationsEnabled = other.notificationsEnabled;
         this.altFactionId = other.altFactionId;
+    }
+
+    @Override
+    public EnumMap<FactionStatistic, Integer> getFactionStatisticMap() {
+        return factionStatisticMap;
     }
 
     @Override
@@ -179,13 +180,45 @@ public abstract class MemoryFPlayer implements FPlayer {
     }
 
     public void login() {
-        this.kills = getPlayer().getStatistic(Statistic.PLAYER_KILLS);
-        this.deaths = getPlayer().getStatistic(Statistic.DEATHS);
+        Player player = getPlayer();
+        setFactionStatistic(FactionStatistic.TIME_PLAYED, player.getStatistic(Statistic.PLAY_ONE_TICK) / 20);
+        setFactionStatistic(FactionStatistic.KILLS, player.getStatistic(Statistic.PLAYER_KILLS));
+        setFactionStatistic(FactionStatistic.DEATHS, player.getStatistic(Statistic.DEATHS));
     }
 
     public void logout() {
-        this.kills = getPlayer().getStatistic(Statistic.PLAYER_KILLS);
-        this.deaths = getPlayer().getStatistic(Statistic.DEATHS);
+        Player player = getPlayer();
+        setFactionStatistic(FactionStatistic.TIME_PLAYED, player.getStatistic(Statistic.PLAY_ONE_TICK) / 20);
+        setFactionStatistic(FactionStatistic.KILLS, player.getStatistic(Statistic.PLAYER_KILLS));
+        setFactionStatistic(FactionStatistic.DEATHS, player.getStatistic(Statistic.DEATHS));
+    }
+
+    public int getKills() {
+        return isOnline() ? getPlayer().getStatistic(Statistic.PLAYER_KILLS) : getFactionStatistic(FactionStatistic.KILLS);
+    }
+
+    public int getDeaths() {
+        return isOnline() ? getPlayer().getStatistic(Statistic.DEATHS) : getFactionStatistic(FactionStatistic.KILLS);
+    }
+
+    public int getTimePlayed() {
+        return isOnline() ? getPlayer().getStatistic(Statistic.PLAY_ONE_TICK) / 20 : getFactionStatistic(FactionStatistic.TIME_PLAYED);
+    }
+
+    public int getBlocksPlaced() {
+
+    }
+
+    public int getBlocksBroken() {
+
+    }
+
+
+    /**
+     * @return returns decimal hours
+     */
+    public double getFormattedTimePlayed() {
+        return (double) getTimePlayed() / 60 / 60;
     }
 
     public Faction getFaction() {
@@ -195,7 +228,7 @@ public abstract class MemoryFPlayer implements FPlayer {
         return Factions.getInstance().getFactionById(this.factionId);
     }
 
-    public void setFaction(Faction faction) {
+    public void Faction(Faction faction) {
         Faction oldFaction = this.getFaction();
         if (oldFaction != null) {
             oldFaction.removeFPlayer(this);
@@ -516,15 +549,6 @@ public abstract class MemoryFPlayer implements FPlayer {
 
     public String getChatTag(com.massivecraft.factions.zcore.persist.MemoryFPlayer fplayer) {
         return this.hasFaction() ? this.getColorTo(fplayer) + getChatTag() : "";
-    }
-
-    public int getKills() {
-        return isOnline() ? getPlayer().getStatistic(Statistic.PLAYER_KILLS) : this.kills;
-    }
-
-    public int getDeaths() {
-        return isOnline() ? getPlayer().getStatistic(Statistic.DEATHS) : this.deaths;
-
     }
 
     // -------------------------------

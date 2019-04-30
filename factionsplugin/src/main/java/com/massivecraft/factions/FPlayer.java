@@ -6,12 +6,14 @@ import com.massivecraft.factions.struct.ChatMode;
 import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.struct.Role;
 import com.massivecraft.factions.util.WarmUpUtil;
+import com.massivecraft.factions.zcore.factionstatistics.FactionStatistic;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.EnumMap;
 import java.util.List;
 
 
@@ -27,6 +29,16 @@ import java.util.List;
  */
 
 public interface FPlayer extends EconomyParticipator {
+
+    public EnumMap<FactionStatistic, Integer> getFactionStatisticMap();
+
+    public default int getFactionStatistic(FactionStatistic factionStatistic) {
+        return getFactionStatisticMap().getOrDefault(factionStatistic, 0);
+    }
+
+    public default void setFactionStatistic(FactionStatistic factionStatistic, int data) {
+        getFactionStatisticMap().put(factionStatistic, data);
+    }
 
     public void openFactionUpgradeMenu();
 

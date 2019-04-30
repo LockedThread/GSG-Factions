@@ -30,6 +30,9 @@ public enum TL {
      * LockedThread's ADDITIONS
      */
 
+    COMMAND_STATISTICS_DESCRIPTION("Allows players to view stats about themselves and others"),
+    COMMAND_STATISTICS_ROW("&c{index}: &f{amount}"),
+
     COMMAND_CORNER_RELOAD_DESCRIPTION("Allows administrators to reload corner claim positions."),
     COMMAND_CORNERLIST_DESCRIPTION("Allows players to view all of the claimed corners."),
 

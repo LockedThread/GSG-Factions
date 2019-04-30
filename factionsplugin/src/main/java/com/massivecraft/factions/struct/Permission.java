@@ -113,7 +113,8 @@ public enum Permission {
     FLY_SAFEZONE("fly.safezone"),
     FLY_WARZONE("fly.warzone"),
     UPGRADES("upgrades"),
-    CORNER_LIST("cornerlist");
+    CORNER_LIST("cornerlist"),
+    STATISTICS("statistics");
 
     public final String node;
 
