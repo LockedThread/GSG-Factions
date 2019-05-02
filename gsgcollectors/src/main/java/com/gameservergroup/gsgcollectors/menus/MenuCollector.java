@@ -10,8 +10,6 @@ import com.gameservergroup.gsgcore.menus.Menu;
 import com.gameservergroup.gsgcore.menus.MenuItem;
 import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgcore.utils.Text;
-import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.Faction;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +22,7 @@ public class MenuCollector extends Menu {
     private Collector collector;
 
     public MenuCollector(Collector collector) {
-        super(GSGCollectors.getInstance().getUnitCollectors().getCollectorMenuName().replace("{faction}", collector.getFaction().getTag()), GSGCollectors.getInstance().getUnitCollectors().getCollectorMenuSize());
+        super(GSGCollectors.getInstance().getUnitCollectors().getCollectorMenuName().replace("{owner}", collector.getLandOwner() + "'s"), GSGCollectors.getInstance().getUnitCollectors().getCollectorMenuSize());
         this.collector = collector;
         initialize();
     }
@@ -48,8 +46,7 @@ public class MenuCollector extends Menu {
                             if (collectionType == CollectionType.TNT) {
                                 FactionsBankIntegration factionsBankIntegration = GSGCollectors.getInstance().getUnitCollectors().getFactionsBankIntegration();
                                 if (factionsBankIntegration != null) {
-                                    Faction faction = FPlayers.getInstance().getByPlayer(player).getFaction();
-                                    if (!factionsBankIntegration.setTntBankBalance(faction, factionsBankIntegration.getTntBankBalance(faction) + amountToBeSubtracted)) {
+                                    if (!factionsBankIntegration.setTntBankBalance(factionsBankIntegration.getFaction(player), factionsBankIntegration.getTntBankBalance(factionsBankIntegration.getFaction(player)) + amountToBeSubtracted)) {
                                         return;
                                     }
                                 } else if (player.getInventory().firstEmpty() == -1) {

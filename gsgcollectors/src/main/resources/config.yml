@@ -43,8 +43,8 @@ collector-item:
     - 'HIDE_ENCHANTS'
 menu:
   #Placeholders:
-  #{faction} - the faction's name
-  name: '&e{faction} Collector'
+  #{owner} - the owner of the collector
+  name: '&e{owner} Collector'
   size: 27
   fill:
     enabled: true

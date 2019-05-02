@@ -4,6 +4,7 @@ import com.gameservergroup.gsgcollectors.GSGCollectors;
 import com.gameservergroup.gsgcollectors.enums.CollectionType;
 import com.gameservergroup.gsgcollectors.enums.CollectorMessages;
 import com.gameservergroup.gsgcollectors.integration.FactionsBankIntegration;
+import com.gameservergroup.gsgcollectors.integration.impl.FactionsUUIDImpl;
 import com.gameservergroup.gsgcollectors.integration.impl.LockedThreadFactionsBankImpl;
 import com.gameservergroup.gsgcollectors.obj.Collector;
 import com.gameservergroup.gsgcollectors.task.TaskSave;
@@ -17,9 +18,6 @@ import com.gameservergroup.gsgcore.storage.objs.ChunkPosition;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.gameservergroup.gsgcore.utils.CallBack;
 import com.google.gson.reflect.TypeToken;
-import com.massivecraft.factions.*;
-import com.massivecraft.factions.struct.Relation;
-import com.massivecraft.factions.struct.Role;
 import net.minecraft.server.v1_8_R3.Blocks;
 import net.minecraft.server.v1_8_R3.EnumDirection;
 import net.techcable.tacospigot.event.entity.SpawnerPreSpawnEvent;
@@ -40,6 +38,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.github.paperspigot.Title;
 
 import java.util.EnumSet;
@@ -64,7 +63,6 @@ public class UnitCollectors extends Unit {
     private JsonFile<HashMap<ChunkPosition, Collector>> jsonFile;
 
     //Options
-    private Role atLeastRole;
     private boolean accessNotYours;
     private boolean roleRestricted;
     private boolean editWhilstFactionless;
@@ -76,14 +74,33 @@ public class UnitCollectors extends Unit {
 
     @Override
     public void setup() {
-        if (GSG_COLLECTORS.getServer().getPluginManager().getPlugin("Factions") != null) {
-            if (GSG_COLLECTORS.getServer().getPluginManager().getPlugin("Factions").getDescription().getAuthors().contains("LockedThread")) {
+        Plugin factions = GSG_COLLECTORS.getServer().getPluginManager().getPlugin("Factions");
+        if (factions != null) {
+            if (factions.getDescription().getAuthors().contains("LockedThread")) {
                 this.factionsBankIntegration = new LockedThreadFactionsBankImpl();
                 GSG_COLLECTORS.getLogger().info("Enabled LockedThread FactionsBank implementation");
+            } else if (factions.getDescription().getAuthors().contains("drtshock")) {
+                new FactionsUUIDImpl().setupListeners(this);
             } else {
                 GSG_COLLECTORS.getLogger().severe("TNTBank will not work for you! Purchase LockedThread's FactionsFork for support!");
             }
+        } else {
+            EventPost.of(PlayerInteractEvent.class, EventPriority.HIGHEST)
+                    .filter(EventFilters.getIgnoreCancelled())
+                    .filter(event -> event.getClickedBlock() != null)
+                    .handle(event -> {
+                        Collector collector = getCollector(event.getClickedBlock().getLocation());
+                        if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
+                            if (event.getPlayer().isSneaking() && event.getPlayer().hasPermission("gsgcollector.clicktosell")) {
+                                collector.sellAll(event.getPlayer());
+                            } else {
+                                event.getPlayer().openInventory(collector.getMenuCollector().getInventory());
+                            }
+                            event.setCancelled(true);
+                        }
+                    }).post(GSG_COLLECTORS);
         }
+
         this.jsonFile = new JsonFile<>(GSG_COLLECTORS.getDataFolder(), "collectors.json", new TypeToken<HashMap<ChunkPosition, Collector>>() {
         });
         this.collectorHashMap = jsonFile.load().orElse(new HashMap<>());
@@ -114,35 +131,6 @@ public class UnitCollectors extends Unit {
                             }
                         } else if (event.getBlock().getType() == Material.SUGAR_CANE_BLOCK && getCollectionTypes().contains(CollectionType.SUGAR_CANE)) {
                             collector.addAmount(CollectionType.SUGAR_CANE, 1);
-                        }
-                    }
-                }).post(GSG_COLLECTORS);
-
-        EventPost.of(PlayerInteractEvent.class, EventPriority.HIGHEST)
-                .filter(EventFilters.getIgnoreCancelled())
-                .filter(event -> event.getClickedBlock() != null)
-                .handle(event -> {
-                    Collector collector = getCollector(event.getClickedBlock().getLocation());
-                    if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
-                        FPlayer fPlayer = FPlayers.getInstance().getByPlayer(event.getPlayer());
-                        Faction myFaction = fPlayer.getFaction();
-                        if (!editWhilstFactionless && myFaction.isWilderness() && !fPlayer.isAdminBypassing()) {
-                            event.getPlayer().sendMessage(CollectorMessages.NO_ACCESS_FACTIONLESS.toString());
-                        } else {
-                            FLocation fLocation = new FLocation(event.getClickedBlock());
-                            Faction factionThere = Board.getInstance().getFactionAt(fLocation);
-                            if (accessNotYours && factionThere.getRelationTo(myFaction) != Relation.MEMBER && !fPlayer.isAdminBypassing()) {
-                                event.getPlayer().sendMessage(CollectorMessages.NO_ACCESS_NOT_YOURS.toString());
-                            } else if (roleRestricted && !fPlayer.getRole().isAtLeast(atLeastRole) && !fPlayer.isAdminBypassing()) {
-                                event.getPlayer().sendMessage(CollectorMessages.NO_ACCESS_NO_PERMISSIONS.toString().replace("{role}", atLeastRole.toString()));
-                            } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                                if (event.getPlayer().isSneaking() && event.getPlayer().hasPermission("gsgcollector.clicktosell")) {
-                                    collector.sellAll(event.getPlayer());
-                                } else {
-                                    event.getPlayer().openInventory(collector.getMenuCollector().getInventory());
-                                }
-                                event.setCancelled(true);
-                            }
                         }
                     }
                 }).post(GSG_COLLECTORS);
@@ -200,7 +188,7 @@ public class UnitCollectors extends Unit {
             EventPost.of(BlockGrowEvent.class)
                     .filter(EventFilters.getIgnoreCancelled())
                     .filter(event -> event.getNewState().getType() == Material.CACTUS)
-                    .filter(event -> !canGrow(event.getBlock()))
+                    .filter(event -> canGrow(event.getBlock()))
                     .handle(event -> {
                         Collector collector = getCollector(event.getBlock().getLocation());
                         event.setCancelled(true);
@@ -209,13 +197,11 @@ public class UnitCollectors extends Unit {
                         }
                     }).post(GSG_COLLECTORS);
         }
-
     }
 
     public void load() {
         this.collectorMenuSize = GSG_COLLECTORS.getConfig().getInt("menu.size");
         this.collectorMenuName = GSG_COLLECTORS.getConfig().getString("menu.name");
-        this.atLeastRole = Role.fromString(GSG_COLLECTORS.getConfig().getString("options.at-least-role", "COLEADER"));
         this.accessNotYours = GSG_COLLECTORS.getConfig().getBoolean("options.can-access-not-yours");
         this.editWhilstFactionless = GSG_COLLECTORS.getConfig().getBoolean("options.can-edit-whilst-factionless");
         this.roleRestricted = GSG_COLLECTORS.getConfig().getBoolean("options.is-role-restricted", true);
@@ -233,23 +219,24 @@ public class UnitCollectors extends Unit {
                     .build();
         }
 
-        this.collectorItem = CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("collector-item")).setPlaceEventConsumer(event -> {
-            Collector collector = getCollector(event.getBlockPlaced().getLocation());
-            if (collector == null) {
-                createCollector(event.getBlockPlaced().getLocation());
-                if (!CollectorMessages.TITLE_COLLECTOR_PLACE.toString().isEmpty()) {
-                    if (useTitles) {
-                        event.getPlayer().sendTitle(Title.builder().title(CollectorMessages.TITLE_COLLECTOR_PLACE.toString()).fadeIn(5).fadeOut(5).stay(25).build());
+        this.collectorItem = CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("collector-item"))
+                .setPlaceEventConsumer(event -> {
+                    Collector collector = getCollector(event.getBlockPlaced().getLocation());
+                    if (collector == null) {
+                        createCollector(event.getBlockPlaced().getLocation()).setLandOwner(event.getPlayer().getName());
+                        if (!CollectorMessages.TITLE_COLLECTOR_PLACE.toString().isEmpty()) {
+                            if (useTitles) {
+                                event.getPlayer().sendTitle(Title.builder().title(CollectorMessages.TITLE_COLLECTOR_PLACE.toString()).fadeIn(5).fadeOut(5).stay(25).build());
+                            } else {
+                                event.getPlayer().sendMessage(CollectorMessages.TITLE_COLLECTOR_PLACE.toString());
+                            }
+                        }
                     } else {
-                        event.getPlayer().sendMessage(CollectorMessages.TITLE_COLLECTOR_PLACE.toString());
+                        collector.getBlockPosition().getBlock().setType(Material.AIR);
+                        collector.setBlockPosition(BlockPosition.of(event.getBlockPlaced()));
+                        event.getPlayer().sendMessage(CollectorMessages.UPDATED_COLLECTOR_BLOCKPOSITION.toString());
                     }
-                }
-            } else {
-                collector.getBlockPosition().getBlock().setType(Material.AIR);
-                collector.setBlockPosition(BlockPosition.of(event.getBlockPlaced()));
-                event.getPlayer().sendMessage(CollectorMessages.UPDATED_COLLECTOR_BLOCKPOSITION.toString());
-            }
-        });
+                });
         CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 Collector collector = getCollector(event.getClickedBlock().getLocation());
@@ -326,10 +313,6 @@ public class UnitCollectors extends Unit {
 
     public int getCollectorMenuSize() {
         return collectorMenuSize;
-    }
-
-    public Role getAtLeastRole() {
-        return atLeastRole;
     }
 
     public EnumSet<CollectionType> getCollectionTypes() {

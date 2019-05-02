@@ -22,6 +22,7 @@ public class Collector {
 
     private BlockPosition blockPosition;
     private EnumMap<CollectionType, Integer> amounts;
+    private String landOwner;
     private transient MenuCollector menuCollector;
 
     public Collector(Location location) {
@@ -73,9 +74,8 @@ public class Collector {
     public void depositTnt(Player player) {
         int tntAmount = getAmounts().getOrDefault(CollectionType.TNT, 0);
         if (tntAmount > 0) {
-            Faction faction = getFaction();
             FactionsBankIntegration factionsBankIntegration = GSGCollectors.getInstance().getUnitCollectors().getFactionsBankIntegration();
-            if (factionsBankIntegration.setTntBankBalance(faction, factionsBankIntegration.getTntBankBalance(faction) + tntAmount)) {
+            if (factionsBankIntegration.setTntBankBalance(factionsBankIntegration.getFaction(player), factionsBankIntegration.getTntBankBalance(factionsBankIntegration.getFaction(player)) + tntAmount)) {
                 if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
                     player.sendTitle(Title.builder().title(CollectorMessages.DEPOSITED_TNT.toString().replace("{tnt}", String.valueOf(tntAmount))).fadeIn(5).stay(25).fadeOut(5).build());
                 } else {
@@ -138,5 +138,13 @@ public class Collector {
 
     public MenuCollector getMenuCollector() {
         return this.menuCollector == null ? this.menuCollector = new MenuCollector(Collector.this) : this.menuCollector;
+    }
+
+    public String getLandOwner() {
+        return landOwner;
+    }
+
+    public void setLandOwner(String landOwner) {
+        this.landOwner = landOwner;
     }
 }
