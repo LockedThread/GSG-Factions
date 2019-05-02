@@ -4,6 +4,7 @@ import com.massivecraft.factions.*;
 import com.massivecraft.factions.integration.Worldguard;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.struct.Relation;
+import com.massivecraft.factions.zcore.factionstatistics.FactionStatistic;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import org.bukkit.Location;
@@ -158,7 +159,9 @@ public class FactionsBlockListener implements Listener {
             return;
         }
 
-        if (!playerCanBuildDestroyBlock(event.getPlayer(), event.getBlock().getLocation(), "build", false)) {
+        if (playerCanBuildDestroyBlock(event.getPlayer(), event.getBlock().getLocation(), "build", false)) {
+            fPlayer.incrementFactionStatistic(FactionStatistic.BLOCKS_PLACED);
+        } else {
             event.setCancelled(true);
         }
     }
@@ -209,7 +212,9 @@ public class FactionsBlockListener implements Listener {
             return;
         }
 
-        if (!playerCanBuildDestroyBlock(event.getPlayer(), event.getBlock().getLocation(), "destroy", false)) {
+        if (playerCanBuildDestroyBlock(event.getPlayer(), event.getBlock().getLocation(), "destroy", false)) {
+            fPlayer.incrementFactionStatistic(FactionStatistic.BLOCKS_BROKEN);
+        } else {
             event.setCancelled(true);
         }
     }

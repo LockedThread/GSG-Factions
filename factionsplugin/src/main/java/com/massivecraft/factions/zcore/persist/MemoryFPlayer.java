@@ -26,6 +26,8 @@ import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 
@@ -133,6 +135,22 @@ public abstract class MemoryFPlayer implements FPlayer {
     }
 
     @Override
+    public int getFactionStatistic(FactionStatistic factionStatistic) {
+        switch (factionStatistic) {
+            case KILLS:
+                return getKills();
+            case DEATHS:
+                return getDeaths();
+            case TIME_PLAYED:
+                return getTimePlayed();
+            case BLOCKS_PLACED:
+            case BLOCKS_BROKEN:
+            default:
+                return factionStatisticMap.getOrDefault(factionStatistic, 0);
+        }
+    }
+
+    @Override
     public void openFactionUpgradeMenu() {
         if (hasFaction()) {
             Faction faction = getFaction();
@@ -205,20 +223,12 @@ public abstract class MemoryFPlayer implements FPlayer {
         return isOnline() ? getPlayer().getStatistic(Statistic.PLAY_ONE_TICK) / 20 : getFactionStatistic(FactionStatistic.TIME_PLAYED);
     }
 
-    public int getBlocksPlaced() {
-
-    }
-
-    public int getBlocksBroken() {
-
-    }
-
-
     /**
      * @return returns decimal hours
      */
+    @Override
     public double getFormattedTimePlayed() {
-        return (double) getTimePlayed() / 60 / 60;
+        return BigDecimal.valueOf((double) getTimePlayed() / 60 / 60).setScale(3, RoundingMode.UP).doubleValue();
     }
 
     public Faction getFaction() {
@@ -228,7 +238,7 @@ public abstract class MemoryFPlayer implements FPlayer {
         return Factions.getInstance().getFactionById(this.factionId);
     }
 
-    public void Faction(Faction faction) {
+    public void setFaction(Faction faction) {
         Faction oldFaction = this.getFaction();
         if (oldFaction != null) {
             oldFaction.removeFPlayer(this);

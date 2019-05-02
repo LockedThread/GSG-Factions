@@ -154,6 +154,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         return factionUpgradeMenu == null ? factionUpgradeMenu = new FactionUpgradeMenu(this) : factionUpgradeMenu;
     }
 
+
     @Override
     public EnumMap<FactionUpgrade, Integer> getUpgrades() {
         return upgradeMap;

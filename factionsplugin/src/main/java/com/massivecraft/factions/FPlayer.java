@@ -30,10 +30,14 @@ import java.util.List;
 
 public interface FPlayer extends EconomyParticipator {
 
+    public double getFormattedTimePlayed();
+
     public EnumMap<FactionStatistic, Integer> getFactionStatisticMap();
 
-    public default int getFactionStatistic(FactionStatistic factionStatistic) {
-        return getFactionStatisticMap().getOrDefault(factionStatistic, 0);
+    public int getFactionStatistic(FactionStatistic factionStatistic);
+
+    public default void incrementFactionStatistic(FactionStatistic factionStatistic) {
+        getFactionStatisticMap().compute(factionStatistic, (factionStatistic1, integer) -> integer == null ? 1 : integer + 1);
     }
 
     public default void setFactionStatistic(FactionStatistic factionStatistic, int data) {
