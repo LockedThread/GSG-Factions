@@ -21,7 +21,7 @@ public class FactionsUUIDImpl implements FactionIntegration {
 
     @Override
     public void setupListeners(UnitCollectors unitCollectors) {
-        this.atLeastRole = Role.fromString(GSGCollectors.getInstance().getConfig().getString("options.at-least-role", "COLEADER"));
+        this.atLeastRole = Role.fromString(GSGCollectors.getInstance().getConfig().getString("options.at-least-role", Role.COLEADER.name()));
         EventPost.of(PlayerInteractEvent.class, EventPriority.HIGHEST)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> event.getClickedBlock() != null)

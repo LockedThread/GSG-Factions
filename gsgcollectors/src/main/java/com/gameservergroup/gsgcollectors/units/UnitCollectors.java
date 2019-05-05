@@ -79,6 +79,7 @@ public class UnitCollectors extends Unit {
             if (factions.getDescription().getAuthors().contains("LockedThread")) {
                 this.factionsBankIntegration = new LockedThreadFactionsBankImpl();
                 GSG_COLLECTORS.getLogger().info("Enabled LockedThread FactionsBank implementation");
+                new FactionsUUIDImpl().setupListeners(this);
             } else if (factions.getDescription().getAuthors().contains("drtshock")) {
                 new FactionsUUIDImpl().setupListeners(this);
             } else {
@@ -188,7 +189,7 @@ public class UnitCollectors extends Unit {
             EventPost.of(BlockGrowEvent.class)
                     .filter(EventFilters.getIgnoreCancelled())
                     .filter(event -> event.getNewState().getType() == Material.CACTUS)
-                    .filter(event -> canGrow(event.getBlock()))
+                    .filter(event -> !canGrow(event.getBlock()))
                     .handle(event -> {
                         Collector collector = getCollector(event.getBlock().getLocation());
                         event.setCancelled(true);
