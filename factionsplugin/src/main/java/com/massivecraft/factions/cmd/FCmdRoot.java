@@ -1,6 +1,7 @@
 package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.Conf;
+import com.massivecraft.factions.P;
 import com.massivecraft.factions.zcore.util.TL;
 
 import java.util.Collections;
@@ -234,6 +235,12 @@ public class FCmdRoot extends FCommand {
             p.log(Level.INFO, "Enabling /f fly command");
         } else {
             p.log(Level.WARNING, "Faction flight set to false in config.yml. Not enabling /f fly command.");
+        }
+        if (P.p.getConfig().getDouble("f-fly.trails.spawn-rate") >= 1.0) {
+            this.addSubCommand(new CmdTrail());
+            p.log(Level.INFO, "Enabled /f trail");
+        } else {
+            p.log(Level.INFO, "Disabled /f trail due to trails being disabled in the config");
         }
     }
 

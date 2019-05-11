@@ -1,8 +1,10 @@
 package com.massivecraft.factions;
 
+import com.darkblade12.particleeffect.ParticleEffect;
 import com.earth2me.essentials.IEssentials;
 import com.gameservergroup.gsgcore.events.EventFilters;
 import com.gameservergroup.gsgcore.events.EventPost;
+import com.google.common.base.Joiner;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.massivecraft.factions.cmd.CmdAutoHelp;
@@ -15,10 +17,14 @@ import com.massivecraft.factions.integration.combat.impl.CombatTagPlusImpl;
 import com.massivecraft.factions.listeners.*;
 import com.massivecraft.factions.struct.ChatMode;
 import com.massivecraft.factions.tasks.TaskAutoLeave;
+import com.massivecraft.factions.tasks.TaskFlight;
 import com.massivecraft.factions.tasks.TaskWallCheckReminder;
 import com.massivecraft.factions.units.UnitFactionUpgrade;
 import com.massivecraft.factions.units.UnitWorldBorder;
 import com.massivecraft.factions.util.*;
+import com.massivecraft.factions.util.particle.BukkitParticleProvider;
+import com.massivecraft.factions.util.particle.PacketParticleProvider;
+import com.massivecraft.factions.util.particle.ParticleProvider;
 import com.massivecraft.factions.zcore.MPlugin;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
@@ -44,6 +50,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class P extends MPlugin {
 
@@ -51,7 +58,6 @@ public class P extends MPlugin {
     // Single 4 life.
     public static com.massivecraft.factions.P p;
     public static Permission perms = null;
-    public FlightDisableUtil flightTask;
     // Commands
     public FCmdRoot cmdBase;
     public CmdAutoHelp cmdAutoHelp;
@@ -66,6 +72,7 @@ public class P extends MPlugin {
     private int defaultTntBankBalance;
     private CombatIntegration combatIntegration;
     public SeeChunkUtil seeChunkUtil;
+    public ParticleProvider particleProvider;
 
     public P() {
         p = this;
@@ -138,6 +145,16 @@ public class P extends MPlugin {
         // start up task which runs the autoLeaveAfterDaysOfInactivity routine
         startAutoLeaveTask(false);
 
+        // Run before initializing listeners to handle reloads properly.
+        if (Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14")) {
+            particleProvider = new BukkitParticleProvider();
+        } else {
+            particleProvider = new PacketParticleProvider();
+            log(Level.INFO, "Available particle effects: " + Joiner.on(", ").skipNulls().join(Arrays.stream(ParticleEffect.values()).map(ParticleEffect::getName).collect(Collectors.toList())));
+        }
+        log(Level.INFO, "Using %1s as a particle provider", particleProvider.name());
+
+
         // Register Event Handlers
         getServer().getPluginManager().registerEvents(factionsPlayerListener = new FactionsPlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsChatListener(this), this);
@@ -156,7 +173,7 @@ public class P extends MPlugin {
         if (sotw) {
             log(Level.INFO, "Factions Flight is disabled because /f sotw is enabled!");
         } else if (getConfig().getBoolean("f-fly.enabled", true)) {
-            (this.flightTask = new FlightDisableUtil()).runTaskTimer(this, 0, factionsFlightDelay);
+            TaskFlight.start();
             log(Level.INFO, "Enabling enemy radius check for f fly every %s seconds", factionsFlightDelay / 20);
         }
 

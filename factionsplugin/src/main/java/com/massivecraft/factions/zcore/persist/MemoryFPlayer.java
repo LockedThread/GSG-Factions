@@ -80,6 +80,8 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected transient boolean shouldTakeFallDamage = true;
     protected transient long lastMapUse;
     protected transient boolean inspecting = false;
+    private String flyTrailsEffect;
+    private boolean flyTrailsState;
 
     public MemoryFPlayer() {
     }
@@ -851,7 +853,6 @@ public abstract class MemoryFPlayer implements FPlayer {
         Faction currentFaction = Board.getInstance().getFactionAt(flocation);
         int ownedLand = forFaction.getLandRounded();
         int factionBuffer = P.p.getConfig().getInt("hcf.buffer-zone", 0);
-        int worldBuffer = P.p.getConfig().getInt("world-border.buffer", 0);
 
         if (Conf.worldGuardChecking && Worldguard.checkForRegionsInChunk(flocation)) {
             // Checks for WorldGuard regions in the chunk attempting to be claimed
@@ -890,8 +891,8 @@ public abstract class MemoryFPlayer implements FPlayer {
             }
         } else if (factionBuffer > 0 && Board.getInstance().hasFactionWithin(flocation, myFaction, factionBuffer)) {
             error = P.p.txt.parse(TL.CLAIM_TOOCLOSETOOTHERFACTION.format(factionBuffer));
-        } else if (flocation.isOutsideWorldBorder(worldBuffer)) {
-            error = worldBuffer > 0 ? P.p.txt.parse(TL.CLAIM_OUTSIDEBORDERBUFFER.format(worldBuffer)) : P.p.txt.parse(TL.CLAIM_OUTSIDEWORLDBORDER.toString());
+        } else if (flocation.isOutsideWorldBorder()) {
+            error = P.p.txt.parse(TL.CLAIM_OUTSIDEWORLDBORDER.toString());
         } else if (currentFaction.isNormal()) {
             if (myFaction.isPeaceful()) {
                 error = P.p.txt.parse(TL.CLAIM_PEACEFUL.toString(), currentFaction.getTag(this));
@@ -907,6 +908,7 @@ public abstract class MemoryFPlayer implements FPlayer {
                 error = P.p.txt.parse(TL.CLAIM_BORDER.toString());
             }
         }
+
         // TODO: Add more else if statements.
 
         if (notifyFailure && error != null) {
@@ -1252,5 +1254,27 @@ public abstract class MemoryFPlayer implements FPlayer {
     @Override
     public boolean hasNotificationsEnabled() {
         return notificationsEnabled;
+    }
+
+    @Override
+    public boolean getFlyTrailsState() {
+        return flyTrailsState;
+    }
+
+    @Override
+    public void setFlyTrailsState(boolean state) {
+        flyTrailsState = state;
+        msg(TL.COMMAND_FLYTRAILS_CHANGE, state ? "enabled" : "disabled");
+    }
+
+    @Override
+    public String getFlyTrailsEffect() {
+        return flyTrailsEffect;
+    }
+
+    @Override
+    public void setFlyTrailsEffect(String effect) {
+        flyTrailsEffect = effect;
+        msg(TL.COMMAND_FLYTRAILS_PARTICLE_CHANGE, effect);
     }
 }

@@ -188,15 +188,23 @@ public class FLocation implements Serializable {
     /**
      * Checks if the chunk represented by this FLocation is outside the world border
      *
-     * @param buffer the number of chunks from the border that will be treated as "outside"
-     *
      * @return whether this location is outside of the border
      */
-    public boolean isOutsideWorldBorder(int buffer) {
+    public boolean isOutsideWorldBorder() {
         if (!worldBorderSupport) {
             return false;
         }
 
+        WorldBorder worldBorder = getWorld().getWorldBorder();
+        double size = worldBorder.getSize() / 2.0;
+        double centerX = worldBorder.getCenter().getX();
+        double centerZ = worldBorder.getCenter().getZ();
+        return centerX - size > FLocation.chunkToBlock((int) getX()) ||
+                centerX + size <= FLocation.chunkToBlock((int) getX()) ||
+                centerZ - size > FLocation.chunkToBlock((int) getZ()) ||
+                centerZ + size <= FLocation.chunkToBlock((int) getZ());
+
+/*
         WorldBorder border = getWorld().getWorldBorder();
         Chunk chunk = border.getCenter().getChunk();
 
@@ -204,7 +212,9 @@ public class FLocation implements Serializable {
         int diffX = Math.abs(chunk.getX() - x);
         int diffZ = Math.abs(chunk.getZ() - z);
         return diffX > lim || diffZ > lim;
+  */
     }
+
 
     //----------------------------------------------//
     // Some Geometry

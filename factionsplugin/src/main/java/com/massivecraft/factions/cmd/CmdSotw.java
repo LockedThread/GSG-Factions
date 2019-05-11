@@ -3,7 +3,7 @@ package com.massivecraft.factions.cmd;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.Permission;
-import com.massivecraft.factions.util.FlightDisableUtil;
+import com.massivecraft.factions.tasks.TaskFlight;
 import com.massivecraft.factions.zcore.util.TL;
 import org.bukkit.Bukkit;
 
@@ -25,11 +25,11 @@ public class CmdSotw extends FCommand {
     @Override
     public void perform() {
         if (p.isSotw()) {
-            (p.flightTask = new FlightDisableUtil()).runTaskTimer(p, 0, p.getFactionsFlightDelay());
+            TaskFlight.start();
             p.log(Level.INFO, "Enabling enemy radius check for f fly every %s seconds", p.getFactionsFlightDelay() / 20);
             Bukkit.broadcastMessage(TL.COMMAND_SOTW_BROADCAST_OFF.toString());
         } else {
-            p.flightTask.cancel();
+            TaskFlight.stop();
             p.log(Level.INFO, "Factions Flight is now disabled because /f sotw is enabled!");
             Bukkit.broadcastMessage(TL.COMMAND_SOTW_BROADCAST_ON.toString());
             FPlayers.getInstance().getOnlinePlayers().stream().filter(FPlayer::isFlying).forEach(fPlayer -> fPlayer.setFlying(false));

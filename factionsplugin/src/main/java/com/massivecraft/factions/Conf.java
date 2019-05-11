@@ -67,6 +67,7 @@ public class Conf {
     public static boolean showEnemyFactionsOnMap = true;
     public static boolean showTruceFactionsOnMap = true;
     public static boolean showOutsideBorder = false;
+    public static String worldBorderMapIcon = "+";
 
     // Disallow joining/leaving/kicking while power is negative
     public static boolean canLeaveWithNegativePower = true;

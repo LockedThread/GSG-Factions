@@ -30,6 +30,22 @@ public enum TL {
      * LockedThread's ADDITIONS
      */
 
+    COMMAND_TRAIL_DESCRIPTION("Allows players to toggle and change their flight trail."),
+
+    COMMAND_FLY_DESCRIPTION("Enter or leave Faction flight mode"),
+    COMMAND_FLY_CHANGE("&eFaction flight &d%1$s"),
+    COMMAND_FLY_DAMAGE("&eFaction flight &ddisabled&e due to entering combat"),
+    COMMAND_FLY_AUTO("&eFaction auto flight &d%1$s"),
+    COMMAND_FLY_NO_ACCESS("&cCannot fly in territory of %1$s"),
+    COMMAND_FLY_ENEMY_NEARBY("&cCannot enable fly, enemy nearby"),
+    COMMAND_FLY_ENEMY_DISABLE("&cEnemy nearby, disabling fly"),
+
+    COMMAND_FLYTRAILS_DESCRIPTION("Enabled or change fly trails"),
+    COMMAND_FLYTRAILS_PARTICLE_INVALID("&cInvalid particle effect"),
+    COMMAND_FLYTRAILS_PARTICLE_PERMS("&cInsufficient permission to use &d%1s"),
+    COMMAND_FLYTRAILS_PARTICLE_CHANGE("&eFaction flight trail effect set to &d%1s"),
+    COMMAND_FLYTRAILS_CHANGE("&eFaction flight trail &d%1s"),
+
     COMMAND_STATISTICS_DESCRIPTION("Allows players to view stats about themselves and others"),
     COMMAND_STATISTICS_ROW("&c{index}: &f{amount}"),
 
@@ -284,12 +300,6 @@ public enum TL {
     COMMAND_DISBAND_HOLDINGS("&eYou have been given the disbanded faction's bank, totaling %1$s."),
     COMMAND_DISBAND_DESCRIPTION("Disband a faction"),
 
-    COMMAND_FLY_DESCRIPTION("Enter or leave Faction flight mode"),
-    COMMAND_FLY_CHANGE("&eFaction flight &d%1$s"),
-    COMMAND_FLY_DAMAGE("&eFaction flight &ddisabled&e due to entering combat"),
-    COMMAND_FLY_NO_ACCESS("&cCannot fly in territory of %1$s"),
-    COMMAND_FLY_ENEMY_NEARBY("&cCannot enable fly, enemy nearby"),
-    COMMAND_FLY_ENEMY_DISABLE("&cEnemy nearby, disabling fly"),
     COMMAND_FLY_STEALH_DESCRIPTION("Allows for flight around enemies"),
 
     COMMAND_NOTIFICATIONS_DESCRIPTION("Toggle territory chat notifications on or off"),
@@ -743,7 +753,6 @@ public enum TL {
     CLAIM_OVERCLAIM_DISABLED("&eOver claiming is disabled on this server."),
     CLAIM_TOOCLOSETOOTHERFACTION("&eYour claim is too close to another Faction. Buffer required is %d"),
     CLAIM_OUTSIDEWORLDBORDER("&eYour claim is outside the border."),
-    CLAIM_OUTSIDEBORDERBUFFER("&eYour claim is outside the border. %d chunks away world edge required."),
     CLAIM_CLICK_TO_CLAIM("Click to try to claim &2(%1$d, %2$d)"),
     CLAIM_YOUAREHERE("You are here"),
 

@@ -1,5 +1,13 @@
 package com.massivecraft.factions.util;
 
+/*
+ *
+ * The old Factions Flight Task
+ *
+ */
+
+
+/*
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.P;
@@ -54,4 +62,4 @@ public class FlightDisableUtil extends BukkitRunnable {
             }
         }
     }
-}
+}*/

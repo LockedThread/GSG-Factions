@@ -240,7 +240,7 @@ public abstract class MemoryBoard extends Board {
                     Relation relation = fplayer.getRelationTo(factionHere);
                     if (factionHere.isWilderness()) {
                         if (isOutsideBorder(flocationHere) && !Conf.showOutsideBorder) {
-                            row.then("+").color(Conf.colorWorldBorder);
+                            row.then(Conf.worldBorderMapIcon).color(Conf.colorWorldBorder);
                         } else {
                             row.then("-").color(Conf.colorWilderness).tooltip(Text.toColor("&eClick to claim")).command("f claimat " + flocationHere.getWorldName() + " " + flocationHere.getX() + " " + flocationHere.getZ());
                         }

@@ -573,13 +573,16 @@ public class FactionsPlayerListener implements Listener {
         Faction factionTo = Board.getInstance().getFactionAt(to);
         boolean changedFaction = (factionFrom != factionTo);
 
-        if (me.getFaction().getAccess(me, PermissableAction.FLY) == Access.ALLOW && p.getConfig().getBoolean("f-fly.enable", false) && changedFaction) {
-            boolean canFlyHere = me.canFlyAtLocation();
-            if (!me.isAdminBypassing() && me.isFlying() && !canFlyHere) {
+        if (p.getConfig().getBoolean("f-fly.enable", false) && changedFaction && !me.isAdminBypassing()) {
+            if (me.isFlying() && p.isSotw()) {
                 me.setFlying(false);
-            } else if (!me.isFlying() && (me.isAdminBypassing() || canFlyHere) && recentDamageCache.getIfPresent(player.getUniqueId()) == null) {
-                // automatically put players in /f fly when they enter territory where it's allowed
-                me.setFlying(true);
+            } else {
+                boolean canFly = me.canFlyAtLocation();
+                if (me.isFlying() && !canFly) {
+                    me.setFlying(false);
+                } else if (me.isFlying() && canFly) {
+                    me.setFlying(true);
+                }
             }
         }
 

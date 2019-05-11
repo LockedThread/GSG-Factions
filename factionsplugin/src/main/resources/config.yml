@@ -19,7 +19,7 @@ faction-upgrades:
       cant-afford:
         sound: 'DIG_GRASS'
         pitch: 1.0
-        volume: 1.0
+        volume: 1.0radius-check
       upgraded:
         sound: 'LEVEL_UP'
         pitch: 1.0
@@ -382,6 +382,14 @@ f-fly:
   # In seconds
   radius-check: 1
 
+  trails:
+    # How frequent a trail will be spawned in seconds
+    spawn-rate: 2.0
+    # The amount of particles
+    amount: 20
+    # The speed in which the particles tick
+    speed: 0.02
+
 # Faction Near
 f-near:
   # Making this radius larger increases lag, do so at your own risk
@@ -545,7 +553,6 @@ world-border:
   disable-enderpearl: true
   disable-tnt: true
   disable-liquid: true
-  buffer: 0
 
 # Raids
 # Allow a faction to be raided if they have more land than power.

@@ -112,6 +112,7 @@ public enum Permission {
     FLY_WILDERNESS("fly.wilderness"),
     FLY_SAFEZONE("fly.safezone"),
     FLY_WARZONE("fly.warzone"),
+    FLY_TRAILS("fly.trails"),
     UPGRADES("upgrades"),
     CORNER_LIST("cornerlist"),
     STATISTICS("statistics");

@@ -2,7 +2,7 @@ package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.P;
 import com.massivecraft.factions.struct.Permission;
-import com.massivecraft.factions.util.FlightDisableUtil;
+import com.massivecraft.factions.tasks.TaskFlight;
 import com.massivecraft.factions.zcore.util.TL;
 import org.bukkit.ChatColor;
 
@@ -35,7 +35,7 @@ public class CmdStealth extends FCommand {
         if (!toggle) {
             fme.setStealth(false);
             fme.sendMessage(ChatColor.YELLOW + "Faction stealth " + ChatColor.LIGHT_PURPLE + "disabled");
-        } else if (FlightDisableUtil.enemiesNearby(fme, P.p.getConfig().getInt("f-fly.enemy-radius"))) {
+        } else if (TaskFlight.instance().enemiesTask.enemiesNearby(fme, P.p.getConfig().getInt("f-fly.enemy-radius"))) {
             msg("&cYou can not do that while around enemies.");
         } else {
             fme.setStealth(true);

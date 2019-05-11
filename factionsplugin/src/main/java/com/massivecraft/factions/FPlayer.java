@@ -30,6 +30,14 @@ import java.util.List;
 
 public interface FPlayer extends EconomyParticipator {
 
+    public boolean getFlyTrailsState();
+
+    public void setFlyTrailsState(boolean state);
+
+    public String getFlyTrailsEffect();
+
+    public void setFlyTrailsEffect(String effect);
+
     public double getFormattedTimePlayed();
 
     public EnumMap<FactionStatistic, Integer> getFactionStatisticMap();

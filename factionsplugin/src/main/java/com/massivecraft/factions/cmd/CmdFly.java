@@ -5,7 +5,7 @@ import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.P;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.struct.Role;
-import com.massivecraft.factions.util.FlightDisableUtil;
+import com.massivecraft.factions.tasks.TaskFlight;
 import com.massivecraft.factions.util.WarmUpUtil;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
@@ -44,6 +44,7 @@ public class CmdFly extends FCommand {
             msg(TL.SOTW_IS_ENABLED);
             return;
         }
+
         Access access = myFaction.getAccess(fme, PermissableAction.FLY);
         if (access == Access.DENY || (access == Access.UNDEFINED && !assertMinRole(Role.RECRUIT))) {
             fme.msg(TL.GENERIC_NOPERMISSION, "fly");
@@ -59,7 +60,7 @@ public class CmdFly extends FCommand {
             Faction factionAtLocation = Board.getInstance().getFactionAt(fme.getLastStoodAt());
             fme.msg(TL.COMMAND_FLY_NO_ACCESS, factionAtLocation.getTag(fme));
             return;
-        } else if (FlightDisableUtil.enemiesNearby(fme, P.p.getConfig().getInt("f-fly.enemy-radius", 7))) {
+        } else if (TaskFlight.instance().enemiesTask.enemiesNearby(fme, P.p.getConfig().getInt("f-fly.enemy-radius", 7))) {
             fme.msg(TL.COMMAND_FLY_ENEMY_NEARBY);
             return;
         }
