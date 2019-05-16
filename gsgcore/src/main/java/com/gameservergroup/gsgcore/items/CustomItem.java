@@ -1,6 +1,8 @@
 package com.gameservergroup.gsgcore.items;
 
+import com.gameservergroup.gsgcore.GSGCore;
 import com.gameservergroup.gsgcore.utils.NBTItem;
+import com.gameservergroup.gsgcore.utils.Text;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -54,10 +56,20 @@ public class CustomItem {
     }
 
     public static CustomItem findCustomItem(ItemStack itemStack) {
-        return new NBTItem(itemStack).getKeys()
+        if (GSGCore.getInstance().getConfig().getBoolean("items-check-nbt")) {
+            return new NBTItem(itemStack).getKeys()
+                    .stream()
+                    .map(key -> customItems.get(key))
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElse(null);
+        }
+        return getCustomItems()
+                .values()
                 .stream()
-                .map(key -> customItems.get(key))
-                .filter(Objects::nonNull)
+                .filter(customItem -> customItem.getItemStack().getType() == itemStack.getType())
+                .filter(customItem -> customItem.getItemStack().hasItemMeta() && itemStack.hasItemMeta() && customItem.getItemStack().getItemMeta().hasDisplayName() && itemStack.getItemMeta().hasDisplayName())
+                .filter(customItem -> customItem.getItemStack().getItemMeta().getDisplayName().equalsIgnoreCase(Text.toColor(itemStack.getItemMeta().getDisplayName())))
                 .findFirst()
                 .orElse(null);
     }

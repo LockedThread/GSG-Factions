@@ -41,6 +41,7 @@ public class GSGCore extends Module {
     @Override
     public void enable() {
         instance = this;
+        saveDefaultConfig();
         setupVault();
         setupProtectionIntegration();
         setupJson();
