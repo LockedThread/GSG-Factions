@@ -138,6 +138,7 @@ public class UnitCollectors extends Unit {
 
         EventPost.of(EntityExplodeEvent.class)
                 .filter(EventFilters.getIgnoreCancelled())
+                .filter(event -> event.blockList() != null)
                 .handle(event -> event.blockList()
                         .stream()
                         .filter(block -> block.getType() == Material.BEACON)
@@ -146,6 +147,7 @@ public class UnitCollectors extends Unit {
 
         EventPost.of(BlockExplodeEvent.class)
                 .filter(EventFilters.getIgnoreCancelled())
+                .filter(event -> event.blockList() != null)
                 .handle(event -> event.blockList()
                         .stream()
                         .filter(block -> block.getType() == Material.BEACON)
@@ -224,7 +226,7 @@ public class UnitCollectors extends Unit {
                 .setPlaceEventConsumer(event -> {
                     Collector collector = getCollector(event.getBlockPlaced().getLocation());
                     if (collector == null) {
-                        createCollector(event.getBlockPlaced().getLocation()).setLandOwner(event.getPlayer().getName());
+                        createCollector(event.getBlockPlaced().getLocation()).setLandOwner(getFactionsBankIntegration() != null ? getFactionsBankIntegration().getFaction(event.getPlayer()).getTag() + "'s" : event.getPlayer().getName() + "'s");
                         if (!CollectorMessages.TITLE_COLLECTOR_PLACE.toString().isEmpty()) {
                             if (useTitles) {
                                 event.getPlayer().sendTitle(Title.builder().title(CollectorMessages.TITLE_COLLECTOR_PLACE.toString()).fadeIn(5).fadeOut(5).stay(25).build());
