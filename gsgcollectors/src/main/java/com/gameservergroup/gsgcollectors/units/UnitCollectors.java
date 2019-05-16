@@ -68,6 +68,7 @@ public class UnitCollectors extends Unit {
     private boolean editWhilstFactionless;
     private boolean useTitles;
     private boolean preventNormalFarms;
+    private boolean creepersCollectTNT;
 
     //Items
     private CustomItem collectorItem;
@@ -162,8 +163,12 @@ public class UnitCollectors extends Unit {
                         Collector collector = collectorHashMap.get(ChunkPosition.of(event.getLocation().getChunk()));
                         if (collector != null) {
                             event.setCancelled(true);
-                            if (event.getSpawnedType() == EntityType.CREEPER) {
-                                collector.addAmount(CollectionType.TNT, (int) CollectionType.TNT.getPrice());
+                            if (event.getSpawnedType() == EntityType.CREEPER && CollectionType.CREEPER.getItemStack() != null) {
+                                if (creepersCollectTNT) {
+                                    collector.addAmount(CollectionType.TNT, (int) CollectionType.TNT.getPrice());
+                                } else {
+                                    collector.addAmount(CollectionType.GUN_POWDER, (int) CollectionType.GUN_POWDER.getPrice());
+                                }
                             } else {
                                 collector.addAmount(CollectionType.fromEntityType(event.getSpawnedType()), 1);
                             }
@@ -178,8 +183,12 @@ public class UnitCollectors extends Unit {
                         Collector collector = collectorHashMap.get(ChunkPosition.of(event.getLocation().getChunk()));
                         if (collector != null && collectionTypes.contains(CollectionType.fromEntityType(event.getSpawnedType()))) {
                             event.setCancelled(true);
-                            if (event.getSpawnedType() == EntityType.CREEPER) {
-                                collector.addAmount(CollectionType.TNT, (int) CollectionType.TNT.getPrice());
+                            if (event.getSpawnedType() == EntityType.CREEPER && CollectionType.CREEPER.getItemStack() != null) {
+                                if (creepersCollectTNT) {
+                                    collector.addAmount(CollectionType.TNT, (int) CollectionType.TNT.getPrice());
+                                } else {
+                                    collector.addAmount(CollectionType.GUN_POWDER, (int) CollectionType.GUN_POWDER.getPrice());
+                                }
                             } else {
                                 collector.addAmount(CollectionType.fromEntityType(event.getSpawnedType()), 1);
                             }
@@ -210,6 +219,7 @@ public class UnitCollectors extends Unit {
         this.roleRestricted = GSG_COLLECTORS.getConfig().getBoolean("options.is-role-restricted", true);
         this.useTitles = GSG_COLLECTORS.getConfig().getBoolean("options.use-titles", true);
         this.preventNormalFarms = GSG_COLLECTORS.getConfig().getBoolean("options.prevent-normal-farms", true);
+        this.creepersCollectTNT = GSG_COLLECTORS.getConfig().getBoolean("options.creepers-collect-tnt");
         if (this.fillMenu = GSG_COLLECTORS.getConfig().getBoolean("menu.fill.enabled")) {
             this.fillItemStack = GSG_COLLECTORS.getConfig().getBoolean("menu.fill.enchanted") ? ItemStackBuilder.of(Material.STAINED_GLASS_PANE)
                     .setDyeColor(DyeColor.valueOf(GSG_COLLECTORS.getConfig().getString("menu.fill.glass-pane-color")))
@@ -362,5 +372,9 @@ public class UnitCollectors extends Unit {
 
     public JsonFile<HashMap<ChunkPosition, Collector>> getJsonFile() {
         return jsonFile;
+    }
+
+    public boolean isCreepersCollectTNT() {
+        return creepersCollectTNT;
     }
 }

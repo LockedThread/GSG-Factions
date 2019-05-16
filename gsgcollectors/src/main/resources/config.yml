@@ -8,6 +8,7 @@ options:
   use-titles: true
   prevent-normal-farms: true
   save-task-delay: 300000
+  creepers-collect-tnt: true
 sellwand-item:
   material: 'DIAMOND_HOE'
   name: '&e&l(!) &f&lSellWand &e&l(!)'

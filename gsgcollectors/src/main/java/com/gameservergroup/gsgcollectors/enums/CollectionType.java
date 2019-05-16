@@ -50,7 +50,8 @@ public enum CollectionType {
     HORSE(EntityType.HORSE),
     RABBIT(EntityType.RABBIT),
     VILLAGER(EntityType.VILLAGER),
-    ENDER_CRYSTAL(EntityType.ENDER_CRYSTAL);
+    ENDER_CRYSTAL(EntityType.ENDER_CRYSTAL),
+    GUN_POWDER(Material.SULPHUR);
 
     private Material material = null;
     private EntityType entityType = null;
