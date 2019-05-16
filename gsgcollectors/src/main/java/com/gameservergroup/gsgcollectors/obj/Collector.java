@@ -75,13 +75,15 @@ public class Collector {
         int tntAmount = getAmounts().getOrDefault(CollectionType.TNT, 0);
         if (tntAmount > 0) {
             FactionsBankIntegration factionsBankIntegration = GSGCollectors.getInstance().getUnitCollectors().getFactionsBankIntegration();
-            if (factionsBankIntegration.setTntBankBalance(factionsBankIntegration.getFaction(player), factionsBankIntegration.getTntBankBalance(factionsBankIntegration.getFaction(player)) + tntAmount)) {
-                if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
-                    player.sendTitle(Title.builder().title(CollectorMessages.DEPOSITED_TNT.toString().replace("{tnt}", String.valueOf(tntAmount))).fadeIn(5).stay(25).fadeOut(5).build());
-                } else {
-                    player.sendMessage(CollectorMessages.DEPOSITED_TNT.toString().replace("{tnt}", String.valueOf(tntAmount)));
+            if (factionsBankIntegration != null) {
+                if (factionsBankIntegration.setTntBankBalance(factionsBankIntegration.getFaction(player), factionsBankIntegration.getTntBankBalance(factionsBankIntegration.getFaction(player)) + tntAmount)) {
+                    if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
+                        player.sendTitle(Title.builder().title(CollectorMessages.DEPOSITED_TNT.toString().replace("{tnt}", String.valueOf(tntAmount))).fadeIn(5).stay(25).fadeOut(5).build());
+                    } else {
+                        player.sendMessage(CollectorMessages.DEPOSITED_TNT.toString().replace("{tnt}", String.valueOf(tntAmount)));
+                    }
+                    reset(CollectionType.TNT);
                 }
-                reset(CollectionType.TNT);
             }
         } else if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
             player.sendTitle(Title.builder().title(CollectorMessages.CANT_DEPOSIT_NOTHING.toString()).fadeIn(5).stay(25).fadeOut(5).build());
