@@ -286,18 +286,28 @@ public class UnitPrinter extends Unit {
             player.sendMessage(PrinterMessages.THIS_BLOCK_ISNT_PLACEABLE.toString());
             return false;
         }
-
-        EconomyResponse economyResponse = Module.getEconomy().withdrawPlayer(player, price);
-        if (!economyResponse.transactionSuccess()) {
-            player.sendMessage(PrinterMessages.YOU_DONT_HAVE_ENOUGH_MONEY.toString().replace("{material}", material.name().toLowerCase().replace("_", " ")));
-            disablePrinter(player, false);
-            return false;
+        if (GSG_PRINTER.getConfig().getBoolean("async-payments")) {
+            double balance = Module.getEconomy().getBalance(player);
+            if (balance < price) {
+                player.sendMessage(PrinterMessages.YOU_DONT_HAVE_ENOUGH_MONEY.toString().replace("{material}", material.name().toLowerCase().replace("_", " ")));
+                disablePrinter(player, false);
+                return false;
+            } else {
+                GSG_PRINTER.getServer().getScheduler().runTaskAsynchronously(GSG_PRINTER, () -> GSG_PRINTER.getServer().getScheduler().runTaskAsynchronously(GSG_PRINTER, () -> Module.getEconomy().withdrawPlayer(player, price)));
+            }
+        } else {
+            EconomyResponse economyResponse = Module.getEconomy().withdrawPlayer(player, price);
+            if (!economyResponse.transactionSuccess()) {
+                player.sendMessage(PrinterMessages.YOU_DONT_HAVE_ENOUGH_MONEY.toString().replace("{material}", material.name().toLowerCase().replace("_", " ")));
+                disablePrinter(player, false);
+                return false;
+            }
+            getPrintingPlayers().computeIfPresent(player.getUniqueId(), (uuid, printingPlayer) -> {
+                printingPlayer.getPlacedBlocks().computeIfPresent(material, (material1, integer) -> integer + 1);
+                printingPlayer.getPlacedBlocks().putIfAbsent(material, 1);
+                return printingPlayer;
+            });
         }
-        getPrintingPlayers().computeIfPresent(player.getUniqueId(), (uuid, printingPlayer) -> {
-            printingPlayer.getPlacedBlocks().computeIfPresent(material, (material1, integer) -> integer + 1);
-            printingPlayer.getPlacedBlocks().putIfAbsent(material, 1);
-            return printingPlayer;
-        });
         return true;
     }
 
