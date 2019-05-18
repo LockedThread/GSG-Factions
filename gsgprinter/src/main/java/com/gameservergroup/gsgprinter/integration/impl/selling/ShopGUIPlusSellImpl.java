@@ -25,6 +25,14 @@ public class ShopGUIPlusSellImpl implements SellIntegration {
                     if (shopItem.getItem().getType() == Material.STRING) {
                         prices.putIfAbsent(Material.TRIPWIRE, shopItem.getBuyPrice());
                     }
+                    if (shopItem.getItem().getType() == Material.REDSTONE) {
+                        prices.putIfAbsent(Material.REDSTONE_WIRE, shopItem.getBuyPrice());
+                    }
+                    if (shopItem.getItem().getType() == Material.DIODE) {
+                        prices.putIfAbsent(Material.DIODE, shopItem.getBuyPrice());
+                        prices.putIfAbsent(Material.DIODE_BLOCK_OFF, shopItem.getBuyPrice());
+                        prices.putIfAbsent(Material.DIODE_BLOCK_ON, shopItem.getBuyPrice());
+                    }
                     prices.putIfAbsent(shopItem.getItem().getType(), shopItem.getBuyPrice());
                 }
             }
