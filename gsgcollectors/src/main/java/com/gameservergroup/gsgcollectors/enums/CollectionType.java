@@ -69,7 +69,7 @@ public enum CollectionType {
 
     public static CollectionType fromEntityType(EntityType entityType) {
         if (entityType == EntityType.CREEPER) {
-            return TNT;
+            return GSGCollectors.getInstance().getUnitCollectors().isCreepersCollectTNT() ? TNT : GUN_POWDER;
         }
         try {
             return valueOf(entityType.name());
@@ -80,14 +80,14 @@ public enum CollectionType {
     }
 
     public Material getMaterial() {
-        if (this == CREEPER || this == TNT) {
-            return Material.TNT;
+        if (this == CREEPER || this == TNT || this == GUN_POWDER) {
+            return GSGCollectors.getInstance().getUnitCollectors().isCreepersCollectTNT() ? Material.TNT : Material.SULPHUR;
         }
         return material;
     }
 
     public EntityType getEntityType() {
-        if (this == CREEPER || this == TNT) {
+        if (this == CREEPER || this == TNT || this == GUN_POWDER) {
             return EntityType.CREEPER;
         }
         return entityType;

@@ -163,11 +163,11 @@ public class UnitCollectors extends Unit {
                         Collector collector = collectorHashMap.get(ChunkPosition.of(event.getLocation().getChunk()));
                         if (collector != null) {
                             event.setCancelled(true);
-                            if (event.getSpawnedType() == EntityType.CREEPER && CollectionType.CREEPER.getItemStack() != null) {
+                            if (event.getSpawnedType() == EntityType.CREEPER && (CollectionType.CREEPER.getItemStack() != null || CollectionType.TNT.getItemStack() != null)) {
                                 if (creepersCollectTNT) {
                                     collector.addAmount(CollectionType.TNT, (int) CollectionType.TNT.getPrice());
                                 } else {
-                                    collector.addAmount(CollectionType.GUN_POWDER, (int) CollectionType.GUN_POWDER.getPrice());
+                                    collector.addAmount(CollectionType.GUN_POWDER, 1);
                                 }
                             } else {
                                 collector.addAmount(CollectionType.fromEntityType(event.getSpawnedType()), 1);
@@ -183,11 +183,11 @@ public class UnitCollectors extends Unit {
                         Collector collector = collectorHashMap.get(ChunkPosition.of(event.getLocation().getChunk()));
                         if (collector != null && collectionTypes.contains(CollectionType.fromEntityType(event.getSpawnedType()))) {
                             event.setCancelled(true);
-                            if (event.getSpawnedType() == EntityType.CREEPER && CollectionType.CREEPER.getItemStack() != null) {
+                            if (event.getSpawnedType() == EntityType.CREEPER && (CollectionType.CREEPER.getItemStack() != null || CollectionType.TNT.getItemStack() != null)) {
                                 if (creepersCollectTNT) {
                                     collector.addAmount(CollectionType.TNT, (int) CollectionType.TNT.getPrice());
                                 } else {
-                                    collector.addAmount(CollectionType.GUN_POWDER, (int) CollectionType.GUN_POWDER.getPrice());
+                                    collector.addAmount(CollectionType.GUN_POWDER, 1);
                                 }
                             } else {
                                 collector.addAmount(CollectionType.fromEntityType(event.getSpawnedType()), 1);
