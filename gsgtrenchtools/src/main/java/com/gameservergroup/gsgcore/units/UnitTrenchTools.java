@@ -49,8 +49,10 @@ public class UnitTrenchTools extends Unit {
                         List<String> trayModeLore = trenchTool.getTrayModeLore(!toolTrayMode);
                         meta.setLore(trayModeLore);
                         itemStack.setItemMeta(meta);*/
-                        player.setItemInHand(trenchTool.setToolTrayMode(ItemStackBuilder.of(player.getItemInHand()).setLore(trenchTool.getTrayModeLore(!toolTrayMode)).build(), !toolTrayMode));
-                        player.updateInventory();
+                        player.setItemInHand(trenchTool.setToolTrayMode(ItemStackBuilder.of(player.getItemInHand())
+                                .setLore(trenchTool.getTrayModeLore(!toolTrayMode))
+                                .build(), !toolTrayMode));
+                        //player.updateInventory();
                     }
                 } else if (event.getAction() == Action.LEFT_CLICK_BLOCK && trenchTool.isOmniTool() && event.getClickedBlock() != null) {
                     final boolean pickaxe = isPickaxe(hand);
