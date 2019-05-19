@@ -71,6 +71,15 @@ public class MenuCollector extends Menu {
         }
     }
 
+    public void refresh() {
+        for (CollectionType collectionType : CollectionType.values()) {
+            int amount = collector.getAmounts().get(collectionType);
+            if (amount > 0) {
+                update(collectionType, amount);
+            }
+        }
+    }
+
     public void update(CollectionType collectionType, int replace) {
         getMenuItem(collectionType.getGuiSlot()).ifPresent(menuItem -> {
             ItemStack item = ItemStackBuilder.of(collectionType.getItemStack().clone()).consumeItemMeta(itemMeta -> itemMeta.setLore(itemMeta.getLore().stream().map(s -> Text.toColor(s.replace("{amount}", String.valueOf(replace)))).collect(Collectors.toList()))).build();

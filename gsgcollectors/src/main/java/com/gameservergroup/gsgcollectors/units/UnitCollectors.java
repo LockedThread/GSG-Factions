@@ -101,6 +101,9 @@ public class UnitCollectors extends Unit {
                             if (event.getPlayer().isSneaking() && event.getPlayer().hasPermission("gsgcollector.clicktosell")) {
                                 collector.sellAll(event.getPlayer());
                             } else {
+                                if (collector.getMenuCollector().getInventory().getViewers().isEmpty()) {
+                                    collector.getMenuCollector().refresh();
+                                }
                                 event.getPlayer().openInventory(collector.getMenuCollector().getInventory());
                             }
                             event.setCancelled(true);
@@ -232,7 +235,7 @@ public class UnitCollectors extends Unit {
             CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("harvesterhoe-item")).setBreakEventConsumer(event -> {
                 Block block = event.getBlock();
                 if (block.getType() == Material.SUGAR_CANE_BLOCK) {
-                    Block next = block.getRelative(BlockFace.UP);
+                    Block next = block;
                     int sugarCaneAmount = 1;
                     while (next.getType() == Material.SUGAR_CANE_BLOCK) {
                         next.setTypeIdAndData(Material.AIR.getId(), (byte) 0, false);

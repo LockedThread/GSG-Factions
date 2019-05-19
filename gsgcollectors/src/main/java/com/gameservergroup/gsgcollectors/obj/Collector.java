@@ -139,7 +139,7 @@ public class Collector {
     }
 
     public MenuCollector getMenuCollector() {
-        return this.menuCollector == null ? this.menuCollector = new MenuCollector(Collector.this) : this.menuCollector;
+        return this.menuCollector == null ? this.menuCollector = new MenuCollector(this) : this.menuCollector;
     }
 
     public String getLandOwner() {
