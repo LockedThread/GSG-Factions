@@ -9,6 +9,22 @@ options:
   prevent-normal-farms: true
   save-task-delay: 300000
   creepers-collect-tnt: true
+  auto-pickup-sugar-cane-normally: true
+  harvester-hoes:
+    enabled: true
+    collect-double-sugar-cane: true
+    collect-to-inventory-with-no-collector: true
+harvesterhoe-item:
+  material: 'GOLD_HOE'
+  name: '&e&l(!) &f&lHarvester Hoe &e&l(e)'
+  lore:
+    - ''
+    - ' &dBreak sugar cane to get double sugar cane!'
+    - ''
+  enchants:
+    - 'DURABILITY:1'
+  itemflags:
+    - 'HIDE_ENCHANTS'
 sellwand-item:
   material: 'DIAMOND_HOE'
   name: '&e&l(!) &f&lSellWand &e&l(!)'

@@ -25,6 +25,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
@@ -69,6 +70,10 @@ public class UnitCollectors extends Unit {
     private boolean useTitles;
     private boolean preventNormalFarms;
     private boolean creepersCollectTNT;
+    private boolean harvesterHoesEnabled;
+    private boolean harvesterHoesCollectDoubleSugarcane;
+    private boolean autoPickupSugarcaneNormally;
+    private boolean collectToInventoryWithNoCollector;
 
     //Items
     private CustomItem collectorItem;
@@ -220,6 +225,30 @@ public class UnitCollectors extends Unit {
         this.useTitles = GSG_COLLECTORS.getConfig().getBoolean("options.use-titles", true);
         this.preventNormalFarms = GSG_COLLECTORS.getConfig().getBoolean("options.prevent-normal-farms", true);
         this.creepersCollectTNT = GSG_COLLECTORS.getConfig().getBoolean("options.creepers-collect-tnt");
+        this.autoPickupSugarcaneNormally = GSG_COLLECTORS.getConfig().getBoolean("options.auto-pickup-sugar-cane-normally");
+        if (this.harvesterHoesEnabled = GSG_COLLECTORS.getConfig().getBoolean("options.harvester-hoes.enabled")) {
+            this.collectToInventoryWithNoCollector = GSG_COLLECTORS.getConfig().getBoolean("options.harvester-hoes.collect-to-inventory-with-no-collector");
+            this.harvesterHoesCollectDoubleSugarcane = GSG_COLLECTORS.getConfig().getBoolean("options.harvester-hoes.collect-double-sugar-cane");
+            CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("harvesterhoe-item")).setBreakEventConsumer(event -> {
+                Block block = event.getBlock();
+                if (block.getType() == Material.SUGAR_CANE_BLOCK) {
+                    Block next = block.getRelative(BlockFace.UP);
+                    int sugarCaneAmount = 1;
+                    while (next.getType() == Material.SUGAR_CANE_BLOCK) {
+                        next.setTypeIdAndData(Material.AIR.getId(), (byte) 0, false);
+                        sugarCaneAmount++;
+                        next = block.getRelative(BlockFace.UP);
+                    }
+                    sugarCaneAmount *= harvesterHoesCollectDoubleSugarcane ? 2 : 1;
+                    Collector collector = getCollector(block.getLocation());
+                    if (collector != null) {
+                        collector.addAmount(CollectionType.SUGAR_CANE, sugarCaneAmount);
+                    } else if (collectToInventoryWithNoCollector) {
+                        event.getPlayer().getInventory().addItem(new ItemStack(Material.SUGAR_CANE, sugarCaneAmount));
+                    }
+                }
+            });
+        }
         if (this.fillMenu = GSG_COLLECTORS.getConfig().getBoolean("menu.fill.enabled")) {
             this.fillItemStack = GSG_COLLECTORS.getConfig().getBoolean("menu.fill.enchanted") ? ItemStackBuilder.of(Material.STAINED_GLASS_PANE)
                     .setDyeColor(DyeColor.valueOf(GSG_COLLECTORS.getConfig().getString("menu.fill.glass-pane-color")))
