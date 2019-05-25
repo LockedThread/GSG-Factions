@@ -77,6 +77,7 @@ public class UnitCollectors extends Unit {
 
     //Items
     private CustomItem collectorItem;
+    private CustomItem harvesterHoeCustomItem;
 
     @Override
     public void setup() {
@@ -139,7 +140,7 @@ public class UnitCollectors extends Unit {
                                     event.getPlayer().sendMessage(CollectorMessages.TITLE_COLLECTOR_BREAK.toString());
                                 }
                             }
-                        } else if (autoPickupSugarcaneNormally && event.getBlock().getType() == Material.SUGAR_CANE_BLOCK && getCollectionTypes().contains(CollectionType.SUGAR_CANE)) {
+                        } else if (!CustomItem.findCustomItem(event.getPlayer().getItemInHand()).equals(harvesterHoeCustomItem) && autoPickupSugarcaneNormally && event.getBlock().getType() == Material.SUGAR_CANE_BLOCK && getCollectionTypes().contains(CollectionType.SUGAR_CANE)) {
                             collector.addAmount(CollectionType.SUGAR_CANE, 1);
                         }
                     }
@@ -232,7 +233,7 @@ public class UnitCollectors extends Unit {
         if (this.harvesterHoesEnabled = GSG_COLLECTORS.getConfig().getBoolean("options.harvester-hoes.enabled")) {
             this.collectToInventoryWithNoCollector = GSG_COLLECTORS.getConfig().getBoolean("options.harvester-hoes.collect-to-inventory-with-no-collector");
             this.harvesterHoesCollectDoubleSugarcane = GSG_COLLECTORS.getConfig().getBoolean("options.harvester-hoes.collect-double-sugar-cane");
-            CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("harvesterhoe-item")).setBreakEventConsumer(event -> {
+            this.harvesterHoeCustomItem = CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("harvesterhoe-item")).setBreakEventConsumer(event -> {
                 Block block = event.getBlock();
                 if (block.getType() == Material.SUGAR_CANE_BLOCK) {
                     event.setCancelled(true);
