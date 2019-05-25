@@ -5,7 +5,10 @@ import com.gameservergroup.gsgcore.GSGCore;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Optional;
 
 public class JsonFile<T> {
@@ -35,14 +38,7 @@ public class JsonFile<T> {
 
     public void save(T t) {
         try {
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
-            outputStreamWriter.write(GSGCore.getInstance().getGson().toJson(t, typeToken.getType()));
-            outputStreamWriter.close();
-            fileOutputStream.close();
+            Files.write(file.toPath(), GSGCore.getInstance().getGson().toJson(t, typeToken.getType()).getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,10 +46,6 @@ public class JsonFile<T> {
 
     public File getFile() {
         return file;
-    }
-
-    public TypeToken<T> getTypeToken() {
-        return typeToken;
     }
 
     public String getFileContents() {
