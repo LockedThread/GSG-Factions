@@ -933,7 +933,7 @@ public abstract class Module extends JavaPlugin {
         return eventPosts == null ? eventPosts = new HashSet<>() : eventPosts;
     }
 
-    public ThreadLocalRandom getRandom() {
+    public Random getRandom() {
         return threadLocalRandom == null ? threadLocalRandom = ThreadLocalRandom.current() : threadLocalRandom;
     }
 }
