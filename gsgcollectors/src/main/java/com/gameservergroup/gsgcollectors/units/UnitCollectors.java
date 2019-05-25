@@ -139,7 +139,7 @@ public class UnitCollectors extends Unit {
                                     event.getPlayer().sendMessage(CollectorMessages.TITLE_COLLECTOR_BREAK.toString());
                                 }
                             }
-                        } else if (event.getBlock().getType() == Material.SUGAR_CANE_BLOCK && getCollectionTypes().contains(CollectionType.SUGAR_CANE)) {
+                        } else if (autoPickupSugarcaneNormally && event.getBlock().getType() == Material.SUGAR_CANE_BLOCK && getCollectionTypes().contains(CollectionType.SUGAR_CANE)) {
                             collector.addAmount(CollectionType.SUGAR_CANE, 1);
                         }
                     }
@@ -235,12 +235,13 @@ public class UnitCollectors extends Unit {
             CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("harvesterhoe-item")).setBreakEventConsumer(event -> {
                 Block block = event.getBlock();
                 if (block.getType() == Material.SUGAR_CANE_BLOCK) {
+                    event.setCancelled(true);
                     Block next = block;
                     int sugarCaneAmount = 1;
                     while (next.getType() == Material.SUGAR_CANE_BLOCK) {
                         next.setTypeIdAndData(Material.AIR.getId(), (byte) 0, false);
                         sugarCaneAmount++;
-                        next = block.getRelative(BlockFace.UP);
+                        next = next.getRelative(BlockFace.UP);
                     }
                     sugarCaneAmount *= harvesterHoesCollectDoubleSugarcane ? 2 : 1;
                     Collector collector = getCollector(block.getLocation());
@@ -408,5 +409,25 @@ public class UnitCollectors extends Unit {
 
     public boolean isCreepersCollectTNT() {
         return creepersCollectTNT;
+    }
+
+    public boolean isHarvesterHoesEnabled() {
+        return harvesterHoesEnabled;
+    }
+
+    public boolean isPreventNormalFarms() {
+        return preventNormalFarms;
+    }
+
+    public boolean isHarvesterHoesCollectDoubleSugarcane() {
+        return harvesterHoesCollectDoubleSugarcane;
+    }
+
+    public boolean isAutoPickupSugarcaneNormally() {
+        return autoPickupSugarcaneNormally;
+    }
+
+    public boolean isCollectToInventoryWithNoCollector() {
+        return collectToInventoryWithNoCollector;
     }
 }
