@@ -80,6 +80,7 @@ public class MenuCollector extends Menu {
                 setItem(collectionType.getGuiSlot(), getMenuItem(collectionType.getGuiSlot()).get().setItemStack(item));
             }
         }
+        getInventory().getViewers().forEach(viewer -> ((Player) viewer).updateInventory());
     }
 
     public void update(CollectionType collectionType, int replace) {
