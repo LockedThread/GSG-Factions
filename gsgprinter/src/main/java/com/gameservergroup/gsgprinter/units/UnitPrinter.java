@@ -141,10 +141,16 @@ public class UnitPrinter extends Unit {
         EventPost.of(BlockPlaceEvent.class)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> event.getBlockPlaced() != null)
-                .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
-                .filter(event -> GSG_CORE.canBuild(event.getPlayer(), event.getBlockPlaced()))
-                .filter(event -> !chargePlayer(event.getPlayer(), event.getBlockPlaced().getType()))
-                .handle(event -> event.setCancelled(true))
+                .handle(event -> {
+                    PrintingPlayer printingPlayer = printingPlayers.get(event.getPlayer().getUniqueId());
+                    if (printingPlayer != null) {
+                        if (GSG_CORE.canBuild(event.getPlayer(), event.getBlockPlaced())) {
+                            if (!chargePlayer(event.getPlayer(), printingPlayer, event.getBlockPlaced().getType())) {
+                                event.setCancelled(true);
+                            }
+                        }
+                    }
+                })
                 .post(GSG_PRINTER);
 
         EventPost.of(PlayerExpChangeEvent.class)
@@ -280,7 +286,7 @@ public class UnitPrinter extends Unit {
         }
     }
 
-    private boolean chargePlayer(Player player, Material material) {
+    private boolean chargePlayer(Player player, PrintingPlayer printingPlayer, Material material) {
         double price = GSG_PRINTER.getSellIntegration().getBuyPrice(material);
         if (price == 0.0) {
             player.sendMessage(PrinterMessages.THIS_BLOCK_ISNT_PLACEABLE.toString());
@@ -293,7 +299,7 @@ public class UnitPrinter extends Unit {
                 disablePrinter(player, false);
                 return false;
             } else {
-                GSG_PRINTER.getServer().getScheduler().runTaskAsynchronously(GSG_PRINTER, () -> GSG_PRINTER.getServer().getScheduler().runTaskAsynchronously(GSG_PRINTER, () -> Module.getEconomy().withdrawPlayer(player, price)));
+                GSG_PRINTER.getServer().getScheduler().runTaskAsynchronously(GSG_PRINTER, () -> Module.getEconomy().withdrawPlayer(player, price));
             }
         } else {
             EconomyResponse economyResponse = Module.getEconomy().withdrawPlayer(player, price);
@@ -302,11 +308,8 @@ public class UnitPrinter extends Unit {
                 disablePrinter(player, false);
                 return false;
             }
-            getPrintingPlayers().computeIfPresent(player.getUniqueId(), (uuid, printingPlayer) -> {
-                printingPlayer.getPlacedBlocks().computeIfPresent(material, (material1, integer) -> integer + 1);
-                printingPlayer.getPlacedBlocks().putIfAbsent(material, 1);
-                return printingPlayer;
-            });
+            printingPlayer.getPlacedBlocks().computeIfPresent(material, (material1, integer) -> integer + 1);
+            printingPlayer.getPlacedBlocks().putIfAbsent(material, 1);
         }
         return true;
     }

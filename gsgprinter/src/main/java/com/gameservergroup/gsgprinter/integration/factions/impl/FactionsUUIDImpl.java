@@ -27,6 +27,11 @@ public class FactionsUUIDImpl implements FactionsIntegration {
         }, 0, GSGPrinter.getInstance().getConfig().getInt("flight-check.interval"));
     }
 
+    @Override
+    public void setupListeners() {
+
+    }
+
     private boolean enemiesNearby(FPlayer target, int radius) {
         for (Entity entity : target.getPlayer().getNearbyEntities(radius, radius, radius)) {
             if (entity instanceof Player) {

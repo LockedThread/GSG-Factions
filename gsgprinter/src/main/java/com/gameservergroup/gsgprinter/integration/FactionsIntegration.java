@@ -4,4 +4,6 @@ public interface FactionsIntegration {
 
     void hookFlightDisable();
 
+    void setupListeners();
+
 }

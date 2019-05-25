@@ -14,4 +14,9 @@ public class LockedThreadFactionsUUIDImpl implements FactionsIntegration {
                 .handle(event -> GSGPrinter.getInstance().getUnitPrinter().disablePrinter(event.getfPlayer().getPlayer(), true, true))
                 .post(GSGPrinter.getInstance());
     }
+
+    @Override
+    public void setupListeners() {
+
+    }
 }
