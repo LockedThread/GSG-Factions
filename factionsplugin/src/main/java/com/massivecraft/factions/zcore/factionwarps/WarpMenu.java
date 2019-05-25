@@ -61,12 +61,15 @@ public class WarpMenu extends Menu {
                             .collect(Collectors.toList()));
                 }).build()).setInventoryClickEventConsumer(event -> {
             if (!faction.hasWarpPassword(warp)) {
+                event.setCancelled(true);
+                event.getWhoClicked().closeInventory();
                 FPlayer fPlayer = FPlayers.getInstance().getByPlayer((Player) event.getWhoClicked());
                 if (transact(fPlayer)) {
                     doWarmup(fPlayer, warp);
                 }
             } else {
                 event.getWhoClicked().sendMessage(TL.COMMAND_FWARP_PASSWORD_REQUIRED.toString());
+                event.setCancelled(true);
             }
         });
     }
