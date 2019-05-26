@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 
 @SuppressWarnings({"unchecked", "unused"})
 public class EventFilters {
-
+    private static final Predicate<PlayerMoveEvent> IGNORE_SAME_BLOCK = event -> event.getFrom().getX() != event.getTo().getX() && event.getFrom().getZ() != event.getTo().getZ() && event.getFrom().getY() != event.getTo().getY();
     private static final Predicate<PlayerMoveEvent> IGNORE_SAME_CHUNK = event -> event.getFrom().getChunk().getX() != event.getTo().getChunk().getX() && event.getFrom().getChunk().getZ() != event.getTo().getChunk().getZ();
     private static final Predicate<? extends Cancellable> IGNORE_CANCELLED = cancellable -> !cancellable.isCancelled();
     private static final Predicate<? extends InventoryEvent> IGNORE_NON_MENUS = (Predicate<InventoryEvent>) event -> event instanceof InventoryClickEvent ? ((InventoryClickEvent) event).getClickedInventory() != null && ((InventoryClickEvent) event).getClickedInventory().getHolder() instanceof Menu : event.getInventory() != null && event.getInventory().getHolder() instanceof Menu;
@@ -105,7 +105,12 @@ public class EventFilters {
         return IGNORE_SAME_CHUNK;
     }
 
+    public static Predicate<PlayerMoveEvent> getIgnoreSameBlock() {
+        return IGNORE_SAME_BLOCK;
+    }
+
     public static <T extends Event> Predicate<T> getIgnoreHandNull() {
         return (Predicate<T>) IGNORE_HAND_NULL;
     }
+
 }
