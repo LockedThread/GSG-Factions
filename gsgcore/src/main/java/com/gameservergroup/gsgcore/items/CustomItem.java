@@ -3,6 +3,7 @@ package com.gameservergroup.gsgcore.items;
 import com.gameservergroup.gsgcore.GSGCore;
 import com.gameservergroup.gsgcore.utils.NBTItem;
 import com.gameservergroup.gsgcore.utils.Text;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -56,7 +57,7 @@ public class CustomItem {
     }
 
     public static CustomItem findCustomItem(ItemStack itemStack) {
-        if (itemStack == null) return null;
+        if (itemStack == null || itemStack.getAmount() == 0 || itemStack.getType() == Material.AIR) return null;
         if (GSGCore.getInstance().getConfig().getBoolean("items-check-nbt")) {
             return new NBTItem(itemStack).getKeys()
                     .stream()
