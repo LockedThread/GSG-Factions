@@ -18,6 +18,7 @@
         <module>gsgcollectors</module>
         <module>gsgvouchers</module>
         <module>gsgtrenchtools</module>
+        <module>gsgoutpost</module>
     </modules>
 
     <dependencies>

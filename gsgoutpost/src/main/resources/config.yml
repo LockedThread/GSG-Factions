@@ -1,0 +1,50 @@
+outpost:
+  menu:
+    name: '&e&l(!) &fOutposts &e&l(!)'
+    size: 9
+  # The task delay for player checks and updates in percentage increases.
+  check-delay: 40
+
+  notifications:
+    # This will send a square based percentage update when enabled or | based when disabled.
+    use-square-update: true
+    # This will just send to chat with the percentage of the cap. Fair warning, this will spam chat.
+    use-actionbar: true
+
+  rewards:
+    2-times-collector-multiplier:
+      enabled: true
+      type: 'COLLECTOR_MULTIPLIER'
+      meta:
+        multiplier: 2.0
+    1-point-5-times-collector-multiplier:
+      enabled: true
+      type: 'COLLECTOR_MULTIPLIER'
+      meta:
+        multiplier: 1.5
+    2-times-shopguiplus-multiplier:
+      enabled: true
+      type: 'SHOP_GUI_PLUS_MULTIPLIER'
+      meta:
+        multiplier: 2.0
+    1-point-5-times-shopguiplus-multiplier:
+      enabled: true
+      type: 'SHOP_GUI_PLUS_MULTIPLIER'
+      meta:
+        multiplier: 1.5
+    timed-reward-give-money-to-faction:
+      enabled: true
+      type: 'TIMED_FACTION_REWARD'
+      meta:
+        interval: 60
+        commands:
+          - 'eco give {player} 2000'
+        capturing-players-commands:
+          - 'eco give {player} 100000'
+    timed-reward-give-money-to-capturing:
+      enabled: true
+      type: 'TIMED_REWARD'
+      meta:
+        interval: 100
+        commands:
+          - 'eco give {player} 100000'

@@ -1,0 +1,7 @@
+name: GSGOutpost
+main: com.gameservergroup.gsgoutpost.GSGOutpost
+version: 1.0-SNAPSHOT
+depend: [GSGCore, Factions, WorldGuard]
+permissions:
+  gsgoutpost.admin:
+    description: 'Gives access to all administrative outpost actions.'
