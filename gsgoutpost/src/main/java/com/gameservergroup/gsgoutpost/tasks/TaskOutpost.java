@@ -10,8 +10,9 @@ import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class TaskOutpost implements Runnable {
+public class TaskOutpost extends BukkitRunnable {
 
     private static final GSGOutpost GSG_OUTPOST = GSGOutpost.getInstance();
 
@@ -23,7 +24,10 @@ public class TaskOutpost implements Runnable {
 
     @Override
     public void run() {
-        if (outpost == null) return;
+        if (outpost == null) {
+            cancel();
+            return;
+        }
 
         if (outpost.getOutpostState() == OutpostState.DISABLED) {
             GSG_OUTPOST.sendUpdate(Bukkit.getOnlinePlayers(), OutpostMessages.OUTPOST_STATUS_DISABLED.toString());
