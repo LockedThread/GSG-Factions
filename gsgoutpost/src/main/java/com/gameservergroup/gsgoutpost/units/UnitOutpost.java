@@ -47,7 +47,7 @@ public class UnitOutpost extends Unit {
                                 c.reply("  &b&lPercentage: &7" + outpost.getPercentage());
                                 c.reply(" ");
                             });
-                            c.reply("&b&m&l--&7&m&l------&e&m&l--------------&7&m&l------&b&m&l--");
+                            c.reply("&b&m&l--&7&m&l-------&e&m&l--------------&7&m&l-------&b&m&l--");
                         }
                     } else if (c.getRawArgs().length == 1) {
                         if (c.getSender().hasPermission("gsgoutpost.admin")) {
@@ -56,9 +56,10 @@ public class UnitOutpost extends Unit {
                                 c.reply(" ");
                                 c.reply(" &b/outpost list - &7Lists all outposts");
                                 c.reply(" &b/outpost teleport {outpost} - &7Teleports you to an outpost");
-                                c.reply(" &b/outpost create {name} {worldguard-region} - &7Creates an outpost");
+                                c.reply(" &b/outpost create {worldguard-region} - &7Creates an outpost");
+                                c.reply(" &b/outpost config {outpost-name} - &7Allows you to config a outpost");
                                 c.reply(" ");
-                                c.reply("&b&m&l--&7&m&l------&e&m&l--------------&7&m&l------&b&m&l--");
+                                c.reply("&b&m&l--&7&m&l-------&e&m&l--------------&7&m&l-------&b&m&l--");
                             } else if (c.getRawArg(0).equalsIgnoreCase("list")) {
                                 c.reply(OutpostMessages.COMMAND_LIST.toString().replace("{outposts}", GSG_OUTPOST.getOutpostMap().isEmpty() ? "N/A" : Joiner.on(", ").skipNulls().join(GSG_OUTPOST.getOutpostMap().keySet())));
                             }
@@ -96,6 +97,8 @@ public class UnitOutpost extends Unit {
                                 String regionName = c.getRawArg(1);
                                 Outpost outpost = new Outpost(regionName);
                                 GSG_OUTPOST.getOutpostMap().put(regionName, outpost);
+                                outpost.init();
+                                outpost.startTask();
                                 c.reply(OutpostMessages.COMMAND_OUTPOST_CREATE.toString().replace("{outpost}", regionName));
                             }
                         } else {
@@ -117,7 +120,7 @@ public class UnitOutpost extends Unit {
 
         EventPost.of(PlayerMoveEvent.class)
                 .filter(EventFilters.getIgnoreCancelled())
-                .filter(EventFilters.getIgnoreSameChunk())
+                .filter(EventFilters.getIgnoreSameBlock())
                 .handle(event -> {
                     Player player = event.getPlayer();
                     if (player.isDead()) return;
@@ -135,13 +138,13 @@ public class UnitOutpost extends Unit {
 
                             player.sendMessage(OutpostMessages.OUTPOST_ENTERED_CAPTURE_ZONE.toString());
 
-                            if (outpost.getOutpostState() == OutpostState.CAPTURED && faction == outpost.getCapturedFaction() || outpost.getOutpostState() == OutpostState.CAPTURING && faction.getTag().equals(outpost.getFaction().getTag()))
+                            if (outpost.getOutpostState() == OutpostState.CAPTURED && faction.getTag().equals(outpost.getCapturedFaction().getTag()) || outpost.getOutpostState() == OutpostState.CAPTURING && faction.getTag().equals(outpost.getFaction().getTag()))
                                 return;
 
-                            if (outpost.getOutpostState() == OutpostState.CAPTURED && faction != outpost.getCapturedFaction()) {
+                            if (outpost.getOutpostState() == OutpostState.CAPTURED && !faction.getTag().equals(outpost.getCapturedFaction().getTag())) {
                                 Bukkit.broadcastMessage(OutpostMessages.OUTPOST_STATUS_LOST_CONTROL_BROADCAST.toString().replace("{faction}", faction.getTag()).replace("{outpost}", outpost.getUniqueIdentifier()));
                                 outpost.setOutpostState(OutpostState.NEUTRALIZING);
-                            } else if (outpost.getOutpostState() == OutpostState.CAPTURING && faction != outpost.getFaction()) {
+                            } else if (outpost.getOutpostState() == OutpostState.CAPTURING && !faction.getTag().equals(outpost.getFaction().getTag())) {
                                 outpost.setOutpostState(OutpostState.CAPTURING_PAUSED);
                             } else if (outpost.getOutpostState() == OutpostState.CAPTURE_WAITING && faction == outpost.getFaction()) {
                                 outpost.setOutpostState(OutpostState.CAPTURING);
@@ -149,11 +152,10 @@ public class UnitOutpost extends Unit {
                             } else {
                                 outpost.setOutpostState(OutpostState.NEUTRALIZING);
                             }
-                        } else if (!GSG_OUTPOST.getOutpost(event.getTo()).isPresent()) {
+                        } else if (outpost.getPlayers().contains(player) && GSG_OUTPOST.getOutpost(event.getTo()).isPresent()) {
                             outpost.getPlayers().remove(player);
                         }
                     }
                 }).post(GSG_OUTPOST);
-
     }
 }
