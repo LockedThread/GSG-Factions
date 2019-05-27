@@ -47,7 +47,17 @@ public class Outpost {
         this.uniqueIdentifier = uniqueIdentifier;
         this.rewardMap = rewardMap;
         this.slot = -1;
-        this.worldUID = Bukkit.getWorlds().stream().filter(world -> WGBukkit.getRegionManager(world).getRegion(uniqueIdentifier) != null).findFirst().map(World::getUID).orElseThrow(() -> new UnableToFindProtectedRegionException("Unable to find region with id " + uniqueIdentifier));
+        Optional<World> found = Optional.empty();
+        for (World world : Bukkit.getWorlds()) {
+            ProtectedRegion protectedRegion = WGBukkit.getRegionManager(world).getRegion(uniqueIdentifier);
+            if (protectedRegion != null) {
+                found = Optional.of(world);
+                this.warp = BlockPosition.of(world, protectedRegion.getMinimumPoint().getBlockX(), protectedRegion.getMinimumPoint().getBlockY(), protectedRegion.getMinimumPoint().getBlockZ());
+                break;
+            }
+        }
+        this.worldUID = found.map(World::getUID).orElseThrow(() -> new UnableToFindProtectedRegionException("Unable to find region with id " + uniqueIdentifier));
+
     }
 
     public void init() {
