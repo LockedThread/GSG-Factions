@@ -68,13 +68,12 @@ public class GSGOutpost extends Module {
         }
 
         registerUnits(new UnitOutpost());
-
-
     }
 
     @Override
     public void disable() {
         instance = null;
+        jsonFileOutpost.save(outpostMap);
     }
 
     public Map<String, Outpost> getOutpostMap() {
