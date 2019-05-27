@@ -191,7 +191,7 @@ public class UnitOutpost extends Unit {
                                         }
                                         break;
                                     case "warp-location":
-                                        if (c.getRawArgs().length == 4) {
+                                        if (c.getRawArgs().length == 3) {
                                             if (c.isPlayer()) {
                                                 outpost.setWarp(BlockPosition.of(((Player) c.getSender()).getLocation()));
                                                 c.reply(OutpostMessages.COMMAND_OUTPOST_WARP_LOCATION_SET);
