@@ -122,12 +122,16 @@ public class CustomItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CustomItem that = (CustomItem) o;
+        return Objects.equals(name, that.name);
+        /*
         return Objects.equals(name, that.name) &&
                 Objects.equals(itemStack, that.itemStack) &&
                 Objects.equals(interactEventConsumer, that.interactEventConsumer) &&
                 Objects.equals(breakEventConsumer, that.breakEventConsumer) &&
                 Objects.equals(placeEventConsumer, that.placeEventConsumer);
+    */
     }
+    
 
     @Override
     public int hashCode() {
