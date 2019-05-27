@@ -3,6 +3,7 @@ package com.gameservergroup.gsgcore.commands.arguments;
 import com.gameservergroup.gsgcore.items.CustomItem;
 import com.gameservergroup.gsgcore.items.migration.MigrationType;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -68,6 +69,19 @@ public class ArgumentRegistry implements IArgumentRegistry {
             } catch (IllegalArgumentException e) {
                 return Optional.empty();
             }
+        });
+
+        register(Material.class, () -> s -> {
+            try {
+                return Optional.of(Material.valueOf(s));
+            } catch (IllegalArgumentException e) {
+                for (Material material : Material.values()) {
+                    if (material.name().equalsIgnoreCase(s)) {
+                        return Optional.of(material);
+                    }
+                }
+            }
+            return Optional.empty();
         });
     }
 
