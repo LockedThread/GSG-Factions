@@ -17,12 +17,28 @@ public enum OutpostMessages {
 
     OUTPOST_ENTERED_CAPTURE_ZONE("&7You have entered the outpost capture zone"),
 
+    COMMAND_INCORRECT_COMMAND_SYNTAX("&cIncorrect syntax! {message}"),
     COMMAND_NO_PERMISSION("&cYou don't have access to execute this command!"),
     COMMAND_LIST("&eOutposts: &f{outposts}"),
     COMMAND_TELEPORT_SENT("&aYou have been teleported to {outpost} outpost!"),
     COMMAND_TELEPORT_CANT_FIND("&cUnable to find outpost with name '{outpost}'"),
     COMMAND_TELEPORT_CANT_FIND_LOCATION("&cUnable to find location for outpost '{outpost}'. Make sure the worldguard region is still defined and you have a warp setup for this outpost."),
-    COMMAND_OUTPOST_CREATE("&aCreated outpost with name {outpost}");
+    COMMAND_OUTPOST_CREATE("&aCreated outpost with name {outpost}"),
+    COMMAND_OUTPOST_ITEM_LORE_CLEAR("&aSuccessfully cleared item lore"),
+    COMMAND_OUTPOST_ITEM_LORE_SET("&aSuccessfully set lore line {index} to {line}"),
+    COMMAND_OUTPOST_ITEM_LORE_ADD("&aSuccessfully added {line} to lore"),
+    COMMAND_OUTPOST_ITEM_NAME_SET("&aSuccessfully item name to {name}"),
+    COMMAND_OUTPOST_ITEM_MATERIAL_SET("&aSuccessfully item name to {name}"),
+    COMMAND_OUTPOST_ITEM_SLOT_SET("&aSuccessfully set item slot to {slot}"),
+    COMMAND_OUTPOST_ITEM_GLOW_SET("&aSuccessfully set item glow to {status}"),
+    COMMAND_OUTPOST_CAPTURE_MESSAGE_SET("&aSuccessfully set capture message to {message}"),
+    COMMAND_OUTPOST_WARP_LOCATION_SET("&aSuccessfully set warp location"),
+    COMMAND_OUTPOST_WARP_LOCATION_CONSOLE("&cYou must be a player to set a warp location!"),
+    COMMAND_OUTPOST_REWARDS_ADD("&aSuccessfully added reward {reward}"),
+    COMMAND_OUTPOST_REWARDS_REMOVE_SUCCESS("&aSuccessfully &aremoved &areward {reward}"),
+    COMMAND_OUTPOST_REWARDS_REMOVE_CANT_FIND("&cCan't find "),
+
+    ;
 
     private String message;
 

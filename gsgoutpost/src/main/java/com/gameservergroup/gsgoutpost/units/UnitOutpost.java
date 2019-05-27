@@ -4,24 +4,29 @@ import com.gameservergroup.gsgcore.commands.arguments.ArgumentRegistry;
 import com.gameservergroup.gsgcore.commands.post.CommandPost;
 import com.gameservergroup.gsgcore.events.EventFilters;
 import com.gameservergroup.gsgcore.events.EventPost;
+import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.gameservergroup.gsgoutpost.GSGOutpost;
 import com.gameservergroup.gsgoutpost.enums.OutpostMessages;
 import com.gameservergroup.gsgoutpost.enums.OutpostState;
 import com.gameservergroup.gsgoutpost.objs.Outpost;
+import com.gameservergroup.gsgoutpost.rewards.Reward;
 import com.google.common.base.Joiner;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.List;
 import java.util.Optional;
 
 public class UnitOutpost extends Unit {
@@ -31,6 +36,7 @@ public class UnitOutpost extends Unit {
     @Override
     public void setup() {
         ArgumentRegistry.getInstance().register(Outpost.class, () -> s -> Optional.ofNullable(GSG_OUTPOST.getOutpostMap().get(s.toLowerCase())));
+        ArgumentRegistry.getInstance().register(Reward.class, () -> s -> Optional.ofNullable(GSG_OUTPOST.getRewardMap().get(s.toLowerCase())));
         CommandPost.create()
                 .builder()
                 .handler(c -> {
@@ -100,6 +106,123 @@ public class UnitOutpost extends Unit {
                                 outpost.init();
                                 outpost.startTask();
                                 c.reply(OutpostMessages.COMMAND_OUTPOST_CREATE.toString().replace("{outpost}", regionName));
+                            } else if (c.getRawArg(0).equalsIgnoreCase("config")) {
+                                Outpost outpost = c.getArg(1).forceParse(Outpost.class);
+                                String joinedMessage3 = Joiner.on(" ").skipNulls().join(ArrayUtils.subarray(c.getRawArgs(), 3, c.getRawArgs().length));
+                                switch (c.getRawArg(2).toLowerCase()) {
+                                    case "capture-message":
+                                        if (c.getRawArgs().length >= 4) {
+                                            outpost.setCaptureMessage(joinedMessage3);
+                                            c.reply(OutpostMessages.COMMAND_OUTPOST_CAPTURE_MESSAGE_SET.toString().replace("{message}", joinedMessage3));
+                                        } else {
+                                            c.reply(OutpostMessages.COMMAND_INCORRECT_COMMAND_SYNTAX.toString().replace("{message}", "/outpost config {outpost} capture-message {message}"));
+                                        }
+                                        break;
+                                    case "menu-slot":
+                                        if (c.getRawArgs().length == 4) {
+                                            int slot = c.getArg(3).forceParse(int.class);
+                                            outpost.setSlot(slot);
+                                            c.reply(OutpostMessages.COMMAND_OUTPOST_ITEM_SLOT_SET.toString().replace("{slot}", String.valueOf(slot)));
+                                        } else {
+                                            c.reply(OutpostMessages.COMMAND_INCORRECT_COMMAND_SYNTAX.toString().replace("{message}", "/outpost config {outpost} menu-slot {slot}"));
+                                        }
+                                        break;
+                                    case "menu-item-name":
+                                        if (c.getRawArgs().length >= 4) {
+                                            outpost.getMenuItem().setName(joinedMessage3);
+                                            c.reply(OutpostMessages.COMMAND_OUTPOST_ITEM_NAME_SET.toString().replace("{name}", joinedMessage3));
+                                        } else {
+                                            c.reply(OutpostMessages.COMMAND_INCORRECT_COMMAND_SYNTAX.toString().replace("{message}", "/outpost config {outpost} menu-item-name {slot}"));
+                                        }
+                                        break;
+                                    case "menu-item-lore":
+                                        if (c.getRawArgs().length == 4) {
+                                            c.reply("");
+                                            c.reply("&bSub Arguments: ");
+                                            c.reply(" &b/outpost config {outpost} menu-item-lore set {index} {line} - &7Sets specific lore line");
+                                            c.reply(" &b/outpost config {outpost} menu-item-lore add {line} - &7Adds line to bottom of item lore");
+                                            c.reply(" &b/outpost config {outpost} menu-item-lore clear - &7Clears lore");
+                                            c.reply("");
+                                        } else if (c.getRawArgs().length == 4) {
+                                            if (c.getRawArg(3).equalsIgnoreCase("clear")) {
+                                                outpost.getMenuItem().getLore().clear();
+                                                c.reply(OutpostMessages.COMMAND_OUTPOST_ITEM_LORE_CLEAR);
+                                            } else {
+                                                c.reply(OutpostMessages.COMMAND_INCORRECT_COMMAND_SYNTAX.toString().replace("{message}", ""));
+                                            }
+                                        } else if (c.getRawArgs().length >= 4) {
+                                            List<String> lore = outpost.getMenuItem().getLore();
+                                            String joinedMessage5 = Joiner.on(" ").skipNulls().join(ArrayUtils.subarray(c.getRawArgs(), 5, c.getRawArgs().length));
+                                            if (c.getRawArg(3).equalsIgnoreCase("set")) {
+                                                lore.set(c.getArg(4).forceParse(int.class), joinedMessage5);
+                                                c.reply(OutpostMessages.COMMAND_OUTPOST_ITEM_LORE_SET.toString().replace("{index}", c.getRawArg(4)).replace("{line}", joinedMessage5));
+                                            } else if (c.getRawArg(3).equalsIgnoreCase("add")) {
+                                                lore.add(joinedMessage5);
+                                                c.reply(OutpostMessages.COMMAND_OUTPOST_ITEM_LORE_ADD.toString().replace("{line}", joinedMessage5));
+                                            } else {
+                                                c.reply(OutpostMessages.COMMAND_INCORRECT_COMMAND_SYNTAX.toString().replace("{message}", ""));
+                                            }
+                                        } else {
+                                            c.reply(OutpostMessages.COMMAND_INCORRECT_COMMAND_SYNTAX.toString().replace("{message}", ""));
+                                            c.reply("");
+                                            c.reply("&bSub Arguments: ");
+                                            c.reply(" &b/outpost config {outpost} menu-item-lore set {index} {line} - &7Sets specific lore line");
+                                            c.reply(" &b/outpost config {outpost} menu-item-lore add {line} - &7Adds line to bottom of item lore");
+                                            c.reply(" &b/outpost config {outpost} menu-item-lore clear - &7Clears lore");
+                                            c.reply("");
+                                        }
+                                        break;
+                                    case "menu-item-material":
+                                        if (c.getRawArgs().length == 4) {
+                                            Material material = c.getArg(3).forceParse(Material.class);
+                                            outpost.getMenuItem().setMaterial(material);
+                                            c.reply(OutpostMessages.COMMAND_OUTPOST_ITEM_MATERIAL_SET.toString().replace("{name}", material.name()));
+                                        } else {
+                                            c.reply(OutpostMessages.COMMAND_INCORRECT_COMMAND_SYNTAX.toString().replace("{message}", "/outpost config {outpost} menu-item-material {material}"));
+                                        }
+                                        break;
+                                    case "menu-item-glow":
+                                        if (c.getRawArgs().length == 4) {
+                                            boolean glowing = c.getArg(3).forceParse(boolean.class);
+                                            outpost.getMenuItem().setGlowing(glowing);
+                                            c.reply(OutpostMessages.COMMAND_OUTPOST_ITEM_GLOW_SET.toString().replace("{status}", glowing ? "true" : "false"));
+                                        } else {
+                                            c.reply(OutpostMessages.COMMAND_INCORRECT_COMMAND_SYNTAX.toString().replace("{message}", "/outpost config {outpost} menu-item-glow {true/false}"));
+                                        }
+                                        break;
+                                    case "warp-location":
+                                        if (c.getRawArgs().length == 4) {
+                                            if (c.isPlayer()) {
+                                                outpost.setWarp(BlockPosition.of(((Player) c.getSender()).getLocation()));
+                                                c.reply(OutpostMessages.COMMAND_OUTPOST_WARP_LOCATION_SET);
+                                            } else {
+                                                c.reply(OutpostMessages.COMMAND_OUTPOST_WARP_LOCATION_CONSOLE);
+                                            }
+                                        } else {
+                                            c.reply(OutpostMessages.COMMAND_INCORRECT_COMMAND_SYNTAX.toString().replace("{message}", "/outpost config {outpost} warp-location"));
+                                        }
+                                        break;
+                                    case "rewards":
+                                        if (c.getRawArgs().length == 5) {
+                                            Reward reward = c.getArg(4).forceParse(Reward.class);
+                                            if (c.getRawArg(3).equalsIgnoreCase("add")) {
+                                                outpost.getRewardMap().put(c.getRawArg(4), reward);
+                                                c.reply(OutpostMessages.COMMAND_OUTPOST_REWARDS_ADD.toString().replace("{reward}", c.getRawArg(4)));
+                                            } else if (c.getRawArg(3).equalsIgnoreCase("remove")) {
+                                                if (outpost.getRewardMap().containsKey(c.getRawArg(4))) {
+                                                    outpost.getRewardMap().remove(c.getRawArg(4));
+                                                    c.reply(OutpostMessages.COMMAND_OUTPOST_REWARDS_REMOVE_SUCCESS.toString().replace("{reward}", c.getRawArg(4)));
+                                                } else {
+                                                    c.reply(OutpostMessages.COMMAND_OUTPOST_REWARDS_REMOVE_CANT_FIND.toString());
+                                                }
+                                            } else {
+                                                c.reply(OutpostMessages.COMMAND_INCORRECT_COMMAND_SYNTAX.toString().replace("{message}", "/outpost config {outpost} rewards {add/remove} {reward-id}"));
+                                            }
+                                        } else {
+                                            c.reply(OutpostMessages.COMMAND_INCORRECT_COMMAND_SYNTAX.toString().replace("{message}", "/outpost config {outpost} rewards {add/remove} {reward-id}"));
+                                        }
+                                        break;
+                                }
                             }
                         } else {
                             c.reply(OutpostMessages.COMMAND_NO_PERMISSION);
