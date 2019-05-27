@@ -56,6 +56,7 @@ public class CustomItem {
     }
 
     public static CustomItem findCustomItem(ItemStack itemStack) {
+        if (itemStack == null) return null;
         if (GSGCore.getInstance().getConfig().getBoolean("items-check-nbt")) {
             return new NBTItem(itemStack).getKeys()
                     .stream()
@@ -131,7 +132,7 @@ public class CustomItem {
                 Objects.equals(placeEventConsumer, that.placeEventConsumer);
     */
     }
-    
+
 
     @Override
     public int hashCode() {
