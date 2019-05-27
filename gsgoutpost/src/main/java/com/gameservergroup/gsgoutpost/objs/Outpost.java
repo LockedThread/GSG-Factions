@@ -14,6 +14,7 @@ import com.massivecraft.factions.Faction;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -23,7 +24,7 @@ import java.util.*;
 public class Outpost {
 
     private final String uniqueIdentifier;
-    private final Map<RewardType, Reward> rewardMap;
+    private final Map<String, Reward> rewardMap;
     private SerializableItem menuItem;
     private String captureMessage;
     private int slot;
@@ -40,10 +41,10 @@ public class Outpost {
     private transient BukkitTask timedReward;
 
     public Outpost(String uniqueIdentifier) {
-        this(uniqueIdentifier, new EnumMap<>(RewardType.class));
+        this(uniqueIdentifier, new HashMap<>());
     }
 
-    public Outpost(String uniqueIdentifier, Map<RewardType, Reward> rewardMap) {
+    public Outpost(String uniqueIdentifier, Map<String, Reward> rewardMap) {
         this.uniqueIdentifier = uniqueIdentifier;
         this.rewardMap = rewardMap;
         this.slot = -1;
@@ -57,7 +58,7 @@ public class Outpost {
             }
         }
         this.worldUID = found.map(World::getUID).orElseThrow(() -> new UnableToFindProtectedRegionException("Unable to find region with id " + uniqueIdentifier));
-
+        this.menuItem = new SerializableItem(Material.WOOL, "Default Name. Change with /outpost config", Collections.emptyList(), false);
     }
 
     public void init() {
@@ -100,7 +101,7 @@ public class Outpost {
         return uniqueIdentifier;
     }
 
-    public Map<RewardType, Reward> getRewardMap() {
+    public Map<String, Reward> getRewardMap() {
         return rewardMap;
     }
 
