@@ -11,7 +11,7 @@ public enum OutpostMessages {
     OUTPOST_STATUS_NEUTRALIZED("&c{outpost} &7Outpost has been neutralized by {faction}"),
     OUTPOST_STATUS_CAPTURING_BROADCAST("&b&l&n{faction}&r &b&lis Capturing &7&l- &r{formatted-percentage} &7&l(&b&l{percentage}%&7&l)"),
     OUTPOST_STATUS_CAPTURED("&4&lYour faction has captured {outpost} outpost!"),
-    OUTPOST_STATUS_CAPTURED_BROADCAST("&&c{outpost} &7Outpost has been captured by {faction}"),
+    OUTPOST_STATUS_CAPTURED_BROADCAST("&c{outpost} &7outpost has been captured by {faction}"),
     OUTPOST_STATUS_LOST_CONTROL_BROADCAST("&7{faction} lost control of {outpost} outpost."),
     OUTPOST_STATUS_CAPTURING("&7{faction} is capturing {outpost} outpost."),
 
