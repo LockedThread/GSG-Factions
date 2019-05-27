@@ -151,7 +151,7 @@ public class UnitCollectors extends Unit {
                                     sugarCaneAmount++;
                                     next = next.getRelative(BlockFace.UP);
                                     if (GSG_COLLECTORS.getConfig().getBoolean("options.harvester-hoes.protected-region-check-for-iterated-sugar-cane")) {
-                                        if (GSG_CORE.canBuild(event.getPlayer(), next)) {
+                                        if (!GSG_CORE.canBuild(event.getPlayer(), next)) {
                                             break;
                                         }
                                     }
