@@ -9,6 +9,7 @@ import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -31,6 +32,7 @@ public class TaskOutpost extends BukkitRunnable {
 
         if (outpost.getOutpostState() == OutpostState.DISABLED) {
             GSG_OUTPOST.sendUpdate(Bukkit.getOnlinePlayers(), OutpostMessages.OUTPOST_STATUS_DISABLED.toString());
+            return;
         }
 
         if (outpost.getOutpostState() == OutpostState.NEUTRALIZE_WAITING || outpost.getOutpostState() == OutpostState.CAPTURE_WAITING) {
@@ -38,12 +40,13 @@ public class TaskOutpost extends BukkitRunnable {
         }
 
         if (outpost.getOutpostState() != OutpostState.DISABLED) {
-            for (Player s : outpost.getPlayers()) {
-                if (s.isDead())
-                    outpost.getPlayers().add(s);
-                if (!GSG_OUTPOST.isInRegion(s.getLocation(), outpost.getUniqueIdentifier()))
-                    outpost.getPlayers().add(s);
-            }
+            outpost.getPlayers().removeIf(Entity::isDead);
+            /*for (Player player : outpost.getPlayers()) {
+                if (player.isDead())
+                    outpost.getPlayers().add(player);
+                if (!GSG_OUTPOST.isInRegion(player.getLocation(), outpost.getUniqueIdentifier()))
+                    outpost.getPlayers().add(player);
+            }*/
 
             if (outpost.isOneFaction()) {
                 if (outpost.getOutpostState() == OutpostState.NEUTRALIZING_PAUSED)
