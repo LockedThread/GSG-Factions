@@ -43,6 +43,9 @@ public class FactionsUUIDImpl implements FactionIntegration {
                                 if (event.getPlayer().isSneaking() && event.getPlayer().hasPermission("gsgcollector.clicktosell")) {
                                     collector.sellAll(event.getPlayer());
                                 } else {
+                                    if (collector.getMenuCollector().getInventory().getViewers().isEmpty()) {
+                                        collector.getMenuCollector().refresh();
+                                    }
                                     event.getPlayer().openInventory(collector.getMenuCollector().getInventory());
                                 }
                                 event.setCancelled(true);

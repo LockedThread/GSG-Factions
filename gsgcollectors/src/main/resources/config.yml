@@ -10,6 +10,11 @@ options:
   save-task-delay: 300000
   creepers-collect-tnt: true
   auto-pickup-sugar-cane-normally: true
+  # Don't blame me if this ruins your economy, this was requested by a client.
+  shop-gui-plus:
+    hook: false
+    blacklisted-shops:
+      - 'donator'
   harvester-hoes:
     enabled: true
     collect-double-sugar-cane: true
@@ -79,6 +84,9 @@ collection-types:
   iron-golem:
     slot: 9
     price: 200.0
+    # Only used when shopguiplus is enabled
+    # You can add the item section to all of the collection types, not just irongolem.
+    item: 'IRON_INGOT'
   enderman:
     slot: 10
     price: 20.0

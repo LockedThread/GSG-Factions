@@ -1,6 +1,8 @@
 package com.gameservergroup.gsgcollectors;
 
 import com.gameservergroup.gsgcollectors.enums.CollectorMessages;
+import com.gameservergroup.gsgcollectors.integration.ShopGUIPlusIntegration;
+import com.gameservergroup.gsgcollectors.integration.impl.ShopGUIPlusImpl;
 import com.gameservergroup.gsgcollectors.units.UnitCollectors;
 import com.gameservergroup.gsgcore.plugin.Module;
 
@@ -8,6 +10,7 @@ public class GSGCollectors extends Module {
 
     private static GSGCollectors instance;
     private UnitCollectors unitCollectors;
+    private ShopGUIPlusIntegration shopGUIPlusIntegration;
 
     public static GSGCollectors getInstance() {
         return instance;
@@ -22,6 +25,13 @@ public class GSGCollectors extends Module {
                 printerMessages.setMessage(getConfig().getString("messages." + printerMessages.getKey()));
             } else {
                 getConfig().set("messages." + printerMessages.getKey(), printerMessages.getValue());
+            }
+        }
+        if (getConfig().getBoolean("options.shop-gui-plus.hook")) {
+            if (getServer().getPluginManager().getPlugin("ShopGUIPlus") != null) {
+                shopGUIPlusIntegration = new ShopGUIPlusImpl();
+            } else {
+                getLogger().severe("Unable to hook into ShopGUIPlus because it's not enabled on the server!");
             }
         }
         registerUnits(unitCollectors = new UnitCollectors());
@@ -40,5 +50,9 @@ public class GSGCollectors extends Module {
 
     public UnitCollectors getUnitCollectors() {
         return unitCollectors;
+    }
+
+    public ShopGUIPlusIntegration getShopGUIPlusIntegration() {
+        return shopGUIPlusIntegration;
     }
 }

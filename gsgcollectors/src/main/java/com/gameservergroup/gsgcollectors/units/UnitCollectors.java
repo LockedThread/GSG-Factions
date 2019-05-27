@@ -128,10 +128,11 @@ public class UnitCollectors extends Unit {
         EventPost.of(BlockBreakEvent.class, EventPriority.HIGHEST)
                 .filter(EventFilters.getIgnoreCancelled())
                 .handle(event -> {
-                    Collector collector = getCollector(event.getBlock().getLocation());
+                    Block block = event.getBlock();
+                    Collector collector = getCollector(block.getLocation());
                     if (collector != null) {
-                        if (collector.getBlockPosition().equals(BlockPosition.of(event.getBlock()))) {
-                            removeCollector(event.getBlock().getLocation(), true);
+                        if (collector.getBlockPosition().equals(BlockPosition.of(block))) {
+                            removeCollector(block.getLocation(), true);
                             event.setCancelled(true);
                             if (!CollectorMessages.TITLE_COLLECTOR_BREAK.toString().isEmpty()) {
                                 if (useTitles) {
@@ -140,8 +141,18 @@ public class UnitCollectors extends Unit {
                                     event.getPlayer().sendMessage(CollectorMessages.TITLE_COLLECTOR_BREAK.toString());
                                 }
                             }
-                        } else if (!CustomItem.findCustomItem(event.getPlayer().getItemInHand()).equals(harvesterHoeCustomItem) && autoPickupSugarcaneNormally && event.getBlock().getType() == Material.SUGAR_CANE_BLOCK && getCollectionTypes().contains(CollectionType.SUGAR_CANE)) {
-                            collector.addAmount(CollectionType.SUGAR_CANE, 1);
+                        } else if (autoPickupSugarcaneNormally && block.getType() == Material.SUGAR_CANE_BLOCK && getCollectionTypes().contains(CollectionType.SUGAR_CANE)) {
+                            CustomItem customItem;
+                            if (event.getPlayer().getItemInHand() == null || ((customItem = CustomItem.findCustomItem(event.getPlayer().getItemInHand())) == null || !customItem.equals(harvesterHoeCustomItem))) {
+                                Block next = block;
+                                int sugarCaneAmount = 0;
+                                while (next.getType() == Material.SUGAR_CANE_BLOCK) {
+                                    next.setTypeIdAndData(Material.AIR.getId(), (byte) 0, false);
+                                    sugarCaneAmount++;
+                                    next = next.getRelative(BlockFace.UP);
+                                }
+                                collector.addAmount(CollectionType.SUGAR_CANE, sugarCaneAmount);
+                            }
                         }
                     }
                 }).post(GSG_COLLECTORS);
@@ -149,19 +160,13 @@ public class UnitCollectors extends Unit {
         EventPost.of(EntityExplodeEvent.class)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> event.blockList() != null)
-                .handle(event -> event.blockList()
-                        .stream()
-                        .filter(block -> block.getType() == Material.BEACON)
-                        .forEach(block -> event.blockList().remove(block)))
+                .handle(event -> event.blockList().removeIf(block -> block.getType() == Material.BEACON))
                 .post(GSG_COLLECTORS);
 
         EventPost.of(BlockExplodeEvent.class)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> event.blockList() != null)
-                .handle(event -> event.blockList()
-                        .stream()
-                        .filter(block -> block.getType() == Material.BEACON)
-                        .forEach(block -> event.blockList().remove(block)))
+                .handle(event -> event.blockList().removeIf(block -> block.getType() == Material.BEACON))
                 .post(GSG_COLLECTORS);
 
         if (preventNormalFarms) {
@@ -238,7 +243,7 @@ public class UnitCollectors extends Unit {
                 if (block.getType() == Material.SUGAR_CANE_BLOCK) {
                     event.setCancelled(true);
                     Block next = block;
-                    int sugarCaneAmount = 1;
+                    int sugarCaneAmount = 0;
                     while (next.getType() == Material.SUGAR_CANE_BLOCK) {
                         next.setTypeIdAndData(Material.AIR.getId(), (byte) 0, false);
                         sugarCaneAmount++;

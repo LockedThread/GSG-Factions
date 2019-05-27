@@ -114,9 +114,18 @@ public enum CollectionType {
     }
 
     public void init(String s) {
+        if (GSGCollectors.getInstance().getShopGUIPlusIntegration() != null) {
+            String materialString = GSGCollectors.getInstance().getConfig().getString("collection-types." + s + ".item");
+            if (materialString != null && !materialString.isEmpty()) {
+                this.price = GSGCollectors.getInstance().getShopGUIPlusIntegration().getSellPrice(Material.valueOf(materialString.toUpperCase()));
+            } else {
+                this.price = GSGCollectors.getInstance().getConfig().getDouble("collection-types." + s + ".price");
+            }
+        } else {
+            this.price = GSGCollectors.getInstance().getConfig().getDouble("collection-types." + s + ".price");
+        }
         this.guiSlot = GSGCollectors.getInstance().getConfig().getInt("collection-types." + s + ".slot");
-        this.price = GSGCollectors.getInstance().getConfig().getDouble("collection-types." + s + ".price");
-        if (getMaterial() == null) {
+        if (entityType != null) {
             SpawnEgg spawnEgg = new SpawnEgg(getEntityType());
             this.itemStack = ItemStackBuilder.of(GSGCollectors.getInstance().getConfig().getConfigurationSection("menu.collection-type-format"))
                     .consumeItemMeta(itemMeta -> itemMeta.setDisplayName(itemMeta.getDisplayName().replace("{mob}", Utils.toTitleCasing(spawnEgg.getSpawnedType().name().replace("_", " ").toLowerCase()))))

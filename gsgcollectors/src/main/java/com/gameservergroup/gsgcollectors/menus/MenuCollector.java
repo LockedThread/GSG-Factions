@@ -74,9 +74,14 @@ public class MenuCollector extends Menu {
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     public void refresh() {
         for (CollectionType collectionType : GSGCollectors.getInstance().getUnitCollectors().getCollectionTypes()) {
-            int amount = collector.getAmounts().get(collectionType);
-            if (amount > 0) {
-                ItemStack item = ItemStackBuilder.of(collectionType.getItemStack().clone()).consumeItemMeta(itemMeta -> itemMeta.setLore(itemMeta.getLore().stream().map(s -> Text.toColor(s.replace("{amount}", String.valueOf(amount)))).collect(Collectors.toList()))).build();
+            Integer amount = collector.getAmounts().get(collectionType);
+            if (amount != null) {
+                ItemStack item = ItemStackBuilder.of(collectionType.getItemStack().clone())
+                        .consumeItemMeta(itemMeta -> itemMeta.setLore(itemMeta.getLore()
+                                .stream()
+                                .map(s -> Text.toColor(s.replace("{amount}", String.valueOf(amount))))
+                                .collect(Collectors.toList())))
+                        .build();
                 setItem(collectionType.getGuiSlot(), getMenuItem(collectionType.getGuiSlot()).get().setItemStack(item));
             }
         }
