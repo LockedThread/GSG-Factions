@@ -43,12 +43,15 @@ public class UnitTrenchTools extends Unit {
                 ItemStack hand = player.getItemInHand();
                 if (player.isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
                     if (trenchTool.isTrayMode()) {
+
                         final boolean toolTrayMode = trenchTool.getToolTrayMode(hand);
-                        /*ItemStack itemStack = player.getItemInHand().clone();
+/*                        ItemStack itemStack = player.getItemInHand();
                         ItemMeta meta = itemStack.getItemMeta();
                         List<String> trayModeLore = trenchTool.getTrayModeLore(!toolTrayMode);
                         meta.setLore(trayModeLore);
-                        itemStack.setItemMeta(meta);*/
+                        itemStack.setItemMeta(meta);
+                        player.updateInventory();
+*/
                         player.setItemInHand(trenchTool.setToolTrayMode(ItemStackBuilder.of(player.getItemInHand())
                                 .setLore(trenchTool.getTrayModeLore(!toolTrayMode))
                                 .build(), !toolTrayMode));
