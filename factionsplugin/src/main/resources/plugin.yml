@@ -4,6 +4,7 @@ main: com.massivecraft.factions.P
 authors: [Olof Larsson, Brett Flannigan, drtshock, LockedThread]
 depend: [GSGCore]
 softdepend: [CoreProtect, PlayerVaults, PlaceholderAPI, MVdWPlaceholderAPI, PermissionsEx, Permissions, Essentials, EssentialsChat, HeroChat, iChat, LocalAreaChat, LWC, nChat, ChatManager, CAPI, Vault, Spout, WorldEdit, WorldGuard, AuthDB, CaptureThePoints, CombatTag, dynmap, FactionsTop]
+loadbefore: [GSGPrinter, GSGCollectors, GSGGen]
 commands:
   factions:
     description: Reference command for Factions.
