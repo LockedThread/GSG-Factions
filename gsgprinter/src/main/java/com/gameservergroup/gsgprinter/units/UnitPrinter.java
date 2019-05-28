@@ -308,9 +308,9 @@ public class UnitPrinter extends Unit {
                 disablePrinter(player, false);
                 return false;
             }
-            printingData.getPlacedBlocks().computeIfPresent(material, (material1, integer) -> integer + 1);
-            printingData.getPlacedBlocks().putIfAbsent(material, 1);
         }
+        printingData.getPlacedBlocks().computeIfPresent(material, (material1, integer) -> integer + 1);
+        printingData.getPlacedBlocks().putIfAbsent(material, 1);
         return true;
     }
 
