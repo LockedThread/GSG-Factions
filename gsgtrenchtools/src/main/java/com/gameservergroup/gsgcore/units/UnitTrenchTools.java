@@ -56,6 +56,13 @@ public class UnitTrenchTools extends Unit {
                                 .setLore(trenchTool.getTrayModeLore(!toolTrayMode))
                                 .build(), !toolTrayMode));
                         //player.updateInventory();
+                        if (GSGTrenchTools.getInstance().getConfig().getBoolean("send-trenchmode-update-message")) {
+                            if (toolTrayMode) {
+                                player.sendMessage(TrenchMessages.TRENCHMODE_DISABLE.toString());
+                            } else {
+                                player.sendMessage(TrenchMessages.TRENCHMODE_ENABLE.toString());
+                            }
+                        }
                     }
                 } else if (event.getAction() == Action.LEFT_CLICK_BLOCK && trenchTool.isOmniTool() && event.getClickedBlock() != null) {
                     final boolean pickaxe = isPickaxe(hand);

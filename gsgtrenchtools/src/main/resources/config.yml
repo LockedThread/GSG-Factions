@@ -1,3 +1,5 @@
+send-trenchmode-update-message: true
+
 drop-items: false
 # Don't remove AIR for performance reasons.
 blacklisted-materials:

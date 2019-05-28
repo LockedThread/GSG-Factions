@@ -7,6 +7,8 @@ public enum TrenchMessages {
     CANT_BREAK("&cSorry, you can't break blocks here!"),
     YOU_CANT_HAVE_GIGADRILL_ENABLED("&cYou can't have giga drill enabled when using this."),
     YOU_CANT_HAVE_SUPER_BREAKER_ENABLED("&cYou can't have berserk enabled when using this."),
+    TRENCHMODE_ENABLE("&aYou have enabled trench mode!"),
+    TRENCHMODE_DISABLE("&cYou have disabled trench mode!"),
     ;
 
 
