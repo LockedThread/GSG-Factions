@@ -10,7 +10,7 @@ import com.gameservergroup.gsgcore.utils.Text;
 import com.gameservergroup.gsgcore.utils.Utils;
 import com.gameservergroup.gsgprinter.GSGPrinter;
 import com.gameservergroup.gsgprinter.enums.PrinterMessages;
-import com.gameservergroup.gsgprinter.objs.PrintingPlayer;
+import com.gameservergroup.gsgprinter.objs.PrintingData;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayers;
@@ -59,7 +59,7 @@ public class UnitPrinter extends Unit {
     private boolean useNcp;
     private HashSet<String> allowedCommands;
     private HashSet<String> blacklistedKeywords;
-    private HashMap<UUID, PrintingPlayer> printingPlayers;
+    private HashMap<UUID, PrintingData> printingPlayers;
 
     private boolean startsWith(Collection<String> strings, String data) {
         return strings.stream().anyMatch(string -> string.toLowerCase().startsWith(data.toLowerCase()));
@@ -142,10 +142,10 @@ public class UnitPrinter extends Unit {
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> event.getBlockPlaced() != null)
                 .handle(event -> {
-                    PrintingPlayer printingPlayer = printingPlayers.get(event.getPlayer().getUniqueId());
-                    if (printingPlayer != null) {
+                    PrintingData printingData = printingPlayers.get(event.getPlayer().getUniqueId());
+                    if (printingData != null) {
                         if (GSG_CORE.canBuild(event.getPlayer(), event.getBlockPlaced())) {
-                            if (!chargePlayer(event.getPlayer(), printingPlayer, event.getBlockPlaced().getType())) {
+                            if (!chargePlayer(event.getPlayer(), printingData, event.getBlockPlaced().getType())) {
                                 event.setCancelled(true);
                             }
                         }
@@ -269,7 +269,7 @@ public class UnitPrinter extends Unit {
 
     public void enablePrinter(Player player, boolean notify) {
         player.performCommand("f fly y");
-        printingPlayers.put(player.getUniqueId(), new PrintingPlayer(player.getUniqueId(), new EnumMap<>(Material.class)));
+        printingPlayers.put(player.getUniqueId(), new PrintingData(new EnumMap<>(Material.class)));
         player.setGameMode(GameMode.CREATIVE);
         player.closeInventory();
         player.getInventory().clear();
@@ -286,7 +286,7 @@ public class UnitPrinter extends Unit {
         }
     }
 
-    private boolean chargePlayer(Player player, PrintingPlayer printingPlayer, Material material) {
+    private boolean chargePlayer(Player player, PrintingData printingData, Material material) {
         double price = GSG_PRINTER.getSellIntegration().getBuyPrice(material);
         if (price == 0.0) {
             player.sendMessage(PrinterMessages.THIS_BLOCK_ISNT_PLACEABLE.toString());
@@ -308,8 +308,8 @@ public class UnitPrinter extends Unit {
                 disablePrinter(player, false);
                 return false;
             }
-            printingPlayer.getPlacedBlocks().computeIfPresent(material, (material1, integer) -> integer + 1);
-            printingPlayer.getPlacedBlocks().putIfAbsent(material, 1);
+            printingData.getPlacedBlocks().computeIfPresent(material, (material1, integer) -> integer + 1);
+            printingData.getPlacedBlocks().putIfAbsent(material, 1);
         }
         return true;
     }
@@ -321,8 +321,8 @@ public class UnitPrinter extends Unit {
     public void disablePrinter(Player player, boolean notify, boolean nofall) {
         if (notify) {
             player.sendMessage(PrinterMessages.PRINTER_DISABLE.toString());
-            PrintingPlayer printingPlayer = printingPlayers.get(player.getUniqueId());
-            EnumMap<Material, Integer> map = printingPlayer.getPlacedBlocks();
+            PrintingData printingData = printingPlayers.get(player.getUniqueId());
+            EnumMap<Material, Integer> map = printingData.getPlacedBlocks();
             if (!map.isEmpty()) {
                 double total = 0.0;
                 player.sendMessage(PrinterMessages.SOLD_HEADER.toString());
@@ -333,7 +333,7 @@ public class UnitPrinter extends Unit {
                 }
                 player.sendMessage(PrinterMessages.SOLD_TOTAL.toString().replace("{money}", decimalFormat.format(total)));
             }
-            player.sendMessage(PrinterMessages.TIME_SPENT.toString().replace("{time}", printingPlayer.getTime()));
+            player.sendMessage(PrinterMessages.TIME_SPENT.toString().replace("{time}", printingData.getTime()));
         }
         printingPlayers.remove(player.getUniqueId());
         player.performCommand("f fly n");
@@ -349,7 +349,7 @@ public class UnitPrinter extends Unit {
         }
     }
 
-    public HashMap<UUID, PrintingPlayer> getPrintingPlayers() {
+    public HashMap<UUID, PrintingData> getPrintingPlayers() {
         return printingPlayers;
     }
 }
