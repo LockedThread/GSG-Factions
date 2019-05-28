@@ -34,7 +34,7 @@ public class CustomItem {
         customItems.put(name, this);
     }
 
-    private CustomItem(String name, ItemStack itemStack) {
+    public CustomItem(String name, ItemStack itemStack) {
         this.name = name;
         this.itemStack = itemStack;
         customItems.put(name, this);

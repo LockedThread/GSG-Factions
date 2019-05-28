@@ -2,6 +2,7 @@ package com.gameservergroup.gsgvouchers.units;
 
 import com.gameservergroup.gsgcore.commands.arguments.ArgumentRegistry;
 import com.gameservergroup.gsgcore.commands.post.CommandPost;
+import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.gameservergroup.gsgvouchers.GSGVouchers;
 import com.gameservergroup.gsgvouchers.objs.Voucher;
@@ -20,7 +21,10 @@ public class UnitVouchers extends Unit {
     @Override
     public void setup() {
         ConfigurationSection voucherSection = GSGVouchers.getInstance().getConfig().getConfigurationSection("vouchers");
-        this.vouchers = voucherSection.getKeys(false).stream().collect(Collectors.toMap(String::toLowerCase, key -> new Voucher(voucherSection.getConfigurationSection(key)), (a, b) -> b));
+        this.vouchers = voucherSection.getKeys(false)
+                .stream()
+                .collect(Collectors.toMap(String::toLowerCase, key -> new Voucher(key, ItemStackBuilder.of(voucherSection.getConfigurationSection(key))
+                        .build(), voucherSection.getStringList(key + ".commands")), (a, b) -> b));
 
         ArgumentRegistry.getInstance().register(Voucher.class, () -> s -> Optional.ofNullable(vouchers.get(s.toLowerCase())));
 
@@ -40,7 +44,7 @@ public class UnitVouchers extends Unit {
                         Player player = c.getArg(1).forceParse(Player.class);
                         Voucher voucher = c.getArg(2).forceParse(Voucher.class);
                         for (int i = 0; i < c.getArg(3).parse(int.class).orElse(1); i++) {
-                            player.getInventory().addItem(voucher.getCustomItem().getItemStack());
+                            player.getInventory().addItem(voucher.getItemStack());
                         }
                     } else {
                         c.reply("&cInvalid arguments!");
