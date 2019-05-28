@@ -13,3 +13,4 @@ vouchers:
     commands:
       - 'give {player} diamond 64'
       - '@broadcast {player} has won 64 diamonds'
+      - '@message &byou have won 64 diamonds'

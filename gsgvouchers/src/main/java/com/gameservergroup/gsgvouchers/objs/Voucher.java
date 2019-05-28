@@ -26,6 +26,8 @@ public class Voucher extends CustomItem {
                 commands.stream().map(command -> command.replace("{player}", event.getPlayer().getName())).forEach(command -> {
                     if (command.startsWith("@broadcast")) {
                         Bukkit.broadcastMessage(Text.toColor(command.substring(11)));
+                    } else if (command.startsWith("@message")) {
+                        Bukkit.broadcastMessage(Text.toColor(command.substring(8)));
                     } else {
                         Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
                     }
