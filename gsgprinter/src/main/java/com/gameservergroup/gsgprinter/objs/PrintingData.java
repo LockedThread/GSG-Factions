@@ -9,11 +9,10 @@ import java.util.Objects;
 
 public class PrintingData {
 
-    private final EnumMap<Material, Integer> placedBlocks;
+    private EnumMap<Material, Integer> placedBlocks;
     private final Instant startTime;
 
-    public PrintingData(EnumMap<Material, Integer> placedBlocks) {
-        this.placedBlocks = placedBlocks;
+    public PrintingData() {
         this.startTime = Instant.now();
     }
 
@@ -22,7 +21,7 @@ public class PrintingData {
     }
 
     public EnumMap<Material, Integer> getPlacedBlocks() {
-        return placedBlocks;
+        return placedBlocks == null ? this.placedBlocks = new EnumMap<>(Material.class) : this.placedBlocks;
     }
 
     public Instant getStartTime() {
