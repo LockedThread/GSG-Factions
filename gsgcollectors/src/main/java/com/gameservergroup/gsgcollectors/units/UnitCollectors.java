@@ -295,7 +295,7 @@ public class UnitCollectors extends Unit {
                     }
                 });
         CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("sellwand-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("collector-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
                 Collector collector = getCollector(event.getClickedBlock().getLocation());
                 if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
                     collector.sellAll(event.getPlayer());
@@ -304,7 +304,7 @@ public class UnitCollectors extends Unit {
             }
         });
         CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("tntwand-item")).setInteractEventConsumer(event -> {
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("collector-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
                 Collector collector = getCollector(event.getClickedBlock().getLocation());
                 if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
                     collector.depositTnt(event.getPlayer());
