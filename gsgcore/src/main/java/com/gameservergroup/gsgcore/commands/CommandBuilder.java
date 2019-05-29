@@ -3,11 +3,11 @@ package com.gameservergroup.gsgcore.commands;
 import com.gameservergroup.gsgcore.commands.handler.FunctionalCommandHandler;
 import com.gameservergroup.gsgcore.commands.handler.ICommandHandler;
 import com.gameservergroup.gsgcore.commands.post.CommandPost;
+import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgcore.utils.CommandMapUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.util.LinkedList;
 import java.util.function.Predicate;
@@ -73,9 +73,10 @@ public class CommandBuilder<T extends CommandSender> {
         return this;
     }
 
-    public void post(Plugin plugin, String... aliases) {
+    public void post(Module plugin, String... aliases) {
         CommandPost.getCommandPosts().put(aliases, commandPost);
         CommandMapUtil.registerCommand(plugin, aliases);
+        plugin.getCommandAliases().add(aliases);
     }
 
     public LinkedList<Predicate<ICommandHandler<? extends CommandSender>>> getPredicates() {

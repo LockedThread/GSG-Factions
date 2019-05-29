@@ -101,7 +101,7 @@ public class UnitCustomItem extends Unit {
                     }
                 }).post(GSG_CORE);
 
-        EventPost.of(PlayerInteractEvent.class, EventPriority.HIGHEST)
+        EventPost.of(PlayerInteractEvent.class)
                 .filter(EventFilters.getIgnoreHandNull())
                 .handle(event -> {
                     final CustomItem customItem = CustomItem.findCustomItem(event.getItem());

@@ -1,5 +1,6 @@
 package com.gameservergroup.gsgcore.plugin;
 
+import com.gameservergroup.gsgcore.commands.post.CommandPost;
 import com.gameservergroup.gsgcore.events.EventPost;
 import com.gameservergroup.gsgcore.items.CustomItem;
 import com.gameservergroup.gsgcore.units.Unit;
@@ -23,7 +24,8 @@ public abstract class Module extends JavaPlugin {
 
     private static Economy economy;
     private Unit[] units;
-    private HashSet<EventPost<?>> eventPosts;
+    private Set<String[]> commandAliases;
+    private Set<EventPost<?>> eventPosts;
     private boolean temp = true;
     private ThreadLocalRandom threadLocalRandom;
 
@@ -907,6 +909,11 @@ public abstract class Module extends JavaPlugin {
             disableEventPosts();
             unregisterUnits();
             unregisterCustomItems();
+            if (commandAliases != null && !commandAliases.isEmpty()) {
+                for (String[] commandAlias : commandAliases) {
+                    CommandPost.getCommandPosts().remove(commandAlias);
+                }
+            }
             disable();
         }
     }
@@ -935,11 +942,15 @@ public abstract class Module extends JavaPlugin {
         }
     }
 
-    public HashSet<EventPost<?>> getEventPosts() {
+    public Set<EventPost<?>> getEventPosts() {
         return eventPosts == null ? eventPosts = new HashSet<>() : eventPosts;
     }
 
     public Random getRandom() {
         return threadLocalRandom == null ? threadLocalRandom = ThreadLocalRandom.current() : threadLocalRandom;
+    }
+
+    public Set<String[]> getCommandAliases() {
+        return commandAliases == null ? commandAliases = new HashSet<>() : commandAliases;
     }
 }
