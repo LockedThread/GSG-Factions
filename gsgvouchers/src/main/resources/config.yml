@@ -1,6 +1,6 @@
 vouchers:
   diamond:
-    material: 'NAME_TAG'
+    material: 'DIAMOND_BLOCK'
     name: '&d&lDiamond Voucher'
     lore:
       - ''

@@ -40,7 +40,7 @@ public class Gen {
         this.configurationSection = configurationSection;
         this.length = length;
         this.material = material;
-        CustomItem customItem = CustomItem.of(configurationSection.getConfigurationSection("item"), name);
+        CustomItem customItem = CustomItem.of(GSGGen.getInstance(), configurationSection.getConfigurationSection("item"), name);
         if (isBucket()) {
             customItem.setInteractEventConsumer(event -> {
                 if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {

@@ -1,6 +1,7 @@
 package com.gameservergroup.gsgcore.items;
 
 import com.gameservergroup.gsgcore.GSGCore;
+import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgcore.utils.NBTItem;
 import com.gameservergroup.gsgcore.utils.Text;
 import org.bukkit.Material;
@@ -11,12 +12,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 public class CustomItem {
 
-    private static HashMap<String, CustomItem> customItems = new HashMap<>();
+    private static final Map<String, CustomItem> customItems = new HashMap<>();
+    private String moduleName;
     private String name;
     private ItemStack itemStack;
     private Consumer<PlayerInteractEvent> interactEventConsumer;
@@ -31,40 +34,46 @@ public class CustomItem {
         this.breakEventConsumer = customItem.getBreakEventConsumer();
         this.placeEventConsumer = customItem.getPlaceEventConsumer();
         this.itemEdit = customItem.getItemEdit();
+        this.moduleName = customItem.getModuleName();
         customItems.put(name, this);
     }
 
-    public CustomItem(String name, ItemStack itemStack) {
+    public CustomItem(Module module, String name, ItemStack itemStack) {
+        this.moduleName = module.getName();
         this.name = name;
         this.itemStack = itemStack;
         customItems.put(name, this);
     }
 
-    public static CustomItem of(ConfigurationSection section, String name) {
-        return of(ItemStackBuilder.of(section), name);
+    public static CustomItem of(Module module, ConfigurationSection section, String name) {
+        return of(module, ItemStackBuilder.of(section), name);
     }
 
-    public static CustomItem of(ConfigurationSection configurationSection) {
-        return of(configurationSection, configurationSection.getName());
+    public static CustomItem of(Module module, ConfigurationSection configurationSection) {
+        return of(module, configurationSection, configurationSection.getName());
     }
 
-    public static CustomItem of(ItemStackBuilder itemStackBuilder, String name) {
-        return new CustomItem(name, new NBTItem(itemStackBuilder.build()).set(name, true).buildItemStack());
+    public static CustomItem of(Module module, ItemStackBuilder itemStackBuilder, String name) {
+        return new CustomItem(module, name, new NBTItem(itemStackBuilder.build()).set(name, true).buildItemStack());
     }
 
-    public static HashMap<String, CustomItem> getCustomItems() {
+    public static Map<String, CustomItem> getCustomItems() {
         return customItems;
     }
 
     public static CustomItem findCustomItem(ItemStack itemStack) {
         if (itemStack == null || itemStack.getAmount() == 0 || itemStack.getType() == Material.AIR) return null;
         if (GSGCore.getInstance().getConfig().getBoolean("items-check-nbt")) {
-            return new NBTItem(itemStack).getKeys()
-                    .stream()
-                    .map(key -> customItems.get(key))
-                    .filter(Objects::nonNull)
-                    .findFirst()
-                    .orElse(null);
+            System.out.println("itemStack = " + itemStack);
+            System.out.println("customItems.keySet() = " + customItems.keySet());
+            for (String key : new NBTItem(itemStack).getKeys()) {
+                System.out.println(key);
+                CustomItem customItem = customItems.get(key);
+                if (customItem != null) {
+                    return customItem;
+                }
+            }
+            return null;
         }
         return getCustomItems()
                 .values()
@@ -157,6 +166,14 @@ public class CustomItem {
 
     public void setItemEdit(ItemEdit itemEdit) {
         this.itemEdit = itemEdit;
+    }
+
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
     }
 
     public interface ItemEdit {

@@ -1,5 +1,6 @@
 package com.gameservergroup.gsgcore.objs;
 
+import com.gameservergroup.gsgcore.GSGTrenchTools;
 import com.gameservergroup.gsgcore.items.CustomItem;
 import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.utils.NBTItem;
@@ -25,7 +26,7 @@ public class TrenchTool extends CustomItem {
     }
 
     public TrenchTool(String name, ConfigurationSection configurationSection, int radius, boolean trayMode, boolean omniTool) {
-        super(of(configurationSection, name));
+        super(of(GSGTrenchTools.getInstance(), configurationSection, name));
         this.radius = radius;
         this.trayMode = trayMode;
         this.omniTool = omniTool;

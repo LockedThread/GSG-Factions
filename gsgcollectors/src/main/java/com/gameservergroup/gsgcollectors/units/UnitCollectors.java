@@ -243,7 +243,7 @@ public class UnitCollectors extends Unit {
         if (this.harvesterHoesEnabled = GSG_COLLECTORS.getConfig().getBoolean("options.harvester-hoes.enabled")) {
             this.collectToInventoryWithNoCollector = GSG_COLLECTORS.getConfig().getBoolean("options.harvester-hoes.collect-to-inventory-with-no-collector");
             this.harvesterHoesCollectDoubleSugarcane = GSG_COLLECTORS.getConfig().getBoolean("options.harvester-hoes.collect-double-sugar-cane");
-            this.harvesterHoeCustomItem = CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("harvesterhoe-item")).setBreakEventConsumer(event -> {
+            this.harvesterHoeCustomItem = CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("harvesterhoe-item")).setBreakEventConsumer(event -> {
                 Block block = event.getBlock();
                 if (block.getType() == Material.SUGAR_CANE_BLOCK) {
                     event.setCancelled(true);
@@ -276,7 +276,7 @@ public class UnitCollectors extends Unit {
                     .build();
         }
 
-        this.collectorItem = CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("collector-item"))
+        this.collectorItem = CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("collector-item"))
                 .setPlaceEventConsumer(event -> {
                     Collector collector = getCollector(event.getBlockPlaced().getLocation());
                     if (collector == null) {
@@ -294,7 +294,7 @@ public class UnitCollectors extends Unit {
                         event.getPlayer().sendMessage(CollectorMessages.UPDATED_COLLECTOR_BLOCKPOSITION.toString());
                     }
                 });
-        CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
+        CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("sellwand-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
                 Collector collector = getCollector(event.getClickedBlock().getLocation());
                 if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
@@ -303,7 +303,7 @@ public class UnitCollectors extends Unit {
                 }
             }
         });
-        CustomItem.of(GSG_COLLECTORS.getConfig().getConfigurationSection("tntwand-item")).setInteractEventConsumer(event -> {
+        CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("tntwand-item")).setInteractEventConsumer(event -> {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 Collector collector = getCollector(event.getClickedBlock().getLocation());
                 if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {

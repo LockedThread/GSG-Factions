@@ -1,6 +1,7 @@
 package com.gameservergroup.gsgcore.plugin;
 
 import com.gameservergroup.gsgcore.events.EventPost;
+import com.gameservergroup.gsgcore.items.CustomItem;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.google.common.base.Joiner;
 import net.milkbowl.vault.economy.Economy;
@@ -905,8 +906,13 @@ public abstract class Module extends JavaPlugin {
         if (temp) {
             disableEventPosts();
             unregisterUnits();
+            unregisterCustomItems();
             disable();
         }
+    }
+
+    protected void unregisterCustomItems() {
+        CustomItem.getCustomItems().values().removeIf(customItem -> customItem.getModuleName().equals(getName()));
     }
 
     protected void unregisterUnits() {

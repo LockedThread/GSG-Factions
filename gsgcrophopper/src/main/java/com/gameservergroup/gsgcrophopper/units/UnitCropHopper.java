@@ -35,7 +35,7 @@ public class UnitCropHopper extends Unit {
                     }
                 }).post(GSG_CROP_HOPPER);
 
-        crophopper = CustomItem.of(GSG_CROP_HOPPER.getConfig().getConfigurationSection("crophopper"))
+        crophopper = CustomItem.of(GSG_CROP_HOPPER, GSG_CROP_HOPPER.getConfig().getConfigurationSection("crophopper"))
                 .setPlaceEventConsumer(event -> GSG_CROP_HOPPER.create(event.getBlockPlaced().getLocation()))
                 .setBreakEventConsumer(event -> {
                     GSG_CROP_HOPPER.remove(event.getBlock().getChunk(), true);
