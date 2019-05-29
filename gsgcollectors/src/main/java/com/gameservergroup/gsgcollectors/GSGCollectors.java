@@ -20,13 +20,14 @@ public class GSGCollectors extends Module {
     public void enable() {
         instance = this;
         saveDefaultConfig();
-        for (CollectorMessages printerMessages : CollectorMessages.values()) {
-            if (getConfig().isSet("messages." + printerMessages.getKey())) {
-                printerMessages.setMessage(getConfig().getString("messages." + printerMessages.getKey()));
+        for (CollectorMessages collectorMessages : CollectorMessages.values()) {
+            if (getConfig().isSet("messages." + collectorMessages.getKey())) {
+                collectorMessages.setMessage(getConfig().getString("messages." + collectorMessages.getKey()));
             } else {
-                getConfig().set("messages." + printerMessages.getKey(), printerMessages.getValue());
+                getConfig().set("messages." + collectorMessages.getKey(), collectorMessages.getValue());
             }
         }
+        saveConfig();
         if (getConfig().getBoolean("options.shop-gui-plus.hook")) {
             if (getServer().getPluginManager().getPlugin("ShopGUIPlus") != null) {
                 shopGUIPlusIntegration = new ShopGUIPlusImpl();
