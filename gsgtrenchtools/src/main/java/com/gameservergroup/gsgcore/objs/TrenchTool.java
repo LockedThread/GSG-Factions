@@ -26,7 +26,7 @@ public class TrenchTool extends CustomItem {
     }
 
     public TrenchTool(String name, ConfigurationSection configurationSection, int radius, boolean trayMode, boolean omniTool) {
-        super(of(GSGTrenchTools.getInstance(), configurationSection, name));
+        super(GSGTrenchTools.getInstance(), ItemStackBuilder.of(configurationSection), name);
         this.radius = radius;
         this.trayMode = trayMode;
         this.omniTool = omniTool;

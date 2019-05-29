@@ -27,14 +27,10 @@ public class CustomItem {
     private Consumer<BlockPlaceEvent> placeEventConsumer;
     private ItemEdit itemEdit;
 
-    public CustomItem(CustomItem customItem) {
-        this.name = customItem.getName();
-        this.itemStack = customItem.getItemStack();
-        this.interactEventConsumer = customItem.getInteractEventConsumer();
-        this.breakEventConsumer = customItem.getBreakEventConsumer();
-        this.placeEventConsumer = customItem.getPlaceEventConsumer();
-        this.itemEdit = customItem.getItemEdit();
-        this.moduleName = customItem.getModuleName();
+    public CustomItem(Module module, ItemStackBuilder itemStackBuilder, String name) {
+        this.moduleName = module.getName();
+        this.name = name;
+        this.itemStack = new NBTItem(itemStackBuilder.build()).set(name, true).buildItemStack();
         customItems.put(name, this);
     }
 

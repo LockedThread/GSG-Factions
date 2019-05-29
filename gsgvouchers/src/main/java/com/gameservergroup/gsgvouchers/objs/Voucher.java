@@ -1,6 +1,7 @@
 package com.gameservergroup.gsgvouchers.objs;
 
 import com.gameservergroup.gsgcore.items.CustomItem;
+import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.utils.Text;
 import com.gameservergroup.gsgvouchers.GSGVouchers;
 import org.bukkit.Bukkit;
@@ -15,7 +16,7 @@ public class Voucher extends CustomItem {
     private List<String> commands;
 
     public Voucher(String name, ConfigurationSection configurationSection, List<String> strings) {
-        super(of(GSGVouchers.getInstance(), configurationSection, name));
+        super(GSGVouchers.getInstance(), ItemStackBuilder.of(configurationSection), name);
         this.commands = strings;
     }
 
