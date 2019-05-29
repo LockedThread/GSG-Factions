@@ -38,7 +38,7 @@ public class Voucher extends CustomItem {
             if (command.startsWith("@broadcast")) {
                 Bukkit.broadcastMessage(Text.toColor(command.substring(11)));
             } else if (command.startsWith("@message")) {
-                Bukkit.broadcastMessage(Text.toColor(command.substring(8)));
+                player.sendMessage(Text.toColor(command.substring(8)));
             } else {
                 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
             }
