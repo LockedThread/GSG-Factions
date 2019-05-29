@@ -8,6 +8,7 @@ import com.gameservergroup.gsgcore.utils.CommandMapUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.LinkedList;
 import java.util.function.Predicate;
@@ -77,6 +78,11 @@ public class CommandBuilder<T extends CommandSender> {
         CommandPost.getCommandPosts().put(aliases, commandPost);
         CommandMapUtil.registerCommand(plugin, aliases);
         plugin.getCommandAliases().add(aliases);
+    }
+
+    public void post(Plugin plugin, String... aliases) {
+        CommandPost.getCommandPosts().put(aliases, commandPost);
+        CommandMapUtil.registerCommand(plugin, aliases);
     }
 
     public LinkedList<Predicate<ICommandHandler<? extends CommandSender>>> getPredicates() {
