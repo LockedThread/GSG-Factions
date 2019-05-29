@@ -60,8 +60,6 @@ public class CustomItem {
     public static CustomItem findCustomItem(ItemStack itemStack) {
         if (itemStack == null || itemStack.getAmount() == 0 || itemStack.getType() == Material.AIR) return null;
         if (GSGCore.getInstance().getConfig().getBoolean("items-check-nbt")) {
-            System.out.println("itemStack = " + itemStack);
-            System.out.println("customItems.keySet() = " + customItems.keySet());
             for (String key : new NBTItem(itemStack).getKeys()) {
                 System.out.println(key);
                 CustomItem customItem = customItems.get(key);

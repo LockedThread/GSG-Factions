@@ -104,14 +104,9 @@ public class UnitCustomItem extends Unit {
         EventPost.of(PlayerInteractEvent.class, EventPriority.HIGHEST)
                 .filter(EventFilters.getIgnoreHandNull())
                 .handle(event -> {
-                    System.out.println("-2");
                     final CustomItem customItem = CustomItem.findCustomItem(event.getItem());
-                    if (customItem != null) {
-                        System.out.println("-1.5");
-                        if (customItem.getInteractEventConsumer() != null) {
-                            System.out.println("-1");
-                            customItem.getInteractEventConsumer().accept(event);
-                        }
+                    if (customItem != null && customItem.getInteractEventConsumer() != null) {
+                        customItem.getInteractEventConsumer().accept(event);
                     }
                 }).post(GSG_CORE);
     }
