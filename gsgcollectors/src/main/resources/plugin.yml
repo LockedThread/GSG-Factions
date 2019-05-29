@@ -3,3 +3,4 @@ main: com.gameservergroup.gsgcollectors.GSGCollectors
 version: 1.0
 depend: [GSGCore, Vault]
 softdepend: [Factions, ShopGUIPlus]
+load: POSTWORLD

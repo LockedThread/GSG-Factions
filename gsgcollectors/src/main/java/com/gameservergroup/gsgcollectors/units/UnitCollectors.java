@@ -115,12 +115,12 @@ public class UnitCollectors extends Unit {
         this.jsonFile = new JsonFile<>(GSG_COLLECTORS.getDataFolder(), "collectors.json", new TypeToken<HashMap<ChunkPosition, Collector>>() {
         });
         this.collectorHashMap = jsonFile.load().orElse(new HashMap<>());
-        TaskSave taskSave = new TaskSave(GSG_COLLECTORS.getConfig().getLong("options.save-task-delay"));
-        taskSave.start();
+        TaskSave taskSave = new TaskSave();
+        taskSave.runTaskTimer(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getLong("options.save-task-delay"), GSG_COLLECTORS.getConfig().getLong("options.save-task-delay"));
         hookDisable(new CallBack() {
             @Override
             public void call() {
-                taskSave.stop();
+                taskSave.cancel();
                 jsonFile.save(collectorHashMap);
             }
         });
