@@ -7,6 +7,7 @@ import com.gameservergroup.gsgvouchers.GSGVouchers;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -16,8 +17,14 @@ public class Voucher extends CustomItem {
     private List<String> commands;
 
     public Voucher(String name, ConfigurationSection configurationSection, List<String> strings) {
-        super(GSGVouchers.getInstance(), ItemStackBuilder.of(configurationSection), name);
+        super(GSGVouchers.getInstance(), ItemStackBuilder.of(configurationSection), "voucher-" + name);
         this.commands = strings;
+        setInteractEventConsumer(event -> {
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+                execute(event.getPlayer());
+                event.setCancelled(true);
+            }
+        });
     }
 
     public void execute(Player player) {

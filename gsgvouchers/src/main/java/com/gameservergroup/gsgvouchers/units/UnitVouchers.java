@@ -8,11 +8,10 @@ import com.gameservergroup.gsgvouchers.objs.Voucher;
 import com.google.common.base.Joiner;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class UnitVouchers extends Unit {
 
@@ -21,19 +20,7 @@ public class UnitVouchers extends Unit {
     @Override
     public void setup() {
         ConfigurationSection voucherSection = GSGVouchers.getInstance().getConfig().getConfigurationSection("vouchers");
-        Map<String, Voucher> map = new HashMap<>();
-        for (String key : voucherSection.getKeys(false)) {
-            Voucher voucher = new Voucher(key, voucherSection.getConfigurationSection(key), voucherSection.getStringList(key + ".commands"));
-            voucher.setInteractEventConsumer(event -> {
-                System.out.println("0");
-                if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
-                    System.out.println("1");
-                    voucher.execute(event.getPlayer());
-                }
-            });
-            map.put(key.toLowerCase(), voucher);
-        }
-        this.vouchers = map;
+        this.vouchers = voucherSection.getKeys(false).stream().collect(Collectors.toMap(String::toLowerCase, key -> new Voucher(key, voucherSection.getConfigurationSection(key), voucherSection.getStringList(key + ".commands")), (a, b) -> b));
 
         ArgumentRegistry.getInstance().register(Voucher.class, () -> s -> Optional.ofNullable(vouchers.get(s.toLowerCase())));
 
