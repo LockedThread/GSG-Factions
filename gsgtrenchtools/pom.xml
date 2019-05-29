@@ -17,14 +17,18 @@
             <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <!--
-            Intall: mvn install:install-file -DgroupId=com.gmail.nossr50.mcMMO -DartifactId=mcMMO -Dversion=1.5.08 -Dpackaging=jar -Dfile=mcMMO.jar
-        -->
         <dependency>
             <groupId>com.gmail.nossr50.mcMMO</groupId>
             <artifactId>mcMMO</artifactId>
             <version>1.5.08</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.coreprotect</groupId>
+            <artifactId>CoreProtectAPI</artifactId>
+            <version>2.14.2</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/CoreProtect_2.12.0.jar</systemPath>
         </dependency>
     </dependencies>
 
