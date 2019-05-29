@@ -57,7 +57,11 @@ public class MenuCollector extends Menu {
                             } else {
                                 double money = collectionType.getPrice() * amountToBeSubtracted;
                                 Module.getEconomy().depositPlayer(player, money);
-                                player.sendTitle(Title.builder().title(CollectorMessages.TITLE_SELL.toString().replace("{money}", String.valueOf(money))).fadeIn(5).fadeOut(5).stay(25).build());
+                                if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
+                                    player.sendTitle(Title.builder().title(CollectorMessages.TITLE_SELL.toString().replace("{money}", String.valueOf(money))).fadeIn(5).fadeOut(5).stay(25).build());
+                                } else {
+                                    player.sendMessage(CollectorMessages.TITLE_SELL.toString().replace("{money}", String.valueOf(money)));
+                                }
                             }
                             update(collectionType, amount - amountToBeSubtracted);
                             collector.removeAmount(collectionType, amountToBeSubtracted);
