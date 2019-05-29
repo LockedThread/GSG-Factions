@@ -37,8 +37,10 @@ public class FactionsUUIDImpl implements FactionIntegration {
                             Faction factionThere = Board.getInstance().getFactionAt(fLocation);
                             if (unitCollectors.isAccessNotYours() && factionThere.getRelationTo(myFaction) != Relation.MEMBER && !fPlayer.isAdminBypassing()) {
                                 event.getPlayer().sendMessage(CollectorMessages.NO_ACCESS_NOT_YOURS.toString());
+                                event.setCancelled(true);
                             } else if (unitCollectors.isRoleRestricted() && !fPlayer.getRole().isAtLeast(atLeastRole) && !fPlayer.isAdminBypassing()) {
                                 event.getPlayer().sendMessage(CollectorMessages.NO_ACCESS_NO_PERMISSIONS.toString().replace("{role}", atLeastRole.toString()));
+                                event.setCancelled(true);
                             } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                                 if (event.getPlayer().isSneaking() && event.getPlayer().hasPermission("gsgcollector.clicktosell")) {
                                     collector.sellAll(event.getPlayer());
