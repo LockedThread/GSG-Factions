@@ -133,7 +133,12 @@ public class UnitPrinter extends Unit {
                 .handle(event -> event.setCancelled(true))
                 .post(GSG_PRINTER);
 
-        EventPost.of(PlayerQuitEvent.class)
+        EventPost.of(PlayerQuitEvent.class, EventPriority.LOWEST)
+                .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
+                .handle(event -> disablePrinter(event.getPlayer(), true))
+                .post(GSG_PRINTER);
+
+        EventPost.of(PlayerKickEvent.class, EventPriority.LOWEST)
                 .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
                 .handle(event -> disablePrinter(event.getPlayer(), true))
                 .post(GSG_PRINTER);
