@@ -18,6 +18,7 @@ import com.massivecraft.factions.util.RelationUtil;
 import com.massivecraft.factions.util.TitleAPI;
 import com.massivecraft.factions.util.WarmUpUtil;
 import com.massivecraft.factions.zcore.factionstatistics.FactionStatistic;
+import com.massivecraft.factions.zcore.factionupgrades.FactionUpgrade;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.util.TL;
@@ -626,6 +627,10 @@ public abstract class MemoryFPlayer implements FPlayer {
     }
 
     public double getPowerMax() {
+        if (FactionUpgrade.MAX_PLAYER_POWER.isEnabled() && hasFaction()) {
+            Integer level = getFaction().getUpgrades().get(FactionUpgrade.MAX_PLAYER_POWER);
+            return FactionUpgrade.MAX_PLAYER_POWER.getMetaDouble((level == null ? "default" : level) + "-amount") + this.powerBoost;
+        }
         return Conf.powerPlayerMax + this.powerBoost;
     }
 
@@ -1076,6 +1081,8 @@ public abstract class MemoryFPlayer implements FPlayer {
             return Permission.FLY_SAFEZONE.has(getPlayer());
         } else if (faction.isWarZone()) {
             return Permission.FLY_WARZONE.has(getPlayer());
+        } else if (Permission.FLY_EVERYWHERE.has(getPlayer())) {
+            return true;
         }
 
         // Admins can always fly in their territory.

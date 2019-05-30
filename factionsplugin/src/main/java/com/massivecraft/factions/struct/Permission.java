@@ -110,6 +110,7 @@ public enum Permission {
     MUTECHAT("mutechat"),
     CHECK("check"),
     FLY_WILDERNESS("fly.wilderness"),
+    FLY_EVERYWHERE("fly.everywhere"),
     FLY_SAFEZONE("fly.safezone"),
     FLY_WARZONE("fly.warzone"),
     FLY_TRAILS("fly.trails"),

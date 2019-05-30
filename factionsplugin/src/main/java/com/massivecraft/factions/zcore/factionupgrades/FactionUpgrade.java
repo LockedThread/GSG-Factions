@@ -28,7 +28,9 @@ public enum FactionUpgrade implements FactionUpgradeUpdate {
     FACTION_TNTBANK_STORAGE,
     FACTION_MEMBER_LIMIT,
     FACTION_CHEST_ROWS,
-    FACTION_WARP_LIMIT;
+    FACTION_WARP_LIMIT,
+    MAX_PLAYER_POWER,
+    SPAWNER_SPAWN_RATE;
 
     private transient boolean enabled = false;
     private transient int slot;
@@ -66,11 +68,15 @@ public enum FactionUpgrade implements FactionUpgradeUpdate {
     }
 
     public int getMetaInteger(String key) {
-        return Integer.parseInt(String.valueOf(metadata.get(key)));
+        return (int) metadata.get(key);
+    }
+
+    public double getMetaDouble(String key) {
+        return (double) metadata.get(key);
     }
 
     public boolean getMetaBoolean(String key) {
-        return Boolean.parseBoolean(String.valueOf(metadata.get(key)));
+        return (boolean) metadata.get(key);
     }
 
     public boolean isMetaBoolean(String key) {

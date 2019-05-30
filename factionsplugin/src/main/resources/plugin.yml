@@ -342,3 +342,6 @@ permissions:
     description: Allow use of /f cornerlist to check all corners
   factions.statistics:
     description: Allow use of /f stats to view player statistics
+  fly.everywhere:
+    description: Allows players to fly everywhere
+    default: false

@@ -6,9 +6,7 @@ import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.gameservergroup.gsgcore.utils.SoundBuilder;
 import com.google.common.base.Joiner;
-import com.massivecraft.factions.FPlayer;
-import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.P;
+import com.massivecraft.factions.*;
 import com.massivecraft.factions.zcore.factionupgrades.FactionUpgrade;
 import com.massivecraft.factions.zcore.util.TL;
 import org.apache.commons.lang3.tuple.Triple;
@@ -23,6 +21,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.SpawnerSpawnEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
@@ -85,6 +84,19 @@ public class UnitFactionUpgrade extends Unit {
             }
         } else {
             P.p.log(Level.WARNING, "Disabling FactionUpgrades because it is disabled in the config.");
+        }
+
+        if (FactionUpgrade.SPAWNER_SPAWN_RATE.isEnabled()) {
+            EventPost.of(SpawnerSpawnEvent.class)
+                    .handle(event -> {
+                        FLocation fLocation = new FLocation(event.getLocation());
+                        Faction faction = Board.getInstance().getFactionAt(fLocation);
+                        if (!faction.isWilderness()) {
+                            Integer level = faction.getUpgrades().get(FactionUpgrade.SPAWNER_SPAWN_RATE);
+                            double divisor = FactionUpgrade.CHUNK_SPAWNER_LIMIT.getMetaInteger((level == null ? "default" : level) + "-divisor");
+                            event.getSpawner().setDelay((int) (event.getSpawner().getDelay() * divisor));
+                        }
+                    }).post(P.p);
         }
     }
 
