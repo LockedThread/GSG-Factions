@@ -37,7 +37,18 @@ public class AdapterChunkPosition extends TypeAdapter<ChunkPosition> {
             if (jsonReader.peek() != JsonToken.NULL) {
                 switch (jsonReader.nextName()) {
                     case "world":
-                        world = Bukkit.getWorld(jsonReader.nextString());
+                        World world1;
+                        try {
+                            world1 = Bukkit.getWorld(jsonReader.nextString());
+                            if (world1 == null) {
+                                jsonReader.skipValue();
+                                return null;
+                            }
+                        } catch (Exception ex) {
+                            jsonReader.skipValue();
+                            return null;
+                        }
+                        world = world1;
                         break;
                     case "x":
                         x = jsonReader.nextInt();
