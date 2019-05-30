@@ -142,6 +142,10 @@ public class Collector {
         return this.menuCollector == null ? this.menuCollector = new MenuCollector(this) : this.menuCollector;
     }
 
+    public void resetCollectorMenu() {
+        this.menuCollector = new MenuCollector(this);
+    }
+
     public String getLandOwner() {
         return landOwner;
     }

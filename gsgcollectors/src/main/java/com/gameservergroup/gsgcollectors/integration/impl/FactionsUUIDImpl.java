@@ -35,7 +35,7 @@ public class FactionsUUIDImpl implements FactionIntegration {
                         } else {
                             FLocation fLocation = new FLocation(event.getClickedBlock());
                             Faction factionThere = Board.getInstance().getFactionAt(fLocation);
-                            if (unitCollectors.isAccessNotYours() && factionThere.getRelationTo(myFaction) != Relation.MEMBER && !fPlayer.isAdminBypassing()) {
+                            if (!unitCollectors.isAccessNotYours() && factionThere.getRelationTo(myFaction) != Relation.MEMBER && !factionThere.isWilderness() && !fPlayer.isAdminBypassing()) {
                                 event.getPlayer().sendMessage(CollectorMessages.NO_ACCESS_NOT_YOURS.toString());
                                 event.setCancelled(true);
                             } else if (unitCollectors.isRoleRestricted() && !fPlayer.getRole().isAtLeast(atLeastRole) && !fPlayer.isAdminBypassing()) {
@@ -45,6 +45,13 @@ public class FactionsUUIDImpl implements FactionIntegration {
                                 if (event.getPlayer().isSneaking() && event.getPlayer().hasPermission("gsgcollector.clicktosell")) {
                                     collector.sellAll(event.getPlayer());
                                 } else {
+                                    if (factionThere.isWilderness()) {
+                                        collector.setLandOwner("Wilderness");
+                                        collector.resetCollectorMenu();
+                                    } else if (!collector.getLandOwner().equals(myFaction.getTag()) && factionThere.getRelationTo(myFaction) == Relation.MEMBER && !fPlayer.isAdminBypassing()) {
+                                        collector.setLandOwner(myFaction.getTag());
+                                        collector.resetCollectorMenu();
+                                    }
                                     if (collector.getMenuCollector().getInventory().getViewers().isEmpty()) {
                                         collector.getMenuCollector().refresh();
                                     }
