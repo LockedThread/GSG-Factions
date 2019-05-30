@@ -144,7 +144,9 @@ public class UnitTrenchTools extends Unit {
                             amounts.computeIfPresent(block.getType(), (material, integer) -> integer + 1);
                             amounts.putIfAbsent(block.getType(), 1);
                         }
-                        GSGTrenchTools.getInstance().getCoreProtectIntegration().log(player, block);
+                        if (GSGTrenchTools.getInstance().getCoreProtectIntegration() != null) {
+                            GSGTrenchTools.getInstance().getCoreProtectIntegration().log(player, block);
+                        }
                         block.setTypeIdAndData(0, (byte) 0, false);
                     }
                 }
