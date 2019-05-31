@@ -52,19 +52,27 @@ public class CmdFWarp extends FCommand {
                     return;
                 }
 
-                // Check transaction AFTER password check.
-                if (!transact(fme)) {
-                    return;
-                }
-                final FPlayer fPlayer = fme;
-                final UUID uuid = fme.getPlayer().getUniqueId();
-                this.doWarmUp(WarmUpUtil.Warmup.WARP, TL.WARMUPS_NOTIFY_TELEPORT, warpName, () -> {
-                    Player player = Bukkit.getPlayer(uuid);
-                    if (player != null) {
-                        player.teleport(fPlayer.getFaction().getWarp(warpName).getLocation());
-                        fPlayer.msg(TL.COMMAND_FWARP_WARPED, warpName);
+                if (P.p.getCombatIntegration() != null && P.p.getCombatIntegration().isTagged(me)) {
+                    msg(TL.COMMAND_FWARP_IN_COMBAT);
+                } else {
+                    // Check transaction AFTER password check.
+                    if (!transact(fme)) {
+                        return;
                     }
-                }, this.p.getConfig().getLong("warmups.f-warp", 0));
+                    final FPlayer fPlayer = fme;
+                    final UUID uuid = fme.getPlayer().getUniqueId();
+                    this.doWarmUp(WarmUpUtil.Warmup.WARP, TL.WARMUPS_NOTIFY_TELEPORT, warpName, () -> {
+                        Player player = Bukkit.getPlayer(uuid);
+                        if (player != null) {
+                            if (P.p.getCombatIntegration() != null && P.p.getCombatIntegration().isTagged(player)) {
+                                player.sendMessage(TL.COMMAND_FWARP_IN_COMBAT.toString());
+                            } else {
+                                player.teleport(fPlayer.getFaction().getWarp(warpName).getLocation());
+                                fPlayer.msg(TL.COMMAND_FWARP_WARPED, warpName);
+                            }
+                        }
+                    }, this.p.getConfig().getLong("warmups.f-warp", 0));
+                }
             } else {
                 fme.msg(TL.COMMAND_FWARP_INVALID_WARP, warpName);
             }
