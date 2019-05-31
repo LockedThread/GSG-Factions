@@ -40,7 +40,7 @@ public class MenuCollector extends Menu {
                         int amount = collector.getAmounts().getOrDefault(collectionType, 0);
                         event.setCancelled(true);
                         if (amount > 0) {
-                            int remainder = sub10OrReturn0(amount, collectionType == CollectionType.TNT ? 64 : 100), amountToBeSubtracted = collectionType == CollectionType.TNT ? 64 : 100;
+                            int remainder = sub10OrReturn0(amount, collectionType.getSellAmountPerMenuClick()), amountToBeSubtracted = collectionType.getSellAmountPerMenuClick();
                             if (remainder > 0) amountToBeSubtracted = remainder;
                             Player player = (Player) event.getWhoClicked();
                             if (collectionType == CollectionType.TNT) {
@@ -56,6 +56,9 @@ public class MenuCollector extends Menu {
                                 }
                             } else {
                                 double money = collectionType.getPrice() * amountToBeSubtracted;
+                                if (GSGCollectors.getInstance().getSellPriceModifier() != null) {
+                                    money = GSGCollectors.getInstance().getSellPriceModifier().getModifiedPrice(player, money);
+                                }
                                 Module.getEconomy().depositPlayer(player, money);
                                 if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
                                     player.sendTitle(Title.builder().title(CollectorMessages.TITLE_SELL.toString().replace("{money}", String.valueOf(money))).fadeIn(5).fadeOut(5).stay(25).build());

@@ -57,6 +57,7 @@ public enum CollectionType {
     private EntityType entityType = null;
     private ItemStack itemStack;
     private int guiSlot = -1;
+    private int sellAmountPerMenuClick;
     private double price;
 
     CollectionType(EntityType entityType) {
@@ -124,6 +125,7 @@ public enum CollectionType {
         } else {
             this.price = GSGCollectors.getInstance().getConfig().getDouble("collection-types." + s + ".price");
         }
+        this.sellAmountPerMenuClick = GSGCollectors.getInstance().getConfig().getInt("collection-types." + s + ".sell-amount-per-menu-click", 100);
         this.guiSlot = GSGCollectors.getInstance().getConfig().getInt("collection-types." + s + ".slot");
         if (entityType != null) {
             SpawnEgg spawnEgg = new SpawnEgg(getEntityType());
@@ -149,4 +151,7 @@ public enum CollectionType {
     }
 
 
+    public int getSellAmountPerMenuClick() {
+        return sellAmountPerMenuClick;
+    }
 }

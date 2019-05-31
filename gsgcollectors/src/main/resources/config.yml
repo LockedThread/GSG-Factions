@@ -89,36 +89,48 @@ collection-types:
     # Only used when shopguiplus is enabled
     # You can add the item section to all of the collection types, not just irongolem.
     item: 'IRON_INGOT'
+    sell-amount-per-menu-click: 100
   enderman:
     slot: 10
     price: 20.0
+    sell-amount-per-menu-click: 100
   witch:
     slot: 11
     price: 20.0
+    sell-amount-per-menu-click: 100
   villager:
     slot: 12
     price: 20.0
+    sell-amount-per-menu-click: 100
   cow:
     slot: 13
     price: 5.0
+    sell-amount-per-menu-click: 100
   pig:
     slot: 14
     price: 5.0
+    sell-amount-per-menu-click: 100
   pig-zombie:
     slot: 15
     price: 17.0
+    sell-amount-per-menu-click: 100
   chicken:
     slot: 16
     price: 3.0
+    sell-amount-per-menu-click: 100
   spider:
     slot: 17
     price: 3.0
+    sell-amount-per-menu-click: 100
   cactus:
     slot: 21
     price: 2.0
+    sell-amount-per-menu-click: 100
   tnt:
     slot: 22
     price: 1.0
+    sell-amount-per-menu-click: 64
   sugar_cane:
     slot: 23
     price: 2.0
+    sell-amount-per-menu-click: 100

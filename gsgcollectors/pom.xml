@@ -32,6 +32,13 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/ShopGUIPlus-1.19.1-SNAPSHOT.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>net.aceoutposts</groupId>
+            <artifactId>AceOutpostsUUID</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/Ace-Outposts_UUID.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>

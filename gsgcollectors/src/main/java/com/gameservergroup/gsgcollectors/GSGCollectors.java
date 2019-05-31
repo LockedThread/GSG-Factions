@@ -1,7 +1,9 @@
 package com.gameservergroup.gsgcollectors;
 
 import com.gameservergroup.gsgcollectors.enums.CollectorMessages;
+import com.gameservergroup.gsgcollectors.integration.SellPriceModifier;
 import com.gameservergroup.gsgcollectors.integration.ShopGUIPlusIntegration;
+import com.gameservergroup.gsgcollectors.integration.aceoutposts.AceOutpostsSellPriceModifier;
 import com.gameservergroup.gsgcollectors.integration.impl.ShopGUIPlusImpl;
 import com.gameservergroup.gsgcollectors.units.UnitCollectors;
 import com.gameservergroup.gsgcore.plugin.Module;
@@ -11,6 +13,7 @@ public class GSGCollectors extends Module {
     private static GSGCollectors instance;
     private UnitCollectors unitCollectors;
     private ShopGUIPlusIntegration shopGUIPlusIntegration;
+    private SellPriceModifier sellPriceModifier;
 
     public static GSGCollectors getInstance() {
         return instance;
@@ -35,6 +38,10 @@ public class GSGCollectors extends Module {
                 getLogger().severe("Unable to hook into ShopGUIPlus because it's not enabled on the server!");
             }
         }
+        if (getServer().getPluginManager().getPlugin("Ace-Outposts") != null) {
+            this.sellPriceModifier = new AceOutpostsSellPriceModifier();
+        }
+
         registerUnits(unitCollectors = new UnitCollectors());
     }
 
@@ -55,5 +62,9 @@ public class GSGCollectors extends Module {
 
     public ShopGUIPlusIntegration getShopGUIPlusIntegration() {
         return shopGUIPlusIntegration;
+    }
+
+    public SellPriceModifier getSellPriceModifier() {
+        return sellPriceModifier;
     }
 }
