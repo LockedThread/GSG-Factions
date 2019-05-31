@@ -304,6 +304,7 @@ public enum TL {
 
     COMMAND_NOTIFICATIONS_DESCRIPTION("Toggle territory chat notifications on or off"),
 
+    COMMAND_FWARP_IN_COMBAT("&cYou can't do this whilst in combat!"),
     COMMAND_FWARP_CLICKTOWARP("Click to warp!"),
     COMMAND_FWARP_COMMANDFORMAT("&e/f warp <warpname> [password]"),
     COMMAND_FWARP_WARPED("&eWarped to &6%1$s"),

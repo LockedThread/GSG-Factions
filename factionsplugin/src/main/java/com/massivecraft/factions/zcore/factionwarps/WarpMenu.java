@@ -61,11 +61,15 @@ public class WarpMenu extends Menu {
                             .collect(Collectors.toList()));
                 }).build()).setInventoryClickEventConsumer(event -> {
             if (!faction.hasWarpPassword(warp)) {
-                event.setCancelled(true);
-                event.getWhoClicked().closeInventory();
-                FPlayer fPlayer = FPlayers.getInstance().getByPlayer((Player) event.getWhoClicked());
-                if (transact(fPlayer)) {
-                    doWarmup(fPlayer, warp);
+                if (P.p.getCombatIntegration() != null && P.p.getCombatIntegration().isTagged((Player) event.getWhoClicked())) {
+                    event.getWhoClicked().sendMessage(TL.COMMAND_FWARP_IN_COMBAT.toString());
+                } else {
+                    event.setCancelled(true);
+                    event.getWhoClicked().closeInventory();
+                    FPlayer fPlayer = FPlayers.getInstance().getByPlayer((Player) event.getWhoClicked());
+                    if (transact(fPlayer)) {
+                        doWarmup(fPlayer, warp);
+                    }
                 }
             } else {
                 event.getWhoClicked().sendMessage(TL.COMMAND_FWARP_PASSWORD_REQUIRED.toString());
@@ -78,8 +82,12 @@ public class WarpMenu extends Menu {
         WarmUpUtil.process(fPlayer, WarmUpUtil.Warmup.WARP, TL.WARMUPS_NOTIFY_TELEPORT, warp, () -> {
             Player player = Bukkit.getPlayer(fPlayer.getPlayer().getUniqueId());
             if (player != null) {
-                player.teleport(faction.getWarp(warp).getLocation());
-                fPlayer.msg(TL.COMMAND_FWARP_WARPED, warp);
+                if (P.p.getCombatIntegration() != null && P.p.getCombatIntegration().isTagged(player)) {
+                    player.sendMessage(TL.COMMAND_FWARP_IN_COMBAT.toString());
+                } else {
+                    player.teleport(faction.getWarp(warp).getLocation());
+                    fPlayer.msg(TL.COMMAND_FWARP_WARPED, warp);
+                }
             }
         }, P.p.getConfig().getLong("warmups.f-warp", 0));
     }
