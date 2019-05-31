@@ -6,7 +6,6 @@ import com.gameservergroup.gsgcore.menus.MenuItem;
 import com.massivecraft.factions.*;
 import com.massivecraft.factions.integration.Econ;
 import com.massivecraft.factions.units.UnitFactionUpgrade;
-import com.massivecraft.factions.util.LazyLocation;
 import com.massivecraft.factions.util.WarmUpUtil;
 import com.massivecraft.factions.zcore.factionupgrades.FactionUpgrade;
 import com.massivecraft.factions.zcore.util.TL;
@@ -14,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class WarpMenu extends Menu {
@@ -40,8 +38,8 @@ public class WarpMenu extends Menu {
 
     @Override
     public void initialize() {
-        for (Map.Entry<String, LazyLocation> entry : faction.getWarps().entrySet()) {
-            setItem(getInventory().firstEmpty(), buildItem(entry.getKey()));
+        for (String key : faction.getWarps().keySet()) {
+            setItem(getInventory().firstEmpty(), buildItem(key));
         }
 
         if (P.p.getConfig().getBoolean("fwarp-gui.fill.enabled")) {
