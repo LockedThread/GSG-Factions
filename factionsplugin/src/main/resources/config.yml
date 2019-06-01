@@ -471,6 +471,17 @@ f-fly:
   # How frequent should we check if an enemy is nearby?
   # In seconds
   radius-check: 5
+  everywhere:
+    # Relations
+    enemy: false
+    member: true
+    ally: true
+    truce: true
+    neutral: true
+    # System Factions
+    wilderness: true
+    warzone: true
+    safezone: true
 
   trails:
     # How frequent a trail will be spawned in seconds
