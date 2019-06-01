@@ -43,6 +43,8 @@ sellwand-item:
     - 'DURABILITY:1'
   itemflags:
     - 'HIDE_ENCHANTS'
+  options:
+    negative-1-keyword: '&aUNLIMITED'
 tntwand-item:
   material: 'WOOD_HOE'
   name: '&c&l(!) &f&lTNTWand &c&l(!)'
@@ -54,6 +56,8 @@ tntwand-item:
     - 'DURABILITY:1'
   itemflags:
     - 'HIDE_ENCHANTS'
+  options:
+    negative-1-keyword: '&aUNLIMITED'
 collector-item:
   material: 'BEACON'
   name: '&d&l(!) &f&lCollector &d&l(!)'

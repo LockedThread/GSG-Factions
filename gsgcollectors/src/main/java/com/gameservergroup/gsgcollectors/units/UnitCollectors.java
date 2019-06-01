@@ -17,6 +17,7 @@ import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsgcore.storage.objs.ChunkPosition;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.gameservergroup.gsgcore.utils.CallBack;
+import com.gameservergroup.gsgcore.utils.NBTItem;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.server.v1_8_R3.Blocks;
 import net.minecraft.server.v1_8_R3.EnumDirection;
@@ -44,6 +45,8 @@ import org.github.paperspigot.Title;
 
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class UnitCollectors extends Unit {
 
@@ -294,7 +297,7 @@ public class UnitCollectors extends Unit {
                         event.getPlayer().sendMessage(CollectorMessages.UPDATED_COLLECTOR_BLOCKPOSITION.toString());
                     }
                 });
-        CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
+        CustomItem sellWandCustomItem = CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("collector-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
                 Collector collector = getCollector(event.getClickedBlock().getLocation());
                 if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
@@ -303,13 +306,57 @@ public class UnitCollectors extends Unit {
                 }
             }
         });
-        CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("tntwand-item")).setInteractEventConsumer(event -> {
+        sellWandCustomItem.setItemEdit(new CustomItem.ItemEdit() {
+            @SuppressWarnings("ConstantConditions")
+            @Override
+            public ItemStack getEditedItemStack() {
+                return getEditedItemStack(null);
+            }
+
+            @Override
+            public <T> ItemStack getEditedItemStack(Map<String, T> map) {
+                final ItemStack itemStack = sellWandCustomItem.getOriginalItemStack();
+                NBTItem nbtItem = new NBTItem(itemStack);
+                for (Map.Entry<String, T> entry : map.entrySet()) {
+                    nbtItem.set(entry.getKey(), entry.getValue());
+                }
+                return ItemStackBuilder.of(nbtItem.buildItemStack())
+                        .setLore(itemStack.getItemMeta().getLore()
+                                .stream()
+                                .map(s -> s.replace("{uses}", Integer.parseInt(String.valueOf(map.get("uses"))) == -1 ? GSG_COLLECTORS.getConfig().getString("sellwand-item.options.negative-1-keyword") : String.valueOf(map.get("uses"))))
+                                .collect(Collectors.toList()))
+                        .build();
+            }
+        });
+        CustomItem tntWandCustomItem = CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("tntwand-item")).setInteractEventConsumer(event -> {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("collector-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
                 Collector collector = getCollector(event.getClickedBlock().getLocation());
                 if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
                     collector.depositTnt(event.getPlayer());
                     event.setCancelled(true);
                 }
+            }
+        });
+        tntWandCustomItem.setItemEdit(new CustomItem.ItemEdit() {
+            @SuppressWarnings("ConstantConditions")
+            @Override
+            public ItemStack getEditedItemStack() {
+                return getEditedItemStack(null);
+            }
+
+            @Override
+            public <T> ItemStack getEditedItemStack(Map<String, T> map) {
+                final ItemStack itemStack = sellWandCustomItem.getOriginalItemStack();
+                NBTItem nbtItem = new NBTItem(itemStack);
+                for (Map.Entry<String, T> entry : map.entrySet()) {
+                    nbtItem.set(entry.getKey(), entry.getValue());
+                }
+                return ItemStackBuilder.of(nbtItem.buildItemStack())
+                        .setLore(itemStack.getItemMeta().getLore()
+                                .stream()
+                                .map(s -> s.replace("{uses}", Integer.parseInt(String.valueOf(map.get("uses"))) == -1 ? GSG_COLLECTORS.getConfig().getString("tntwand-item.options.negative-1-keyword") : String.valueOf(map.get("uses"))))
+                                .collect(Collectors.toList()))
+                        .build();
             }
         });
         EnumSet<CollectionType> collectionTypes = EnumSet.noneOf(CollectionType.class);
