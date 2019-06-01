@@ -23,7 +23,7 @@ public class TaskFlight {
     private TaskFlight() {
         double enemyCheck = P.p.getConfig().getDouble("f-fly.radius-check", 1) * 20;
         if (enemyCheck > 0) {
-            enemiesTask = new EnemiesTask();
+            enemiesTask = new EnemiesTask(P.p.getConfig().getDouble("f-fly.enemy-radius"));
             enemiesTask.runTaskTimer(P.p, 0, (long) enemyCheck);
         }
 
@@ -49,12 +49,18 @@ public class TaskFlight {
 
     public class EnemiesTask extends BukkitRunnable {
 
+        private double radius;
+
+        public EnemiesTask(double radius) {
+            this.radius = radius;
+        }
+
         @Override
         public void run() {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 FPlayer pilot = FPlayers.getInstance().getByPlayer(player);
                 if (pilot.isFlying() && !pilot.isAdminBypassing()) {
-                    if (enemiesNearby(pilot, 5)) {
+                    if (enemiesNearby(pilot, radius)) {
                         pilot.msg(TL.COMMAND_FLY_ENEMY_DISABLE);
                         pilot.setFlying(false);
                     }
@@ -62,12 +68,12 @@ public class TaskFlight {
             }
         }
 
-        public boolean enemiesNearby(FPlayer target, int radius) {
+        public boolean enemiesNearby(FPlayer target, double radius) {
             List<Entity> nearbyEntities = target.getPlayer().getNearbyEntities(radius, radius, radius);
             for (Entity entity : nearbyEntities) {
                 if (entity instanceof Player) {
                     FPlayer playerNearby = FPlayers.getInstance().getByPlayer((Player) entity);
-                    if (playerNearby.isAdminBypassing()) {
+                    if (playerNearby.isAdminBypassing() || playerNearby.isStealth()) {
                         continue;
                     }
                     if (playerNearby.getRelationTo(target) == Relation.ENEMY) {

@@ -466,11 +466,11 @@ f-fly:
   # From how far away a player can disable another's flight by being enemy
   # Set to 0 if wanted disable
   # Note: Will produce lag at higher numbers
-  enemy-radius: 7
+  enemy-radius: 5.0
   # Frequency Check
   # How frequent should we check if an enemy is nearby?
   # In seconds
-  radius-check: 1
+  radius-check: 5
 
   trails:
     # How frequent a trail will be spawned in seconds
