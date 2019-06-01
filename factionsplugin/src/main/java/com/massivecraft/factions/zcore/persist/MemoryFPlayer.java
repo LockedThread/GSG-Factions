@@ -1075,14 +1075,30 @@ public abstract class MemoryFPlayer implements FPlayer {
 
     public boolean canFlyAtLocation(FLocation location) {
         Faction faction = Board.getInstance().getFactionAt(location);
-        if (faction.isWilderness()) {
+        if (P.p.getConfig().getBoolean("f-fly.everywhere.enabled") && Permission.FLY_EVERYWHERE.has(getPlayer())) {
+            if (faction.isWilderness()) {
+                P.p.getConfig().getBoolean("f-fly.everywhere.wilderness");
+            } else if (faction.isWarZone()) {
+                return P.p.getConfig().getBoolean("f-fly.everywhere.warzone");
+            } else if (faction.isSafeZone()) {
+                return P.p.getConfig().getBoolean("f-fly.everywhere.safezone");
+            } else if (faction.getRelationTo(getFaction()) == Relation.ENEMY) {
+                return P.p.getConfig().getBoolean("f-fly.everywhere.enemy");
+            } else if (faction.getRelationTo(getFaction()) == Relation.ALLY) {
+                return P.p.getConfig().getBoolean("f-fly.everywhere.ally");
+            } else if (faction.getRelationTo(getFaction()) == Relation.NEUTRAL) {
+                return P.p.getConfig().getBoolean("f-fly.everywhere.neutral");
+            } else if (faction.getRelationTo(getFaction()) == Relation.TRUCE) {
+                return P.p.getConfig().getBoolean("f-fly.everywhere.truce");
+            } else if (faction.getRelationTo(getFaction()) == Relation.MEMBER) {
+                return P.p.getConfig().getBoolean("f-fly.everywhere.member");
+            }
+        } else if (faction.isWilderness()) {
             return Permission.FLY_WILDERNESS.has(getPlayer());
         } else if (faction.isSafeZone()) {
             return Permission.FLY_SAFEZONE.has(getPlayer());
         } else if (faction.isWarZone()) {
             return Permission.FLY_WARZONE.has(getPlayer());
-        } else if (Permission.FLY_EVERYWHERE.has(getPlayer())) {
-            return true;
         }
 
         // Admins can always fly in their territory.
@@ -1112,7 +1128,6 @@ public abstract class MemoryFPlayer implements FPlayer {
             }
 
         }
-
         return access == Access.ALLOW;
     }
 
