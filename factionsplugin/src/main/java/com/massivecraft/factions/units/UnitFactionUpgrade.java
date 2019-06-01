@@ -93,7 +93,7 @@ public class UnitFactionUpgrade extends Unit {
                         Faction faction = Board.getInstance().getFactionAt(fLocation);
                         if (!faction.isWilderness()) {
                             Integer level = faction.getUpgrades().get(FactionUpgrade.SPAWNER_SPAWN_RATE);
-                            double divisor = FactionUpgrade.SPAWNER_SPAWN_RATE.getMetaInteger((level == null ? "default" : level) + "-divisor");
+                            double divisor = FactionUpgrade.SPAWNER_SPAWN_RATE.getMetaDouble((level == null ? "default" : level) + "-divisor");
                             event.getSpawner().setDelay((int) (event.getSpawner().getDelay() * divisor));
                         }
                     }).post(P.p);
