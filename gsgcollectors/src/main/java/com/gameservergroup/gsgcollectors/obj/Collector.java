@@ -34,7 +34,11 @@ public class Collector {
     }
 
     public void sellAll(Player player, CollectionType collectionType) {
-        double money = collectionType.getPrice() * getAmounts().getOrDefault(collectionType, 0);
+        sellAll(player, collectionType, 1.0);
+    }
+
+    public void sellAll(Player player, CollectionType collectionType, double sellWandMultiplier) {
+        double money = collectionType.getPrice() * getAmounts().getOrDefault(collectionType, 0) * sellWandMultiplier;
         if (GSGCollectors.getInstance().getSellPriceModifier() != null) {
             money = GSGCollectors.getInstance().getSellPriceModifier().getModifiedPrice(player, money);
         }
@@ -49,7 +53,11 @@ public class Collector {
     }
 
     public void sellAll(Player player) {
-        double money = getAmounts().entrySet().stream().filter(entry -> entry.getKey() != CollectionType.TNT).mapToDouble(entry -> entry.getKey().getPrice() * entry.getValue()).sum();
+        sellAll(player, 1.0);
+    }
+
+    public void sellAll(Player player, double sellWandMultiplier) {
+        double money = getAmounts().entrySet().stream().filter(entry -> entry.getKey() != CollectionType.TNT).mapToDouble(entry -> entry.getKey().getPrice() * entry.getValue()).sum() * sellWandMultiplier;
         if (GSGCollectors.getInstance().getSellPriceModifier() != null) {
             money = GSGCollectors.getInstance().getSellPriceModifier().getModifiedPrice(player, money);
         }

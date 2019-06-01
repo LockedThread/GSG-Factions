@@ -39,6 +39,10 @@ sellwand-item:
     - ''
     - ' &dRight click a collector to sell all of its collected inventory!'
     - ''
+    - ' &dUses: &f{uses}'
+    - ''
+    - ' &dMultiplier: &f{multiplier}'
+    - ''
   enchants:
     - 'DURABILITY:1'
   itemflags:
@@ -51,6 +55,8 @@ tntwand-item:
   lore:
     - ''
     - ' &dRight click a collector to deposit all of its tnt!'
+    - ''
+    - ' &dUses: &f{uses}'
     - ''
   enchants:
     - 'DURABILITY:1'

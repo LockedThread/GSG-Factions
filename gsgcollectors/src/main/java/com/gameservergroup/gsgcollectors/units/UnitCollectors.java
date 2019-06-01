@@ -40,6 +40,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.github.paperspigot.Title;
 
@@ -297,11 +298,32 @@ public class UnitCollectors extends Unit {
                         event.getPlayer().sendMessage(CollectorMessages.UPDATED_COLLECTOR_BLOCKPOSITION.toString());
                     }
                 });
-        CustomItem sellWandCustomItem = CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
+        CustomItem sellWandCustomItem = CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item"));
+        sellWandCustomItem.setInteractEventConsumer(event -> {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("collector-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
                 Collector collector = getCollector(event.getClickedBlock().getLocation());
                 if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
-                    collector.sellAll(event.getPlayer());
+                    NBTItem nbtItem = new NBTItem(event.getItem());
+                    int uses = nbtItem.getInt("uses");
+                    if (uses == 0) {
+                        return;
+                    }
+                    collector.sellAll(event.getPlayer(), nbtItem.getDouble("multiplier"));
+                    if (uses == -1) {
+                        return;
+                    }
+                    nbtItem.set("uses", uses - 1);
+
+                    ItemStack itemStack = nbtItem.buildItemStack();
+                    ItemMeta itemMeta = itemStack.getItemMeta();
+                    itemMeta.setLore(sellWandCustomItem.getOriginalItemStack()
+                            .getItemMeta()
+                            .getLore()
+                            .stream()
+                            .map(s -> s.replace("{uses}", String.valueOf(uses - 1)).replace("{multiplier}", String.valueOf(nbtItem.getDouble("multiplier"))))
+                            .collect(Collectors.toList()));
+                    itemStack.setItemMeta(itemMeta);
+                    event.getPlayer().setItemInHand(itemStack);
                     event.setCancelled(true);
                 }
             }
@@ -323,16 +345,37 @@ public class UnitCollectors extends Unit {
                 return ItemStackBuilder.of(nbtItem.buildItemStack())
                         .setLore(itemStack.getItemMeta().getLore()
                                 .stream()
-                                .map(s -> s.replace("{uses}", Integer.parseInt(String.valueOf(map.get("uses"))) == -1 ? GSG_COLLECTORS.getConfig().getString("sellwand-item.options.negative-1-keyword") : String.valueOf(map.get("uses"))))
+                                .map(s -> s.replace("{uses}", Integer.parseInt(String.valueOf(map.get("uses"))) == -1 ? GSG_COLLECTORS.getConfig().getString("sellwand-item.options.negative-1-keyword") : String.valueOf(map.get("uses"))).replace("{multiplier}", String.valueOf(map.get("multiplier"))))
                                 .collect(Collectors.toList()))
                         .build();
             }
         });
-        CustomItem tntWandCustomItem = CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("tntwand-item")).setInteractEventConsumer(event -> {
+        CustomItem tntWandCustomItem = CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("tntwand-item"));
+        tntWandCustomItem.setInteractEventConsumer(event -> {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("collector-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
                 Collector collector = getCollector(event.getClickedBlock().getLocation());
                 if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
+                    NBTItem nbtItem = new NBTItem(event.getItem());
+                    int uses = nbtItem.getInt("uses");
+                    if (uses == 0) {
+                        return;
+                    }
                     collector.depositTnt(event.getPlayer());
+                    if (uses == -1) {
+                        return;
+                    }
+                    nbtItem.set("uses", uses - 1);
+
+                    ItemStack itemStack = nbtItem.buildItemStack();
+                    ItemMeta itemMeta = itemStack.getItemMeta();
+                    itemMeta.setLore(tntWandCustomItem.getOriginalItemStack()
+                            .getItemMeta()
+                            .getLore()
+                            .stream()
+                            .map(s -> s.replace("{uses}", String.valueOf(uses - 1)))
+                            .collect(Collectors.toList()));
+                    itemStack.setItemMeta(itemMeta);
+                    event.getPlayer().setItemInHand(itemStack);
                     event.setCancelled(true);
                 }
             }
