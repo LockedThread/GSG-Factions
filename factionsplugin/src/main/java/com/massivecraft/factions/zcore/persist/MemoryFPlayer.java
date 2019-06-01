@@ -1081,7 +1081,7 @@ public abstract class MemoryFPlayer implements FPlayer {
             return Permission.FLY_SAFEZONE.has(getPlayer());
         } else if (faction.isWarZone()) {
             return Permission.FLY_WARZONE.has(getPlayer());
-        } else if (Permission.FLY_EVERYWHERE.has(getPlayer())) {
+        } else if (P.p.getConfig().getBoolean("f-fly.everywhere.enabled") && Permission.FLY_EVERYWHERE.has(getPlayer())) {
             if (faction.isWilderness()) {
                 P.p.getConfig().getBoolean("f-fly.everywhere.wilderness");
             } else if (faction.isWarZone()) {

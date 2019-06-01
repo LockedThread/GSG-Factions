@@ -472,6 +472,7 @@ f-fly:
   # In seconds
   radius-check: 5
   everywhere:
+    enabled: false
     # Relations
     enemy: false
     member: true
