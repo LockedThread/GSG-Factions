@@ -29,6 +29,31 @@ public class Utils {
         return material;
     };
 
+    public static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isDouble(String s) {
+        try {
+            if (isInteger(s)) {
+                return Integer.parseInt(s) != Math.rint(Double.parseDouble(s));
+            }
+            Double.parseDouble(s);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isBoolean(String s) {
+        return s.equalsIgnoreCase("true") || s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("y");
+    }
+
     public static boolean isOutsideBorder(Location location) {
         WorldBorder worldBorder = location.getWorld().getWorldBorder();
         double size = worldBorder.getSize() / 2.0;

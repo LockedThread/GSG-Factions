@@ -172,5 +172,8 @@ public class CustomItem {
 
         ItemStack getEditedItemStack();
 
+        default <T> ItemStack getEditedItemStack(Map<String, T> map) {
+            return null;
+        }
     }
 }

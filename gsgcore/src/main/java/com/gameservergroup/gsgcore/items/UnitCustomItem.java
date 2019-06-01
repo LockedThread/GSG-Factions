@@ -6,6 +6,7 @@ import com.gameservergroup.gsgcore.events.EventPost;
 import com.gameservergroup.gsgcore.items.migration.Migration;
 import com.gameservergroup.gsgcore.items.migration.MigrationType;
 import com.gameservergroup.gsgcore.units.Unit;
+import com.gameservergroup.gsgcore.utils.Utils;
 import com.google.common.base.Joiner;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -16,6 +17,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UnitCustomItem extends Unit {
 
@@ -26,7 +29,7 @@ public class UnitCustomItem extends Unit {
                 .assertPermission("gsg.customitem")
                 .handler(c -> {
                     if (c.getRawArgs().length == 0) {
-                        c.reply("", "&d/customitem list", "&d/customitem give [player] [item] {amount}", "&d/customitem info [item]", "&d/customitem migrate [customitem] [migration-type] [arguments] - Ask locked for help!", "\n");
+                        c.reply("", "&d/customitem list", "&d/customitem give [player] [item] {amount} {PRESET-NBT...}", "&d/customitem info [item]", "&d/customitem migrate [customitem] [migration-type] [arguments] - Ask locked for help!", "\n");
                     } else if (c.getRawArgs().length == 1) {
                         if (c.getRawArg(0).equalsIgnoreCase("list")) {
                             c.reply("", "&dCustomItems: &f" + Joiner.on(", ").skipNulls().join(CustomItem.getCustomItems().keySet()), "");
@@ -50,8 +53,50 @@ public class UnitCustomItem extends Unit {
                             Player target = c.getArg(1).forceParse(Player.class);
                             CustomItem customItem = c.getArg(2).forceParse(CustomItem.class);
                             int amount = c.getArg(3).parse(int.class).orElse(1);
+
+                            Map<String, Object> nbt = null;
+                            if (c.getRawArgs().length > 4) {
+                                String[] strings = Arrays.copyOfRange(c.getRawArgs(), 4, c.getRawArgs().length);
+                                if (strings.length % 2 == 0) {
+                                    nbt = new HashMap<>();
+                                    String key = null;
+                                    for (int i = 0; i < strings.length; i++) {
+                                        String value = strings[i];
+                                        if (i % 2 != 0) {
+                                            if (Utils.isBoolean(value)) {
+                                                nbt.put(key, Boolean.parseBoolean(value));
+                                            } else if (Utils.isDouble(value)) {
+                                                nbt.put(key, Double.parseDouble(value));
+                                            } else if (Utils.isInteger(value)) {
+                                                nbt.put(key, Integer.parseInt(value));
+                                            } else {
+                                                nbt.put(key, value);
+                                            }
+                                        } else {
+                                            key = value;
+                                        }
+                                    }
+                                } else {
+                                    c.reply("&cUnable to set NBT, the can't have a null value for " + strings[strings.length - 1]);
+                                    return;
+                                }
+                            }
+
+
+                            ItemStack itemStack;
+                            if (nbt != null) {
+                                itemStack = customItem.getItemEdit().getEditedItemStack(nbt);
+                            } else {
+                                try {
+                                    itemStack = customItem.getItemStack();
+                                } catch (NullPointerException ex) {
+                                    c.reply("&cThis item requires meta data");
+                                    return;
+                                }
+                            }
+
                             for (int i = 0; i < amount; i++) {
-                                target.getInventory().addItem(customItem.getItemStack());
+                                target.getInventory().addItem(itemStack);
                             }
                             c.reply("&eYou have given " + target.getName() + " " + amount + " " + customItem.getName() + "s");
                         } else if (c.getRawArg(0).equalsIgnoreCase("migrate")) {
