@@ -1,11 +1,7 @@
 package com.gameservergroup.gsgoutpost.rewards;
 
-import com.gameservergroup.gsgoutpost.GSGOutpost;
 import com.gameservergroup.gsgoutpost.objs.Outpost;
-import com.massivecraft.factions.FPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
@@ -49,7 +45,7 @@ public class Reward {
         return (long) meta.get(key);
     }
 
-    public void apply(Outpost outpost) {
+    public void apply(Outpost outpost) {/*
         switch (rewardType) {
             case TIMED_FACTION_REWARD:
                 outpost.setTimedFactionReward(Bukkit.getScheduler().runTaskTimer(GSGOutpost.getInstance(), () -> {
@@ -80,7 +76,7 @@ public class Reward {
                 break;
             case COLLECTOR_MULTIPLIER:
                 System.out.println("Unsupported operation, COLLECTOR_MULTIPLIER");
-                break;
-        }
+                break;*/
+
     }
 }

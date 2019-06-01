@@ -7,6 +7,7 @@ import com.gameservergroup.gsgoutpost.enums.OutpostMessages;
 import com.gameservergroup.gsgoutpost.menus.MenuOutpost;
 import com.gameservergroup.gsgoutpost.objs.Outpost;
 import com.gameservergroup.gsgoutpost.rewards.Reward;
+import com.gameservergroup.gsgoutpost.tasks.TaskOutpost2;
 import com.gameservergroup.gsgoutpost.units.UnitOutpost;
 import com.gameservergroup.gsgoutpost.utils.ActionbarUtil;
 import com.google.gson.reflect.TypeToken;
@@ -60,12 +61,14 @@ public class GSGOutpost extends Module {
             Optional<ProtectedRegion> protectedRegion = entry.getValue().getProtectedRegion();
             if (protectedRegion.isPresent()) {
                 entry.getValue().init();
-                entry.getValue().startTask();
+                //entry.getValue().startTask();
             } else {
                 outpostMap.remove(entry.getKey());
                 getLogger().severe("Removed Outpost \"" + entry.getKey() + "\" because the worldguard region was unable to be found!");
             }
         }
+        long delay = instance.getConfig().getLong("outpost.check-delay");
+        getServer().getScheduler().runTaskTimer(instance, new TaskOutpost2(), delay, delay);
 
         registerUnits(new UnitOutpost());
     }

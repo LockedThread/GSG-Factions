@@ -2,28 +2,21 @@ package com.gameservergroup.gsgoutpost.units;
 
 import com.gameservergroup.gsgcore.commands.arguments.ArgumentRegistry;
 import com.gameservergroup.gsgcore.commands.post.CommandPost;
-import com.gameservergroup.gsgcore.events.EventFilters;
 import com.gameservergroup.gsgcore.events.EventPost;
 import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.gameservergroup.gsgoutpost.GSGOutpost;
 import com.gameservergroup.gsgoutpost.enums.OutpostMessages;
-import com.gameservergroup.gsgoutpost.enums.OutpostState;
 import com.gameservergroup.gsgoutpost.objs.Outpost;
 import com.gameservergroup.gsgoutpost.rewards.Reward;
 import com.google.common.base.Joiner;
-import com.massivecraft.factions.FPlayer;
-import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.Faction;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.List;
@@ -104,7 +97,6 @@ public class UnitOutpost extends Unit {
                                 Outpost outpost = new Outpost(regionName);
                                 GSG_OUTPOST.getOutpostMap().put(regionName, outpost);
                                 outpost.init();
-                                outpost.startTask();
                                 c.reply(OutpostMessages.COMMAND_OUTPOST_CREATE.toString().replace("{outpost}", regionName));
                             } else if (c.getRawArg(0).equalsIgnoreCase("config")) {
                                 Outpost outpost = c.getArg(1).forceParse(Outpost.class);
@@ -241,6 +233,7 @@ public class UnitOutpost extends Unit {
                     }
                 }).post(GSG_OUTPOST);
 
+        /*
         EventPost.of(PlayerMoveEvent.class)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(EventFilters.getIgnoreSameBlock())
@@ -280,5 +273,6 @@ public class UnitOutpost extends Unit {
                         }
                     }
                 }).post(GSG_OUTPOST);
+    */
     }
 }

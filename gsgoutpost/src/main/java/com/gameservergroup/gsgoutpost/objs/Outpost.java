@@ -6,7 +6,6 @@ import com.gameservergroup.gsgoutpost.enums.OutpostState;
 import com.gameservergroup.gsgoutpost.exceptions.UnableToFindProtectedRegionException;
 import com.gameservergroup.gsgoutpost.items.SerializableItem;
 import com.gameservergroup.gsgoutpost.rewards.Reward;
-import com.gameservergroup.gsgoutpost.rewards.RewardType;
 import com.gameservergroup.gsgoutpost.tasks.TaskOutpost;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
@@ -37,8 +36,7 @@ public class Outpost {
     private transient int percentage;
     private transient Faction faction;
     private transient Faction capturedFaction;
-    private transient BukkitTask timedFactionReward;
-    private transient BukkitTask timedReward;
+    private transient Set<BukkitTask> bukkitTasks;
 
     public Outpost(String uniqueIdentifier) {
         this(uniqueIdentifier, new HashMap<>());
@@ -131,7 +129,7 @@ public class Outpost {
             for (Reward reward : rewardMap.values()) {
                 reward.apply(this);
             }
-        } else if (outpostState == OutpostState.NEUTRALIZED) {
+        } /*else if (outpostState == OutpostState.NEUTRALIZED) {
             if (rewardMap.containsKey(RewardType.TIMED_FACTION_REWARD)) {
                 getTimedFactionReward().cancel();
                 setTimedFactionReward(null);
@@ -140,7 +138,7 @@ public class Outpost {
                 getTimedReward().cancel();
                 setTimedReward(null);
             }
-        }
+        }*/
     }
 
     public int getPercentage() {
@@ -201,21 +199,5 @@ public class Outpost {
 
     public void setWorldUID(UUID worldUID) {
         this.worldUID = worldUID;
-    }
-
-    public BukkitTask getTimedReward() {
-        return timedReward;
-    }
-
-    public void setTimedReward(BukkitTask timedReward) {
-        this.timedReward = timedReward;
-    }
-
-    public BukkitTask getTimedFactionReward() {
-        return timedFactionReward;
-    }
-
-    public void setTimedFactionReward(BukkitTask timedFactionReward) {
-        this.timedFactionReward = timedFactionReward;
     }
 }
