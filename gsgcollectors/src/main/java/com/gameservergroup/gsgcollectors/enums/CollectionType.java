@@ -2,11 +2,11 @@ package com.gameservergroup.gsgcollectors.enums;
 
 import com.gameservergroup.gsgcollectors.GSGCollectors;
 import com.gameservergroup.gsgcore.items.ItemStackBuilder;
+import com.gameservergroup.gsgcore.utils.Text;
 import com.gameservergroup.gsgcore.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.SpawnEgg;
 
 import java.util.stream.Collectors;
@@ -53,6 +53,7 @@ public enum CollectionType {
     ENDER_CRYSTAL(EntityType.ENDER_CRYSTAL),
     GUN_POWDER(Material.SULPHUR);
 
+    private String menuSellLore;
     private Material material = null;
     private EntityType entityType = null;
     private ItemStack itemStack;
@@ -125,33 +126,35 @@ public enum CollectionType {
         } else {
             this.price = GSGCollectors.getInstance().getConfig().getDouble("collection-types." + s + ".price");
         }
+        this.menuSellLore = GSGCollectors.getInstance().getConfig().getString("collection-types." + s + ".menu-sell-lore", "&cYou have &f{amount} &cavailable to sell");
         this.sellAmountPerMenuClick = GSGCollectors.getInstance().getConfig().getInt("collection-types." + s + ".sell-amount-per-menu-click", 100);
         this.guiSlot = GSGCollectors.getInstance().getConfig().getInt("collection-types." + s + ".slot");
         if (entityType != null) {
             SpawnEgg spawnEgg = new SpawnEgg(getEntityType());
             this.itemStack = ItemStackBuilder.of(GSGCollectors.getInstance().getConfig().getConfigurationSection("menu.collection-type-format"))
-                    .consumeItemMeta(itemMeta -> itemMeta.setDisplayName(itemMeta.getDisplayName().replace("{mob}", Utils.toTitleCasing(spawnEgg.getSpawnedType().name().replace("_", " ").toLowerCase()))))
+                    .consumeItemMeta(itemMeta -> {
+                        itemMeta.setDisplayName(itemMeta.getDisplayName().replace("{mob}", Utils.toTitleCasing(spawnEgg.getSpawnedType().name().replace("_", " ").toLowerCase())));
+                        itemMeta.setLore(itemMeta.getLore().stream().map(s1 -> s1.replace("{collection-type-specific-lore}", Text.toColor(menuSellLore))).collect(Collectors.toList()));
+                    })
                     .setMaterial(spawnEgg.getItemType())
                     .setData(spawnEgg.getData())
                     .build();
         } else {
             this.itemStack = ItemStackBuilder.of(GSGCollectors.getInstance().getConfig().getConfigurationSection("menu.collection-type-format"))
-                    .consumeItemMeta(itemMeta -> itemMeta.setDisplayName(itemMeta.getDisplayName().replace("{mob}", Utils.toTitleCasing(getMaterial().name().replace("_", " ").toLowerCase()))))
+                    .consumeItemMeta(itemMeta -> {
+                        itemMeta.setDisplayName(itemMeta.getDisplayName().replace("{mob}", Utils.toTitleCasing(getMaterial().name().replace("_", " ").toLowerCase())));
+                        itemMeta.setLore(itemMeta.getLore().stream().map(s1 -> s1.replace("{collection-type-specific-lore}", Text.toColor(menuSellLore))).collect(Collectors.toList()));
+                    })
                     .setMaterial(getMaterial())
                     .build();
         }
     }
 
-    public ItemStack buildItemStack(int amount) {
-        ItemStack item = itemStack.clone();
-        ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setLore(itemMeta.getLore().stream().map(s -> s.replace("{amount}", String.valueOf(amount))).collect(Collectors.toList()));
-        item.setItemMeta(itemMeta);
-        return item;
-    }
-
-
     public int getSellAmountPerMenuClick() {
         return sellAmountPerMenuClick;
+    }
+
+    public String getMenuSellLore() {
+        return menuSellLore;
     }
 }
