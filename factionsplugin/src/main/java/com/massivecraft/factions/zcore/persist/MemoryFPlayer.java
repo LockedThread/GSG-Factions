@@ -1075,13 +1075,7 @@ public abstract class MemoryFPlayer implements FPlayer {
 
     public boolean canFlyAtLocation(FLocation location) {
         Faction faction = Board.getInstance().getFactionAt(location);
-        if (faction.isWilderness()) {
-            return Permission.FLY_WILDERNESS.has(getPlayer());
-        } else if (faction.isSafeZone()) {
-            return Permission.FLY_SAFEZONE.has(getPlayer());
-        } else if (faction.isWarZone()) {
-            return Permission.FLY_WARZONE.has(getPlayer());
-        } else if (P.p.getConfig().getBoolean("f-fly.everywhere.enabled") && Permission.FLY_EVERYWHERE.has(getPlayer())) {
+        if (P.p.getConfig().getBoolean("f-fly.everywhere.enabled") && Permission.FLY_EVERYWHERE.has(getPlayer())) {
             if (faction.isWilderness()) {
                 P.p.getConfig().getBoolean("f-fly.everywhere.wilderness");
             } else if (faction.isWarZone()) {
@@ -1098,10 +1092,13 @@ public abstract class MemoryFPlayer implements FPlayer {
                 return P.p.getConfig().getBoolean("f-fly.everywhere.truce");
             } else if (faction.getRelationTo(getFaction()) == Relation.MEMBER) {
                 return P.p.getConfig().getBoolean("f-fly.everywhere.member");
-            } else {
-                return false;
             }
-            return false;
+        } else if (faction.isWilderness()) {
+            return Permission.FLY_WILDERNESS.has(getPlayer());
+        } else if (faction.isSafeZone()) {
+            return Permission.FLY_SAFEZONE.has(getPlayer());
+        } else if (faction.isWarZone()) {
+            return Permission.FLY_WARZONE.has(getPlayer());
         }
 
         // Admins can always fly in their territory.
@@ -1131,7 +1128,6 @@ public abstract class MemoryFPlayer implements FPlayer {
             }
 
         }
-
         return access == Access.ALLOW;
     }
 
