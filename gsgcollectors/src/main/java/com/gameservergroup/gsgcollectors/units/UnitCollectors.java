@@ -389,7 +389,7 @@ public class UnitCollectors extends Unit {
 
             @Override
             public <T> ItemStack getEditedItemStack(Map<String, T> map) {
-                final ItemStack itemStack = sellWandCustomItem.getOriginalItemStack();
+                final ItemStack itemStack = tntWandCustomItem.getOriginalItemStack();
                 NBTItem nbtItem = new NBTItem(itemStack);
                 for (Map.Entry<String, T> entry : map.entrySet()) {
                     nbtItem.set(entry.getKey(), entry.getValue());
