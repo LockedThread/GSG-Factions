@@ -5,6 +5,58 @@
 
 # Made with love <3
 
+# ShopTypes: BLACK_MARKET, DEFENSIVE, OFFENSIVE
+faction-shops:
+  catalog:
+    title: '&eFaction Shop Catalog'
+    size: 9
+    shop-type: 'CATALOG'
+    items:
+      black-market-item:
+        name: '&e&l(*) &eBlackMarket Shop &e&l(*)'
+        lore:
+          - ''
+          - ' &eClick this to open the BlackMarket Shop'
+          - ''
+        enchants:
+          - 'DURABILITY:4'
+        itemflags:
+          - 'HIDE_ENCHANTS'
+        slot: 4
+        options:
+          on-click:
+            menu-to-open: 'BLACK_MARKET'
+            commands:
+              - 'broadcast {player} is gay'
+              - '@message A message using @message'
+              - '@broadcast A message using @broadcast'
+  black-market:
+    title: '&cBlack Market Shop'
+    size: 9
+    shop-type: 'BLACK_MARKET'
+    items:
+      irongolem-spawner:
+        name: '&e&l(*) &eSome gay &e&l(*)'
+        lore:
+          - ''
+          - ' &eClick this to be gay'
+          - ''
+        enchants:
+          - 'DURABILITY:4'
+        itemflags:
+          - 'HIDE_ENCHANTS'
+        slot: 4
+        options:
+          on-click:
+            cooldown-ms: 60000
+            point-price: 20
+            menu-to-open: ''
+            commands:
+              - 'broadcast {player} is gay'
+              - '@message A message using @message'
+              - '@broadcast A message using @broadcast'
+              - 'ss give {player} irongolem'
+
 
 faction-upgrades:
   enabled: true

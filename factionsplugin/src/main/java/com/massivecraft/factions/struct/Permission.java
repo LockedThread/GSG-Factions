@@ -116,7 +116,10 @@ public enum Permission {
     FLY_TRAILS("fly.trails"),
     UPGRADES("upgrades"),
     CORNER_LIST("cornerlist"),
-    STATISTICS("statistics");
+    STATISTICS("statistics"),
+    SHOP("shop"),
+    POINTS("points"),
+    SETPOINTS("setpoints");
 
     public final String node;
 

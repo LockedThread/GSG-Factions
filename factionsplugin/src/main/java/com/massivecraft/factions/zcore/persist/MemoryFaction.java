@@ -59,8 +59,10 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected FactionChest factionChest;
     protected int maxWarps;
     protected int maxMembers;
+    protected int points;
     protected Set<StrikeInfo> strikes = new HashSet<>();
     protected List<String> altInvites = new ArrayList<>();
+    protected Map<String, Long> shopCooldown;
 
     protected transient long lastPlayerLoggedOffTime;
     protected transient Set<FPlayer> fplayers = new HashSet<>();
@@ -107,6 +109,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.payPalEmail = "";
         this.checkReminderMinutes = 0;
         this.upgradeMap = new EnumMap<>(FactionUpgrade.class);
+        this.shopCooldown = new HashMap<>();
         resetPerms(); // Reset on new Faction so it has default values.
     }
 
@@ -140,9 +143,24 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.payPalEmail = "";
         this.checkReminderMinutes = 0;
         this.upgradeMap = new EnumMap<>(FactionUpgrade.class);
+        this.shopCooldown = new HashMap<>();
         resetPerms(); // Reset on new Faction so it has default values.
     }
 
+    @Override
+    public Map<String, Long> getShopCooldown() {
+        return shopCooldown;
+    }
+
+    @Override
+    public int getPoints() {
+        return points;
+    }
+
+    @Override
+    public void setPoints(int points) {
+        this.points = points;
+    }
 
     @Override
     public WarpMenu getWarpMenu() {

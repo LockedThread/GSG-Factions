@@ -22,6 +22,8 @@ permissions:
       factions.ahome: true
       factions.setmaxvaults: true
       factions.cornerlist: true
+      factions.setpoints: true
+      factions.points: true
   factions.*:
     description: This is just an alias for factions.kit.admin
     children:
@@ -342,6 +344,12 @@ permissions:
     description: Allow use of /f cornerlist to check all corners
   factions.statistics:
     description: Allow use of /f stats to view player statistics
-  fly.everywhere:
+  factions.fly.everywhere:
     description: Allows players to fly everywhere
     default: false
+  factions.shop:
+    description: Allows players to the faction shop
+  factions.points:
+    description: Allows players to view their faction's points
+  factions.setpoints:
+    description: Allows admins to set faction points

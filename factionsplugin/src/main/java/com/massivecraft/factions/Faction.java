@@ -28,6 +28,12 @@ public interface Faction extends EconomyParticipator {
      * LockedThread's ADDITIONS
      */
 
+    public Map<String, Long> getShopCooldown();
+
+    public int getPoints();
+
+    public void setPoints(int points);
+
     public WarpMenu getWarpMenu();
 
     public FactionUpgradeMenu getFactionUpgradeMenu();
