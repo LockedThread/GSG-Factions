@@ -10,7 +10,7 @@ public class MenuItem {
     private ItemStack itemStack;
     private Consumer<InventoryClickEvent> inventoryClickEventConsumer;
 
-    private MenuItem(ItemStack itemStack) {
+    public MenuItem(ItemStack itemStack) {
         this.itemStack = itemStack;
     }
 
