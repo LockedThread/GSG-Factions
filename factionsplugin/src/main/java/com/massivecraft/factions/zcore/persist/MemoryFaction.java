@@ -10,6 +10,8 @@ import com.massivecraft.factions.util.LazyLocation;
 import com.massivecraft.factions.util.Message;
 import com.massivecraft.factions.util.MiscUtil;
 import com.massivecraft.factions.util.RelationUtil;
+import com.massivecraft.factions.zcore.factionboosters.Booster;
+import com.massivecraft.factions.zcore.factionboosters.BoosterType;
 import com.massivecraft.factions.zcore.factionchest.FactionChest;
 import com.massivecraft.factions.zcore.factionupgrades.FactionUpgrade;
 import com.massivecraft.factions.zcore.factionupgrades.FactionUpgradeMenu;
@@ -18,6 +20,7 @@ import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.util.TL;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -63,6 +66,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected Set<StrikeInfo> strikes = new HashSet<>();
     protected List<String> altInvites = new ArrayList<>();
     protected Map<String, Long> shopCooldown;
+    protected Map<BoosterType, Pair<Booster, Long>> boosters;
 
     protected transient long lastPlayerLoggedOffTime;
     protected transient Set<FPlayer> fplayers = new HashSet<>();
@@ -110,6 +114,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.checkReminderMinutes = 0;
         this.upgradeMap = new EnumMap<>(FactionUpgrade.class);
         this.shopCooldown = new HashMap<>();
+        this.boosters = new EnumMap<>(BoosterType.class);
         resetPerms(); // Reset on new Faction so it has default values.
     }
 
@@ -144,7 +149,18 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.checkReminderMinutes = 0;
         this.upgradeMap = new EnumMap<>(FactionUpgrade.class);
         this.shopCooldown = new HashMap<>();
+        this.boosters = new EnumMap<>(BoosterType.class);
         resetPerms(); // Reset on new Faction so it has default values.
+    }
+
+    @Override
+    public void setBooster(Booster booster) {
+        getBoosters().put(booster.getBoosterType(), Pair.of(booster, System.currentTimeMillis() + booster.getTime()));
+    }
+
+    @Override
+    public Map<BoosterType, Pair<Booster, Long>> getBoosters() {
+        return boosters;
     }
 
     @Override

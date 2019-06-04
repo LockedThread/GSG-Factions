@@ -23,7 +23,7 @@ permissions:
       factions.setmaxvaults: true
       factions.cornerlist: true
       factions.setpoints: true
-      factions.points: true
+      factions.booster: true
   factions.*:
     description: This is just an alias for factions.kit.admin
     children:
@@ -127,6 +127,11 @@ permissions:
       factions.mutechat: true
       factions.check: true
       factions.upgrades: true
+      factions.shop: true
+      factions.points: true
+      factions.statistics: true
+      factions.paypal: true
+      factions.setpaypal: true
   factions.check:
     description: Allows players to edit the automated wall check reminder time for their faction
   factions.mutechat:

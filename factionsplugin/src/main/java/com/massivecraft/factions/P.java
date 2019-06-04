@@ -26,6 +26,7 @@ import com.massivecraft.factions.util.particle.BukkitParticleProvider;
 import com.massivecraft.factions.util.particle.PacketParticleProvider;
 import com.massivecraft.factions.util.particle.ParticleProvider;
 import com.massivecraft.factions.zcore.MPlugin;
+import com.massivecraft.factions.zcore.factionboosters.Booster;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
@@ -188,6 +189,7 @@ public class P extends MPlugin {
 
         new TitleAPI();
         setupPlaceholderAPI();
+        Booster.initializeBoosters();
         postEnable();
         this.locked = getConfig().getBoolean("lock.enabled");
         if (getConfig().getBoolean("lock.block-place")) {

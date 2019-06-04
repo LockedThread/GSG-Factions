@@ -1,0 +1,31 @@
+faction-boosters:
+  5-percent-damage-increase-enemy-territory:
+    booster-type: 'DAMAGE_INCREASE_IN_ENEMY_TERRITORY'
+    time: 3600000
+    meta:
+      multiplier: 1.05
+  10-percent-damage-increase-enemy-territory:
+    booster-type: 'DAMAGE_INCREASE_IN_ENEMY_TERRITORY'
+    time: 3600000
+    meta:
+      multiplier: 1.10
+  15-percent-damage-increase-enemy-territory:
+    booster-type: 'DAMAGE_INCREASE_IN_ENEMY_TERRITORY'
+    time: 3600000
+    meta:
+      multiplier: 1.15
+  5-percent-damage-reduction-enemy-territory:
+    booster-type: 'DAMAGE_REDUCTION_IN_ENEMY_TERRITORY'
+    time: 3600000
+    meta:
+      multiplier: 0.95
+  10-percent-damage-reduction-enemy-territory:
+    booster-type: 'DAMAGE_REDUCTION_IN_ENEMY_TERRITORY'
+    time: 3600000
+    meta:
+      multiplier: 0.90
+  15-percent-damage-reduction-enemy-territory:
+    booster-type: 'DAMAGE_REDUCTION_IN_ENEMY_TERRITORY'
+    time: 3600000
+    meta:
+      multiplier: 0.85

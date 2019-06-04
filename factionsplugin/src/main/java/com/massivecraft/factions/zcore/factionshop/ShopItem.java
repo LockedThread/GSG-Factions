@@ -41,7 +41,7 @@ public class ShopItem extends MenuItem {
             if (replace.startsWith("@broadcast")) {
                 Bukkit.broadcastMessage(Text.toColor(replace.substring(11)));
             } else if (replace.startsWith("@message")) {
-                player.sendMessage(Text.toColor(replace.substring(7)));
+                player.sendMessage(Text.toColor(replace.substring(8)));
             } else {
                 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), replace);
             }

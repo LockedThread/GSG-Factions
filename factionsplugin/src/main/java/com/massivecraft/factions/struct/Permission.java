@@ -119,7 +119,8 @@ public enum Permission {
     STATISTICS("statistics"),
     SHOP("shop"),
     POINTS("points"),
-    SETPOINTS("setpoints");
+    SETPOINTS("setpoints"),
+    BOOSTER("booster");
 
     public final String node;
 

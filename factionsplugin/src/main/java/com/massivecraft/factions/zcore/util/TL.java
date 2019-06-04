@@ -30,6 +30,12 @@ public enum TL {
      * LockedThread's ADDITIONS
      */
 
+    COMMAND_BOOSTER_DESCRIPTION("Allows admins manage boosters"),
+    COMMAND_BOOSTER_SET_DESCRIPTION("Allows admins to set and give boosters"),
+    COMMAND_BOOSTER_GET_DESCRIPTION("Allows admins to get the boosters a faction has"),
+    COMMAND_BOOSTER_HELP_LONG("The booster commands"),
+    COMMAND_BOOSTER_LIST_DESCRIPTION("Allows admins to view all of the boosters"),
+
     COMMAND_SHOP_DESCRIPTION("Allows players to the faction shop"),
     COMMAND_POINTS_DESCRIPTION("Allows players to view their faction's points"),
     COMMAND_POINTS_GET("&eYou faction has &f%1$d &epoints"),

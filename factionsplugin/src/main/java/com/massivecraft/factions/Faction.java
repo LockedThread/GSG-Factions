@@ -7,6 +7,8 @@ import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.struct.Role;
 import com.massivecraft.factions.struct.StrikeInfo;
 import com.massivecraft.factions.util.LazyLocation;
+import com.massivecraft.factions.zcore.factionboosters.Booster;
+import com.massivecraft.factions.zcore.factionboosters.BoosterType;
 import com.massivecraft.factions.zcore.factionchest.FactionChest;
 import com.massivecraft.factions.zcore.factionupgrades.FactionUpgrade;
 import com.massivecraft.factions.zcore.factionupgrades.FactionUpgradeMenu;
@@ -14,6 +16,7 @@ import com.massivecraft.factions.zcore.factionwarps.WarpMenu;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -27,6 +30,10 @@ public interface Faction extends EconomyParticipator {
     /**
      * LockedThread's ADDITIONS
      */
+
+    public void setBooster(Booster booster);
+
+    public Map<BoosterType, Pair<Booster, Long>> getBoosters();
 
     public Map<String, Long> getShopCooldown();
 

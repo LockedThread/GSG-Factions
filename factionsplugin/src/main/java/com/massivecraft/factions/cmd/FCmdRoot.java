@@ -109,6 +109,7 @@ public class FCmdRoot extends FCommand {
     public CmdShop cmdShop = new CmdShop();
     public CmdPoints cmdPoints = new CmdPoints();
     public CmdSetPoints cmdSetPoints = new CmdSetPoints();
+    public CmdBooster cmdBooster = new CmdBooster();
 
     public FCmdRoot() {
         super();
@@ -227,6 +228,7 @@ public class FCmdRoot extends FCommand {
         this.addSubCommand(this.cmdShop);
         this.addSubCommand(this.cmdSetPoints);
         this.addSubCommand(this.cmdPoints);
+        this.addSubCommand(this.cmdBooster);
 
         if (p.getConfig().getBoolean("inspect.enable") && p.getServer().getPluginManager().getPlugin("CoreProtect") != null) {
             this.addSubCommand(new CmdInspect());

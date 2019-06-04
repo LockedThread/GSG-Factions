@@ -1,5 +1,7 @@
 package com.massivecraft.factions.zcore.factionboosters;
 
+import com.massivecraft.factions.Faction;
+
 import java.util.Map;
 
 public interface IBooster {
@@ -8,7 +10,7 @@ public interface IBooster {
 
     Map<String, Object> getMeta();
 
-    void startBooster();
+    void startBooster(Faction faction);
 
-    void stopBooster();
+    void stopBooster(Faction faction);
 }

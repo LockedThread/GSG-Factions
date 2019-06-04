@@ -50,7 +50,6 @@ public class FactionsEntityListener implements Listener {
         Player player = (Player) entity;
         FPlayer fplayer = FPlayers.getInstance().getByPlayer(player);
         Faction faction = Board.getInstance().getFactionAt(new FLocation(player.getLocation()));
-
         PowerLossEvent powerLossEvent = new PowerLossEvent(faction, fplayer);
         // Check for no power loss conditions
         if (faction.isWarZone()) {
