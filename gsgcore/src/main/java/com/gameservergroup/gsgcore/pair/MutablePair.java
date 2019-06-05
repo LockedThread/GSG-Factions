@@ -2,31 +2,31 @@ package com.gameservergroup.gsgcore.pair;
 
 public class MutablePair<K, V> implements Pair<K, V> {
 
-    private K k;
-    private V v;
+    private K key;
+    private V value;
 
-    public MutablePair(K k, V v) {
-        this.k = k;
-        this.v = v;
+    public MutablePair(K key, V value) {
+        this.key = key;
+        this.value = value;
     }
 
     @Override
     public K getKey() {
-        return k;
+        return key;
     }
 
     @Override
-    public void setKey(K k) {
-        this.k = k;
+    public void setKey(K key) {
+        this.key = key;
     }
 
     @Override
     public V getValue() {
-        return v;
+        return value;
     }
 
     @Override
-    public void setValue(V v) {
-        this.v = v;
+    public void setValue(V value) {
+        this.value = value;
     }
 }
