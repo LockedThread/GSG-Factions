@@ -38,7 +38,7 @@ public class FactionsUUIDImpl implements FactionsIntegration {
                 if (((Player) entity).canSee(target.getPlayer())) {
                     FPlayer playerNearby = FPlayers.getInstance().getByPlayer((Player) entity);
                     if (!playerNearby.isAdminBypassing() &&
-                            (!playerNearby.isOnline() || playerNearby.getPlayer().getGameMode() != GameMode.SPECTATOR) &&
+                            (!playerNearby.isOnline() || ((Player) entity).getGameMode() != GameMode.SPECTATOR) &&
                             (!playerNearby.hasFaction()) &&
                             playerNearby.getRelationTo(target) == Relation.ENEMY) {
                         return true;
