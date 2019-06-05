@@ -1,5 +1,6 @@
 package com.massivecraft.factions.zcore.persist;
 
+import com.gameservergroup.gsgcore.pair.ImmutablePair;
 import com.gameservergroup.gsgcore.utils.Text;
 import com.massivecraft.factions.*;
 import com.massivecraft.factions.iface.EconomyParticipator;
@@ -20,7 +21,6 @@ import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.util.TL;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

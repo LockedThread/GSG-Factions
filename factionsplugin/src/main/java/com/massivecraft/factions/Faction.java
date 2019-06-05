@@ -1,5 +1,6 @@
 package com.massivecraft.factions;
 
+import com.gameservergroup.gsgcore.pair.ImmutablePair;
 import com.massivecraft.factions.iface.EconomyParticipator;
 import com.massivecraft.factions.iface.RelationParticipator;
 import com.massivecraft.factions.struct.BanInfo;
@@ -16,7 +17,6 @@ import com.massivecraft.factions.zcore.factionwarps.WarpMenu;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
