@@ -2,31 +2,31 @@ package com.gameservergroup.gsgcore.pair;
 
 public class ImmutablePair<K, V> implements Pair<K, V> {
 
-    private final K k;
-    private final V v;
+    private final K key;
+    private final V value;
 
-    public ImmutablePair(K k, V v) {
-        this.k = k;
-        this.v = v;
+    public ImmutablePair(K key, V value) {
+        this.key = key;
+        this.value = value;
     }
 
     @Override
     public K getKey() {
-        return k;
+        return key;
     }
 
     @Override
-    public void setKey(K k) {
+    public void setKey(K key) {
         throw new UnsupportedOperationException("This pair is immutable and therefore the fields can't be changed.");
     }
 
     @Override
     public V getValue() {
-        return v;
+        return value;
     }
 
     @Override
-    public void setValue(V v) {
+    public void setValue(V value) {
         throw new UnsupportedOperationException("This pair is immutable and therefore the fields can't be changed.");
     }
 }
