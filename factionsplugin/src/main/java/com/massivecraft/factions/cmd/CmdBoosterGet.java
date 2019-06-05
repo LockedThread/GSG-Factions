@@ -8,7 +8,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 public class CmdBoosterGet extends FCommand {
 
@@ -37,8 +36,8 @@ public class CmdBoosterGet extends FCommand {
             msg("&c" + faction.getTag() + " doesn't have any active boosters");
         } else {
             msg("&e" + faction.getTag() + "'s Active Boosters");
-            for (Map.Entry<String, Pair<Booster, Long>> entry : faction.getBoosters().entrySet()) {
-                msg("&e" + entry.getKey() + " - " + SIMPLE_DATE_FORMAT.format(new Date(entry.getValue().getValue())));
+            for (Pair<Booster, Long> pair : faction.getBoosters().values()) {
+                msg("&e" + pair.getKey().getId() + " - " + SIMPLE_DATE_FORMAT.format(new Date(pair.getValue())));
             }
         }
     }

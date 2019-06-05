@@ -29,3 +29,15 @@ faction-boosters:
     time: 3600000
     meta:
       multiplier: 0.85
+  75-second-slowness-effect-trap:
+    booster-type: 'SLOWNESS_POTION_EFFECT_TRAP'
+    time: 75000
+    meta:
+      time: 1500
+      amplifier: 0
+  75-second-weakness-effect-trap:
+    booster-type: 'WEAKNESS_POTION_EFFECT_TRAP'
+    time: 75000
+    meta:
+      time: 1500
+      amplifier: 0

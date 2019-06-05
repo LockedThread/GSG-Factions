@@ -4,6 +4,8 @@ import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.P;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +41,12 @@ public class Booster implements IBooster {
         this.meta = meta;
         this.time = time;
 
+        if (boosterType == BoosterType.SLOWNESS_POTION_EFFECT_TRAP) {
+            meta.put("effect", new PotionEffect(PotionEffectType.SLOW, (int) meta.get("time"), (int) meta.get("amplifier")));
+        } else if (boosterType == BoosterType.WEAKNESS_POTION_EFFECT_TRAP) {
+            meta.put("effect", new PotionEffect(PotionEffectType.WEAKNESS, (int) meta.get("time"), (int) meta.get("amplifier")));
+        }
+
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (boosterType != null ? boosterType.hashCode() : 0);
         result = 31 * result + (meta != null ? meta.hashCode() : 0);
@@ -49,6 +57,19 @@ public class Booster implements IBooster {
     @Override
     public BoosterType getBoosterType() {
         return boosterType;
+    }
+
+    @Override
+    public Map<String, Object> getMeta() {
+        return meta;
+    }
+
+    @Override
+    public void startBooster(Faction faction) {
+        System.out.println("System.currentTimeMillis() = " + System.currentTimeMillis());
+        long value = System.currentTimeMillis() + time;
+        System.out.println("value = " + value);
+        faction.setBooster(this);
     }
 
     public static void initializeBoosters() {
@@ -66,33 +87,6 @@ public class Booster implements IBooster {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-    }
-
-    private static String inputStreamToString(InputStream is) throws IOException {
-        byte[] buffer = new byte[is.available()];
-        return new String(buffer, 0, is.read(buffer), StandardCharsets.UTF_8);
-    }
-
-    public static Map<String, Booster> getBoosterMap() {
-        return BOOSTER_MAP;
-    }
-
-    @Override
-    public Map<String, Object> getMeta() {
-        return meta;
-    }
-
-    @Override
-    public void startBooster(Faction faction) {
-        System.out.println("System.currentTimeMillis() = " + System.currentTimeMillis());
-        long value = System.currentTimeMillis() + time;
-        System.out.println("value = " + value);
-        faction.setBooster(this);
-    }
-
-    @Override
-    public void stopBooster(Faction faction) {
-        faction.getBoosters().remove(boosterType, id);
     }
 
     public String getId() {
@@ -126,4 +120,19 @@ public class Booster implements IBooster {
                 ", hash=" + hash +
                 '}';
     }
+
+    private static String inputStreamToString(InputStream is) throws IOException {
+        byte[] buffer = new byte[is.available()];
+        return new String(buffer, 0, is.read(buffer), StandardCharsets.UTF_8);
+    }
+
+    public static Map<String, Booster> getBoosterMap() {
+        return BOOSTER_MAP;
+    }
+
+    @Override
+    public void stopBooster(Faction faction) {
+        faction.getBoosters().remove(boosterType);
+    }
+
 }

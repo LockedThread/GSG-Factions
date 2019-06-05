@@ -15,6 +15,8 @@ import com.massivecraft.factions.struct.Role;
 import com.massivecraft.factions.util.FactionGUI;
 import com.massivecraft.factions.util.TitleAPI;
 import com.massivecraft.factions.util.VisualizeUtil;
+import com.massivecraft.factions.zcore.factionboosters.Booster;
+import com.massivecraft.factions.zcore.factionboosters.BoosterType;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.persist.MemoryFPlayer;
@@ -23,6 +25,7 @@ import com.massivecraft.factions.zcore.util.TextUtil;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -34,6 +37,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.NumberConversions;
 
 import java.text.SimpleDateFormat;
@@ -642,6 +646,13 @@ public class FactionsPlayerListener implements Listener {
             }
         } else if (corners.contains(to) && me.hasFaction() && me.canClaimForFaction(me.getFaction()) && (factionTo == null || factionTo.isWilderness())) {
             TitleAPI.getInstance().sendTitle(player, Text.toColor(TL.ENTERED_CORNER_TITLE.toString()), Text.toColor(TL.ENTERED_CORNER_SUBTITLE.toString()), 0, 60, 20);
+        }
+        if (changedFaction && factionTo != null) {
+            Map<BoosterType, Pair<Booster, Long>> boosters = factionTo.getBoosters();
+            Pair<Booster, Long> pair;
+            if ((pair = boosters.get(BoosterType.SLOWNESS_POTION_EFFECT_TRAP)) != null || (pair = boosters.get(BoosterType.WEAKNESS_POTION_EFFECT_TRAP)) != null) {
+                player.addPotionEffect((PotionEffect) pair.getLeft().getMeta().get("effect"));
+            }
         }
     }
 
