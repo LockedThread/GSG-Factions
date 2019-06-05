@@ -51,6 +51,14 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <relocations>
+                                <relocation>
+                                    <pattern>it.unimi.dsi.</pattern>
+                                    <shadedPattern>com.gameservergroup.gsgcore.relocations.</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
