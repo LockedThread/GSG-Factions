@@ -2,42 +2,86 @@ faction-boosters:
   5-percent-damage-increase-enemy-territory:
     booster-type: 'DAMAGE_INCREASE_IN_ENEMY_TERRITORY'
     time: 3600000
+    stop-message: '&cYour 5% damage increase in enemy territory has stopped!'
     meta:
       multiplier: 1.05
   10-percent-damage-increase-enemy-territory:
     booster-type: 'DAMAGE_INCREASE_IN_ENEMY_TERRITORY'
     time: 3600000
+    stop-message: '&cYour 10% damage increase in enemy territory has stopped!'
     meta:
       multiplier: 1.10
   15-percent-damage-increase-enemy-territory:
     booster-type: 'DAMAGE_INCREASE_IN_ENEMY_TERRITORY'
     time: 3600000
+    stop-message: '&cYour 15% damage increase in enemy territory has stopped!'
     meta:
       multiplier: 1.15
   5-percent-damage-reduction-enemy-territory:
     booster-type: 'DAMAGE_REDUCTION_IN_ENEMY_TERRITORY'
     time: 3600000
+    stop-message: '&cYour 5% damage reduction in enemy territory has stopped!'
     meta:
       multiplier: 0.95
   10-percent-damage-reduction-enemy-territory:
     booster-type: 'DAMAGE_REDUCTION_IN_ENEMY_TERRITORY'
     time: 3600000
+    stop-message: '&cYour 10% damage reduction in enemy territory has stopped!'
     meta:
       multiplier: 0.90
   15-percent-damage-reduction-enemy-territory:
     booster-type: 'DAMAGE_REDUCTION_IN_ENEMY_TERRITORY'
     time: 3600000
+    stop-message: '&cYour 15% damage reduction in enemy territory has stopped!'
+    meta:
+      multiplier: 0.85
+  5-percent-damage-increase-member-territory:
+    booster-type: 'DAMAGE_INCREASE_IN_MEMBER_TERRITORY'
+    time: 3600000
+    stop-message: '&cYour 5% damage increase in member territory has stopped!'
+    meta:
+      multiplier: 1.05
+  10-percent-damage-increase-member-territory:
+    booster-type: 'DAMAGE_INCREASE_IN_MEMBER_TERRITORY'
+    time: 3600000
+    stop-message: '&cYour 10% damage increase in member territory has stopped!'
+    meta:
+      multiplier: 1.10
+  15-percent-damage-increase-member-territory:
+    booster-type: 'DAMAGE_INCREASE_IN_MEMBER_TERRITORY'
+    time: 3600000
+    stop-message: '&cYour 15% damage increase in member territory has stopped!'
+    meta:
+      multiplier: 1.15
+  5-percent-damage-reduction-member-territory:
+    booster-type: 'DAMAGE_REDUCTION_IN_MEMBER_TERRITORY'
+    time: 3600000
+    stop-message: '&cYour 5% damage reduction in member territory has stopped!'
+    meta:
+      multiplier: 0.95
+  10-percent-damage-reduction-member-territory:
+    booster-type: 'DAMAGE_REDUCTION_IN_MEMBER_TERRITORY'
+    time: 3600000
+    stop-message: '&cYour 10% damage reduction in member territory has stopped!'
+    meta:
+      multiplier: 0.90
+  15-percent-damage-reduction-member-territory:
+    booster-type: 'DAMAGE_REDUCTION_IN_MEMBER_TERRITORY'
+    time: 3600000
+    stop-message: '&cYour 15% damage reduction in member territory has stopped!'
     meta:
       multiplier: 0.85
   75-second-slowness-effect-trap:
     booster-type: 'SLOWNESS_POTION_EFFECT_TRAP'
     time: 75000
+    stop-message: '&cYour 5% damage increase in enemy territory has stopped!'
     meta:
       time: 1500
       amplifier: 0
   75-second-weakness-effect-trap:
     booster-type: 'WEAKNESS_POTION_EFFECT_TRAP'
     time: 75000
+    stop-message: '&cYour 5% damage increase in enemy territory has stopped!'
     meta:
       time: 1500
       amplifier: 0

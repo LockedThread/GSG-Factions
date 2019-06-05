@@ -2,12 +2,12 @@ package com.massivecraft.factions.units;
 
 import com.gameservergroup.gsgcore.events.EventFilters;
 import com.gameservergroup.gsgcore.events.EventPost;
+import com.gameservergroup.gsgcore.pair.ImmutablePair;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.massivecraft.factions.*;
 import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.zcore.factionboosters.Booster;
 import com.massivecraft.factions.zcore.factionboosters.BoosterType;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -36,20 +36,28 @@ public class UnitBoosters extends Unit {
                         Relation relationTo = faction.getRelationTo(damagerFPlayer);
                         if (relationTo == Relation.MEMBER) {
                             System.out.println(2);
-                            Map<BoosterType, Pair<Booster, Long>> boosters = faction.getBoosters();
+                            Map<BoosterType, ImmutablePair<Booster, Long>> boosters = faction.getBoosters();
                             System.out.println("boosters = " + boosters);
                             if (!boosters.isEmpty()) {
                                 System.out.println(3);
                                 double multiplier = 1.0;
-                                Pair<Booster, Long> boosterLongPair;
+                                ImmutablePair<Booster, Long> boosterLongPair;
                                 if ((boosterLongPair = boosters.get(BoosterType.DAMAGE_INCREASE_IN_MEMBER_TERRITORY)) != null) {
-                                    multiplier *= (double) boosterLongPair.getKey().getMeta().get("multiplier");
-                                    System.out.println(4);
+                                    if (boosterLongPair.getValue() >= System.currentTimeMillis()) {
+                                        multiplier *= (double) boosterLongPair.getKey().getMeta().get("multiplier");
+                                        System.out.println(4);
+                                    } else {
+                                        boosterLongPair.getKey().stopBooster(faction);
+                                    }
                                 }
                                 System.out.println("boosterLongPair = " + boosterLongPair);
                                 if ((boosterLongPair = boosters.get(BoosterType.DAMAGE_REDUCTION_IN_MEMBER_TERRITORY)) != null) {
-                                    multiplier *= (double) boosterLongPair.getKey().getMeta().get("multiplier");
-                                    System.out.println(5);
+                                    if (boosterLongPair.getValue() >= System.currentTimeMillis()) {
+                                        multiplier *= (double) boosterLongPair.getKey().getMeta().get("multiplier");
+                                        System.out.println(5);
+                                    } else {
+                                        boosterLongPair.getKey().stopBooster(faction);
+                                    }
                                 }
                                 System.out.println("boosterLongPair = " + boosterLongPair);
                                 if (multiplier != 1.0) {
@@ -64,20 +72,28 @@ public class UnitBoosters extends Unit {
                             System.out.println("damagedFPlayer.getRelationTo(damagerFPlayer) = " + damagedFPlayer.getRelationTo(damagerFPlayer));
                             if (damagedFPlayer.getRelationTo(damagerFPlayer) == Relation.ENEMY) {
                                 System.out.println(8);
-                                Map<BoosterType, Pair<Booster, Long>> boosters = faction.getBoosters();
+                                Map<BoosterType, ImmutablePair<Booster, Long>> boosters = faction.getBoosters();
                                 System.out.println("boosters = " + boosters);
                                 if (!boosters.isEmpty()) {
                                     System.out.println(9);
                                     double multiplier = 1.0;
-                                    Pair<Booster, Long> boosterLongPair;
+                                    ImmutablePair<Booster, Long> boosterLongPair;
                                     if ((boosterLongPair = boosters.get(BoosterType.DAMAGE_INCREASE_IN_ENEMY_TERRITORY)) != null) {
-                                        multiplier *= (double) boosterLongPair.getKey().getMeta().get("multiplier");
-                                        System.out.println(10);
+                                        if (boosterLongPair.getValue() >= System.currentTimeMillis()) {
+                                            multiplier *= (double) boosterLongPair.getKey().getMeta().get("multiplier");
+                                            System.out.println(10);
+                                        } else {
+                                            boosterLongPair.getKey().stopBooster(faction);
+                                        }
                                     }
                                     System.out.println("boosterLongPair = " + boosterLongPair);
                                     if ((boosterLongPair = boosters.get(BoosterType.DAMAGE_REDUCTION_IN_ENEMY_TERRITORY)) != null) {
-                                        multiplier *= (double) boosterLongPair.getKey().getMeta().get("multiplier");
-                                        System.out.println(11);
+                                        if (boosterLongPair.getValue() >= System.currentTimeMillis()) {
+                                            multiplier *= (double) boosterLongPair.getKey().getMeta().get("multiplier");
+                                            System.out.println(11);
+                                        } else {
+                                            boosterLongPair.getKey().stopBooster(faction);
+                                        }
                                     }
                                     System.out.println("boosterLongPair = " + boosterLongPair);
                                     if (multiplier != 1.0) {

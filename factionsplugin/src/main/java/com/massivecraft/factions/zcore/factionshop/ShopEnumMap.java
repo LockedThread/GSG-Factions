@@ -23,9 +23,9 @@ public class ShopEnumMap extends EnumMap<ShopType, Shop> {
             } else if (shopType == ShopType.CATALOG) {
                 shop = new Shop(P.p.getConfig().getConfigurationSection("faction-shops.catalog"));
             } else if (shopType == ShopType.DEFENSIVE) {
-                shop = new Shop(P.p.getConfig().getConfigurationSection("faction-shops.defensive"));
+                shop = new Shop(P.p.getConfig().getConfigurationSection("faction-shops.defensive-shop"));
             } else if (shopType == ShopType.OFFENSIVE) {
-                shop = new Shop(P.p.getConfig().getConfigurationSection("faction-shops.offensive"));
+                shop = new Shop(P.p.getConfig().getConfigurationSection("faction-shops.offensive-shop"));
             }
             put(shopType, shop);
             return shop;

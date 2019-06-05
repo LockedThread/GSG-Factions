@@ -22,10 +22,46 @@ faction-shops:
           - 'DURABILITY:4'
         itemflags:
           - 'HIDE_ENCHANTS'
-        slot: 4
+        slot: 2
         options:
           on-click:
             menu-to-open: 'BLACK_MARKET'
+            commands:
+              - 'broadcast {player} is gay'
+              - '@message A message using @message'
+              - '@broadcast A message using @broadcast'
+      offensive-shop-item:
+        name: '&e&l(*) &eOffensive Shop &e&l(*)'
+        lore:
+          - ''
+          - ' &eClick this to open the Offensive Shop'
+          - ''
+        enchants:
+          - 'DURABILITY:4'
+        itemflags:
+          - 'HIDE_ENCHANTS'
+        slot: 4
+        options:
+          on-click:
+            menu-to-open: 'OFFENSIVE'
+            commands:
+              - 'broadcast {player} is gay'
+              - '@message A message using @message'
+              - '@broadcast A message using @broadcast'
+      defensive-shop-item:
+        name: '&e&l(*) &eDefensive Shop &e&l(*)'
+        lore:
+          - ''
+          - ' &eClick this to open the Defensive Shop'
+          - ''
+        enchants:
+          - 'DURABILITY:4'
+        itemflags:
+          - 'HIDE_ENCHANTS'
+        slot: 6
+        options:
+          on-click:
+            menu-to-open: 'DEFENSIVE'
             commands:
               - 'broadcast {player} is gay'
               - '@message A message using @message'
@@ -35,7 +71,7 @@ faction-shops:
     size: 9
     shop-type: 'BLACK_MARKET'
     items:
-      irongolem-spawner:
+      crap-spawner:
         name: '&e&l(*) &eSome gay &e&l(*)'
         lore:
           - ''
@@ -56,7 +92,58 @@ faction-shops:
               - '@message A message using @message'
               - '@broadcast A message using @broadcast'
               - 'ss give {player} irongolem'
-
+  defensive-shop:
+    title: '&cDefensive Shop'
+    size: 9
+    shop-type: 'DEFENSIVE'
+    items:
+      shit-spawner:
+        name: '&e&l(*) &eSome gay &e&l(*)'
+        lore:
+          - ''
+          - ' &eClick this to be gay'
+          - ''
+        enchants:
+          - 'DURABILITY:4'
+        itemflags:
+          - 'HIDE_ENCHANTS'
+        slot: 4
+        options:
+          on-click:
+            cooldown-ms: 60000
+            point-price: 20
+            menu-to-open: ''
+            commands:
+              - 'broadcast {player} is gay'
+              - '@message A message using @message'
+              - '@broadcast A message using @broadcast'
+              - 'ss give {player} irongolem'
+  offensive-shop:
+    title: '&cOffensive Shop'
+    size: 9
+    shop-type: 'OFFENSIVE'
+    items:
+      yourmom-spawner:
+        name: '&e&l(*) &eSome gay &e&l(*)'
+        lore:
+          - ''
+          - ' &eClick this to be gay'
+          - ''
+        enchants:
+          - 'DURABILITY:4'
+        itemflags:
+          - 'HIDE_ENCHANTS'
+        slot: 4
+        options:
+          on-click:
+            cooldown-ms: 60000
+            point-price: 20
+            menu-to-open: ''
+            commands:
+              - 'broadcast {player} is gay'
+              - '@message A message using @message'
+              - '@broadcast A message using @broadcast'
+              - 'ss give {player} irongolem'
 
 faction-upgrades:
   enabled: true

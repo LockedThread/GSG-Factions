@@ -1,9 +1,11 @@
 package com.massivecraft.factions.zcore.factionboosters;
 
+import com.gameservergroup.gsgcore.utils.Text;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.P;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -14,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Booster implements IBooster {
@@ -26,20 +27,22 @@ public class Booster implements IBooster {
     private final BoosterType boosterType;
     private final Map<String, Object> meta;
     private final long time;
+    private final String stopMessage;
     private final int hash;
 
     public Booster(ConfigurationSection section) {
         this(section.getName(),
                 BoosterType.valueOf(section.getString("booster-type").toUpperCase()),
                 section.getConfigurationSection("meta").getKeys(false).stream().collect(Collectors.toMap(key -> key, key -> section.get("meta." + key), (a, b) -> b)),
-                section.getInt("time"));
+                section.getInt("time"), section.getString("stop-message"));
     }
 
-    public Booster(String id, BoosterType boosterType, Map<String, Object> meta, long time) {
+    public Booster(String id, BoosterType boosterType, Map<String, Object> meta, long time, String stopMessage) {
         this.id = id;
         this.boosterType = boosterType;
         this.meta = meta;
         this.time = time;
+        this.stopMessage = stopMessage;
 
         if (boosterType == BoosterType.SLOWNESS_POTION_EFFECT_TRAP) {
             meta.put("effect", new PotionEffect(PotionEffectType.SLOW, (int) meta.get("time"), (int) meta.get("amplifier")));
@@ -48,10 +51,25 @@ public class Booster implements IBooster {
         }
 
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (boosterType != null ? boosterType.hashCode() : 0);
         result = 31 * result + (meta != null ? meta.hashCode() : 0);
         result = 31 * result + (int) (time ^ (time >>> 32));
-        this.hash = result;
+        result = 31 * result + (stopMessage != null ? stopMessage.hashCode() : 0);
+        hash = result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Booster booster = (Booster) o;
+
+        return hash == booster.hash && boosterType == booster.boosterType;
+    }
+
+    @Override
+    public int hashCode() {
+        return hash;
     }
 
     @Override
@@ -98,19 +116,6 @@ public class Booster implements IBooster {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Booster booster = (Booster) o;
-        return time == booster.time && Objects.equals(id, booster.id) && boosterType == booster.boosterType && hash == booster.hash;
-    }
-
-    @Override
-    public int hashCode() {
-        return hash;
-    }
-
-    @Override
     public String toString() {
         return "Booster{" +
                 "id='" + id + '\'' +
@@ -133,6 +138,14 @@ public class Booster implements IBooster {
     @Override
     public void stopBooster(Faction faction) {
         faction.getBoosters().remove(boosterType);
+        if (stopMessage != null && !stopMessage.isEmpty()) {
+            for (Player onlinePlayer : faction.getOnlinePlayers()) {
+                onlinePlayer.sendMessage(Text.toColor(stopMessage.replace("{player}", onlinePlayer.getName()).replace("{faction}", faction.getTag())));
+            }
+        }
     }
 
+    public String getStopMessage() {
+        return stopMessage;
+    }
 }

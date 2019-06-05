@@ -1,10 +1,10 @@
 package com.massivecraft.factions.cmd;
 
+import com.gameservergroup.gsgcore.pair.Pair;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.zcore.factionboosters.Booster;
 import com.massivecraft.factions.zcore.util.TL;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -1,9 +1,7 @@
 package com.massivecraft.factions.zcore;
 
 import com.gameservergroup.gsgcore.plugin.Module;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.InstanceCreator;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.Conf;
@@ -31,8 +29,22 @@ import java.util.logging.Level;
 
 public abstract class MPlugin extends Module {
 
+    private static final List<String> EXCLUSIONS = new ArrayList<String>() {{
+        add("serialVersionUID");
+    }};
     // Persist related
     public final Gson gson = this.getGsonBuilder()
+            .setExclusionStrategies(new ExclusionStrategy() {
+                @Override
+                public boolean shouldSkipField(FieldAttributes f) {
+                    return EXCLUSIONS.contains(f.getName());
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return false;
+                }
+            })
             .registerTypeAdapter(EnumMap.class, (InstanceCreator<EnumMap>) type -> new EnumMap((Class<?>) (((ParameterizedType) type).getActualTypeArguments())[0]))
             .registerTypeAdapter(FactionChest.class, new FactionChestAdapter())
             .create();

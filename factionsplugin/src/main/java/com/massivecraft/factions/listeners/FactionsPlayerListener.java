@@ -1,5 +1,6 @@
 package com.massivecraft.factions.listeners;
 
+import com.gameservergroup.gsgcore.pair.ImmutablePair;
 import com.gameservergroup.gsgcore.utils.Text;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -25,7 +26,6 @@ import com.massivecraft.factions.zcore.util.TextUtil;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -648,10 +648,14 @@ public class FactionsPlayerListener implements Listener {
             TitleAPI.getInstance().sendTitle(player, Text.toColor(TL.ENTERED_CORNER_TITLE.toString()), Text.toColor(TL.ENTERED_CORNER_SUBTITLE.toString()), 0, 60, 20);
         }
         if (changedFaction && factionTo != null) {
-            Map<BoosterType, Pair<Booster, Long>> boosters = factionTo.getBoosters();
-            Pair<Booster, Long> pair;
+            Map<BoosterType, ImmutablePair<Booster, Long>> boosters = factionTo.getBoosters();
+            ImmutablePair<Booster, Long> pair;
             if ((pair = boosters.get(BoosterType.SLOWNESS_POTION_EFFECT_TRAP)) != null || (pair = boosters.get(BoosterType.WEAKNESS_POTION_EFFECT_TRAP)) != null) {
-                player.addPotionEffect((PotionEffect) pair.getLeft().getMeta().get("effect"));
+                if (pair.getValue() >= System.currentTimeMillis()) {
+                    player.addPotionEffect((PotionEffect) pair.getKey().getMeta().get("effect"));
+                } else {
+                    pair.getKey().stopBooster(factionTo);
+                }
             }
         }
     }
