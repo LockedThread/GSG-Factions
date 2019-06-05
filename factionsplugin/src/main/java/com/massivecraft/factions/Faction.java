@@ -16,7 +16,7 @@ import com.massivecraft.factions.zcore.factionwarps.WarpMenu;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -33,7 +33,7 @@ public interface Faction extends EconomyParticipator {
 
     public void setBooster(Booster booster);
 
-    public Map<BoosterType, Pair<Booster, Long>> getBoosters();
+    public Map<BoosterType, ImmutablePair<Booster, Long>> getBoosters();
 
     public Map<String, Long> getShopCooldown();
 

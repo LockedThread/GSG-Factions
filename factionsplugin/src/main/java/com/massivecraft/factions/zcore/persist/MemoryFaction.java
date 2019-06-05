@@ -20,7 +20,7 @@ import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.util.TL;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -66,7 +66,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected Set<StrikeInfo> strikes = new HashSet<>();
     protected List<String> altInvites = new ArrayList<>();
     protected Map<String, Long> shopCooldown;
-    protected Map<BoosterType, Pair<Booster, Long>> boosters;
+    protected Map<BoosterType, ImmutablePair<Booster, Long>> boosters;
 
     protected transient long lastPlayerLoggedOffTime;
     protected transient Set<FPlayer> fplayers = new HashSet<>();
@@ -155,11 +155,11 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
 
     @Override
     public void setBooster(Booster booster) {
-        getBoosters().put(booster.getBoosterType(), Pair.of(booster, System.currentTimeMillis() + booster.getTime()));
+        getBoosters().put(booster.getBoosterType(), new ImmutablePair<>(booster, System.currentTimeMillis() + booster.getTime()));
     }
 
     @Override
-    public Map<BoosterType, Pair<Booster, Long>> getBoosters() {
+    public Map<BoosterType, ImmutablePair<Booster, Long>> getBoosters() {
         return boosters;
     }
 
