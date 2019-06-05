@@ -37,11 +37,15 @@ public class ShopItem extends MenuItem {
 
     public void execute(Faction faction, Player player) {
         for (String command : commands) {
-            String replace = command.replace("{player}", player.getName());
+            String replace = command.replace("{player}", player.getName()).replace("{faction}", faction.getTag());
             if (replace.startsWith("@broadcast")) {
                 Bukkit.broadcastMessage(Text.toColor(replace.substring(11)));
             } else if (replace.startsWith("@message")) {
                 player.sendMessage(Text.toColor(replace.substring(8)));
+            } else if (replace.startsWith("@factionbroadcast")) {
+                for (Player onlinePlayer : faction.getOnlinePlayers()) {
+                    onlinePlayer.sendMessage(Text.toColor(replace.substring(17)));
+                }
             } else {
                 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), replace);
             }
