@@ -41,6 +41,8 @@ public enum TL {
     COMMAND_POINTS_GET("&eYou faction has &f%1$d &epoints"),
     COMMAND_SETPOINTS_DESCRIPTION("Allows admins to set faction points"),
     COMMAND_SETPOINTS_SET("&eSet points for %1$s to %2$d"),
+    COMMAND_GIVEPOINTS_DESCRIPTION("Allows admins to give faction points"),
+    COMMAND_GIVEPOINTS_SET("&eYou gave %1$d points to %2$s"),
     COMMAND_TRAIL_DESCRIPTION("Allows players to toggle and change their flight trail."),
 
     COMMAND_FLY_DESCRIPTION("Enter or leave Faction flight mode"),

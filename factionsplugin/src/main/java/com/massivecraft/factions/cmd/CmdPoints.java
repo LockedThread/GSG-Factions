@@ -1,5 +1,6 @@
 package com.massivecraft.factions.cmd;
 
+import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.zcore.util.TL;
 
@@ -14,6 +15,7 @@ public class CmdPoints extends FCommand {
         senderMustBeMember = true;
         senderMustBeModerator = false;
         senderMustBeAdmin = false;
+        this.optionalArgs.put("faction", "you");
     }
 
     @Override
@@ -23,6 +25,7 @@ public class CmdPoints extends FCommand {
 
     @Override
     public void perform() {
-        msg(TL.COMMAND_POINTS_GET.format(myFaction.getPoints()));
+        Faction faction = argAsFaction(0, myFaction);
+        msg(TL.COMMAND_POINTS_GET.format(faction.getPoints()));
     }
 }
