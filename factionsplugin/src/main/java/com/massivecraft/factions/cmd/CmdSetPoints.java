@@ -11,7 +11,7 @@ public class CmdSetPoints extends FCommand {
         this.aliases.add("setpoints");
         this.permission = Permission.SETPOINTS.node;
 
-        senderMustBePlayer = true;
+        senderMustBePlayer = false;
         senderMustBeMember = false;
         senderMustBeModerator = false;
         senderMustBeAdmin = false;
