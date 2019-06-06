@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Builds all of the maven projects
 mvn clean install
 
@@ -14,5 +15,9 @@ mv --force --verbose ./gsgprinter/target/gsgprinter.jar C:\\Users\\Admin\\Deskto
 mv --force --verbose ./gsgtrenchtools/target/gsgtrenchtools.jar C:\\Users\\Admin\\Desktop\\GSG-Factions\\plugins
 
 mv --force --verbose ./gsgvouchers/target/gsgvouchers.jar C:\\Users\\Admin\\Desktop\\GSG-Factions\\plugins
+
+mv --force --verbose ./frontierturrets/target/frontierturrets.jar C:\\Users\\Admin\\Desktop\\GSG-Factions\\plugins
+
+mv --force --verbose ./frontiercore/target/frontiercore.jar C:\\Users\\Admin\\Desktop\\GSG-Factions\\plugins
 
 #mv --force --verbose ./gsgoutpost/target/gsgoutpost.jar C:\\Users\\Admin\\Desktop\\GSG-Factions\\plugins
