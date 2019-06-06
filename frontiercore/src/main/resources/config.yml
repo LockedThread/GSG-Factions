@@ -1,0 +1,560 @@
+# Explanation of chances:
+# chances are based on a random number between 0 and 100. With this being said
+# let's say that the random number picked at the time is 50 and the chance in the config is 40
+# you will not get the reward because the random number must be less than the chance in the config.
+
+
+# A less random more efficient random
+# Documentation: http://dsiutils.di.unimi.it/docs/it/unimi/dsi/util/XoRoShiRo128PlusRandom.html
+# This is only compatible with some spigot forks and recent versions of Paper.
+random-use-optimized-psuedo-random: true
+
+grace-period: false
+
+auto-respawn:
+  enabled: true
+  delay: 2
+
+items:
+  lightningwand-item:
+    material: 'GOLD_HOE'
+    name: '&eLightning Wand'
+    lore:
+      - ''
+      - '&eRight click this somewhere to strike lightning!'
+      - ''
+      - '&eUses: &f{uses}'
+      - ''
+    options:
+      max-iterator-distance: 48
+      negative-1-keyword: '&aUNLIMITED'
+  sandwand-item:
+    material: 'WOOD_HOE'
+    name: '&cSand Wand'
+    lore:
+      - ''
+      - '&cRight click this to destroy all the sand in this x/y coordinate!'
+      - ''
+      - '&eUses: &f{uses}'
+      - ''
+    options:
+      negative-1-keyword: '&aUNLIMITED'
+  throwablecegg-item:
+    material: 'MONSTER_EGG'
+    data: 50
+    name: '&aThrowable Creeper Egg'
+    lore:
+      - ''
+      - ' &aRight click this egg to throw a creeper!'
+      - ''
+    options:
+      explosion-delay: 40
+      egg-name: '&cTHROWABLE CREEPER EGG'
+
+#Header for all rewards
+rewards:
+  verbose-ops: false
+  mining:
+    only-survival: true
+    event-priority: 'MONITOR'
+    enabled: true
+    rewards:
+      #Meaningless unique identifier for the reward
+      irongolem-spawner:
+        #The chance to get an irongolem spawner
+        chance: 10.5
+        commands:
+          - 'ss give {player} irongolem'
+          - 'broadcast &c&l{player} HAS WON A IRONGOLEM WHILST &e&l{reward-type}'
+      apple:
+        chance: 4.0
+        commands:
+          - 'give {player} apple'
+          - 'broadcast &c&l{player} HAS WON AN APPLE WHILST &e&l{reward-type}'
+      killyourself:
+        chance: 1.0
+        commands:
+          - 'kill {player}'
+          - 'broadcast &c&l{player} HAS KILLED THEMSELVES WHILST &e&l{reward-type}'
+      iron-ingot:
+        chance: 99.0
+        commands:
+          - 'kill {player}'
+          - 'broadcast &c&l{player} HAS BEEN GIVEN AN IRON INGOT WHILST &e&l{reward-type}'
+  fishing:
+    only-survival: true
+    event-priority: 'MONITOR'
+    enabled: true
+    rewards:
+      #Meaningless unique identifier for the reward
+      irongolem-spawner:
+        #The chance to get an irongolem spawner
+        chance: 10.5
+        commands:
+          - 'ss give {player} irongolem'
+          - 'broadcast &c&l{player} HAS WON A IRONGOLEM WHILST &e&l{reward-type}'
+      apple:
+        chance: 4.0
+        commands:
+          - 'give {player} apple'
+          - 'broadcast &c&l{player} HAS WON AN APPLE WHILST &e&l{reward-type}'
+      killyourself:
+        chance: 1.0
+        commands:
+          - 'kill {player}'
+          - 'broadcast &c&l{player} HAS KILLED THEMSELVES WHILST &e&l{reward-type}'
+      iron-ingot:
+        chance: 99.0
+        commands:
+          - 'kill {player}'
+          - 'broadcast &c&l{player} HAS BEEN GIVEN AN IRON INGOT WHILST &e&l{reward-type}'
+trivia:
+  messages:
+    new-trivia-question: '&8[&c&lFrontier&b&lTrivia&8] &c{question} Answer correctly to win rewards!'
+
+  timer-in-minutes: 5
+  #
+  # Answer types:
+  # ANY_EQUALS: The answer must in-case-sensitively match
+  # ANY_CONTAINS: The answer must in-case-sensitively contain one of the Answers
+  # ALL_CONTAINS: The answer must contain all of the Answers in-case-sensitively
+  # ANY_REGEX_MATCHES: If any of the Answers (treated as regex patterns) match the answer
+  # ALL_REGEX_MATCHES: If all of the Answers (treated as regex patterns) match the answer
+  #
+  questions:
+    1:
+      question: "Who created Minecraft?"
+      display-answer: "Notch"
+      answer-type: "ANY_EQUALS"
+      answers: [
+        "Notch"
+      ]
+    2:
+      question: "How many owners are there?"
+      display-answer: "One"
+      answer-type: "ANY_EQUALS"
+      answers: [
+        "1",
+        "One"
+      ]
+    3:
+      question: "When was minecraft created?"
+      display-answer: "May 17th 2009"
+      answer-type: "ANY_EQUALS"
+      answers: [
+        "May 2009",
+        "2009",
+        "5/17/2009",
+        "17/5/2009",
+        "May 17th 2009"
+      ]
+    4:
+      question: "Which 3 items are used for crafting a redstone comparator?"
+      display-answer: "Stone, Quartz & Redstone torches"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "Stone",
+        "Quartz",
+        "Redstone Torch"
+      ]
+    5:
+      question: "How much wheat is required to bake 32 cookies?"
+      display-answer: "Eight"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "8",
+        "Eight"
+      ]
+    6:
+      question: "How many diamonds are needed to craft a full Diamond armor set?"
+      display-answer: "Twenty Four"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "24",
+        "Twenty Four"
+      ]
+    7:
+      question: "How many items can you hold in a full inventory space?"
+      display-answer: "2,304 Items"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "2304",
+        "2,304"
+      ]
+    8:
+      question: "What was Notch originally trying to make when he made the creeper?"
+      display-answer: "Pig"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "Pig"
+      ]
+    9:
+      question: "What did Minecraft used to be called?"
+      display-answer: "Cave Game"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "Cave",
+        "Game"
+      ]
+    10:
+      question: "How many blocks can a redstone signal travel without running out of power? (with no repeaters)"
+      display-answer: "15 Blocks"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "15",
+        "fifteen"
+      ]
+    13:
+      question: "What does Notch drop if you kill him in multiplayer, besides his inventory?"
+      display-answer: "A apple"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "Apple"
+      ]
+    14:
+      question: "What animal was used for the sound of a ghast?"
+      display-answer: "A cat"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "Cat"
+      ]
+    15:
+      question: "Has the pigman ever been removed from the game?"
+      display-answer: "No"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "No"
+      ]
+    16:
+      question: "What happens wwhen a creeper is struck by lighning?"
+      display-answer: "It becomes charged"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "it",
+        "becomes",
+        "charged"
+      ]
+    17:
+      question: "What is the rarest mineral in the game?"
+      display-answer: "Emerald"
+      answer-type: "ANY_EQUALS"
+      answers: [
+        "Emerald"
+      ]
+    18:
+      question: "What film was the iron golem mob inspired by?"
+      display-answer: "Laputa"
+      answer-type: "ANY_EQUALS"
+      answers: [
+        "Laputa"
+      ]
+    19:
+      question: "Can sugar cane be bone mealed?"
+      display-answer: "No"
+      answer-type: "ANY_EQUALS"
+      answers: [
+        "No"
+      ]
+    20:
+      question: "How many items can be used to make potions?"
+      display-answer: "13"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "13",
+        "thirteen"
+      ]
+    21:
+      question: "How long did it take for Minecraft to be created?"
+      display-answer: "6 Days"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "6",
+        "days"
+      ]
+    22:
+      question: "What will stop an enderman becoming hostile when you look at it in the face?"
+      display-answer: "A pumpkin"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "pumpkin"
+      ]
+    23:
+      question: "Which new food does the sheep drop?"
+      display-answer: "Mutton"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "mutton"
+      ]
+    24:
+      question: "What two colours of clothes do zombie wear? (default resource pack)"
+      display-answer: "Blue and Green"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "blue",
+        "green"
+      ]
+    25:
+      question: "What does the Creeper drop after you kill it?"
+      display-answer: "Gunpowder"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "gunpowder"
+      ]
+    26:
+      question: "What mobs scare the creeper?"
+      display-answer: "Ocelot"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "ocelot"
+      ]
+    27:
+      question: "At what stage of the game were ghasts added in?"
+      display-answer: "Alpha"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "alpha"
+      ]
+    28:
+      question: "What do skeletons use to kill players?"
+      display-answer: "Bows"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "bows"
+      ]
+    29:
+      question: "What do skeletons use to kill players?"
+      display-answer: "Bows"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "bows"
+      ]
+    30:
+      question: "How much wool is neeeded to craft a bed?"
+      display-answer: "Three"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "3",
+        "three"
+      ]
+    31:
+      question: "What mob drops ink sacks?"
+      display-answer: "Squid"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "squid"
+      ]
+    32:
+      question: "What mob is known to produce demented noises?"
+      display-answer: "Zombies"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "zombies"
+      ]
+    33:
+      question: "In 1.8 what mob spawns in water?"
+      display-answer: "Squid"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "squid"
+      ]
+    34:
+      question: "What genre is minecraft?"
+      display-answer: "Sandbox"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "sandbox"
+      ]
+    35:
+      question: "How many hearts does a chicken have?"
+      display-answer: "Four"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "4",
+        "four"
+      ]
+    36:
+      question: "What coding language minecraft written in?"
+      display-answer: "Java"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "java"
+      ]
+    37:
+      question: "What set of armour can't be crafted?"
+      display-answer: "Chain"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "chain"
+      ]
+    38:
+      question: "What is the second largest mob?"
+      display-answer: "Ghast"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "ghast"
+      ]
+    39:
+      question: "What dimension do enderman most commanly spawn in?"
+      display-answer: "End"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "end"
+      ]
+    40:
+      question: "What protects you from 12% of the damage?"
+      display-answer: "Helmet"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "helmet"
+      ]
+    41:
+      question: "How many wooden planks do you need to craft 4 sticks?"
+      display-answer: "Two"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "2",
+        "Two"
+      ]
+    42:
+      question: "What update were shields added in?"
+      display-answer: "Combat update (1.9)"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "1.9",
+        "Combat update"
+      ]
+    43:
+      question: "How much soul sand is needed to spawn the wither?"
+      display-answer: "Four"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "4",
+        "four"
+      ]
+    44:
+      question: "How many minutes does it take a baby villager to grow up?"
+      display-answer: "Twenty"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "20",
+        "twenty"
+      ]
+    45:
+      question: "What does it take to cure a zombie villager?"
+      display-answer: "Potion of weakness and a golden apple"
+      answer-type: "ALL_CONTAINS"
+      answers: [
+        "Potion of weakness",
+        "golden apple"
+      ]
+    46:
+      question: "What is the highest layer diamonds can be found at?"
+      display-answer: "Sixteen"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "16",
+        "sixteen"
+      ]
+    47:
+      question: "How much obsidian does it take to make a nether portal?"
+      display-answer: "10"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "10",
+        "ten"
+      ]
+    48:
+      question: "What is the smallest animal in minecraft (1.8)?"
+      display-answer: "Silverfish"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "silverfish"
+      ]
+    49:
+      question: "How much time does it take for tnt to explode?"
+      display-answer: "4 Seconds"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "4 seconds",
+        "4s"
+      ]
+    50:
+      question: "What percentage does leggins protect you from?"
+      display-answer: "25%"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "25%",
+        "25"
+      ]
+    51:
+      question: "What is the length of the End credits?"
+      display-answer: "9 minutes and 28 seconds"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "9m 28s",
+        "9minutes 28seconds",
+        "9 minutes 28 seconds",
+        "9 minutes and 28 seconds"
+      ]
+    52:
+      question: "How can you disable a nether portal without breaking any blocks?"
+      display-answer: "Water or Lava"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "water",
+        "lava"
+      ]
+    53:
+      question: "How many hearts is 1 hp?"
+      display-answer: "Half a heart"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "half",
+        "0.5",
+        ".5"
+      ]
+    54:
+      question: "Who wrote all of these new trivia questions?"
+      display-answer: "Frosty"
+      answer-type: "ANY_CONTAINS"
+      answers: [
+        "frosty"
+      ]
+
+  # Rewards
+  rewards:
+    1:
+      chance: 25
+      commands: [
+        "eco give {player} 10000"
+      ]
+    2:
+      chance: 15
+      commands: [
+        "eco give {player} 15000"
+      ]
+    3:
+      chance: 3
+      commands: [
+        "cc give p blizzard 1 {player}"
+      ]
+    4:
+      chance: 1.5
+      commands: [
+        "cc give p Godly 1 {player}"
+      ]
+    5:
+      chance: 0.5
+      commands: [
+        "cc give p Tempest 1 {player}"
+      ]
+    6:
+      chance: 10
+      commands: [
+        "eco give {player} 25000"
+      ]
+    7:
+      chance: 8
+      commands: [
+        "eco give {player} 50000"
+      ]

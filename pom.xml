@@ -19,6 +19,7 @@
         <module>gsgvouchers</module>
         <module>gsgtrenchtools</module>
         <module>gsgoutpost</module>
+        <module>frontiercore</module>
     </modules>
 
     <dependencies>
