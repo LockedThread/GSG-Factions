@@ -1,0 +1,5 @@
+name: FrontierTurrets
+main: dev.lockedthread.frontierfactions.frontierturrets.FrontierTurrets
+version: 1.0
+author: LockedThread
+depend: [GSGCore, Factions]

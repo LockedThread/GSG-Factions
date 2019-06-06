@@ -1,0 +1,11 @@
+turrets:
+  health:
+    max: 100
+    tick:
+      increase:
+        amount: 2.0
+        tick-interval: 100
+      decrease: 1.0
+  damage:
+    tick-interval: 40
+    amount: 1.0

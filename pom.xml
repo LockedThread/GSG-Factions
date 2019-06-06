@@ -20,6 +20,7 @@
         <module>gsgtrenchtools</module>
         <module>gsgoutpost</module>
         <module>frontiercore</module>
+        <module>frontierturrets</module>
     </modules>
 
     <dependencies>
