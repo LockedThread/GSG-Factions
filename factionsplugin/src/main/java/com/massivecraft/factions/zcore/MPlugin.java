@@ -37,6 +37,9 @@ public abstract class MPlugin extends Module {
             .setExclusionStrategies(new ExclusionStrategy() {
                 @Override
                 public boolean shouldSkipField(FieldAttributes f) {
+                    if (f.hasModifier(Modifier.STATIC) || f.hasModifier(Modifier.TRANSIENT)) {
+                        return true;
+                    }
                     return EXCLUSIONS.contains(f.getName());
                 }
 
