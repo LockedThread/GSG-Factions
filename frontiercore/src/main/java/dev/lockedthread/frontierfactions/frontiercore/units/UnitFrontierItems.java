@@ -1,10 +1,11 @@
-package frontierfactions.units;
+package dev.lockedthread.frontierfactions.frontiercore.units;
 
 import com.gameservergroup.gsgcore.items.CustomItem;
 import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.gameservergroup.gsgcore.utils.NBTItem;
-import frontierfactions.FrontierCore;
+import com.gameservergroup.gsgcore.utils.Text;
+import dev.lockedthread.frontierfactions.frontiercore.FrontierCore;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -170,7 +171,10 @@ public class UnitFrontierItems extends Unit {
 
         CustomItem throwableCegg = CustomItem.of(FRONTIER_CORE, FRONTIER_CORE.getConfig().getConfigurationSection("items.throwablecegg-item"));
         throwableCegg.setInteractEventConsumer(event -> {
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (FRONTIER_CORE.getUnitGracePeriod().isGracePeriod()) {
+                event.getPlayer().sendMessage(Text.toColor("Unable to use this whilst still in grace period"));
+                event.setCancelled(true);
+            } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 event.setCancelled(true);
             } else if (event.getAction() == Action.RIGHT_CLICK_AIR) {
                 Item item = event.getPlayer().getWorld().dropItem(event.getPlayer().getEyeLocation(), itemStack);

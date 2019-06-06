@@ -1,10 +1,10 @@
-package frontierfactions.units;
+package dev.lockedthread.frontierfactions.frontiercore.units;
 
 import com.gameservergroup.gsgcore.commands.post.CommandPost;
 import com.gameservergroup.gsgcore.events.EventPost;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.gameservergroup.gsgcore.utils.CallBack;
-import frontierfactions.FrontierCore;
+import dev.lockedthread.frontierfactions.frontiercore.FrontierCore;
 import org.bukkit.Material;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
@@ -69,5 +69,9 @@ public class UnitGracePeriod extends Unit {
                         commandHandler.reply("&cThere is no option for a length of 2 subcommand for /graceperiod");
                     }
                 }).post(FrontierCore.getInstance(), "graceperiod");
+    }
+
+    public boolean isGracePeriod() {
+        return gracePeriod;
     }
 }

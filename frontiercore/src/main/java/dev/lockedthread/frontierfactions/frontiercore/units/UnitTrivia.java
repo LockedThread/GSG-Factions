@@ -1,10 +1,10 @@
-package frontierfactions.units;
+package dev.lockedthread.frontierfactions.frontiercore.units;
 
 import com.gameservergroup.gsgcore.events.EventPost;
 import com.gameservergroup.gsgcore.units.Unit;
-import frontierfactions.FrontierCore;
-import frontierfactions.tasks.TaskTriviaQuestionPicker;
-import frontierfactions.trivia.TriviaQuestion;
+import dev.lockedthread.frontierfactions.frontiercore.FrontierCore;
+import dev.lockedthread.frontierfactions.frontiercore.tasks.TaskTriviaQuestionPicker;
+import dev.lockedthread.frontierfactions.frontiercore.trivia.TriviaQuestion;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 

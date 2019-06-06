@@ -1,4 +1,4 @@
-package frontierfactions.rewards;
+package dev.lockedthread.frontierfactions.frontiercore.rewards;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;

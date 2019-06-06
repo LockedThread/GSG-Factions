@@ -1,12 +1,12 @@
-package frontierfactions.units;
+package dev.lockedthread.frontierfactions.frontiercore.units;
 
 import com.gameservergroup.gsgcore.events.EventFilters;
 import com.gameservergroup.gsgcore.events.EventPost;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.gameservergroup.gsgcore.utils.Text;
-import frontierfactions.FrontierCore;
-import frontierfactions.rewards.Reward;
-import frontierfactions.rewards.RewardType;
+import dev.lockedthread.frontierfactions.frontiercore.FrontierCore;
+import dev.lockedthread.frontierfactions.frontiercore.rewards.Reward;
+import dev.lockedthread.frontierfactions.frontiercore.rewards.RewardType;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;

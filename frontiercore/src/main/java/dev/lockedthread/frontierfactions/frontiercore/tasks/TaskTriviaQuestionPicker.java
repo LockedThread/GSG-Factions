@@ -1,7 +1,7 @@
-package frontierfactions.tasks;
+package dev.lockedthread.frontierfactions.frontiercore.tasks;
 
-import frontierfactions.FrontierCore;
-import frontierfactions.units.UnitTrivia;
+import dev.lockedthread.frontierfactions.frontiercore.FrontierCore;
+import dev.lockedthread.frontierfactions.frontiercore.units.UnitTrivia;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class TaskTriviaQuestionPicker extends BukkitRunnable {

@@ -1,4 +1,4 @@
-package frontierfactions.trivia;
+package dev.lockedthread.frontierfactions.frontiercore.trivia;
 
 public enum TrivaAnswerType {
 

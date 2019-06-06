@@ -1,8 +1,8 @@
-package frontierfactions.units;
+package dev.lockedthread.frontierfactions.frontiercore.units;
 
 import com.gameservergroup.gsgcore.events.EventPost;
 import com.gameservergroup.gsgcore.units.Unit;
-import frontierfactions.FrontierCore;
+import dev.lockedthread.frontierfactions.frontiercore.FrontierCore;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class UnitAutoRespawn extends Unit {

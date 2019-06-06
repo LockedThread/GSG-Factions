@@ -1,12 +1,12 @@
-package frontierfactions;
+package dev.lockedthread.frontierfactions.frontiercore;
 
 
 import com.gameservergroup.gsgcore.plugin.Module;
-import frontierfactions.rewards.Reward;
-import frontierfactions.rewards.RewardType;
-import frontierfactions.trivia.TrivaAnswerType;
-import frontierfactions.trivia.TriviaQuestion;
-import frontierfactions.units.*;
+import dev.lockedthread.frontierfactions.frontiercore.rewards.Reward;
+import dev.lockedthread.frontierfactions.frontiercore.rewards.RewardType;
+import dev.lockedthread.frontierfactions.frontiercore.trivia.TrivaAnswerType;
+import dev.lockedthread.frontierfactions.frontiercore.trivia.TriviaQuestion;
+import dev.lockedthread.frontierfactions.frontiercore.units.*;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
@@ -20,6 +20,7 @@ public class FrontierCore extends Module {
     private TriviaQuestion[] triviaQuestions;
     private Random random;
     private boolean verbose;
+    private UnitGracePeriod unitGracePeriod;
 
     public static FrontierCore getInstance() {
         return instance;
@@ -49,7 +50,7 @@ public class FrontierCore extends Module {
             triviaQuestions[i] = new TriviaQuestion(section.getString(key + ".question"), section.getString(key + ".display-answer"), TrivaAnswerType.valueOf(section.getString(key + ".answer-type").toUpperCase()), section.getStringList(key + ".answers"));
         }
 
-        registerUnits(new UnitReward(), new UnitTrivia(), new UnitAutoRespawn(), new UnitFrontierItems(), new UnitGracePeriod());
+        registerUnits(new UnitReward(), new UnitTrivia(), new UnitAutoRespawn(), new UnitFrontierItems(), unitGracePeriod = new UnitGracePeriod());
     }
 
     @Override
@@ -72,5 +73,9 @@ public class FrontierCore extends Module {
 
     public TriviaQuestion[] getTriviaQuestions() {
         return triviaQuestions;
+    }
+
+    public UnitGracePeriod getUnitGracePeriod() {
+        return unitGracePeriod;
     }
 }

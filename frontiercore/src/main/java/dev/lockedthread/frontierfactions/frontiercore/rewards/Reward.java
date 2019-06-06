@@ -1,7 +1,7 @@
-package frontierfactions.rewards;
+package dev.lockedthread.frontierfactions.frontiercore.rewards;
 
 import com.gameservergroup.gsgcore.utils.Text;
-import frontierfactions.FrontierCore;
+import dev.lockedthread.frontierfactions.frontiercore.FrontierCore;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

@@ -1,10 +1,10 @@
-package frontierfactions.trivia;
+package dev.lockedthread.frontierfactions.frontiercore.trivia;
 
 import com.gameservergroup.gsgcore.utils.Text;
-import frontierfactions.FrontierCore;
-import frontierfactions.rewards.Reward;
-import frontierfactions.rewards.RewardType;
-import frontierfactions.units.UnitTrivia;
+import dev.lockedthread.frontierfactions.frontiercore.FrontierCore;
+import dev.lockedthread.frontierfactions.frontiercore.rewards.Reward;
+import dev.lockedthread.frontierfactions.frontiercore.rewards.RewardType;
+import dev.lockedthread.frontierfactions.frontiercore.units.UnitTrivia;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
