@@ -1,0 +1,4 @@
+name: FrontierHub
+main: dev.lockedthread.frontierfactions.frontierhub.bungee.FrontierHubBungee
+version: 1.0-SNAPSHOT
+author: LockedThread

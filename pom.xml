@@ -21,6 +21,7 @@
         <module>gsgoutpost</module>
         <module>frontiercore</module>
         <module>frontierturrets</module>
+        <module>frontierhub</module>
     </modules>
 
     <dependencies>

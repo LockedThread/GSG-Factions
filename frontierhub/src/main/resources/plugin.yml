@@ -1,0 +1,5 @@
+name: FrontierHub
+main: dev.lockedthread.frontierfactions.frontierhub.bungee.FrontierHubBukkit
+version: 1.0-SNAPSHOT
+author: LockedThread
+depend: [GSGCore]
