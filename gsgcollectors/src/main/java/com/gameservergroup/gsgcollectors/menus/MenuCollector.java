@@ -56,8 +56,8 @@ public class MenuCollector extends Menu {
                                 }
                             } else {
                                 double money = collectionType.getPrice() * amountToBeSubtracted;
-                                if (GSGCollectors.getInstance().getSellPriceModifier() != null) {
-                                    money = GSGCollectors.getInstance().getSellPriceModifier().getModifiedPrice(player, money);
+                                if (GSGCollectors.getInstance().getSellPriceModifierIntegration() != null) {
+                                    money = GSGCollectors.getInstance().getSellPriceModifierIntegration().getModifiedPrice(player, money);
                                 }
                                 Module.getEconomy().depositPlayer(player, money);
                                 if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {

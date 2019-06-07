@@ -39,6 +39,12 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/Ace-Outposts_UUID.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.gmail.nossr50.mcMMO</groupId>
+            <artifactId>mcMMO</artifactId>
+            <version>1.5.08</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

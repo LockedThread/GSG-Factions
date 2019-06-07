@@ -35,8 +35,8 @@ public class Collector {
 
     public void sellAll(Player player, CollectionType collectionType) {
         double money = collectionType.getPrice() * getAmounts().getOrDefault(collectionType, 0);
-        if (GSGCollectors.getInstance().getSellPriceModifier() != null) {
-            money = GSGCollectors.getInstance().getSellPriceModifier().getModifiedPrice(player, money);
+        if (GSGCollectors.getInstance().getSellPriceModifierIntegration() != null) {
+            money = GSGCollectors.getInstance().getSellPriceModifierIntegration().getModifiedPrice(player, money);
         }
         if (money > 0.0) {
             if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
@@ -50,8 +50,8 @@ public class Collector {
 
     public void sellAll(Player player) {
         double money = getAmounts().entrySet().stream().filter(entry -> entry.getKey() != CollectionType.TNT).mapToDouble(entry -> entry.getKey().getPrice() * entry.getValue()).sum();
-        if (GSGCollectors.getInstance().getSellPriceModifier() != null) {
-            money = GSGCollectors.getInstance().getSellPriceModifier().getModifiedPrice(player, money);
+        if (GSGCollectors.getInstance().getSellPriceModifierIntegration() != null) {
+            money = GSGCollectors.getInstance().getSellPriceModifierIntegration().getModifiedPrice(player, money);
         }
         if (money > 0.0) {
             Module.getEconomy().depositPlayer(player, money);
