@@ -21,6 +21,9 @@ options:
     collect-to-inventory-with-no-collector: true
     # This may cause lag depending on factions and worldguard usage and any edits to your factions fork. Only do this if it's an actual issue for you.
     protected-region-check-for-iterated-sugar-cane: false
+    mcmmo:
+      enabled: false
+      preset-herbalism-exp: 5
 harvesterhoe-item:
   material: 'GOLD_HOE'
   name: '&e&l(!) &f&lHarvester Hoe &e&l(e)'

@@ -1,9 +1,11 @@
 package com.gameservergroup.gsgcollectors;
 
 import com.gameservergroup.gsgcollectors.enums.CollectorMessages;
-import com.gameservergroup.gsgcollectors.integration.SellPriceModifier;
+import com.gameservergroup.gsgcollectors.integration.McMMOIntegration;
+import com.gameservergroup.gsgcollectors.integration.SellPriceModifierIntegration;
 import com.gameservergroup.gsgcollectors.integration.ShopGUIPlusIntegration;
-import com.gameservergroup.gsgcollectors.integration.aceoutposts.AceOutpostsSellPriceModifier;
+import com.gameservergroup.gsgcollectors.integration.impl.AceOutpostsSellPriceModifier;
+import com.gameservergroup.gsgcollectors.integration.impl.McMMOImpl;
 import com.gameservergroup.gsgcollectors.integration.impl.ShopGUIPlusImpl;
 import com.gameservergroup.gsgcollectors.units.UnitCollectors;
 import com.gameservergroup.gsgcore.plugin.Module;
@@ -13,7 +15,8 @@ public class GSGCollectors extends Module {
     private static GSGCollectors instance;
     private UnitCollectors unitCollectors;
     private ShopGUIPlusIntegration shopGUIPlusIntegration;
-    private SellPriceModifier sellPriceModifier;
+    private SellPriceModifierIntegration sellPriceModifierIntegration;
+    private McMMOIntegration mcMMOIntegration;
 
     public static GSGCollectors getInstance() {
         return instance;
@@ -39,10 +42,18 @@ public class GSGCollectors extends Module {
             }
         }
         if (getServer().getPluginManager().getPlugin("Ace-Outposts") != null) {
-            this.sellPriceModifier = new AceOutpostsSellPriceModifier();
+            this.sellPriceModifierIntegration = new AceOutpostsSellPriceModifier();
         }
 
-        registerUnits(unitCollectors = new UnitCollectors());
+        if (getConfig().getBoolean("options.harvester-hoes.mcmmo.enabled")) {
+            if (getServer().getPluginManager().getPlugin("McMMO") != null) {
+                mcMMOIntegration = new McMMOImpl();
+            } else {
+                getLogger().severe("Unable to hook into McMMO because it's not enabled on the server!");
+            }
+
+            registerUnits(unitCollectors = new UnitCollectors());
+        }
     }
 
     @Override
@@ -64,7 +75,11 @@ public class GSGCollectors extends Module {
         return shopGUIPlusIntegration;
     }
 
-    public SellPriceModifier getSellPriceModifier() {
-        return sellPriceModifier;
+    public SellPriceModifierIntegration getSellPriceModifierIntegration() {
+        return sellPriceModifierIntegration;
+    }
+
+    public McMMOIntegration getMcMMOIntegration() {
+        return mcMMOIntegration;
     }
 }

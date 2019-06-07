@@ -1,12 +1,12 @@
-package com.gameservergroup.gsgcollectors.integration.aceoutposts;
+package com.gameservergroup.gsgcollectors.integration.impl;
 
-import com.gameservergroup.gsgcollectors.integration.SellPriceModifier;
+import com.gameservergroup.gsgcollectors.integration.SellPriceModifierIntegration;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import me.aceix8.outposts.AceOutposts;
 import org.bukkit.entity.Player;
 
-public class AceOutpostsSellPriceModifier implements SellPriceModifier {
+public class AceOutpostsSellPriceModifier implements SellPriceModifierIntegration {
 
     @Override
     public double getModifiedPrice(Faction faction, double regularSellPrice) {
