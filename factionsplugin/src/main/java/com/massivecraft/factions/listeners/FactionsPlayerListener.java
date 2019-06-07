@@ -647,10 +647,19 @@ public class FactionsPlayerListener implements Listener {
         } else if (corners.contains(to) && me.hasFaction() && me.canClaimForFaction(me.getFaction()) && (factionTo == null || factionTo.isWilderness())) {
             TitleAPI.getInstance().sendTitle(player, Text.toColor(TL.ENTERED_CORNER_TITLE.toString()), Text.toColor(TL.ENTERED_CORNER_SUBTITLE.toString()), 0, 60, 20);
         }
-        if (changedFaction && factionTo != null) {
+        if (changedFaction && factionTo != null && !factionTo.isSafeZone() && !factionTo.isWilderness() && !factionTo.isWarZone()) {
             Map<BoosterType, ImmutablePair<Booster, Long>> boosters = factionTo.getBoosters();
+            if (boosters == null) {
+                System.out.println("Found that " + factionTo.getTag() + "'s boosters are null. Caught by " + player.getName());
+                return;
+            }
+
             ImmutablePair<Booster, Long> pair;
-            if ((pair = boosters.get(BoosterType.SLOWNESS_POTION_EFFECT_TRAP)) != null || (pair = boosters.get(BoosterType.WEAKNESS_POTION_EFFECT_TRAP)) != null) {
+
+            if ((pair = boosters
+                    .get(BoosterType.SLOWNESS_POTION_EFFECT_TRAP)) != null ||
+                    (pair = boosters
+                            .get(BoosterType.WEAKNESS_POTION_EFFECT_TRAP)) != null) {
                 if (pair.getValue() >= System.currentTimeMillis()) {
                     player.addPotionEffect((PotionEffect) pair.getKey().getMeta().get("effect"));
                 } else {
