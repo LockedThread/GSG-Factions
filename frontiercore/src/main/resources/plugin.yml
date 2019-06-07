@@ -1,4 +1,4 @@
 name: FrontierCore
-main: dev.lockedthread.FrontierCore
+main: dev.lockedthread.frontierfactions.frontiercore.FrontierCore
 version: 1.0-SNAPSHOT
 depend: [GSGCore]

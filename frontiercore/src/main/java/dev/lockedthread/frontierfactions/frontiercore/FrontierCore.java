@@ -1,6 +1,5 @@
 package dev.lockedthread.frontierfactions.frontiercore;
 
-
 import com.gameservergroup.gsgcore.plugin.Module;
 import dev.lockedthread.frontierfactions.frontiercore.rewards.Reward;
 import dev.lockedthread.frontierfactions.frontiercore.rewards.RewardType;
@@ -11,7 +10,6 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-
 
 public class FrontierCore extends Module {
 

@@ -183,7 +183,7 @@ public class UnitFrontierItems extends Unit {
                 FRONTIER_CORE.getServer().getScheduler().runTaskLater(FRONTIER_CORE, () -> {
                     //noinspection ConstantConditions
                     if (item != null && !item.isDead()) {
-                        item.getLocation().getWorld().createExplosion(item.getLocation(), 4f);
+                        item.getLocation().getWorld().createExplosion(item.getLocation(), 4.0f);
                         if (!item.isDead()) {
                             item.remove();
                         }
