@@ -1,0 +1,61 @@
+join-sound:
+  sound: 'CREEPER_HISS'
+  pitch: 1.0
+  volume: 1.0
+server-selector:
+  item:
+    slot: 4
+    name: '&4&lServer Selector &7&o(Click)'
+    material: 'COMPASS'
+    lore:
+      - ''
+      - '&7((Right click to select a server!))'
+      - ''
+  menu:
+    title: '&e&lFrontier &f&lFactions'
+    size: 27
+    fill:
+      enabled: true
+      glass-pane-color: 'BLACK'
+      enchanted: false
+    items:
+      skyblock:
+        slot: 13
+        name: '&c&lSkyBlock'
+        material: 'GRASS'
+        enchants:
+          - 'DURABILITY:1'
+        itemflags:
+          - 'HIDE_ENCHANTS'
+        lore:
+          - ''
+          - '&7&m-------------------------------'
+          - '&4Server Information:'
+          - '&7 * &cMap: &f1 '
+          - '&7 * &cSOTW: &fN/A'
+          - '&7 * &cIS-Top: &fN/A'
+          - '&7 * &cPlayers online: &f%bungee_skyblock%'
+          - '&7&m-------------------------------'
+          - '&7&o((Left click to join server))'
+        options:
+          queue-join: 'skyblock'
+      factions:
+        slot: 11
+        name: '&c&lFactions'
+        material: 'TNT'
+        enchants:
+          - 'DURABILITY:1'
+        itemflags:
+          - 'HIDE_ENCHANTS'
+        lore:
+          - ''
+          - '&7&m-------------------------------'
+          - '&4Server Information:'
+          - '&7 * &cMap: &f1 '
+          - '&7 * &cSOTW: &fJune 8th&r'
+          - '&7 * &cF-Top: &f$2500'
+          - '&7 * &cPlayers online: &f%bungee_factions%'
+          - '&7&m-------------------------------'
+          - '&7&o((Left click to join server))'
+        options:
+          queue-join: 'factions'

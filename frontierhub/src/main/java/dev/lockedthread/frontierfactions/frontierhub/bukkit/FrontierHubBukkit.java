@@ -7,10 +7,6 @@ public class FrontierHubBukkit extends Module {
 
     private static FrontierHubBukkit instance;
 
-    public static FrontierHubBukkit getInstance() {
-        return instance;
-    }
-
     @Override
     public void enable() {
         instance = this;
@@ -21,5 +17,9 @@ public class FrontierHubBukkit extends Module {
     @Override
     public void disable() {
         instance = null;
+    }
+
+    public static FrontierHubBukkit getInstance() {
+        return instance;
     }
 }

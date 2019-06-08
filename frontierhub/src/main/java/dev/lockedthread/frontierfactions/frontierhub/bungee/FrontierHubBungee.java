@@ -1,37 +1,35 @@
 package dev.lockedthread.frontierfactions.frontierhub.bungee;
 
+import dev.lockedthread.frontierfactions.frontierhub.bungee.commands.CommandJoinQueue;
+import dev.lockedthread.frontierfactions.frontierhub.bungee.listeners.ServerListener;
 import dev.lockedthread.frontierfactions.frontierhub.bungee.objs.ServerQueue;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.event.ServerConnectEvent;
-import net.md_5.bungee.api.event.ServerDisconnectEvent;
-import net.md_5.bungee.api.event.ServerKickEvent;
-import net.md_5.bungee.api.plugin.Listener;
+import dev.lockedthread.frontierfactions.frontierhub.bungee.tasks.TaskPositionUpdate;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
-import net.md_5.bungee.event.EventHandler;
-import org.redisson.Redisson;
-import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
-import org.redisson.config.SingleServerConfig;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class FrontierHubBungee extends Plugin implements Listener {
+public class FrontierHubBungee extends Plugin {
 
     private static FrontierHubBungee instance;
 
-    private RedissonClient redissonClient;
     private Configuration configuration;
-    private Set<String> hubServers;
+    private List<String> hubServers;
     private Map<String, ServerQueue> serverQueueMap;
+    private Map<UUID, ServerQueue> playerQueueMap;
+    private ThreadLocalRandom random;
 
     public static FrontierHubBungee getInstance() {
         return instance;
@@ -42,62 +40,69 @@ public class FrontierHubBungee extends Plugin implements Listener {
         instance = this;
 
         setupConfiguration();
-        getProxy().getPluginManager().registerListener(this, this);
+        getProxy().getPluginManager().registerCommand(this, new CommandJoinQueue());
 
-        Config redissonConfig = new Config().setNettyThreads(configuration.getInt("redis.netty-threads")).setThreads(configuration.getInt("redis.threads"));
-        SingleServerConfig singleServerConfig = redissonConfig.useSingleServer().setAddress("redis://" + configuration.getString("redis.host") + ":" + configuration.getInt("redis.port"));
-        if (configuration.getBoolean("redis.auth.enabled")) {
-            singleServerConfig.setPassword(configuration.getString("redis.auth.password"));
-        }
-        this.redissonClient = Redisson.create(redissonConfig);
+        getProxy().getPluginManager().registerListener(this, new ServerListener());
+
+        this.playerQueueMap = new HashMap<>();
+        this.random = ThreadLocalRandom.current();
+        getProxy().registerChannel("FrontierHub-Return");
     }
 
     private void setupConfiguration() {
         if (!getDataFolder().exists())
-            getDataFolder().mkdir();
+            getDataFolder().mkdirs();
 
         File file = new File(getDataFolder(), "config.yml");
 
-
         if (!file.exists()) {
-            try (InputStream in = getResourceAsStream("bungee" + File.separator + "config.yml")) {
+            try (InputStream in = getResourceAsStream("bungee/config.yml")) {
                 Files.copy(in, file.toPath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         try {
-            this.configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "config.yml"));
-            ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration, new File(getDataFolder(), "config.yml"));
+            this.configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
+            ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration, file);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.hubServers = configuration.getStringList("hub-servers").stream().map(String::toLowerCase).collect(Collectors.toSet());
+        this.hubServers = configuration.getStringList("servers.hub-servers").stream().map(String::toLowerCase).collect(Collectors.toList());
+        this.serverQueueMap = new HashMap<>();
+        getProxy().getScheduler().schedule(this, new TaskPositionUpdate(), configuration.getLong("position-message-update-interval"), configuration.getLong("position-message-update-interval"), TimeUnit.MILLISECONDS);
+
+        Configuration queuedServersSection = configuration.getSection("servers.queued-servers");
+        for (String key : queuedServersSection.getKeys()) {
+            ServerQueue serverQueue = new ServerQueue(queuedServersSection.getString(key + ".name"));
+            serverQueueMap.put(queuedServersSection.getString(key + ".name"), serverQueue);
+            getProxy().getScheduler().schedule(this, serverQueue, queuedServersSection.getLong(key + ".interval"), queuedServersSection.getLong(key + ".interval"), TimeUnit.MILLISECONDS);
+        }
     }
 
     @Override
     public void onDisable() {
         instance = null;
+        getProxy().getScheduler().cancel(this);
     }
 
-    @EventHandler
-    public void onServerConnect(ServerConnectEvent event) {
-        if (!event.isCancelled()) {
-            if (hubServers.contains(event.getTarget().getName())) {
-
-            }
-        }
+    public Map<String, ServerQueue> getServerQueueMap() {
+        return serverQueueMap;
     }
 
-    @EventHandler
-    public void onServerDisconnect(ServerDisconnectEvent event) {
-
+    public List<String> getHubServers() {
+        return hubServers;
     }
 
-    @EventHandler
-    public void onServerKick(ServerKickEvent event) {
-        if (event.getState() == ServerKickEvent.State.CONNECTING || event.getState() == ServerKickEvent.State.UNKNOWN) {
-            final String reason = new TextComponent(event.getKickReasonComponent()).toString();
-        }
+    public Map<UUID, ServerQueue> getPlayerQueueMap() {
+        return playerQueueMap;
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public ThreadLocalRandom getRandom() {
+        return random;
     }
 }
