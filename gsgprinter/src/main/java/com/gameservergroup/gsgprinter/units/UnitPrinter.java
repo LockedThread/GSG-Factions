@@ -275,8 +275,8 @@ public class UnitPrinter extends Unit {
     public void enablePrinter(Player player, boolean notify) {
         player.performCommand("f fly y");
         printingPlayers.put(player.getUniqueId(), new PrintingData());
-        player.setGameMode(GameMode.CREATIVE);
         player.closeInventory();
+        player.setGameMode(GameMode.CREATIVE);
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
 
