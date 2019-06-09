@@ -21,7 +21,7 @@ public class MenuServerSelector extends Menu {
     public void initialize() {
         ConfigurationSection section = FrontierHubBukkit.getInstance().getConfig().getConfigurationSection("server-selector.menu.items");
         for (String key : section.getKeys(false)) {
-            setItem(section.getInt(key + ".slot"), new ServerMenuItem(ItemStackBuilder.of(section.getConfigurationSection(key)).build(), section.getString("options.queue-join")));
+            setItem(section.getInt(key + ".slot"), new ServerMenuItem(ItemStackBuilder.of(section.getConfigurationSection(key)).build(), section.getString(key + ".options.queue-join")));
         }
         if (FrontierHubBukkit.getInstance().getConfig().getBoolean("server-selector.menu.fill.enabled")) {
             DyeColor dyeColor = DyeColor.valueOf(FrontierHubBukkit.getInstance().getConfig().getString("server-selector.menu.fill.glass-pane-color").toUpperCase());

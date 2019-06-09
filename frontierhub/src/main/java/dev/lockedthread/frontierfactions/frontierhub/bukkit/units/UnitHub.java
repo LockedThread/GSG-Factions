@@ -13,9 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.*;
 
 public class UnitHub extends Unit {
 
@@ -62,8 +61,24 @@ public class UnitHub extends Unit {
         EventPost.of(PlayerToggleFlightEvent.class)
                 .handle(event -> {
                     Player player = event.getPlayer();
-                    player.getLocation().setDirection(player.getEyeLocation().getDirection().multiply(2));
+                    player.setVelocity(player.getEyeLocation().getDirection().multiply(2));
                     event.setCancelled(true);
                 }).post(FRONTIER_HUB_BUKKIT);
+
+        EventPost.of(EntityDamageEvent.class)
+                .handle(event -> event.setCancelled(true))
+                .post(FRONTIER_HUB_BUKKIT);
+
+        EventPost.of(PlayerInteractAtEntityEvent.class)
+                .handle(event -> event.setCancelled(true))
+                .post(FRONTIER_HUB_BUKKIT);
+
+        EventPost.of(PlayerDropItemEvent.class)
+                .handle(event -> event.setCancelled(true))
+                .post(FRONTIER_HUB_BUKKIT);
+
+        EventPost.of(PlayerPickupItemEvent.class)
+                .handle(event -> event.setCancelled(true))
+                .post(FRONTIER_HUB_BUKKIT);
     }
 }

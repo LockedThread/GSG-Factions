@@ -29,14 +29,18 @@ public class ServerQueue implements Runnable {
 
     public void poll() {
         if (!uuids.isEmpty()) {
+            FrontierHubBungee.getInstance().getProxy().getPlayer(uuids.get(0)).connect(serverInfo, ServerConnectEvent.Reason.PLUGIN);
+            /*
             serverInfo.ping((serverPing, throwable) -> {
+                if (serverPing == null) return;
+                if (serverPing.getPlayers() == null) return;
                 int online = serverPing.getPlayers().getOnline();
                 int max = serverPing.getPlayers().getMax();
 
                 if (max > online) {
                     FrontierHubBungee.getInstance().getProxy().getPlayer(uuids.get(0)).connect(serverInfo, ServerConnectEvent.Reason.PLUGIN);
                 }
-            });
+            });*/
         }
     }
 

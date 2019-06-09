@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ServerListener implements Listener {
 
@@ -47,7 +48,12 @@ public class ServerListener implements Listener {
             if (serverQueue != null) {
                 System.out.println("ServerListener.onServerConnect 2");
                 serverQueue.getUuids().remove(event.getPlayer().getUniqueId());
-                FRONTIER_HUB_BUNGEE.getPlayerQueueMap().remove(event.getPlayer().getUniqueId());
+                FRONTIER_HUB_BUNGEE.getProxy().getScheduler().schedule(FRONTIER_HUB_BUNGEE, () -> {
+                    if (serverQueue.getServerInfo().getName().equals(event.getPlayer().getServer().getInfo().getName())) {
+                        return;
+                    }
+                    FRONTIER_HUB_BUNGEE.getPlayerQueueMap().remove(event.getPlayer().getUniqueId());
+                }, 10, TimeUnit.SECONDS);
             }
         }
     }
@@ -65,9 +71,8 @@ public class ServerListener implements Listener {
                     System.out.println(3);
                     if (reason.contains(s.toLowerCase())) {
                         System.out.println(4);
-                        serverQueue.getUuids().set(0, event.getPlayer().getUniqueId());
-                        //noinspection ConstantConditions
-                        event.setKickReason(null);
+                        serverQueue.getUuids().add(0, event.getPlayer().getUniqueId());
+                        FRONTIER_HUB_BUNGEE.getPlayerQueueMap().put(event.getPlayer().getUniqueId(), serverQueue);
                         break;
                     }
                 }

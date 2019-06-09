@@ -11,7 +11,10 @@ public class ServerMenuItem extends MenuItem {
 
     public ServerMenuItem(ItemStack itemStack, String server) {
         super(itemStack);
-        this.setInventoryClickEventConsumer(event -> send((Player) event.getWhoClicked(), server));
+        this.setInventoryClickEventConsumer(event -> {
+            send((Player) event.getWhoClicked(), server);
+            event.setCancelled(true);
+        });
     }
 
     @SuppressWarnings("UnstableApiUsage")
