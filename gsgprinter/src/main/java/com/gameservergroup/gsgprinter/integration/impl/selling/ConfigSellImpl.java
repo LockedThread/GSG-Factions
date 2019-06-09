@@ -39,6 +39,10 @@ public class ConfigSellImpl implements SellIntegration {
         } else {
             this.yamlConfiguration = YamlConfiguration.loadConfiguration(file);
             this.prices = yamlConfiguration.getKeys(false).stream().collect(Collectors.toMap(key -> Material.matchMaterial(key.replace("-", "_").toUpperCase()).getId(), key -> yamlConfiguration.getDouble(key), (a, b) -> b, Int2DoubleOpenHashMap::new));
+            double v = prices.get(Material.STRING.getId());
+            if (v != 0.0) {
+                prices.put(Material.TRIPWIRE.getId(), v);
+            }
             GSGPrinter.getInstance().getLogger().info("Successfully loaded " + prices.size() + " blocks into PrinterMode!");
         }
     }
