@@ -158,6 +158,12 @@ public class UnitPrinter extends Unit {
                 })
                 .post(GSG_PRINTER);
 
+        EventPost.of(ProjectileLaunchEvent.class)
+                .filter(event -> event.getEntity().getShooter() instanceof Player)
+                .filter(event -> printingPlayers.containsKey(((Player) event.getEntity().getShooter()).getUniqueId()))
+                .handle(event -> event.setCancelled(true))
+                .post(GSG_PRINTER);
+
         EventPost.of(PlayerExpChangeEvent.class)
                 .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
                 .filter(event -> event.getAmount() > 0)
