@@ -4,7 +4,7 @@ import com.gameservergroup.gsgcollectors.enums.CollectorMessages;
 import com.gameservergroup.gsgcollectors.integration.McMMOIntegration;
 import com.gameservergroup.gsgcollectors.integration.SellPriceModifierIntegration;
 import com.gameservergroup.gsgcollectors.integration.ShopGUIPlusIntegration;
-import com.gameservergroup.gsgcollectors.integration.impl.AceOutpostsSellPriceModifier;
+import com.gameservergroup.gsgcollectors.integration.impl.AceOutpostsSellPriceModifierImpl;
 import com.gameservergroup.gsgcollectors.integration.impl.McMMOImpl;
 import com.gameservergroup.gsgcollectors.integration.impl.ShopGUIPlusImpl;
 import com.gameservergroup.gsgcollectors.units.UnitCollectors;
@@ -42,7 +42,7 @@ public class GSGCollectors extends Module {
             }
         }
         if (getServer().getPluginManager().getPlugin("Ace-Outposts") != null) {
-            this.sellPriceModifierIntegration = new AceOutpostsSellPriceModifier();
+            this.sellPriceModifierIntegration = new AceOutpostsSellPriceModifierImpl();
         }
 
         if (getConfig().getBoolean("options.harvester-hoes.mcmmo.enabled")) {
