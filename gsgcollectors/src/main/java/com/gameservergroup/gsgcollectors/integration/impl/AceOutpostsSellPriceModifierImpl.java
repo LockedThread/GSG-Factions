@@ -6,7 +6,7 @@ import com.massivecraft.factions.Faction;
 import me.aceix8.outposts.AceOutposts;
 import org.bukkit.entity.Player;
 
-public class AceOutpostsSellPriceModifier implements SellPriceModifierIntegration {
+public class AceOutpostsSellPriceModifierImpl implements SellPriceModifierIntegration {
 
     @Override
     public double getModifiedPrice(Faction faction, double regularSellPrice) {
