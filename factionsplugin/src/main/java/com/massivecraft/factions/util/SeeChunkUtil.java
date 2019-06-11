@@ -6,15 +6,15 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.logging.Level;
 
 @SuppressWarnings("unchecked")
 public class SeeChunkUtil extends BukkitRunnable {
 
-    private Set<UUID> playersSeeingChunks = new HashSet<>();
+    private Set<UUID> playersSeeingChunks = new ConcurrentSkipListSet<>();
     private boolean useColor;
     private Object effect;
 
