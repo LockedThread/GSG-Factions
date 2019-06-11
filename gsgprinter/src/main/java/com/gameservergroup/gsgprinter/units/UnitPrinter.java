@@ -19,17 +19,13 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
@@ -183,7 +179,6 @@ public class UnitPrinter extends Unit {
 
         EventPost.of(ProjectileLaunchEvent.class, EventPriority.LOWEST)
                 .filter(event -> event.getEntity() != null && event.getEntity().getShooter() != null)
-                .filter(event -> event.getEntity() instanceof Arrow)
                 .filter(event -> event.getEntity().getShooter() instanceof Player)
                 .filter(event -> ((Player) event.getEntity().getShooter()).getUniqueId() != null)
                 .filter(event -> printingPlayers.containsKey(((Player) event.getEntity().getShooter()).getUniqueId()))
@@ -191,6 +186,15 @@ public class UnitPrinter extends Unit {
                     event.getEntity().remove();
                     event.setCancelled(true);
                 }).post(GSG_PRINTER);
+
+
+        EventPost.of(PotionSplashEvent.class, EventPriority.LOWEST)
+                .filter(event -> event.getEntity() != null && event.getEntity().getShooter() != null)
+                .filter(event -> event.getEntity().getShooter() instanceof Player)
+                .filter(event -> ((Player) event.getEntity().getShooter()).getUniqueId() != null)
+                .filter(event -> printingPlayers.containsKey(((Player) event.getEntity().getShooter()).getUniqueId()))
+                .handle(event -> event.setCancelled(true))
+                .post(GSG_PRINTER);
 
         EventPost.of(InventoryClickEvent.class, EventPriority.LOWEST)
                 .filter(event -> printingPlayers.containsKey(event.getWhoClicked().getUniqueId()))
