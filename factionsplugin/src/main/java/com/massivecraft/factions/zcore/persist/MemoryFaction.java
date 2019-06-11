@@ -274,7 +274,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     }
 
     public boolean isWarp(String name) {
-        return this.warps.containsKey(name);
+        return this.warps.containsKey(name.toLowerCase());
     }
 
     public boolean removeWarp(String name) {
