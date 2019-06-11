@@ -36,6 +36,7 @@ public class TaskSave extends BukkitRunnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         GSGCollectors.getInstance().getUnitCollectors().getJsonFile().save(collectorHashMap);
         System.out.println("Saved " + collectorHashMap.size() + " collectors (" + (System.currentTimeMillis() - startTime) + "ms)");
     }

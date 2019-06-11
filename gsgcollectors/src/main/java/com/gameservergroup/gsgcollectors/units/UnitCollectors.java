@@ -246,7 +246,7 @@ public class UnitCollectors extends Unit {
             this.harvesterHoeCustomItem = CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("harvesterhoe-item")).setBreakEventConsumer(event -> {
                 Block block = event.getBlock();
                 if (block.getType() == Material.SUGAR_CANE_BLOCK) {
-                    event.setCancelled(true);
+                    //event.setCancelled(true);
                     Block next = block;
                     int sugarCaneAmount = 0;
                     while (next.getType() == Material.SUGAR_CANE_BLOCK) {
