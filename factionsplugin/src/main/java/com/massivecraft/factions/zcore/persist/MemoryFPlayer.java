@@ -1077,7 +1077,7 @@ public abstract class MemoryFPlayer implements FPlayer {
         Faction faction = Board.getInstance().getFactionAt(location);
         if (P.p.getConfig().getBoolean("f-fly.everywhere.enabled") && Permission.FLY_EVERYWHERE.has(getPlayer())) {
             if (faction.isWilderness()) {
-                P.p.getConfig().getBoolean("f-fly.everywhere.wilderness");
+                return P.p.getConfig().getBoolean("f-fly.everywhere.wilderness");
             } else if (faction.isWarZone()) {
                 return P.p.getConfig().getBoolean("f-fly.everywhere.warzone");
             } else if (faction.isSafeZone()) {
