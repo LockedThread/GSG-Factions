@@ -242,7 +242,8 @@ public abstract class MemoryBoard extends Board {
                         if (isOutsideBorder(flocationHere) && !Conf.showOutsideBorder) {
                             row.then(Conf.worldBorderMapIcon).color(Conf.colorWorldBorder);
                         } else {
-                            row.then("-").color(Conf.colorWilderness).tooltip(Text.toColor("&eClick to claim")).command("f claimat " + flocationHere.getWorldName() + " " + flocationHere.getX() + " " + flocationHere.getZ());
+                            //P.p.cmdBase.cmdClaimAt.execute(fplayer.getPlayer(), Arrays.asList(flocationHere.getWorldName(), String.valueOf(flocationHere.getX()), String.valueOf(flocationHere.getZ())));
+                            row.then("-").color(Conf.colorWilderness).tooltip(Text.toColor("&eClick to claim")).command("/f claimat " + flocationHere.getWorldName() + " " + flocationHere.getX() + " " + flocationHere.getZ());
                         }
                     } else if (factionHere.isSafeZone()) {
                         row.then("+").color(Conf.colorSafezone);
