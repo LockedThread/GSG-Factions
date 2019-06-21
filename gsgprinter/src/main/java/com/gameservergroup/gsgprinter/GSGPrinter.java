@@ -63,9 +63,7 @@ public class GSGPrinter extends Module {
                 (this.factionsIntegration = new FactionsUUIDImpl()).hookFlightDisable();
             }
         } else {
-            getLogger().severe("Unable to find factions plugin!");
-            getPluginLoader().disablePlugin(this);
-            return;
+            getLogger().severe("Unable to find factions plugin! Going to use non factions impl");
         }
         for (PrinterMessages printerMessages : PrinterMessages.values()) {
             if (getConfig().isSet("messages." + printerMessages.getKey())) {
