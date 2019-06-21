@@ -96,6 +96,7 @@ public class UnitCollectors extends Unit {
             EventPost.of(PlayerInteractEvent.class, EventPriority.HIGHEST)
                     .filter(EventFilters.getIgnoreCancelled())
                     .filter(event -> event.getClickedBlock() != null)
+                    .filter(event -> event.getAction() == Action.RIGHT_CLICK_BLOCK)
                     .handle(event -> {
                         Collector collector = getCollector(event.getClickedBlock().getLocation());
                         if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
