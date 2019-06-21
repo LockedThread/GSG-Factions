@@ -1,6 +1,7 @@
 package com.massivecraft.factions.zcore.factionchest;
 
 import com.gameservergroup.gsgcore.utils.Text;
+import com.massivecraft.factions.P;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
@@ -17,7 +18,7 @@ public class FactionChest implements InventoryHolder {
 
     public FactionChest(int rows) {
         this.rows = rows;
-        this.inventory = Bukkit.createInventory(this, rows * 9, Text.toColor("&eFaction Chest"));
+        this.inventory = Bukkit.createInventory(this, rows * 9, Text.toColor(P.p.getConfig().getString("faction-chest-title", "&eFaction Chest")));
     }
 
     @Override
@@ -39,7 +40,7 @@ public class FactionChest implements InventoryHolder {
     public void setRows(int rows) {
         this.rows = rows;
         final ItemStack[] contents = inventory.getContents() == null ? new ItemStack[0] : inventory.getContents();
-        Inventory upgradedInventory = Bukkit.createInventory(this, rows * 9, Text.toColor("&eFaction Chest"));
+        Inventory upgradedInventory = Bukkit.createInventory(this, rows * 9, Text.toColor(P.p.getConfig().getString("faction-chest-title", "&eFaction Chest")));
         upgradedInventory.setContents(contents);
         this.inventory = upgradedInventory;
         for (HumanEntity viewer : inventory.getViewers()) {

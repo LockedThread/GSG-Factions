@@ -5,6 +5,7 @@ import com.gameservergroup.gsgcore.utils.Text;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.massivecraft.factions.P;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -35,7 +36,7 @@ public class FactionChestAdapter extends TypeAdapter<FactionChest> {
                 itemStacks = Base64Serializers.fromBase64ItemStacks(in.nextString());
             }
         }
-        Inventory inventory = Bukkit.createInventory(factionChest, rows * 9, Text.toColor("&eFaction Chest"));
+        Inventory inventory = Bukkit.createInventory(factionChest, rows * 9, Text.toColor(P.p.getConfig().getString("faction-chest-title", "&eFaction Chest")));
         inventory.setContents(itemStacks);
         factionChest.setInventory(inventory);
         factionChest.setRows(rows);
