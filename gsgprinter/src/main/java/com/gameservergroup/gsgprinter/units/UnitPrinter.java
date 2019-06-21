@@ -11,9 +11,6 @@ import com.gameservergroup.gsgcore.utils.Utils;
 import com.gameservergroup.gsgprinter.GSGPrinter;
 import com.gameservergroup.gsgprinter.enums.PrinterMessages;
 import com.gameservergroup.gsgprinter.objs.PrintingData;
-import com.massivecraft.factions.Board;
-import com.massivecraft.factions.FLocation;
-import com.massivecraft.factions.FPlayers;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -94,27 +91,26 @@ public class UnitPrinter extends Unit {
             }
         });
         cancelEvents(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()), new Class[]{PlayerPickupItemEvent.class, PlayerDropItemEvent.class, PlayerFishEvent.class, PlayerInteractEntityEvent.class, PlayerItemConsumeEvent.class, PlayerBucketEmptyEvent.class, PlayerBucketFillEvent.class, PlayerInteractAtEntityEvent.class, PlayerArmorStandManipulateEvent.class, PlayerShearEntityEvent.class, PlayerEditBookEvent.class, PlayerEggThrowEvent.class});
-        CommandPost.of()
-                .builder()
-                .assertPlayer()
-                .assertPermission("gsgprinter.toggle")
-                .handler(commandContext -> {
-                    Player player = commandContext.getSender();
-                    if (printingPlayers.containsKey(player.getUniqueId())) {
-                        disablePrinter(player, true);
-                    } else if (GSG_PRINTER.isEnableCombatTagPlusIntegration() && GSG_PRINTER.getCombatIntegration().isTagged(player)) {
-                        commandContext.reply(PrinterMessages.YOU_ARE_IN_COMBAT);
-                    } else if (Board.getInstance().getFactionAt(new FLocation(player.getLocation())) != FPlayers.getInstance().getByPlayer(player).getFaction()) {
-                        commandContext.reply(PrinterMessages.MUST_BE_IN_FRIENDLY_TERRITORY);
-                    } else if (FPlayers.getInstance().getByPlayer(player).getFaction().isWilderness()) {
-                        commandContext.reply(PrinterMessages.YOU_ARE_FACTIONLESS);
-                    } else if (!Utils.playerInventoryIsEmpty(player)) {
-                        commandContext.reply(PrinterMessages.INVENTORY_MUST_BE_EMPTY);
-                    } else {
-                        enablePrinter(player, true);
-                    }
-                }).post(GSG_PRINTER, "print", "printer", "printermode");
-
+        if (GSG_PRINTER.getFactionsIntegration() != null) {
+            GSG_PRINTER.getFactionsIntegration().setupListeners();
+        } else {
+            CommandPost.of()
+                    .builder()
+                    .assertPlayer()
+                    .assertPermission("gsgprinter.toggle")
+                    .handler(commandContext -> {
+                        Player player = commandContext.getSender();
+                        if (printingPlayers.containsKey(player.getUniqueId())) {
+                            disablePrinter(player, true);
+                        } else if (GSG_PRINTER.isEnableCombatTagPlusIntegration() && GSG_PRINTER.getCombatIntegration().isTagged(player)) {
+                            commandContext.reply(PrinterMessages.YOU_ARE_IN_COMBAT);
+                        } else if (!Utils.playerInventoryIsEmpty(player)) {
+                            commandContext.reply(PrinterMessages.INVENTORY_MUST_BE_EMPTY);
+                        } else {
+                            enablePrinter(player, true);
+                        }
+                    }).post(GSG_PRINTER, "print", "printer", "printermode");
+        }
         EventPost.of(PlayerInteractEvent.class, EventPriority.LOWEST)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))

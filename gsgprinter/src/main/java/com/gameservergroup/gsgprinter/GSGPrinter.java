@@ -3,6 +3,7 @@ package com.gameservergroup.gsgprinter;
 import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgprinter.enums.PrinterMessages;
 import com.gameservergroup.gsgprinter.integration.CombatIntegration;
+import com.gameservergroup.gsgprinter.integration.FactionsIntegration;
 import com.gameservergroup.gsgprinter.integration.SellIntegration;
 import com.gameservergroup.gsgprinter.integration.combat.impl.CombatTagPlusImpl;
 import com.gameservergroup.gsgprinter.integration.factions.impl.FactionsUUIDImpl;
@@ -20,6 +21,7 @@ public class GSGPrinter extends Module {
     private CombatIntegration combatIntegration;
     private SellIntegration sellIntegration;
     private UnitPrinter unitPrinter;
+    private FactionsIntegration factionsIntegration;
 
     public static GSGPrinter getInstance() {
         return instance;
@@ -55,10 +57,10 @@ public class GSGPrinter extends Module {
         if (getServer().getPluginManager().getPlugin("Factions") != null) {
             if (getServer().getPluginManager().getPlugin("Factions").getDescription().getAuthors().contains("LockedThread")) {
                 getLogger().info("Using LockedThread's Factions Fork");
-                new LockedThreadFactionsUUIDImpl().hookFlightDisable();
+                (this.factionsIntegration = new LockedThreadFactionsUUIDImpl()).hookFlightDisable();
             } else {
                 getLogger().warning("Using FactionsUUID, consider switching to LockedThread's Faction fork for better performance.");
-                new FactionsUUIDImpl().hookFlightDisable();
+                (this.factionsIntegration = new FactionsUUIDImpl()).hookFlightDisable();
             }
         } else {
             getLogger().severe("Unable to find factions plugin!");
@@ -108,5 +110,9 @@ public class GSGPrinter extends Module {
 
     public UnitPrinter getUnitPrinter() {
         return unitPrinter;
+    }
+
+    public FactionsIntegration getFactionsIntegration() {
+        return factionsIntegration;
     }
 }
