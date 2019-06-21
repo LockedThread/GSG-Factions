@@ -1,6 +1,6 @@
 name: GSGPrinter
 main: com.gameservergroup.gsgprinter.GSGPrinter
 version: 1.0
-depend: [GSGCore, Factions]
+depend: [GSGCore]
 loadbefore: [ShopGUIPlus]
-softdepend: [CombatTagPlus, ShopGUIPlus]
+softdepend: [CombatTagPlus, ShopGUIPlus, Factions]

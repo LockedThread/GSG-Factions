@@ -1,9 +1,12 @@
 package com.gameservergroup.gsgprinter.integration.factions.impl;
 
+import com.gameservergroup.gsgcore.events.EventPost;
 import com.gameservergroup.gsgprinter.GSGPrinter;
 import com.gameservergroup.gsgprinter.integration.FactionsIntegration;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
+import com.massivecraft.factions.event.FPlayerLeaveEvent;
+import com.massivecraft.factions.event.FactionDisbandEvent;
 import com.massivecraft.factions.struct.Relation;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -29,7 +32,16 @@ public class FactionsUUIDImpl implements FactionsIntegration {
 
     @Override
     public void setupListeners() {
+        EventPost.of(FactionDisbandEvent.class)
+                .handle(event -> {
+                    for (Player onlinePlayer : event.getFaction().getOnlinePlayers()) {
+                        GSGPrinter.getInstance().getUnitPrinter().disablePrinter(onlinePlayer, true);
+                    }
+                }).post(GSGPrinter.getInstance());
 
+        EventPost.of(FPlayerLeaveEvent.class)
+                .handle(event -> GSGPrinter.getInstance().getUnitPrinter().disablePrinter(event.getfPlayer().getPlayer(), true))
+                .post(GSGPrinter.getInstance());
     }
 
     private boolean enemiesNearby(FPlayer target, int radius) {

@@ -14,7 +14,6 @@ import com.gameservergroup.gsgprinter.objs.PrintingData;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayers;
-import com.massivecraft.factions.event.FactionDisbandEvent;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -84,12 +83,6 @@ public class UnitPrinter extends Unit {
 
     @Override
     public void setup() {
-        EventPost.of(FactionDisbandEvent.class)
-                .handle(factionDisbandEvent -> {
-                    for (Player onlinePlayer : factionDisbandEvent.getFaction().getOnlinePlayers()) {
-                        printingPlayers.remove(onlinePlayer.getUniqueId());
-                    }
-                }).post(GSG_PRINTER);
         this.printingPlayers = new HashMap<>();
         this.useNcp = GSG_PRINTER.getConfig().getBoolean("use-ncp");
         this.allowedCommands = new HashSet<>(GSG_PRINTER.getConfig().getStringList("allowed-commands"));
