@@ -1062,8 +1062,8 @@ public abstract class MemoryFPlayer implements FPlayer {
             if (cooldown > 0) {
                 setTakeFallDamage(false);
                 Bukkit.getScheduler().runTaskLater(P.p, () -> setTakeFallDamage(true), 20L * cooldown);
-                P.p.getServer().getPluginManager().callEvent(new FPlayerFlightDisableEvent(getFaction(), this));
             }
+            P.p.getServer().getPluginManager().callEvent(new FPlayerFlightDisableEvent(getFaction(), this));
         }
 
         isFlying = fly;
