@@ -19,6 +19,7 @@ public enum Permission {
     ALTS_REVOKE("alts.revoke"),
     ALTS_INVITE_LIST("alts.invitelist"),
     ALTS_INVITE_LIST_ANY("alts.invitelist.any"),
+    ALTS_OPEN("alts.open"),
     ANNOUNCE("announce"),
     AUTOCLAIM("autoclaim"),
     AUTO_LEAVE_BYPASS("autoleavebypass"),

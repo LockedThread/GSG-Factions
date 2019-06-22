@@ -9,6 +9,7 @@ public class CmdAlts extends FCommand {
     public CmdAltsInvite cmdAltsInvite = new CmdAltsInvite();
     public CmdAltsRevoke cmdAltsRevoke = new CmdAltsRevoke();
     public CmdAltsInviteList cmdAltsInviteList = new CmdAltsInviteList();
+    public CmdAltsOpen cmdAltsOpen = new CmdAltsOpen();
 
     public CmdAlts() {
         super();
@@ -25,6 +26,7 @@ public class CmdAlts extends FCommand {
         this.addSubCommand(this.cmdAltsInvite);
         this.addSubCommand(this.cmdAltsRevoke);
         this.addSubCommand(this.cmdAltsInviteList);
+        this.addSubCommand(this.cmdAltsOpen);
     }
 
     @Override

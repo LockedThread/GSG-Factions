@@ -61,6 +61,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected int maxMembers;
     protected Set<StrikeInfo> strikes = new HashSet<>();
     protected List<String> altInvites = new ArrayList<>();
+    protected boolean altsOpen;
 
     protected transient long lastPlayerLoggedOffTime;
     protected transient Set<FPlayer> fplayers = new HashSet<>();
@@ -300,8 +301,18 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.altInvites.clear();
     }
 
+    @Override
+    public boolean isAltInvitesOpen() {
+        return altsOpen;
+    }
+
+    @Override
+    public void setAltInvitesOpen(boolean altInvitesOpen) {
+        this.altsOpen = altInvitesOpen;
+    }
+
     public boolean isAltInvited(FPlayer fplayer) {
-        return this.altInvites.contains(fplayer.getId());
+        return this.altInvites.contains(fplayer.getId()) || altsOpen;
     }
 
     public List<String> getAltInvites() {

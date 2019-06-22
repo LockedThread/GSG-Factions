@@ -113,6 +113,7 @@ permissions:
       factions.alts.join: true
       factions.alts.revoke: true
       factions.alts.invitelist: true
+      factions.alts.open: true
       factions.inspect: true
       factions.tnt: true
       factions.vault: true

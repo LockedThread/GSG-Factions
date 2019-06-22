@@ -159,6 +159,8 @@ public enum TL {
     COMMAND_ALTS_REVOKE("revoke an alt invite"),
     COMMAND_ALTS_CANNOTFORCE("&cYou do not have permission to force alts to join a Faction"),
     COMMAND_ALTS_SYSTEMFACTION("&cAlts may only join normal factions. This is a system faction."),
+    COMMAND_ALTS_OPEN_DESCRIPTION("Allows factions to open all access to alts"),
+    COMMAND_ALTS_OPEN_TOGGLE("&eYou have toggled open to %1$s"),
 
     COMMAND_ANNOUNCE_DESCRIPTION("Announce a message to players your faction"),
 

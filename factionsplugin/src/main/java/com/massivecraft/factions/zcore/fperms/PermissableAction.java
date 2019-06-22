@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 public enum PermissableAction {
+    ALTS("alts"),
     BAN("ban"),
     BUILD("build"),
     DESTROY("destroy"),
@@ -52,7 +53,6 @@ public enum PermissableAction {
      * Case insensitive check for action.
      *
      * @param check
-     *
      * @return
      */
     public static PermissableAction fromString(String check) {

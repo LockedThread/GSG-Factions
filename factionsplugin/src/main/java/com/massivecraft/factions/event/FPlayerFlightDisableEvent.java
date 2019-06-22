@@ -7,5 +7,7 @@ public class FPlayerFlightDisableEvent extends FactionPlayerEvent {
 
     public FPlayerFlightDisableEvent(Faction faction, FPlayer fPlayer) {
         super(faction, fPlayer);
+        System.out.println("FPlayerFlightDisableEvent Fired");
+        System.out.println("faction = [" + faction + "], fPlayer = [" + fPlayer + "]");
     }
 }

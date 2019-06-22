@@ -926,7 +926,8 @@ fperm-gui:
       check: 31
       tag: 32
       inspect: 33
-    # Material to show, if the material is colorable eg: Wool, Stained Clay it will update with it's access color
+      alts: 34
+      # Material to show, if the material isf-fly colorable eg: Wool, Stained Clay it will update with it's access color
     materials:
       build: STAINED_CLAY
       destroy: STAINED_CLAY
@@ -953,6 +954,7 @@ fperm-gui:
       check: STAINED_CLAY
       tag: STAINED_CLAY
       inspect: STAINED_CLAY
+      alts: STAINED_CLAY
     # Same dummy items format as above
     dummy-items:
       '0':

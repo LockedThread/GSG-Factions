@@ -5,6 +5,9 @@ import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.struct.Permission;
+import com.massivecraft.factions.struct.Role;
+import com.massivecraft.factions.zcore.fperms.Access;
+import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.util.TL;
 
 import java.util.List;
@@ -33,6 +36,11 @@ public class CmdAltsInviteList extends FCommand {
 
     @Override
     public void perform() {
+        Access access = myFaction.getAccess(fme, PermissableAction.ALTS);
+        if (access == Access.DENY || (access == Access.UNDEFINED && !fme.getRole().isAtLeast(Role.COLEADER))) {
+            fme.msg(TL.GENERIC_NOPERMISSION, "alts");
+            return;
+        }
         Faction faction = myFaction;
         if (this.argIsSet(1)) {
             faction = this.argAsFaction(1);

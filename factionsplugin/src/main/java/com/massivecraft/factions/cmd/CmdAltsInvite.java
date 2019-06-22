@@ -3,6 +3,9 @@ package com.massivecraft.factions.cmd;
 import com.google.common.base.Joiner;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.struct.Permission;
+import com.massivecraft.factions.struct.Role;
+import com.massivecraft.factions.zcore.fperms.Access;
+import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.util.TL;
 
 import java.util.HashSet;
@@ -29,6 +32,11 @@ public class CmdAltsInvite extends FCommand {
 
     @Override
     public void perform() {
+        Access access = myFaction.getAccess(fme, PermissableAction.ALTS);
+        if (access == Access.DENY || (access == Access.UNDEFINED && !fme.getRole().isAtLeast(Role.COLEADER))) {
+            fme.msg(TL.GENERIC_NOPERMISSION, "alts");
+            return;
+        }
         Set<FPlayer> alts = new HashSet<>();
         for (String arg : args) {
             FPlayer target = strAsBestFPlayerMatch(arg, null, true);

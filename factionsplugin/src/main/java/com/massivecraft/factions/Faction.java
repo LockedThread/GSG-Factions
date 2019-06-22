@@ -214,6 +214,10 @@ public interface Faction extends EconomyParticipator {
 
     public void setMaxMembers(int maxMembers);
 
+    public boolean isAltInvitesOpen();
+
+    public void setAltInvitesOpen(boolean altInvitesOpen);
+
     public void inviteAlt(FPlayer fplayer);
 
     public void deinviteAlt(FPlayer fplayer);
