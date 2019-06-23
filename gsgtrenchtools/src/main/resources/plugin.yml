@@ -1,5 +1,5 @@
 name: GSGTrenchTools
-main: com.gameservergroup.gsgcore.GSGTrenchTools
+main: com.gameservergroup.gsgtrenchtools.GSGTrenchTools
 version: 1.0
 depend: [GSGCore]
 softdepend: [Factions, WorldGuard, CoreProtect]
