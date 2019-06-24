@@ -255,8 +255,10 @@ public class UnitCollectors extends Unit {
                         sugarCaneAmount++;
                         next = next.getRelative(BlockFace.UP);
                     }
-                    for (int i = 0; i < sugarCaneAmount; i++) {
-                        GSG_COLLECTORS.getMcMMOIntegration().addMcMMOExp(event.getPlayer(), "herbalism", GSG_COLLECTORS.getConfig().getFloat("options.harvester-hoes.mcmmo.preset-herbalism-exp"));
+                    if (GSG_COLLECTORS.getMcMMOIntegration() != null) {
+                        for (int i = 0; i < sugarCaneAmount; i++) {
+                            GSG_COLLECTORS.getMcMMOIntegration().addMcMMOExp(event.getPlayer(), "herbalism", GSG_COLLECTORS.getConfig().getFloat("options.harvester-hoes.mcmmo.preset-herbalism-exp"));
+                        }
                     }
                     sugarCaneAmount *= harvesterHoesCollectDoubleSugarcane ? 2 : 1;
                     Collector collector = getCollector(block.getLocation());
