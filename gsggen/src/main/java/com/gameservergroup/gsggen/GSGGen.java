@@ -1,6 +1,7 @@
 package com.gameservergroup.gsggen;
 
 import com.gameservergroup.gsgcore.plugin.Module;
+import com.gameservergroup.gsggen.generation.Generation;
 import com.gameservergroup.gsggen.integration.CombatIntegration;
 import com.gameservergroup.gsggen.integration.combat.impl.CombatTagPlusImpl;
 import com.gameservergroup.gsggen.menu.GenMenu;
@@ -37,7 +38,12 @@ public class GSGGen extends Module {
         }
         registerUnits(unitGen = new UnitGen());
         this.genMenu = new GenMenu();
-        getServer().getScheduler().runTaskTimer(this, () -> getUnitGen().getGenerations().removeIf(generation -> generation.isVertical() ? !generation.generateVertical() : !generation.generateHorizontal()), getConfig().getLong("interval"), getConfig().getLong("interval"));
+        Runnable runnable = () -> getUnitGen().getGenerations().removeIf(generation -> generation.isVertical() ? !generation.generateVertical() : !generation.generateHorizontal());
+        if (Generation.ASYNC = getConfig().getBoolean("async-enabled", true)) {
+            getServer().getScheduler().runTaskTimerAsynchronously(this, runnable, getConfig().getLong("interval"), getConfig().getLong("interval"));
+        } else {
+            getServer().getScheduler().runTaskTimer(this, runnable, getConfig().getLong("interval"), getConfig().getLong("interval"));
+        }
     }
 
     @Override

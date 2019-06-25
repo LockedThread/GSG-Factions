@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class UnitGen extends Unit {
@@ -33,7 +34,15 @@ public class UnitGen extends Unit {
         load();
         this.generationJsonFile = new JsonFile<>(GSG_GEN.getDataFolder(), "gens.json", new TypeToken<HashSet<Generation>>() {
         });
-        this.generations = generationJsonFile.load().orElse(new HashSet<>());
+        Optional<HashSet<Generation>> load = generationJsonFile.load();
+        if (load.isPresent()) {
+            this.generations = load.get();
+            for (Generation generation : generations) {
+                generation.init();
+            }
+        } else {
+            this.generations = new HashSet<>();
+        }
         hookDisable(new CallBack() {
             @Override
             public void call() {

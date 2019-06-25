@@ -5,7 +5,10 @@
 #DyeColor (Colors used for glass panes, wool, and glass) - (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html)
 
 #Interval in which gens flow in ticks, 20tps = 20 ticks per second therefore around 1 gen per second by default.
-interval: 20
+interval: 40
+
+async-enabled: true
+
 enable-combattagplus-integration: true
 #May cause issues with minecraft clients, this is not fixable without causing mas amount of ItemStack instantiations.
 disable-lava-bucket-player-use: true
@@ -13,82 +16,172 @@ menu:
   options:
     close-inventory-on-purchase: false
     close-inventory-on-no-money: false
-  name: '                 &e&l(*) &fGens &e&l(*)'
-  size: 18
+  name: '                 &d&l(*) &fGens &d&l(*)'
+  size: 27
   #Flls the background with glass panes.
   fill:
     enabled: true
-    glass-pane-color: 'BLACK'
-    enchanted: true
+    glass-pane-color: 'MAGENTA'
+    enchanted: false
   #These are the gen ids from below sorted by item slot number, slots start at 0 and end at the size of the inventory minus 1.
   items:
-    0: 'cobblestone-up'
-    9: 'obsidian-up'
-    2: 'cobblestone-horizontal'
-    11: 'obsidian-horizontal'
+    3: 'cobblestone-down'
+    5: 'obsidian-down'
+    11: 'cobblestone-horizontal'
+    13: 'sand-up'
+    15: 'obsidian-horizontal'
+    21: 'patch-cobblestone-down'
+    23: 'patch-obsidian-down'
+
 #You may add as many gens as you'd like in here by copy pasting one consecutively onto the bottom of this configuration section.
 #The menu section is the item shown in the gui.
 #The patch setting is for patch buckets, patch buckets flow thru all blocks other than the block it's generating.
 gens:
-  cobblestone-up:
+  sand-up:
     length: 256
     patch: false
-    price: 10
+    price: 500
     direction: 'VERTICAL_UP'
+    material: 'SAND'
+    menu:
+      amount: 1
+      material: 'SAND'
+      name: '&d&l(!) &fSand GenBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fUP'
+        - ' &dPrice: &f$500'
+        - ''
+      enchants: []
+      itemflags: []
+    item:
+      amount: 1
+      material: 'SAND'
+      name: '&d&l(!) &fSand GenBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fUP'
+        - ' &dPlace this GenBlock to generate sand'
+        - ''
+      enchants:
+        - 'DURABILITY:1'
+      itemflags:
+        - 'HIDE_ENCHANTS'
+  cobblestone-down:
+    length: 256
+    patch: false
+    price: 50
+    direction: 'VERTICAL_DOWN'
     material: 'COBBLESTONE'
     menu:
       amount: 1
       material: 'COBBLESTONE'
-      name: '&d&l(!) &fCobblestone GenBucket &d&l(!)'
+      name: '&d&l(!) &fCobblestone GenBlock &d&l(!)'
       lore:
         - ''
-        - ' &dDirection: &fUP'
-        - ' &dPrice: &f$10'
+        - ' &dDirection: &fDOWN'
+        - ' &dPrice: &f$50'
         - ''
-      enchants:
-        - 'DURABILITY:1'
-      itemflags:
-        - 'HIDE_ENCHANTS'
+      enchants: []
+      itemflags: []
     item:
       amount: 1
       material: 'COBBLESTONE'
-      name: '&d&l(!) &fCobblestone GenBucket &d&l(!)'
+      name: '&d&l(!) &fCobblestone GenBlock &d&l(!)'
       lore:
         - ''
-        - ' &dDirection: &fUP'
-        - ' &dPlace this genbucket to generate cobblestone '
+        - ' &dDirection: &fDOWN'
+        - ' &dPlace this GenBlock to generate cobblestone '
         - ''
       enchants:
         - 'DURABILITY:1'
       itemflags:
         - 'HIDE_ENCHANTS'
-  obsidian-up:
+  obsidian-down:
     length: 256
     patch: false
-    price: 5000
-    direction: 'VERTICAL_UP'
+    price: 1000
+    direction: 'VERTICAL_DOWN'
     material: 'OBSIDIAN'
     menu:
       amount: 1
       material: 'OBSIDIAN'
-      name: '&d&l(!) &fObsidian GenBucket &d&l(!)'
+      name: '&d&l(!) &fObsidian GenBlock &d&l(!)'
       lore:
         - ''
-        - ' &dDirection: &fUP'
-        - ' &dPrice: &f$5000'
+        - ' &dDirection: &fDOWN'
+        - ' &dPrice: &f$1000'
+        - ''
+      enchants: []
+      itemflags: []
+    item:
+      amount: 1
+      material: 'OBSIDIAN'
+      name: '&d&l(!) &fObsidian GenBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fDOWN'
+        - ' &dPlace this GenBlock to generate obsidian '
         - ''
       enchants:
         - 'DURABILITY:1'
       itemflags:
         - 'HIDE_ENCHANTS'
+  patch-cobblestone-down:
+    length: 256
+    patch: true
+    price: 250
+    direction: 'VERTICAL_DOWN'
+    material: 'COBBLESTONE'
+    menu:
+      amount: 1
+      material: 'COBBLESTONE'
+      name: '&d&l(!) &fCobblestone PatchBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fDOWN'
+        - ' &dPrice: &f$250'
+        - ''
+      enchants: []
+      itemflags: []
+    item:
+      amount: 1
+      material: 'COBBLESTONE'
+      name: '&d&l(!) &fCobblestone PatchBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fDOWN'
+        - ' &dPlace this PatchBlock to generate cobblestone '
+        - ''
+      enchants:
+        - 'DURABILITY:1'
+      itemflags:
+        - 'HIDE_ENCHANTS'
+  patch-obsidian-down:
+    length: 256
+    patch: true
+    price: 1500
+    direction: 'VERTICAL_DOWN'
+    material: 'OBSIDIAN'
+    menu:
+      amount: 1
+      material: 'OBSIDIAN'
+      name: '&d&l(!) &fObsidian PatchBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fDOWN'
+        - ' &dPrice: &f$1500'
+        - ''
+      enchants: []
+      itemflags: []
     item:
       amount: 1
       material: 'OBSIDIAN'
-      name: '&d&l(!) &fObsidian GenBucket &d&l(!)'
+      name: '&d&l(!) &fObsidian PatchBlock &d&l(!)'
       lore:
         - ''
-        - ' &dDirection: &fUP'
-        - ' &dPlace this genbucket to generate obsidian '
+        - ' &dDirection: &fDOWN'
+        - ' &dPlace this PatchBlock to generate obsidian '
         - ''
       enchants:
         - 'DURABILITY:1'
@@ -97,30 +190,28 @@ gens:
   cobblestone-horizontal:
     length: 96
     patch: false
-    price: 250
+    price: 50
     direction: 'HORIZONTAL'
     material: 'COBBLESTONE'
     menu:
       amount: 1
       material: 'COBBLESTONE'
-      name: '&d&l(!) &fCobblestone GenBucket &d&l(!)'
+      name: '&d&l(!) &fHorizontal Cobblestone GenBlock &d&l(!)'
       lore:
         - ''
         - ' &dDirection: &fHorizontal'
-        - ' &dPrice: &f$250'
+        - ' &dPrice: &f$50'
         - ''
-      enchants:
-        - 'DURABILITY:1'
-      itemflags:
-        - 'HIDE_ENCHANTS'
+      enchants: []
+      itemflags: []
     item:
       amount: 1
       material: 'COBBLESTONE'
-      name: '&d&l(!) &fCobblestone GenBucket &d&l(!)'
+      name: '&d&l(!) &fHorizontal Cobblestone GenBlock &d&l(!)'
       lore:
         - ''
         - ' &dDirection: &fHorizontal'
-        - ' &dPlace this genbucket to generate cobblestone '
+        - ' &dPlace this GenBlock to generate cobblestone '
         - ''
       enchants:
         - 'DURABILITY:1'
@@ -129,30 +220,28 @@ gens:
   obsidian-horizontal:
     length: 96
     patch: false
-    price: 2500
+    price: 1000
     direction: 'HORIZONTAL'
     material: 'OBSIDIAN'
     menu:
       amount: 1
       material: 'OBSIDIAN'
-      name: '&d&l(!) &fObsidian GenBucket &d&l(!)'
+      name: '&d&l(!) &fHorizontal Obsidian GenBlock &d&l(!)'
       lore:
         - ''
         - ' &dDirection: &fHorizontal'
-        - ' &dPrice: &f$2500'
+        - ' &dPrice: &f$1000'
         - ''
-      enchants:
-        - 'DURABILITY:1'
-      itemflags:
-        - 'HIDE_ENCHANTS'
+      enchants: []
+      itemflags: []
     item:
       amount: 1
       material: 'OBSIDIAN'
-      name: '&d&l(!) &fObsidian GenBucket &d&l(!)'
+      name: '&d&l(!) &fHorizontal Obsidian GenBlock &d&l(!)'
       lore:
         - ''
         - ' &dDirection: &fHorizontal'
-        - ' &dPlace this genbucket to generate cobblestone '
+        - ' &dPlace this GenBlock to generate cobblestone '
         - ''
       enchants:
         - 'DURABILITY:1'

@@ -12,12 +12,16 @@ import org.bukkit.block.BlockFace;
 
 public class Generation {
 
-    private BlockPosition startingBlockPosition, currentBlockPosition;
+    public static boolean ASYNC = false;
+
+    private final BlockPosition startingBlockPosition;
+    private BlockPosition currentBlockPosition;
     private int length;
-    private FLocation startingFLocation;
     private BlockFace blockFace;
     private Material material;
     private boolean patch;
+    private transient FLocation startingFLocation;
+    private transient Block start, current;
 
     public Generation(BlockPosition startingBlockPosition, Gen gen, BlockFace blockFace) {
         this.startingBlockPosition = startingBlockPosition;
@@ -25,8 +29,14 @@ public class Generation {
         this.material = gen.getMaterial();
         this.patch = gen.isPatch();
         this.length = gen.getLength();
-        this.startingFLocation = new FLocation(getStartingBlockPosition().getLocation());
         this.blockFace = blockFace;
+        this.init();
+    }
+
+    public void init() {
+        this.startingFLocation = new FLocation(getStartingBlockPosition().getLocation());
+        this.start = startingBlockPosition.getBlock();
+        this.current = getCurrent();
     }
 
     public boolean isVertical() {
@@ -37,11 +47,11 @@ public class Generation {
         if (!getCurrentBlockPosition().isChunkLoaded()) {
             getCurrentBlockPosition().getChunk().load();
         }
-        Block relative = getCurrentBlockPosition().getBlock().getRelative(blockFace);
+        Block relative = getCurrent().getRelative(blockFace);
         if (getLength() == 0) {
             return false;
         }
-        if (getCurrentBlockPosition().getBlock().getType() != getMaterial()) {
+        if (getStart().getType() != getMaterial()) {
             return false;
         }
         if (relative.getY() == 255) {
@@ -63,7 +73,7 @@ public class Generation {
         }
         setLength(getLength() - 1);
         GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid()));
-        setCurrentBlockPosition(BlockPosition.of(relative));
+        setCurrent(relative);
         return true;
         /*
         if (startingBlockPosition.isChunkLoaded()) {
@@ -109,7 +119,7 @@ public class Generation {
         if (getLength() == 0) {
             return false;
         }
-        if (getCurrentBlockPosition().getBlock().getType() != getMaterial()) {
+        if (getStart().getType() != getMaterial()) {
             return false;
         }
         if (relative.getType() != Material.AIR && !isPatch()) {
@@ -135,8 +145,21 @@ public class Generation {
 
         setLength(getLength() - 1);
         GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid()));
-        setCurrentBlockPosition(BlockPosition.of(relative));
+        setCurrent(relative);
         return true;
+    }
+
+    public Block getStart() {
+        return start;
+    }
+
+    public Block getCurrent() {
+        return current == null ? current = getCurrentBlockPosition().getBlock() : current;
+    }
+
+    public void setCurrent(Block block) {
+        this.current = block;
+        this.currentBlockPosition = BlockPosition.of(block);
     }
 
     public void enable() {
