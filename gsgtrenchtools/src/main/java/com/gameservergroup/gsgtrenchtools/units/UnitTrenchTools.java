@@ -132,6 +132,7 @@ public class UnitTrenchTools extends Unit {
                 for (int z = center.getBlockZ() - radius; z <= radius + center.getBlockZ(); z++) {
                     Block block = center.getWorld().getBlockAt(x, y, z);
                     if (!blackListedMaterials.contains(block.getType()) && GSG_CORE.canBuild(player, block)) {
+                        if (Utils.isOutsideBorder(block.getLocation())) continue;
                         if (FactionsBlockListener.playerCanBuildDestroyBlock(player, block.getLocation(), "destroy", true)) {
                             if (trayMode) {
                                 if (trayMaterials.contains(block.getType())) {
