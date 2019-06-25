@@ -10,10 +10,12 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public abstract class Menu implements InventoryHolder {
 
+    private transient final int hash;
     private Consumer<InventoryOpenEvent> inventoryOpenEventConsumer;
     private Consumer<InventoryCloseEvent> inventoryCloseEventConsumer;
     private Inventory inventory;
@@ -22,6 +24,7 @@ public abstract class Menu implements InventoryHolder {
     public Menu(String name, int size) {
         this.inventory = Bukkit.createInventory(this, size, Text.toColor(name));
         this.menuItems = new Int2ObjectOpenHashMap<>();
+        this.hash = UUID.randomUUID().hashCode();
     }
 
     public abstract void initialize();
@@ -79,5 +82,20 @@ public abstract class Menu implements InventoryHolder {
     public void clear() {
         inventory.clear();
         menuItems.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Menu menu = (Menu) o;
+
+        return menu.hash == hash;
+    }
+
+    @Override
+    public int hashCode() {
+        return hash;
     }
 }
