@@ -10,16 +10,19 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+import java.util.Objects;
+import java.util.function.BiConsumer;
+
 public class Generation {
 
+    private static final BiConsumer<Block, Material> BLOCK_CONSUMER = (block, material) -> block.setTypeIdAndData(material.getId(), (byte) 0, block.isLiquid());
     public static boolean ASYNC = false;
-
+    private final BlockFace blockFace;
+    private final Material material;
     private final BlockPosition startingBlockPosition;
-    private BlockPosition currentBlockPosition;
+    private final boolean patch;
     private int length;
-    private BlockFace blockFace;
-    private Material material;
-    private boolean patch;
+    private BlockPosition currentBlockPosition;
     private transient FLocation startingFLocation;
     private transient Block start, current;
 
@@ -44,13 +47,13 @@ public class Generation {
     }
 
     public boolean generateVertical() {
+        if (getLength() == 0) {
+            return false;
+        }
         if (!getCurrentBlockPosition().isChunkLoaded()) {
             getCurrentBlockPosition().getChunk().load();
         }
         Block relative = getCurrent().getRelative(blockFace);
-        if (getLength() == 0) {
-            return false;
-        }
         if (getStart().getType() != getMaterial()) {
             return false;
         }
@@ -73,9 +76,9 @@ public class Generation {
         }
         setLength(getLength() - 1);
         if (ASYNC) {
-            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid()));
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> BLOCK_CONSUMER.accept(relative, getMaterial()));
         } else {
-            relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid());
+            BLOCK_CONSUMER.accept(relative, getMaterial());
         }
         setCurrent(relative);
         return true;
@@ -115,14 +118,14 @@ public class Generation {
     }
 
     public boolean generateHorizontal() {
+        if (getLength() == 0) {
+            return false;
+        }
         BlockPosition blockPositionRelative = getCurrentBlockPosition().getRelative(blockFace);
         if (!startingBlockPosition.isChunkLoaded()) {
             startingBlockPosition.getChunk().load();
         }
         Block relative = blockPositionRelative.getBlock();
-        if (getLength() == 0) {
-            return false;
-        }
         if (getStart().getType() != getMaterial()) {
             return false;
         }
@@ -149,9 +152,9 @@ public class Generation {
 
         setLength(getLength() - 1);
         if (ASYNC) {
-            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid()));
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> BLOCK_CONSUMER.accept(relative, getMaterial()));
         } else {
-            relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid());
+            BLOCK_CONSUMER.accept(relative, getMaterial());
         }
         setCurrent(relative);
         return true;
@@ -208,5 +211,26 @@ public class Generation {
 
     public void setCurrentBlockPosition(BlockPosition currentBlockPosition) {
         this.currentBlockPosition = currentBlockPosition;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Generation that = (Generation) o;
+
+        return length == that.length && patch == that.patch && Objects.equals(startingBlockPosition, that.startingBlockPosition) && Objects.equals(currentBlockPosition, that.currentBlockPosition) && blockFace == that.blockFace && material == that.material;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = startingBlockPosition != null ? startingBlockPosition.hashCode() : 0;
+        result = 31 * result + (currentBlockPosition != null ? currentBlockPosition.hashCode() : 0);
+        result = 31 * result + length;
+        result = 31 * result + (blockFace != null ? blockFace.hashCode() : 0);
+        result = 31 * result + (material != null ? material.hashCode() : 0);
+        result = 31 * result + (patch ? 1 : 0);
+        return result;
     }
 }
