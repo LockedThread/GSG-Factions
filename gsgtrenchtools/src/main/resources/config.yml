@@ -1,126 +1,246 @@
-send-trenchmode-update-message: true
+#Directions - (VERTICAL_UP,VERTICAL_DOWN,HORIZONTAL)
+#ItemFlags - (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/ItemFlag.html)
+#Enchantments - (http://docs.codelanx.com/Bukkit/1.8/org/bukkit/enchantments/Enchantment.html)
+#Material - (http://docs.codelanx.com/Bukkit/1.8/org/bukkit/Material.html)
+#DyeColor (Colors used for glass panes, wool, and glass) - (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html)
 
-hook-coreprotect: false
+#Interval in which gens flow in ticks, 20tps = 20 ticks per second therefore around 1 gen per second by default.
+interval: 40
+enable-combattagplus-integration: true
+#May cause issues with minecraft clients, this is not fixable without causing mas amount of ItemStack instantiations.
+disable-lava-bucket-player-use: true
+menu:
+  options:
+    close-inventory-on-purchase: false
+    close-inventory-on-no-money: false
+  name: '                 &d&l(*) &fGens &d&l(*)'
+  size: 27
+  #Flls the background with glass panes.
+  fill:
+    enabled: true
+    glass-pane-color: 'MAGENTA'
+    enchanted: false
+  #These are the gen ids from below sorted by item slot number, slots start at 0 and end at the size of the inventory minus 1.
+  items:
+    3: 'cobblestone-down'
+    5: 'obsidian-down'
+    11: 'cobblestone-horizontal'
+    13: 'sand-up'
+    15: 'obsidian-horizontal'
+    21: 'patch-cobblestone-down'
+    23: 'patch-obsidian-down'
 
-drop-items: false
-# Don't remove AIR for performance reasons.
-blacklisted-materials:
-  - 'BEACON'
-  - 'BEDROCK'
-  - 'AIR'
-  - 'MOB_SPAWNER'
-shovel-materials:
-  - 'DIRT'
-  - 'GRAVEL'
-  - 'SAND'
-  - 'GRASS'
-  - 'SOIL'
-  - 'SNOW_BLOCK'
-  - 'CLAY'
-  - 'SOUL_SAND'
-tray-materials:
-  - 'DIRT'
-  - 'NETHERRACK'
-  - 'GRASS'
-
-tools:
-  3x3:
-    radius: 3
-    traymode: true
-    omni-tool: true
-    item:
+#You may add as many gens as you'd like in here by copy pasting one consecutively onto the bottom of this configuration section.
+#The menu section is the item shown in the gui.
+#The patch setting is for patch buckets, patch buckets flow thru all blocks other than the block it's generating.
+gens:
+  sand-up:
+    length: 256
+    patch: false
+    price: 500
+    direction: 'VERTICAL_UP'
+    material: 'SAND'
+    menu:
       amount: 1
-      material: 'DIAMOND_PICKAXE'
-      name: '&d&lTrenchTool &8(&f3x3&8)'
+      material: 'SAND'
+      name: '&d&l(!) &fSand GenBlock &d&l(!)'
       lore:
         - ''
-        - ' &eThis tools mines a 3x3 area.'
-        - ' &eShift right click to toggle TrayMode.'
+        - ' &dDirection: &fUP'
+        - ' &dPrice: &f$500'
         - ''
-        - ' &dTrayMode: {traymode}'
-        - ''
-      enchants:
-        - 'DIG_SPEED:5'
-        - 'DURABILITY:4'
+      enchants: []
       itemflags: []
-      unbreakable: true
-  5x5:
-    radius: 5
-    traymode: true
-    omni-tool: true
     item:
       amount: 1
-      material: 'DIAMOND_PICKAXE'
-      name: '&d&lTrenchTool &8(&f5x5&8)'
+      material: 'SAND'
+      name: '&d&l(!) &fSand GenBlock &d&l(!)'
       lore:
         - ''
-        - ' &eThis tools mines a 5x5 area.'
-        - ' &eShift right click to toggle TrayMode.'
-        - ''
-        - ' &dTrayMode: {traymode}'
+        - ' &dDirection: &fUP'
+        - ' &dPlace this GenBlock to generate sand'
         - ''
       enchants:
-        - 'DIG_SPEED:5'
-        - 'DURABILITY:4'
+        - 'DURABILITY:1'
+      itemflags:
+        - 'HIDE_ENCHANTS'
+  cobblestone-down:
+    length: 256
+    patch: false
+    price: 50
+    direction: 'VERTICAL_DOWN'
+    material: 'COBBLESTONE'
+    menu:
+      amount: 1
+      material: 'COBBLESTONE'
+      name: '&d&l(!) &fCobblestone GenBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fDOWN'
+        - ' &dPrice: &f$50'
+        - ''
+      enchants: []
       itemflags: []
-      unbreakable: true
-  7x7:
-    radius: 7
-    traymode: true
-    omni-tool: true
     item:
       amount: 1
-      material: 'DIAMOND_PICKAXE'
-      name: '&d&lTrenchTool &8(&f7x7&8)'
+      material: 'COBBLESTONE'
+      name: '&d&l(!) &fCobblestone GenBlock &d&l(!)'
       lore:
         - ''
-        - ' &eThis tools mines a 7x7 area.'
-        - ' &eShift right click to toggle TrayMode.'
-        - ''
-        - ' &dTrayMode: {traymode}'
+        - ' &dDirection: &fDOWN'
+        - ' &dPlace this GenBlock to generate cobblestone '
         - ''
       enchants:
-        - 'DIG_SPEED:5'
-        - 'DURABILITY:4'
+        - 'DURABILITY:1'
+      itemflags:
+        - 'HIDE_ENCHANTS'
+  obsidian-down:
+    length: 256
+    patch: false
+    price: 1000
+    direction: 'VERTICAL_DOWN'
+    material: 'OBSIDIAN'
+    menu:
+      amount: 1
+      material: 'OBSIDIAN'
+      name: '&d&l(!) &fObsidian GenBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fDOWN'
+        - ' &dPrice: &f$1000'
+        - ''
+      enchants: []
       itemflags: []
-      unbreakable: true
-  9x9:
-    radius: 9
-    traymode: true
-    omni-tool: true
     item:
       amount: 1
-      material: 'DIAMOND_PICKAXE'
-      name: '&d&lTrenchTool &8(&f9x9&8)'
+      material: 'OBSIDIAN'
+      name: '&d&l(!) &fObsidian GenBlock &d&l(!)'
       lore:
         - ''
-        - ' &eThis tools mines a 9x9 area.'
-        - ' &eShift right click to toggle TrayMode.'
-        - ''
-        - ' &dTrayMode: {traymode}'
+        - ' &dDirection: &fDOWN'
+        - ' &dPlace this GenBlock to generate obsidian '
         - ''
       enchants:
-        - 'DIG_SPEED:5'
-        - 'DURABILITY:4'
+        - 'DURABILITY:1'
+      itemflags:
+        - 'HIDE_ENCHANTS'
+  patch-cobblestone-down:
+    length: 256
+    patch: true
+    price: 250
+    direction: 'VERTICAL_DOWN'
+    material: 'COBBLESTONE'
+    menu:
+      amount: 1
+      material: 'COBBLESTONE'
+      name: '&d&l(!) &fCobblestone PatchBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fDOWN'
+        - ' &dPrice: &f$250'
+        - ''
+      enchants: []
       itemflags: []
-      unbreakable: true
-  11x11:
-    radius: 11
-    traymode: true
-    omni-tool: true
     item:
       amount: 1
-      material: 'DIAMOND_PICKAXE'
-      name: '&d&lTrenchTool &8(&f11x11&8)'
+      material: 'COBBLESTONE'
+      name: '&d&l(!) &fCobblestone PatchBlock &d&l(!)'
       lore:
         - ''
-        - ' &eThis tools mines a 11x11 area.'
-        - ' &eShift right click to toggle TrayMode.'
-        - ''
-        - ' &dTrayMode: {traymode}'
+        - ' &dDirection: &fDOWN'
+        - ' &dPlace this PatchBlock to generate cobblestone '
         - ''
       enchants:
-        - 'DIG_SPEED:5'
-        - 'DURABILITY:4'
+        - 'DURABILITY:1'
+      itemflags:
+        - 'HIDE_ENCHANTS'
+  patch-obsidian-down:
+    length: 256
+    patch: true
+    price: 1500
+    direction: 'VERTICAL_DOWN'
+    material: 'OBSIDIAN'
+    menu:
+      amount: 1
+      material: 'OBSIDIAN'
+      name: '&d&l(!) &fObsidian PatchBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fDOWN'
+        - ' &dPrice: &f$1500'
+        - ''
+      enchants: []
       itemflags: []
-      unbreakable: true
+    item:
+      amount: 1
+      material: 'OBSIDIAN'
+      name: '&d&l(!) &fObsidian PatchBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fDOWN'
+        - ' &dPlace this PatchBlock to generate obsidian '
+        - ''
+      enchants:
+        - 'DURABILITY:1'
+      itemflags:
+        - 'HIDE_ENCHANTS'
+  cobblestone-horizontal:
+    length: 96
+    patch: false
+    price: 50
+    direction: 'HORIZONTAL'
+    material: 'COBBLESTONE'
+    menu:
+      amount: 1
+      material: 'COBBLESTONE'
+      name: '&d&l(!) &fHorizontal Cobblestone GenBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fHorizontal'
+        - ' &dPrice: &f$50'
+        - ''
+      enchants: []
+      itemflags: []
+    item:
+      amount: 1
+      material: 'COBBLESTONE'
+      name: '&d&l(!) &fHorizontal Cobblestone GenBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fHorizontal'
+        - ' &dPlace this GenBlock to generate cobblestone '
+        - ''
+      enchants:
+        - 'DURABILITY:1'
+      itemflags:
+        - 'HIDE_ENCHANTS'
+  obsidian-horizontal:
+    length: 96
+    patch: false
+    price: 1000
+    direction: 'HORIZONTAL'
+    material: 'OBSIDIAN'
+    menu:
+      amount: 1
+      material: 'OBSIDIAN'
+      name: '&d&l(!) &fHorizontal Obsidian GenBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fHorizontal'
+        - ' &dPrice: &f$1000'
+        - ''
+      enchants: []
+      itemflags: []
+    item:
+      amount: 1
+      material: 'OBSIDIAN'
+      name: '&d&l(!) &fHorizontal Obsidian GenBlock &d&l(!)'
+      lore:
+        - ''
+        - ' &dDirection: &fHorizontal'
+        - ' &dPlace this GenBlock to generate cobblestone '
+        - ''
+      enchants:
+        - 'DURABILITY:1'
+      itemflags:
+        - 'HIDE_ENCHANTS'

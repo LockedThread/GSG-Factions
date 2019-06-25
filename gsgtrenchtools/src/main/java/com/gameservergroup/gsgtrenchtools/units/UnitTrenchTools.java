@@ -6,6 +6,7 @@ import com.gameservergroup.gsgcore.utils.Utils;
 import com.gameservergroup.gsgtrenchtools.GSGTrenchTools;
 import com.gameservergroup.gsgtrenchtools.enums.TrenchMessages;
 import com.gameservergroup.gsgtrenchtools.objs.TrenchTool;
+import com.massivecraft.factions.listeners.FactionsBlockListener;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -131,24 +132,26 @@ public class UnitTrenchTools extends Unit {
                 for (int z = center.getBlockZ() - radius; z <= radius + center.getBlockZ(); z++) {
                     Block block = center.getWorld().getBlockAt(x, y, z);
                     if (!blackListedMaterials.contains(block.getType()) && GSG_CORE.canBuild(player, block)) {
-                        if (trayMode) {
-                            if (trayMaterials.contains(block.getType())) {
-                                if (amounts != null) {
-                                    amounts.computeIfPresent(block.getType(), (material, integer) -> integer + 1);
-                                    amounts.putIfAbsent(block.getType(), 1);
+                        if (FactionsBlockListener.playerCanBuildDestroyBlock(player, block.getLocation(), "destroy", true)) {
+                            if (trayMode) {
+                                if (trayMaterials.contains(block.getType())) {
+                                    if (amounts != null) {
+                                        amounts.computeIfPresent(block.getType(), (material, integer) -> integer + 1);
+                                        amounts.putIfAbsent(block.getType(), 1);
+                                    }
+                                    block.setTypeIdAndData(0, (byte) 0, true);
                                 }
-                                block.setTypeIdAndData(0, (byte) 0, true);
+                                continue;
                             }
-                            continue;
+                            if (amounts != null) {
+                                amounts.computeIfPresent(block.getType(), (material, integer) -> integer + 1);
+                                amounts.putIfAbsent(block.getType(), 1);
+                            }
+                            if (GSGTrenchTools.getInstance().getCoreProtectIntegration() != null) {
+                                GSGTrenchTools.getInstance().getCoreProtectIntegration().log(player, block);
+                            }
+                            block.setTypeIdAndData(0, (byte) 0, false);
                         }
-                        if (amounts != null) {
-                            amounts.computeIfPresent(block.getType(), (material, integer) -> integer + 1);
-                            amounts.putIfAbsent(block.getType(), 1);
-                        }
-                        if (GSGTrenchTools.getInstance().getCoreProtectIntegration() != null) {
-                            GSGTrenchTools.getInstance().getCoreProtectIntegration().log(player, block);
-                        }
-                        block.setTypeIdAndData(0, (byte) 0, false);
                     }
                 }
             }
