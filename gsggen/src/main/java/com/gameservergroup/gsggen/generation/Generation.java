@@ -72,7 +72,11 @@ public class Generation {
             return false;
         }
         setLength(getLength() - 1);
-        GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid()));
+        if (ASYNC) {
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid()));
+        } else {
+            relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid());
+        }
         setCurrent(relative);
         return true;
         /*
@@ -144,7 +148,11 @@ public class Generation {
         }
 
         setLength(getLength() - 1);
-        GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid()));
+        if (ASYNC) {
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid()));
+        } else {
+            relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid());
+        }
         setCurrent(relative);
         return true;
     }
