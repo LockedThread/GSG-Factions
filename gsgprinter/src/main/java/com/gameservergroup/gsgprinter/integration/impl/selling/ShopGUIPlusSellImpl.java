@@ -1,9 +1,9 @@
 package com.gameservergroup.gsgprinter.integration.impl.selling;
 
+import com.gameservergroup.gsgcore.relocations.fastutil.ints.Int2DoubleMap;
+import com.gameservergroup.gsgcore.relocations.fastutil.ints.Int2DoubleOpenHashMap;
 import com.gameservergroup.gsgprinter.GSGPrinter;
 import com.gameservergroup.gsgprinter.integration.SellIntegration;
-import it.unimi.dsi.fastutil.ints.Int2DoubleMap;
-import it.unimi.dsi.fastutil.ints.Int2DoubleOpenHashMap;
 import net.brcdev.shopgui.ShopGuiPlugin;
 import net.brcdev.shopgui.shop.Shop;
 import net.brcdev.shopgui.shop.ShopItem;

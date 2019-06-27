@@ -1,4 +1,4 @@
-package com.gameservergroup.gsgprinter.integration.combat.impl;
+package com.gameservergroup.gsgprinter.integration.impl.combat;
 
 import com.gameservergroup.gsgprinter.integration.CombatIntegration;
 import net.minelink.ctplus.CombatTagPlus;
