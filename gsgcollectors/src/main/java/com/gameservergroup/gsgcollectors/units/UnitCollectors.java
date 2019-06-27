@@ -298,6 +298,8 @@ public class UnitCollectors extends Unit {
                         collector.getBlockPosition().getBlock().setType(Material.AIR);
                         collector.setBlockPosition(BlockPosition.of(event.getBlockPlaced()));
                         event.getPlayer().sendMessage(CollectorMessages.UPDATED_COLLECTOR_BLOCKPOSITION.toString());
+                        event.setCancelled(true);
+                        event.getBlockPlaced().setType(event.getItemInHand().getType());
                     }
                 });
         CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
