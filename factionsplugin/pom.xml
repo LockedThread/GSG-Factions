@@ -191,7 +191,7 @@
         </dependency>
         <dependency>
             <groupId>com.gameservergroup</groupId>
-            <artifactId>gsgcore</artifactId>
+            <artifactId>gsgcore-uber</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
