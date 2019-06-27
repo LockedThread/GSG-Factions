@@ -34,7 +34,13 @@ public class UnitTrenchTools extends Unit {
             trenchTool.setItemEdit(() -> trenchTool.buildItemStack(false));
             trenchTool.setBreakEventConsumer(event -> {
                 if (GSG_CORE.canBuild(event.getPlayer(), event.getBlock())) {
-                    removeBlocksInRadius(event.getPlayer(), event.getBlock().getLocation(), trenchTool.getRadius() / 2, trenchTool.getToolTrayMode(event.getPlayer().getItemInHand()));
+                    boolean toolTrayMode = trenchTool.getToolTrayMode(event.getPlayer().getItemInHand());
+                    if (toolTrayMode) {
+                        if (!trayMaterials.contains(event.getBlock().getType())) {
+                            event.setCancelled(true);
+                        }
+                    }
+                    removeBlocksInRadius(event.getPlayer(), event.getBlock().getLocation(), trenchTool.getRadius() / 2, toolTrayMode);
                 } else {
                     event.getPlayer().sendMessage(TrenchMessages.CANT_BREAK.toString());
                     event.setCancelled(true);
@@ -102,6 +108,7 @@ public class UnitTrenchTools extends Unit {
                 }
             });
         }
+
     }
 
     private Material getTranslatedMaterial(ItemStack itemStack) {
