@@ -80,6 +80,8 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
         Faction faction = fPlayer.getFaction();
         switch (placeholder) {
             // First list player stuff
+            case "player_title":
+                return fPlayer.hasFaction() ? fPlayer.getTitle() : fPlayer.getName();
             case "player_name":
                 return fPlayer.getName();
             case "player_lastseen":
