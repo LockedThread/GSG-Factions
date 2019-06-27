@@ -10,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import java.util.Objects;
 import java.util.function.BiConsumer;
 
 public class Generation {
@@ -25,6 +24,7 @@ public class Generation {
     private BlockPosition currentBlockPosition;
     private transient FLocation startingFLocation;
     private transient Block start, current;
+    private transient final int hash;
 
     public Generation(BlockPosition startingBlockPosition, Gen gen, BlockFace blockFace) {
         this.startingBlockPosition = startingBlockPosition;
@@ -34,6 +34,11 @@ public class Generation {
         this.length = gen.getLength();
         this.blockFace = blockFace;
         this.init();
+        int result = startingBlockPosition != null ? startingBlockPosition.hashCode() : 0;
+        result = 31 * result + (blockFace != null ? blockFace.hashCode() : 0);
+        result = 31 * result + (material != null ? material.hashCode() : 0);
+        result = 31 * result + (patch ? 1 : 0);
+        this.hash = result;
     }
 
     public void init() {
@@ -50,14 +55,18 @@ public class Generation {
         if (getLength() == 0) {
             return false;
         }
-        if (!getCurrentBlockPosition().isChunkLoaded()) {
-            getCurrentBlockPosition().getChunk().load();
-        }
-        Block relative = getCurrent().getRelative(blockFace);
+        /*if (!getCurrentBlockPosition().isChunkLoaded()) {
+            if (ASYNC) {
+                Bukkit.getScheduler().runTask(GSGGen.getInstance(), () -> getCurrentBlockPosition().getChunk().load());
+            } else {
+                getCurrentBlockPosition().getChunk().load();
+            }
+        }*/
         if (getStart().getType() != getMaterial()) {
             return false;
         }
-        if (relative.getY() == 255) {
+        Block relative = getCurrent().getRelative(blockFace);
+        if (relative.getY() >= 255) {
             return false;
         }
         if (relative.getType() != Material.AIR && !isPatch()) {
@@ -121,11 +130,14 @@ public class Generation {
         if (getLength() == 0) {
             return false;
         }
-        BlockPosition blockPositionRelative = getCurrentBlockPosition().getRelative(blockFace);
-        if (!startingBlockPosition.isChunkLoaded()) {
-            startingBlockPosition.getChunk().load();
-        }
-        Block relative = blockPositionRelative.getBlock();
+        /*if (!getCurrentBlockPosition().isChunkLoaded()) {
+            if (ASYNC) {
+                Bukkit.getScheduler().runTask(GSGGen.getInstance(), () -> getCurrentBlockPosition().getChunk().load());
+            } else {
+                getCurrentBlockPosition().getChunk().load();
+            }
+        }*/
+        Block relative = getCurrentBlockPosition().getRelative(blockFace).getBlock();
         if (getStart().getType() != getMaterial()) {
             return false;
         }
@@ -220,17 +232,27 @@ public class Generation {
 
         Generation that = (Generation) o;
 
-        return length == that.length && patch == that.patch && Objects.equals(startingBlockPosition, that.startingBlockPosition) && Objects.equals(currentBlockPosition, that.currentBlockPosition) && blockFace == that.blockFace && material == that.material;
+        return that.hash == hash;
+
     }
 
     @Override
     public int hashCode() {
-        int result = startingBlockPosition != null ? startingBlockPosition.hashCode() : 0;
-        result = 31 * result + (currentBlockPosition != null ? currentBlockPosition.hashCode() : 0);
-        result = 31 * result + length;
-        result = 31 * result + (blockFace != null ? blockFace.hashCode() : 0);
-        result = 31 * result + (material != null ? material.hashCode() : 0);
-        result = 31 * result + (patch ? 1 : 0);
-        return result;
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        return "Generation{" +
+                "blockFace=" + blockFace +
+                ", material=" + material +
+                ", startingBlockPosition=" + startingBlockPosition +
+                ", patch=" + patch +
+                ", length=" + length +
+                ", currentBlockPosition=" + currentBlockPosition +
+                ", startingFLocation=" + startingFLocation +
+                ", start=" + start +
+                ", current=" + current +
+                '}';
     }
 }
