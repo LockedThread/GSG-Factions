@@ -54,6 +54,10 @@ public class BlockPosition {
         return getWorld().getChunkAt(x >> 4, z >> 4);
     }
 
+    public void loadChunkAsync(World.ChunkLoadCallback chunkLoadCallback) {
+        getWorld().getChunkAtAsync(x >> 4, z >> 4, chunkLoadCallback);
+    }
+
     public boolean isChunkLoaded() {
         return getWorld().isChunkLoaded(x >> 4, z >> 4);
     }
@@ -102,20 +106,21 @@ public class BlockPosition {
         this.z = z;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         BlockPosition that = (BlockPosition) o;
-
-        return that.hash == this.hash;
+        return hash == 0 || that.hash == 0 ? x == that.x && y == that.y && z == that.z && Objects.equals(worldName, that.worldName) : that.hash == this.hash;
     }
 
     @Override
     public int hashCode() {
         return hash;
     }
+
 
     @Override
     public String toString() {
