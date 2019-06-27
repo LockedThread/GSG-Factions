@@ -19,6 +19,8 @@
         <module>gsgvouchers</module>
         <module>gsgtrenchtools</module>
         <module>gsgoutpost</module>
+        <module>gsgskyblock</module>
+        <module>gsgcore-uber</module>
     </modules>
 
     <dependencies>

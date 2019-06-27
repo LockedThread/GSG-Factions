@@ -10,14 +10,21 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+import java.util.function.BiConsumer;
+
 public class Generation {
 
-    private BlockPosition startingBlockPosition, currentBlockPosition;
+    private static final BiConsumer<Block, Material> BLOCK_CONSUMER = (block, material) -> block.setTypeIdAndData(material.getId(), (byte) 0, block.isLiquid());
+    public static boolean ASYNC = false;
+    private final BlockFace blockFace;
+    private final Material material;
+    private final BlockPosition startingBlockPosition;
+    private final boolean patch;
     private int length;
-    private FLocation startingFLocation;
-    private BlockFace blockFace;
-    private Material material;
-    private boolean patch;
+    private BlockPosition currentBlockPosition;
+    private transient FLocation startingFLocation;
+    private transient Block start, current;
+    private transient final int hash;
 
     public Generation(BlockPosition startingBlockPosition, Gen gen, BlockFace blockFace) {
         this.startingBlockPosition = startingBlockPosition;
@@ -25,8 +32,19 @@ public class Generation {
         this.material = gen.getMaterial();
         this.patch = gen.isPatch();
         this.length = gen.getLength();
-        this.startingFLocation = new FLocation(getStartingBlockPosition().getLocation());
         this.blockFace = blockFace;
+        this.init();
+        int result = startingBlockPosition != null ? startingBlockPosition.hashCode() : 0;
+        result = 31 * result + (blockFace != null ? blockFace.hashCode() : 0);
+        result = 31 * result + (material != null ? material.hashCode() : 0);
+        result = 31 * result + (patch ? 1 : 0);
+        this.hash = result;
+    }
+
+    public void init() {
+        this.startingFLocation = new FLocation(getStartingBlockPosition().getLocation());
+        this.start = startingBlockPosition.getBlock();
+        this.current = getCurrent();
     }
 
     public boolean isVertical() {
@@ -34,17 +52,21 @@ public class Generation {
     }
 
     public boolean generateVertical() {
-        if (!getCurrentBlockPosition().isChunkLoaded()) {
-            getCurrentBlockPosition().getChunk().load();
-        }
-        Block relative = getCurrentBlockPosition().getBlock().getRelative(blockFace);
         if (getLength() == 0) {
             return false;
         }
-        if (getCurrentBlockPosition().getBlock().getType() != getMaterial()) {
+        /*if (!getCurrentBlockPosition().isChunkLoaded()) {
+            if (ASYNC) {
+                Bukkit.getScheduler().runTask(GSGGen.getInstance(), () -> getCurrentBlockPosition().getChunk().load());
+            } else {
+                getCurrentBlockPosition().getChunk().load();
+            }
+        }*/
+        if (getStart().getType() != getMaterial()) {
             return false;
         }
-        if (relative.getY() == 255) {
+        Block relative = getCurrent().getRelative(blockFace);
+        if (relative.getY() >= 255) {
             return false;
         }
         if (relative.getType() != Material.AIR && !isPatch()) {
@@ -62,8 +84,12 @@ public class Generation {
             return false;
         }
         setLength(getLength() - 1);
-        GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid()));
-        setCurrentBlockPosition(BlockPosition.of(relative));
+        if (ASYNC) {
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> BLOCK_CONSUMER.accept(relative, getMaterial()));
+        } else {
+            BLOCK_CONSUMER.accept(relative, getMaterial());
+        }
+        setCurrent(relative);
         return true;
         /*
         if (startingBlockPosition.isChunkLoaded()) {
@@ -101,15 +127,18 @@ public class Generation {
     }
 
     public boolean generateHorizontal() {
-        BlockPosition blockPositionRelative = getCurrentBlockPosition().getRelative(blockFace);
-        if (!startingBlockPosition.isChunkLoaded()) {
-            startingBlockPosition.getChunk().load();
-        }
-        Block relative = blockPositionRelative.getBlock();
         if (getLength() == 0) {
             return false;
         }
-        if (getCurrentBlockPosition().getBlock().getType() != getMaterial()) {
+        /*if (!getCurrentBlockPosition().isChunkLoaded()) {
+            if (ASYNC) {
+                Bukkit.getScheduler().runTask(GSGGen.getInstance(), () -> getCurrentBlockPosition().getChunk().load());
+            } else {
+                getCurrentBlockPosition().getChunk().load();
+            }
+        }*/
+        Block relative = getCurrentBlockPosition().getRelative(blockFace).getBlock();
+        if (getStart().getType() != getMaterial()) {
             return false;
         }
         if (relative.getType() != Material.AIR && !isPatch()) {
@@ -134,9 +163,26 @@ public class Generation {
         }
 
         setLength(getLength() - 1);
-        GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> relative.setTypeIdAndData(getMaterial().getId(), (byte) 0, relative.isLiquid()));
-        setCurrentBlockPosition(BlockPosition.of(relative));
+        if (ASYNC) {
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> BLOCK_CONSUMER.accept(relative, getMaterial()));
+        } else {
+            BLOCK_CONSUMER.accept(relative, getMaterial());
+        }
+        setCurrent(relative);
         return true;
+    }
+
+    public Block getStart() {
+        return start;
+    }
+
+    public Block getCurrent() {
+        return current == null ? current = getCurrentBlockPosition().getBlock() : current;
+    }
+
+    public void setCurrent(Block block) {
+        this.current = block;
+        this.currentBlockPosition = BlockPosition.of(block);
     }
 
     public void enable() {
@@ -177,5 +223,36 @@ public class Generation {
 
     public void setCurrentBlockPosition(BlockPosition currentBlockPosition) {
         this.currentBlockPosition = currentBlockPosition;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Generation that = (Generation) o;
+
+        return that.hash == hash;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        return "Generation{" +
+                "blockFace=" + blockFace +
+                ", material=" + material +
+                ", startingBlockPosition=" + startingBlockPosition +
+                ", patch=" + patch +
+                ", length=" + length +
+                ", currentBlockPosition=" + currentBlockPosition +
+                ", startingFLocation=" + startingFLocation +
+                ", start=" + start +
+                ", current=" + current +
+                '}';
     }
 }

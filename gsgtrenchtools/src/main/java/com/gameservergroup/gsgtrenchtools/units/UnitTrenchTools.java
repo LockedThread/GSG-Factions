@@ -34,7 +34,13 @@ public class UnitTrenchTools extends Unit {
             trenchTool.setItemEdit(() -> trenchTool.buildItemStack(false));
             trenchTool.setBreakEventConsumer(event -> {
                 if (GSG_CORE.canBuild(event.getPlayer(), event.getBlock())) {
-                    removeBlocksInRadius(event.getPlayer(), event.getBlock().getLocation(), trenchTool.getRadius() / 2, trenchTool.getToolTrayMode(event.getPlayer().getItemInHand()));
+                    boolean toolTrayMode = trenchTool.getToolTrayMode(event.getPlayer().getItemInHand());
+                    if (toolTrayMode) {
+                        if (!trayMaterials.contains(event.getBlock().getType())) {
+                            event.setCancelled(true);
+                        }
+                    }
+                    removeBlocksInRadius(event.getPlayer(), event.getBlock().getLocation(), trenchTool.getRadius() / 2, toolTrayMode);
                 } else {
                     event.getPlayer().sendMessage(TrenchMessages.CANT_BREAK.toString());
                     event.setCancelled(true);
@@ -102,6 +108,7 @@ public class UnitTrenchTools extends Unit {
                 }
             });
         }
+
     }
 
     private Material getTranslatedMaterial(ItemStack itemStack) {
@@ -131,6 +138,7 @@ public class UnitTrenchTools extends Unit {
                 for (int z = center.getBlockZ() - radius; z <= radius + center.getBlockZ(); z++) {
                     Block block = center.getWorld().getBlockAt(x, y, z);
                     if (!blackListedMaterials.contains(block.getType()) && GSG_CORE.canBuild(player, block)) {
+                        if (Utils.isOutsideBorder(block.getLocation())) continue;
                         if (trayMode) {
                             if (trayMaterials.contains(block.getType())) {
                                 if (amounts != null) {

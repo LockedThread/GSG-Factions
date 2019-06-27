@@ -11,6 +11,7 @@ import java.util.Objects;
 
 public class BlockPosition {
 
+    private transient final int hash;
     private String worldName;
     private int x;
     private int y;
@@ -22,6 +23,12 @@ public class BlockPosition {
         this.x = x;
         this.y = y;
         this.z = z;
+
+        int result = worldName.hashCode();
+        result = 31 * result + x;
+        result = 31 * result + y;
+        result = 31 * result + z;
+        this.hash = result;
     }
 
     public static BlockPosition of(Location location) {
@@ -45,6 +52,10 @@ public class BlockPosition {
 
     public Chunk getChunk() {
         return getWorld().getChunkAt(x >> 4, z >> 4);
+    }
+
+    public void loadChunkAsync(World.ChunkLoadCallback chunkLoadCallback) {
+        getWorld().getChunkAtAsync(x >> 4, z >> 4, chunkLoadCallback);
     }
 
     public boolean isChunkLoaded() {
@@ -95,24 +106,21 @@ public class BlockPosition {
         this.z = z;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         BlockPosition that = (BlockPosition) o;
-
-        return x == that.x && y == that.y && z == that.z && Objects.equals(worldName, that.worldName);
+        return hash == 0 || that.hash == 0 ? x == that.x && y == that.y && z == that.z && Objects.equals(worldName, that.worldName) : that.hash == this.hash;
     }
 
     @Override
     public int hashCode() {
-        int result = worldName != null ? worldName.hashCode() : 0;
-        result = 31 * result + x;
-        result = 31 * result + y;
-        result = 31 * result + z;
-        return result;
+        return hash;
     }
+
 
     @Override
     public String toString() {

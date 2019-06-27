@@ -11,6 +11,7 @@ import java.util.Set;
 
 public class ChunkPosition {
 
+    private transient final int hash;
     private String worldName;
     private int x;
     private int z;
@@ -20,6 +21,10 @@ public class ChunkPosition {
         this.worldName = worldName;
         this.x = x;
         this.z = z;
+        int result = worldName.hashCode();
+        result = 31 * result + x;
+        result = 31 * result + z;
+        this.hash = result;
     }
 
     public static ChunkPosition of(World world, int x, int z) {
@@ -88,15 +93,12 @@ public class ChunkPosition {
 
         ChunkPosition that = (ChunkPosition) o;
 
-        return x == that.x && z == that.z && Objects.equals(worldName, that.worldName);
+        return that.hash == hash;
     }
 
     @Override
     public int hashCode() {
-        int result = worldName != null ? worldName.hashCode() : 0;
-        result = 31 * result + x;
-        result = 31 * result + z;
-        return result;
+        return hash;
     }
 
     @Override

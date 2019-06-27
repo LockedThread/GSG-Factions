@@ -16,8 +16,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 
-import java.util.Objects;
-
 public class Gen {
 
     private final ConfigurationSection configurationSection;
@@ -27,6 +25,7 @@ public class Gen {
     private final double price;
     private final boolean patch;
     private final int length;
+    private int hash;
 
     public Gen(ConfigurationSection configurationSection, Direction direction, double price, boolean patch, Material material) {
         this(configurationSection, direction, price, patch, 256, material);
@@ -77,6 +76,15 @@ public class Gen {
                 }
             });
         }
+        hash = configurationSection.hashCode();
+        hash = 31 * hash + (name != null ? name.hashCode() : 0);
+        hash = 31 * hash + (material != null ? material.hashCode() : 0);
+        hash = 31 * hash + (direction != null ? direction.hashCode() : 0);
+        long temp = Double.doubleToLongBits(price);
+        hash = 31 * hash + (int) (temp ^ (temp >>> 32));
+        hash = 31 * hash + (patch ? 1 : 0);
+        hash = 31 * hash + length;
+        hash = 31 * hash + hash;
     }
 
     public Generation getGeneration(Block startingBlock) {
@@ -141,19 +149,15 @@ public class Gen {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Gen gen = (Gen) o;
-        return Double.compare(gen.price, price) == 0 &&
-                patch == gen.patch &&
-                length == gen.length &&
-                Objects.equals(configurationSection, gen.configurationSection) &&
-                Objects.equals(name, gen.name) &&
-                material == gen.material &&
-                direction == gen.direction;
+
+        return gen.hash == this.hash;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(configurationSection, name, material, direction, price, patch, length);
+        return hash;
     }
 
     @Override

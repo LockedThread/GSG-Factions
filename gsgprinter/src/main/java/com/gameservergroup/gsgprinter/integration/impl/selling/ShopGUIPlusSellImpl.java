@@ -1,9 +1,9 @@
 package com.gameservergroup.gsgprinter.integration.impl.selling;
 
+import com.gameservergroup.gsgcore.relocations.fastutil.ints.Int2DoubleMap;
+import com.gameservergroup.gsgcore.relocations.fastutil.ints.Int2DoubleOpenHashMap;
 import com.gameservergroup.gsgprinter.GSGPrinter;
 import com.gameservergroup.gsgprinter.integration.SellIntegration;
-import it.unimi.dsi.fastutil.ints.Int2DoubleMap;
-import it.unimi.dsi.fastutil.ints.Int2DoubleOpenHashMap;
 import net.brcdev.shopgui.ShopGuiPlugin;
 import net.brcdev.shopgui.shop.Shop;
 import net.brcdev.shopgui.shop.ShopItem;
@@ -24,6 +24,7 @@ public class ShopGUIPlusSellImpl implements SellIntegration {
         for (Map.Entry<String, Shop> entry : ShopGuiPlugin.getInstance().getShopManager().shops.entrySet()) {
             if (!shops.contains(entry.getKey().toLowerCase())) {
                 for (ShopItem shopItem : entry.getValue().getShopItems()) {
+                    if (shopItem.getItem().getType().isBlock()) continue;
                     if (shopItem.getItem().getType() == Material.STRING) {
                         prices.putIfAbsent(Material.STRING.getId(), shopItem.getBuyPrice());
                         prices.putIfAbsent(Material.TRIPWIRE.getId(), shopItem.getBuyPrice());

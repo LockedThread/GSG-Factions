@@ -40,6 +40,11 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
         return P.p.getDescription().getVersion();
     }
 
+    @Override
+    public boolean persist() {
+        return true;
+    }
+
     // Relational placeholders
     @Override
     public String onPlaceholderRequest(Player p1, Player p2, String placeholder) {
@@ -75,6 +80,8 @@ public class ClipPlaceholderAPIManager extends PlaceholderExpansion implements R
         Faction faction = fPlayer.getFaction();
         switch (placeholder) {
             // First list player stuff
+            case "player_title":
+                return fPlayer.hasFaction() ? fPlayer.getTitle() : fPlayer.getName();
             case "player_name":
                 return fPlayer.getName();
             case "player_lastseen":

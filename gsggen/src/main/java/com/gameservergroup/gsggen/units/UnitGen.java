@@ -1,5 +1,6 @@
 package com.gameservergroup.gsggen.units;
 
+import com.gameservergroup.gsgcore.collections.ConcurrentHashSet;
 import com.gameservergroup.gsgcore.commands.post.CommandPost;
 import com.gameservergroup.gsgcore.enums.Direction;
 import com.gameservergroup.gsgcore.events.EventPost;
@@ -17,23 +18,40 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class UnitGen extends Unit {
 
     private static final GSGGen GSG_GEN = GSGGen.getInstance();
 
     private boolean closeInventoryOnPurchase, closeInventoryOnNoMoney, disableLavaBucketPlayerUse;
-    private HashSet<Generation> generations;
+    private Set<Generation> generations;
     private HashMap<String, Gen> genHashMap = new HashMap<>();
 
-    private JsonFile<HashSet<Generation>> generationJsonFile;
+    private JsonFile<Set<Generation>> generationJsonFile;
 
     public void setup() {
         load();
-        this.generationJsonFile = new JsonFile<>(GSG_GEN.getDataFolder(), "gens.json", new TypeToken<HashSet<Generation>>() {
+        this.generationJsonFile = new JsonFile<>(GSG_GEN.getDataFolder(), "gens.json", new TypeToken<Set<Generation>>() {
         });
-        this.generations = generationJsonFile.load().orElse(new HashSet<>());
+        Optional<Set<Generation>> load = generationJsonFile.load();
+        if (load.isPresent()) {
+            Set<Generation> localGenerations = load.get();
+            if (Generation.ASYNC) {
+                if (!(localGenerations instanceof ConcurrentHashSet)) {
+                    localGenerations = new ConcurrentHashSet<>(localGenerations);
+                }
+            }
+            this.generations = localGenerations;
+
+            for (Generation generation : generations) {
+                generation.init();
+            }
+        } else {
+            this.generations = Generation.ASYNC ? ConcurrentHashMap.newKeySet() : new HashSet<>();
+        }
         hookDisable(new CallBack() {
             @Override
             public void call() {

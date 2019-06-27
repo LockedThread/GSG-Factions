@@ -19,6 +19,8 @@ import java.util.function.Consumer;
 public class CustomItem {
 
     private static final Map<String, CustomItem> customItems = new HashMap<>();
+
+    private transient final int hash;
     private String moduleName;
     private String name;
     private ItemStack itemStack;
@@ -28,16 +30,15 @@ public class CustomItem {
     private ItemEdit itemEdit;
 
     public CustomItem(Module module, ItemStackBuilder itemStackBuilder, String name) {
-        this.moduleName = module.getName();
-        this.name = name;
-        this.itemStack = new NBTItem(itemStackBuilder.build()).set(name, true).buildItemStack();
+        this(module, new NBTItem(itemStackBuilder.build()).set(name, true).buildItemStack(), name);
         customItems.put(name, this);
     }
 
-    public CustomItem(Module module, String name, ItemStack itemStack) {
+    public CustomItem(Module module, ItemStack itemStack, String name) {
         this.moduleName = module.getName();
         this.name = name;
         this.itemStack = itemStack;
+        this.hash = name.hashCode();
         customItems.put(name, this);
     }
 
@@ -50,7 +51,7 @@ public class CustomItem {
     }
 
     public static CustomItem of(Module module, ItemStackBuilder itemStackBuilder, String name) {
-        return new CustomItem(module, name, new NBTItem(itemStackBuilder.build()).set(name, true).buildItemStack());
+        return new CustomItem(module, new NBTItem(itemStackBuilder.build()).set(name, true).buildItemStack(), name);
     }
 
     public static Map<String, CustomItem> getCustomItems() {
@@ -125,20 +126,13 @@ public class CustomItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CustomItem that = (CustomItem) o;
-        return Objects.equals(name, that.name);
-        /*
-        return Objects.equals(name, that.name) &&
-                Objects.equals(itemStack, that.itemStack) &&
-                Objects.equals(interactEventConsumer, that.interactEventConsumer) &&
-                Objects.equals(breakEventConsumer, that.breakEventConsumer) &&
-                Objects.equals(placeEventConsumer, that.placeEventConsumer);
-    */
+        return that.hash == this.hash;
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, itemStack, interactEventConsumer, breakEventConsumer, placeEventConsumer);
+        return name.hashCode();
     }
 
     @Override

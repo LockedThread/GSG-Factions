@@ -1,11 +1,14 @@
 package com.gameservergroup.gsggen;
 
 import com.gameservergroup.gsgcore.plugin.Module;
+import com.gameservergroup.gsggen.generation.Generation;
 import com.gameservergroup.gsggen.integration.CombatIntegration;
 import com.gameservergroup.gsggen.integration.combat.impl.CombatTagPlusImpl;
 import com.gameservergroup.gsggen.menu.GenMenu;
 import com.gameservergroup.gsggen.units.UnitGen;
 import org.bukkit.plugin.Plugin;
+
+import java.util.Iterator;
 
 public class GSGGen extends Module {
 
@@ -35,9 +38,27 @@ public class GSGGen extends Module {
                 return;
             }
         }
+        Generation.ASYNC = getConfig().getBoolean("async-enabled", true);
         registerUnits(unitGen = new UnitGen());
         this.genMenu = new GenMenu();
-        getServer().getScheduler().runTaskTimer(this, () -> getUnitGen().getGenerations().removeIf(generation -> generation.isVertical() ? !generation.generateVertical() : !generation.generateHorizontal()), getConfig().getLong("interval"), getConfig().getLong("interval"));
+        if (Generation.ASYNC) {
+            getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
+                for (Iterator<Generation> iterator = unitGen.getGenerations().iterator(); iterator.hasNext(); ) {
+                    Generation next = iterator.next();
+                    if (!next.getCurrentBlockPosition().isChunkLoaded()) {
+                        next.getCurrentBlockPosition().loadChunkAsync(chunk -> {
+                            if (next.isVertical() ? !next.generateVertical() : !next.generateHorizontal()) {
+                                iterator.remove();
+                            }
+                        });
+                    } else if (next.isVertical() ? !next.generateVertical() : !next.generateHorizontal()) {
+                        iterator.remove();
+                    }
+                }
+            }, getConfig().getLong("interval"), getConfig().getLong("interval"));
+        } else {
+            getServer().getScheduler().runTaskTimer(this, () -> unitGen.getGenerations().removeIf(generation -> generation.isVertical() ? !generation.generateVertical() : !generation.generateHorizontal()), getConfig().getLong("interval"), getConfig().getLong("interval"));
+        }
     }
 
     @Override

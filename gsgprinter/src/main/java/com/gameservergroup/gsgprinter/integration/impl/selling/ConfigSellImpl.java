@@ -1,10 +1,10 @@
 package com.gameservergroup.gsgprinter.integration.impl.selling;
 
+import com.gameservergroup.gsgcore.relocations.fastutil.ints.Int2DoubleMap;
+import com.gameservergroup.gsgcore.relocations.fastutil.ints.Int2DoubleOpenHashMap;
 import com.gameservergroup.gsgprinter.GSGPrinter;
 import com.gameservergroup.gsgprinter.integration.SellIntegration;
 import com.gameservergroup.gsgprinter.units.UnitPrinter;
-import it.unimi.dsi.fastutil.ints.Int2DoubleMap;
-import it.unimi.dsi.fastutil.ints.Int2DoubleOpenHashMap;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;

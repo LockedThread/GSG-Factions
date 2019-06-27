@@ -7,5 +7,4 @@ public interface CoreProtectIntegration {
 
     void log(Player player, Block block);
 
-    S
 }

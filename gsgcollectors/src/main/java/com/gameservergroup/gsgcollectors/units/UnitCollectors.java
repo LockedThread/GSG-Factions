@@ -22,6 +22,7 @@ import net.minecraft.server.v1_8_R3.Blocks;
 import net.minecraft.server.v1_8_R3.EnumDirection;
 import net.techcable.tacospigot.event.entity.SpawnerPreSpawnEvent;
 import org.bukkit.DyeColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -255,8 +256,10 @@ public class UnitCollectors extends Unit {
                         sugarCaneAmount++;
                         next = next.getRelative(BlockFace.UP);
                     }
-                    for (int i = 0; i < sugarCaneAmount; i++) {
-                        GSG_COLLECTORS.getMcMMOIntegration().addMcMMOExp(event.getPlayer(), "herbalism", GSG_COLLECTORS.getConfig().getFloat("options.harvester-hoes.mcmmo.preset-herbalism-exp"));
+                    if (GSG_COLLECTORS.getMcMMOIntegration() != null) {
+                        for (int i = 0; i < sugarCaneAmount; i++) {
+                            GSG_COLLECTORS.getMcMMOIntegration().addMcMMOExp(event.getPlayer(), "herbalism", GSG_COLLECTORS.getConfig().getFloat("options.harvester-hoes.mcmmo.preset-herbalism-exp"));
+                        }
                     }
                     sugarCaneAmount *= harvesterHoesCollectDoubleSugarcane ? 2 : 1;
                     Collector collector = getCollector(block.getLocation());
@@ -296,6 +299,9 @@ public class UnitCollectors extends Unit {
                         collector.getBlockPosition().getBlock().setType(Material.AIR);
                         collector.setBlockPosition(BlockPosition.of(event.getBlockPlaced()));
                         event.getPlayer().sendMessage(CollectorMessages.UPDATED_COLLECTOR_BLOCKPOSITION.toString());
+                        if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+                            event.getPlayer().setItemInHand(event.getItemInHand());
+                        }
                     }
                 });
         CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {

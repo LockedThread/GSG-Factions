@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class FLocation implements Serializable {
@@ -64,15 +65,15 @@ public class FLocation implements Serializable {
     // Getters and Setters
     //----------------------------------------------//
 
-    public static com.massivecraft.factions.FLocation fromString(String string) {
-        int index = string.indexOf(",", 0);
+    public static FLocation fromString(String string) {
+        int index = string.indexOf(",");
         int start = 1;
         String worldName = string.substring(start, index);
         start = index + 1;
         index = string.indexOf(",", start);
         int x = Integer.valueOf(string.substring(start, index));
         int y = Integer.valueOf(string.substring(index + 1, string.length() - 1));
-        return new com.massivecraft.factions.FLocation(worldName, x, y);
+        return new FLocation(worldName, x, y);
     }
 
     // bit-shifting is used because it's much faster than standard division and multiplication
@@ -100,12 +101,12 @@ public class FLocation implements Serializable {
         return regionVal << 5;   // "<< 5" == "* 32"
     }
 
-    public static HashSet<com.massivecraft.factions.FLocation> getArea(com.massivecraft.factions.FLocation from, com.massivecraft.factions.FLocation to) {
-        HashSet<com.massivecraft.factions.FLocation> ret = new HashSet<>();
+    public static HashSet<FLocation> getArea(FLocation from, FLocation to) {
+        HashSet<FLocation> ret = new HashSet<>();
 
         for (long x : MiscUtil.range(from.getX(), to.getX())) {
             for (long z : MiscUtil.range(from.getZ(), to.getZ())) {
-                ret.add(new com.massivecraft.factions.FLocation(from.getWorldName(), (int) x, (int) z));
+                ret.add(new FLocation(from.getWorldName(), (int) x, (int) z));
             }
         }
 
@@ -161,17 +162,17 @@ public class FLocation implements Serializable {
         return "[" + this.getWorldName() + "," + this.getCoordString() + "]";
     }
 
-    public com.massivecraft.factions.FLocation getRelative(int dx, int dz) {
-        return new com.massivecraft.factions.FLocation(this.worldName, this.x + dx, this.z + dz);
+    public FLocation getRelative(int dx, int dz) {
+        return new FLocation(this.worldName, this.x + dx, this.z + dz);
     }
 
-    public double getDistanceTo(com.massivecraft.factions.FLocation that) {
+    public double getDistanceTo(FLocation that) {
         double dx = that.x - this.x;
         double dz = that.z - this.z;
         return Math.sqrt(dx * dx + dz * dz);
     }
 
-    public double getDistanceSquaredTo(com.massivecraft.factions.FLocation that) {
+    public double getDistanceSquaredTo(FLocation that) {
         double dx = that.x - this.x;
         double dz = that.z - this.z;
         return dx * dx + dz * dz;
@@ -182,7 +183,7 @@ public class FLocation implements Serializable {
             return false;
         }
         Chunk chunk = loc.getChunk();
-        return loc.getWorld().getName().equalsIgnoreCase(getWorldName()) && chunk.getX() == x && chunk.getZ() == z;
+        return loc.getWorld().getName().equals(getWorldName()) && chunk.getX() == x && chunk.getZ() == z;
     }
 
     /**
@@ -199,10 +200,12 @@ public class FLocation implements Serializable {
         double size = worldBorder.getSize() / 2.0;
         double centerX = worldBorder.getCenter().getX();
         double centerZ = worldBorder.getCenter().getZ();
-        return centerX - size > FLocation.chunkToBlock((int) getX()) ||
-                centerX + size <= FLocation.chunkToBlock((int) getX()) ||
-                centerZ - size > FLocation.chunkToBlock((int) getZ()) ||
-                centerZ + size <= FLocation.chunkToBlock((int) getZ());
+        final int blockX = FLocation.chunkToBlock((int) getX());
+        final int blockZ = FLocation.chunkToBlock((int) getZ());
+        return centerX - size > blockX ||
+                centerX + size <= blockX ||
+                centerZ - size > blockZ ||
+                centerZ + size <= blockZ;
 
 /*
         WorldBorder border = getWorld().getWorldBorder();
@@ -219,10 +222,10 @@ public class FLocation implements Serializable {
     //----------------------------------------------//
     // Some Geometry
     //----------------------------------------------//
-    public Set<com.massivecraft.factions.FLocation> getCircle(double radius) {
+    public Set<FLocation> getCircle(double radius) {
         double radiusSquared = radius * radius;
 
-        Set<com.massivecraft.factions.FLocation> ret = new LinkedHashSet<>();
+        Set<FLocation> ret = new LinkedHashSet<>();
         if (radius <= 0) {
             return ret;
         }
@@ -234,7 +237,7 @@ public class FLocation implements Serializable {
 
         for (int x = xfrom; x <= xto; x++) {
             for (int z = zfrom; z <= zto; z++) {
-                com.massivecraft.factions.FLocation potential = new com.massivecraft.factions.FLocation(this.worldName, x, z);
+                FLocation potential = new FLocation(this.worldName, x, z);
                 if (this.getDistanceSquaredTo(potential) <= radiusSquared) {
                     ret.add(potential);
                 }
@@ -259,11 +262,11 @@ public class FLocation implements Serializable {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof com.massivecraft.factions.FLocation)) {
+        if (!(obj instanceof FLocation)) {
             return false;
         }
 
-        com.massivecraft.factions.FLocation that = (com.massivecraft.factions.FLocation) obj;
-        return this.x == that.x && this.z == that.z && (this.worldName == null ? that.worldName == null : this.worldName.equals(that.worldName));
+        FLocation that = (FLocation) obj;
+        return this.x == that.x && this.z == that.z && (Objects.equals(this.worldName, that.worldName));
     }
 }
