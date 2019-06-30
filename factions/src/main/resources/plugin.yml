@@ -1,5 +1,5 @@
 name: Factions
-version: ${project.version}-b${build.number}
+version: 1.6.9.5-U0.2.2
 main: com.massivecraft.factions.P
 authors: [Olof Larsson, Brett Flannigan, drtshock, LockedThread]
 depend: [GSGCore]
