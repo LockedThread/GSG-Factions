@@ -1,0 +1,151 @@
+#Role names may very based on your faction plugin.
+#Most role names are: ADMIN, COLEADER, MODERATOR, NORMAL, RECRUIT
+options:
+  is-role-restricted: true
+  at-least-role: 'COLEADER'
+  can-access-not-yours: false
+  can-edit-whilst-factionless: true
+  use-titles: true
+  prevent-normal-farms: true
+  save-task-delay: 300000
+  creepers-collect-tnt: true
+  auto-pickup-sugar-cane-normally: true
+  # Don't blame me if this ruins your economy, this was requested by a client.
+  shop-gui-plus:
+    hook: false
+    blacklisted-shops:
+      - 'donator'
+  harvester-hoes:
+    enabled: true
+    collect-double-sugar-cane: true
+    collect-to-inventory-with-no-collector: true
+    # This may cause lag depending on factions and worldguard usage and any edits to your factions fork. Only do this if it's an actual issue for you.
+    protected-region-check-for-iterated-sugar-cane: false
+    mcmmo:
+      enabled: false
+      preset-herbalism-exp: 5
+harvesterhoe-item:
+  material: 'GOLD_HOE'
+  name: '&e&l(!) &f&lHarvester Hoe &e&l(e)'
+  lore:
+    - ''
+    - ' &dBreak sugar cane to get double sugar cane!'
+    - ''
+  enchants:
+    - 'DURABILITY:1'
+  itemflags:
+    - 'HIDE_ENCHANTS'
+sellwand-item:
+  material: 'DIAMOND_HOE'
+  name: '&e&l(!) &f&lSellWand &e&l(!)'
+  lore:
+    - ''
+    - ' &dRight click a collector to sell all of its collected inventory!'
+    - ''
+  enchants:
+    - 'DURABILITY:1'
+  itemflags:
+    - 'HIDE_ENCHANTS'
+tntwand-item:
+  material: 'WOOD_HOE'
+  name: '&c&l(!) &f&lTNTWand &c&l(!)'
+  lore:
+    - ''
+    - ' &dRight click a collector to deposit all of its tnt!'
+    - ''
+  enchants:
+    - 'DURABILITY:1'
+  itemflags:
+    - 'HIDE_ENCHANTS'
+collector-item:
+  material: 'BEACON'
+  name: '&d&l(!) &f&lCollector &d&l(!)'
+  lore:
+    - ''
+    - ' &dPlace this down to start collecting mobs, cactus, and sugarcane!'
+    - ''
+  enchants:
+    - 'DURABILITY:1'
+  itemflags:
+    - 'HIDE_ENCHANTS'
+menu:
+  #Placeholders:
+  #{owner} - the owner of the collector
+  name: '&e{owner} Collector'
+  size: 27
+  fill:
+    enabled: true
+    glass-pane-color: 'BLACK'
+    enchanted: true
+  collection-type-format:
+    name: '&e&l(!) &f{mob} &e&l(!)'
+    lore:
+      - '{collection-type-specific-lore}'
+    enchants:
+      - 'DURABILITY:1'
+    itemflags:
+      - 'HIDE_ENCHANTS'
+collection-types:
+  iron-golem:
+    slot: 9
+    price: 200.0
+    # Only used when shopguiplus is enabled
+    # You can add the item section to all of the collection types, not just irongolem.
+    item: 'IRON_INGOT'
+    sell-amount-per-menu-click: 100
+    menu-sell-lore: '&eYou have &f{amount} &eavailable to sell!'
+  enderman:
+    slot: 10
+    price: 20.0
+    sell-amount-per-menu-click: 100
+    menu-sell-lore: '&eYou have &f{amount} &eavailable to sell!'
+  witch:
+    slot: 11
+    price: 20.0
+    sell-amount-per-menu-click: 100
+    menu-sell-lore: '&eYou have &f{amount} &eavailable to sell!'
+  villager:
+    slot: 12
+    price: 20.0
+    sell-amount-per-menu-click: 100
+    menu-sell-lore: '&eYou have &f{amount} &eavailable to sell!'
+  cow:
+    slot: 13
+    price: 5.0
+    sell-amount-per-menu-click: 100
+    menu-sell-lore: '&eYou have &f{amount} &eavailable to sell!'
+  pig:
+    slot: 14
+    price: 5.0
+    sell-amount-per-menu-click: 100
+    menu-sell-lore: '&eYou have &f{amount} &eavailable to sell!'
+  pig-zombie:
+    slot: 15
+    price: 17.0
+    sell-amount-per-menu-click: 100
+    menu-sell-lore: '&eYou have &f{amount} &eavailable to sell!'
+  chicken:
+    slot: 16
+    price: 3.0
+    sell-amount-per-menu-click: 100
+    menu-sell-lore: '&eYou have &f{amount} &eavailable to sell!'
+  spider:
+    slot: 17
+    price: 3.0
+    sell-amount-per-menu-click: 100
+    menu-sell-lore: '&eYou have &f{amount} &eavailable to sell!'
+  cactus:
+    slot: 21
+    price: 2.0
+    sell-amount-per-menu-click: 100
+    menu-sell-lore: '&eYou have &f{amount} &eavailable to sell!'
+  tnt:
+    slot: 22
+    price: 1.0
+    sell-amount-per-menu-click: 64
+    menu-sell-lore: '&eYou have &f{amount} &eavailable to deposit!'
+  sugar_cane:
+    slot: 23
+    price: 2.0
+    sell-amount-per-menu-click: 100
+    menu-sell-lore: '&eYou have &f{amount} &eavailable to sell!'

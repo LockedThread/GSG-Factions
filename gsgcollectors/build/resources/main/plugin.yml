@@ -1,0 +1,6 @@
+name: GSGCollectors
+main: com.gameservergroup.gsgcollectors.GSGCollectors
+version: 1.0
+depend: [GSGCore, Vault]
+softdepend: [Factions, ShopGUIPlus, Ace-Outposts]
+load: POSTWORLD

@@ -1,0 +1,49 @@
+async-payments: true
+
+shopguiplus:
+  blacklisted-shops:
+    - 'donator'
+    - 'special'
+
+#Enemy check in ticks when not using LockedThread's factions fork. This will cause unnecessary lag. Please switch to LockedThread's faction fork.
+flight-check:
+  interval: 40
+  radius: 25
+#Implements getting kicked out of combat whilst in printer.
+enable-combattagplus-integration: true
+#Allows the breaking of blocks in printer
+enable-blockbreak: true
+#Auto excludes them from printer related checks for no cheat plus.
+use-ncp: true
+#Can be config, shopguiplus, essentials.
+sell-integration: 'config'
+#Commands allowed
+allowed-commands:
+  - '/printer'
+  - '/f '
+  - '/faction'
+  - '/warp'
+  - '/spawn'
+  - '/tp'
+  - '/m '
+  - '/msg'
+  - '/r '
+  - '/reply'
+  - '/whisper'
+  - '/w '
+  - '/t '
+  - '/tell'
+  - '/mute'
+  - '/warn'
+  - '/punish'
+  - '/ban'
+  - '/history'
+  - '/dupeip'
+  - '/staffchat'
+  - '/bal'
+  - '/f fly y'
+  - '/f fly n'
+#Keywords banned from running in commands
+blacklisted-keywords:
+  - 'vault'
+  - 'chest'

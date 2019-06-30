@@ -1,0 +1,5 @@
+name: GSGCore
+main: com.gameservergroup.gsgcore.GSGCore
+version: 1.0-SNAPSHOT
+softdepend: [Essentials, Factions, WorldGuard]
+depend: [Vault]

@@ -1,0 +1,4 @@
+group 'com.gameservergroup'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8

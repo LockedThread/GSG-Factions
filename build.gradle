@@ -1,0 +1,174 @@
+plugins {
+    id 'java'
+    id 'maven'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.21'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
+}
+
+group 'com.gameservergroup'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+}
+
+ext.libs = [
+        'worldguard'        : 'com.sk89q:worldguard:6.1.1-SNAPSHOT',
+        'worldedit'         : 'com.sk89q:worldedit:6.0.0-SNAPSHOT',
+        'vault'             : 'net.milkbowl.vault:VaultAPI:1.7',
+        'fastutil'          : 'it.unimi.dsi:fastutil:8.2.3',
+        // mvn install:install-file -Dfile=Ace-Outposts_UUID.jar -DgroupId=com.aceoutposts -DartifactId=factionsuuid -Dversion=1.0 -Dpackaging=jar
+        'aceoutposts'       : 'com.aceoutposts:factionsuuid:1.0',
+        // mvn install:install-file -Dfile=CoreProtect_2.12.0.jar -DgroupId=com.coreprotect -DartifactId=coreprotect -Dversion=2.12.0 -Dpackaging=jar
+        'coreprotect'       : 'com.coreprotect:coreprotect:2.12.0',
+        // mvn install:install-file -Dfile=mcMMO-1.5.08.jar -DgroupId=com.mcmmo -DartifactId=mcmmo -Dversion=1.5.08 -Dpackaging=jar
+        'mcmmo'             : 'com.mcmmo:mcmmo:1.5.08',
+        // mvn install:install-file -Dfile=ShopGUIPlus-1.19.1-SNAPSHOT.jar -DgroupId=com.shopguiplus -DartifactId=shopguiplus -Dversion=1.19.1 -Dpackaging=jar
+        'shopguiplus'       : 'com.shopguiplus:shopguiplus:1.19.1',
+        'fanciful'          : 'mkremins:fanciful:0.4.0-SNAPSHOT',
+        'mvdw'              : 'be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT',
+        'combattagplus'     : 'net.minelink:CombatTagPlus:1.3.2-SNAPSHOT',
+        'essentials'        : 'net.ess3:EssentialsX:2.16.1',
+        'clipplaceholderapi': 'me.clip:placeholderapi:2.9.2'
+]
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    compileJava.options.encoding = 'UTF-8'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+        maven {
+            url 'https://ci.ender.zone/plugin/repository/everything/'
+        }
+    }
+}
+
+project(":gsgcore") {
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    jar {
+        from {
+            configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+    }
+
+    dependencies {
+        compile 'it.unimi.dsi:fastutil:8.2.3'
+        implementation libs.worldguard
+        implementation libs.vault
+        implementation(group: 'net.techcable.tacospigot', name: 'server', version: '1.8.8-R0.2-SNAPSHOT') {
+            exclude group: 'it.unimi.dsi', module: 'fastutil'
+        }
+    }
+
+    shadowJar {
+        version = null
+        classifier = null
+        dependencies {
+            //noinspection GroovyAssignabilityCheck
+            include(dependency('it.unimi.dsi:fastutil:8.2.3'))
+            //noinspection GroovyAssignabilityCheck
+            exclude(dependency('net.techcable.tacospigot:server:1.8.8-R0.2-SNAPSHOT'))
+        }
+        relocate 'it.unimi.dsi', 'com.gameservergroup.gsgcore.relocations'
+    }
+
+    artifacts {
+        archives shadowJar
+    }
+}
+
+project(':gsgcollectors') {
+    dependencies {
+        repositories {
+            mavenCentral()
+            mavenLocal()
+            jcenter()
+        }
+        compile(group: 'net.techcable.tacospigot', name: 'server', version: '1.8.8-R0.2-SNAPSHOT') {
+            exclude group: 'it.unimi.dsi'
+        }
+        implementation project(path: ':gsgcore', configuration: 'shadow')
+        implementation project(path: ':factions')
+        implementation libs.vault
+        implementation libs.shopguiplus
+        implementation libs.aceoutposts
+        implementation libs.mcmmo
+    }
+}
+
+project(':gsgprinter') {
+    dependencies {
+        repositories {
+            mavenCentral()
+            mavenLocal()
+            jcenter()
+        }
+        implementation project(path: ':gsgcore', configuration: 'shadow')
+        implementation project(path: ':factions')
+        implementation libs.vault
+        implementation libs.shopguiplus
+        implementation libs.essentials
+        implementation libs.combattagplus
+    }
+}
+
+project(':factions') {
+    repositories {
+        maven {
+            url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+            content {
+                includeGroup 'org.bukkit'
+                includeGroup 'org.spigotmc'
+            }
+        }
+        maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    }
+    dependencies {
+        implementation project(path: ':gsgcore', configuration: 'shadow')
+        compile 'org.spigotmc:spigot-api:1.9-R0.1-SNAPSHOT'
+        implementation libs.worldguard
+        implementation libs.vault
+        implementation libs.worldedit
+        implementation libs.fanciful
+        implementation libs.coreprotect
+        implementation libs.combattagplus
+        implementation libs.essentials
+        implementation libs.clipplaceholderapi
+        implementation(libs.mvdw)
+    }
+}
+
+project(':gsggen') {
+    dependencies {
+        repositories {
+            mavenCentral()
+            mavenLocal()
+            jcenter()
+        }
+        /*compile(group: 'net.techcable.tacospigot', name: 'server', version: '1.8.8-R0.2-SNAPSHOT') {
+            exclude group: 'it.unimi.dsi'
+        }*/
+        compile(group: 'net.techcable.tacospigot', name: 'server', version: '1.8.8-R0.2-SNAPSHOT') {
+            exclude group: 'it.unimi.dsi'
+        }
+        implementation project(path: ':gsgcore', configuration: 'shadow')
+        implementation project(path: ':factions')
+        implementation libs.combattagplus
+        implementation libs.vault
+    }
+}
