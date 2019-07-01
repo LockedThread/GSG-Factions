@@ -16,6 +16,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 
+import java.util.Objects;
+
 public class Gen {
 
     private final ConfigurationSection configurationSection;
@@ -25,7 +27,6 @@ public class Gen {
     private final double price;
     private final boolean patch;
     private final int length;
-    private int hash;
 
     public Gen(ConfigurationSection configurationSection, Direction direction, double price, boolean patch, Material material) {
         this(configurationSection, direction, price, patch, 256, material);
@@ -76,15 +77,6 @@ public class Gen {
                 }
             });
         }
-        hash = configurationSection.hashCode();
-        hash = 31 * hash + (name != null ? name.hashCode() : 0);
-        hash = 31 * hash + (material != null ? material.hashCode() : 0);
-        hash = 31 * hash + (direction != null ? direction.hashCode() : 0);
-        long temp = Double.doubleToLongBits(price);
-        hash = 31 * hash + (int) (temp ^ (temp >>> 32));
-        hash = 31 * hash + (patch ? 1 : 0);
-        hash = 31 * hash + length;
-        hash = 31 * hash + hash;
     }
 
     public Generation getGeneration(Block startingBlock) {
@@ -152,12 +144,29 @@ public class Gen {
 
         Gen gen = (Gen) o;
 
-        return gen.hash == this.hash;
+        if (Double.compare(gen.price, price) != 0) return false;
+        if (patch != gen.patch) return false;
+        if (length != gen.length) return false;
+        if (!Objects.equals(configurationSection, gen.configurationSection))
+            return false;
+        if (!Objects.equals(name, gen.name)) return false;
+        if (material != gen.material) return false;
+        return direction == gen.direction;
     }
 
     @Override
     public int hashCode() {
-        return hash;
+        int result;
+        long temp;
+        result = configurationSection != null ? configurationSection.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (material != null ? material.hashCode() : 0);
+        result = 31 * result + (direction != null ? direction.hashCode() : 0);
+        temp = Double.doubleToLongBits(price);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (patch ? 1 : 0);
+        result = 31 * result + length;
+        return result;
     }
 
     @Override
