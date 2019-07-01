@@ -32,7 +32,7 @@ public class UnitCustomItem extends Unit {
                         c.reply("", "&d/customitem list", "&d/customitem give [player] [item] {amount} {PRESET-NBT...}", "&d/customitem info [item]", "&d/customitem migrate [customitem] [migration-type] [arguments] - Ask locked for help!", "\n");
                     } else if (c.getRawArgs().length == 1) {
                         if (c.getRawArg(0).equalsIgnoreCase("list")) {
-                            c.reply("", "&dCustomItems: &f" + Joiner.on(", ").skipNulls().join(CustomItem.getCustomItems().keySet()), "");
+                            c.reply("", "&dCustomItems: &f" + Joiner.on(", ").skipNulls().join(CustomItem.getCustomItemMap().keySet()), "");
                         } else {
                             c.reply("&cInvalid argument");
                         }

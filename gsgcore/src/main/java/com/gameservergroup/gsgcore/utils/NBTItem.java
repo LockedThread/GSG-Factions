@@ -9,8 +9,8 @@ import java.util.Set;
 
 public class NBTItem {
 
-    private net.minecraft.server.v1_8_R3.ItemStack nmsItemStack;
-    private NBTTagCompound rootCompound;
+    private final net.minecraft.server.v1_8_R3.ItemStack nmsItemStack;
+    private final NBTTagCompound rootCompound;
 
     public NBTItem(ItemStack startItemStack) {
         Objects.requireNonNull(startItemStack, "startItemStack can't be null in NBTItem Constructor");

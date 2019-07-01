@@ -919,7 +919,7 @@ public abstract class Module extends JavaPlugin {
     }
 
     protected void unregisterCustomItems() {
-        CustomItem.getCustomItems().values().removeIf(customItem -> customItem.getModuleName().equals(getName()));
+        CustomItem.getCustomItemMap().values().removeIf(customItem -> customItem.getModuleName().equals(getName()));
     }
 
     protected void unregisterUnits() {

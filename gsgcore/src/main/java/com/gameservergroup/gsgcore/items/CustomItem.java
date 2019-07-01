@@ -18,11 +18,11 @@ import java.util.function.Consumer;
 
 public class CustomItem {
 
-    private static final Map<String, CustomItem> customItems = new HashMap<>();
+    private static final Map<String, CustomItem> CUSTOM_ITEM_MAP = new HashMap<>();
 
     private transient final int hash;
-    private String moduleName;
-    private String name;
+    private final String moduleName;
+    private final String name;
     private ItemStack itemStack;
     private Consumer<PlayerInteractEvent> interactEventConsumer;
     private Consumer<BlockBreakEvent> breakEventConsumer;
@@ -31,7 +31,7 @@ public class CustomItem {
 
     public CustomItem(Module module, ItemStackBuilder itemStackBuilder, String name) {
         this(module, new NBTItem(itemStackBuilder.build()).set(name, true).buildItemStack(), name);
-        customItems.put(name, this);
+        CUSTOM_ITEM_MAP.put(name, this);
     }
 
     public CustomItem(Module module, ItemStack itemStack, String name) {
@@ -39,7 +39,7 @@ public class CustomItem {
         this.name = name;
         this.itemStack = itemStack;
         this.hash = name.hashCode();
-        customItems.put(name, this);
+        CUSTOM_ITEM_MAP.put(name, this);
     }
 
     public static CustomItem of(Module module, ConfigurationSection section, String name) {
@@ -54,8 +54,8 @@ public class CustomItem {
         return new CustomItem(module, new NBTItem(itemStackBuilder.build()).set(name, true).buildItemStack(), name);
     }
 
-    public static Map<String, CustomItem> getCustomItems() {
-        return customItems;
+    public static Map<String, CustomItem> getCustomItemMap() {
+        return CUSTOM_ITEM_MAP;
     }
 
     public static CustomItem findCustomItem(ItemStack itemStack) {
@@ -63,12 +63,12 @@ public class CustomItem {
         if (GSGCore.getInstance().getConfig().getBoolean("items-check-nbt")) {
             return new NBTItem(itemStack).getKeys()
                     .stream()
-                    .map(customItems::get)
+                    .map(CUSTOM_ITEM_MAP::get)
                     .filter(Objects::nonNull)
                     .findFirst()
                     .orElse(null);
         }
-        return getCustomItems()
+        return getCustomItemMap()
                 .values()
                 .stream()
                 .filter(customItem -> customItem.getItemStack().getType() == itemStack.getType())
@@ -79,7 +79,7 @@ public class CustomItem {
     }
 
     public static CustomItem getCustomItem(String name) {
-        return customItems.get(name);
+        return CUSTOM_ITEM_MAP.get(name);
     }
 
     public ItemStack getItemStack() {
@@ -132,7 +132,7 @@ public class CustomItem {
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return hash;
     }
 
     @Override
@@ -156,10 +156,6 @@ public class CustomItem {
 
     public String getModuleName() {
         return moduleName;
-    }
-
-    public void setModuleName(String moduleName) {
-        this.moduleName = moduleName;
     }
 
     public interface ItemEdit {

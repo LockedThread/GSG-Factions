@@ -3,17 +3,16 @@ package com.gameservergroup.gsgcore.menus;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class MenuItem {
 
-    private transient int hash;
     private ItemStack itemStack;
     private Consumer<InventoryClickEvent> inventoryClickEventConsumer;
 
     private MenuItem(ItemStack itemStack) {
         this.itemStack = itemStack;
-        recalculateHash();
     }
 
     public static MenuItem of(ItemStack itemStack) {
@@ -26,7 +25,6 @@ public class MenuItem {
 
     public MenuItem setItemStack(ItemStack itemStack) {
         this.itemStack = itemStack;
-        recalculateHash();
         return this;
     }
 
@@ -36,7 +34,6 @@ public class MenuItem {
 
     public MenuItem setInventoryClickEventConsumer(Consumer<InventoryClickEvent> inventoryClickEventConsumer) {
         this.inventoryClickEventConsumer = inventoryClickEventConsumer;
-        recalculateHash();
         return this;
     }
 
@@ -47,13 +44,11 @@ public class MenuItem {
 
         MenuItem menuItem = (MenuItem) o;
 
-        return hash == menuItem.hash;
+        return Objects.equals(itemStack, menuItem.itemStack) && Objects.equals(inventoryClickEventConsumer, menuItem.inventoryClickEventConsumer);
     }
 
-    public void recalculateHash() {
-        int result = hash;
-        result = 31 * result + (itemStack != null ? itemStack.hashCode() : 0);
-        result = 31 * result + (inventoryClickEventConsumer != null ? inventoryClickEventConsumer.hashCode() : 0);
-        this.hash = result;
+    @Override
+    public int hashCode() {
+        return 31 * (itemStack != null ? itemStack.hashCode() : 0) + (inventoryClickEventConsumer != null ? inventoryClickEventConsumer.hashCode() : 0);
     }
 }
