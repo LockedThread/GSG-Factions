@@ -81,6 +81,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected transient boolean shouldTakeFallDamage = true;
     protected transient long lastMapUse;
     protected transient boolean inspecting = false;
+    protected transient boolean printerMode;
     private String flyTrailsEffect;
     private boolean flyTrailsState;
 
@@ -130,6 +131,16 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.mapHeight = Conf.mapHeight;
         this.notificationsEnabled = other.notificationsEnabled;
         this.altFactionId = other.altFactionId;
+    }
+
+    @Override
+    public boolean isPrinterMode() {
+        return printerMode;
+    }
+
+    @Override
+    public void setPrinterMode(boolean printerMode) {
+        this.printerMode = printerMode;
     }
 
     @Override
@@ -1069,51 +1080,60 @@ public abstract class MemoryFPlayer implements FPlayer {
         isFlying = fly;
     }
 
+    @Override
     public boolean canFlyAtLocation() {
         return canFlyAtLocation(lastStoodAt);
     }
 
+    @Override
     public boolean canFlyAtLocation(FLocation location) {
+        return canFlyAtLocation(location, true);
+    }
+
+    @Override
+    public boolean canFlyAtLocation(FLocation location, boolean everywhereChecks) {
         Faction faction = Board.getInstance().getFactionAt(location);
         //System.out.println("MemoryFPlayer.canFlyAtLocation 1");
-        if (P.p.getConfig().getBoolean("f-fly.everywhere.enabled") && Permission.FLY_EVERYWHERE.has(getPlayer())) {
-            //System.out.println("MemoryFPlayer.canFlyAtLocation 2");
-            if (faction.isWilderness()) {
-                //System.out.println("MemoryFPlayer.canFlyAtLocation 3");
-                return P.p.getConfig().getBoolean("f-fly.everywhere.wilderness");
-            } else if (faction.isWarZone()) {
-                //System.out.println("MemoryFPlayer.canFlyAtLocation 4");
-                return P.p.getConfig().getBoolean("f-fly.everywhere.warzone");
+        if (everywhereChecks) {
+            if (P.p.getConfig().getBoolean("f-fly.everywhere.enabled") && Permission.FLY_EVERYWHERE.has(getPlayer())) {
+                //System.out.println("MemoryFPlayer.canFlyAtLocation 2");
+                if (faction.isWilderness()) {
+                    //System.out.println("MemoryFPlayer.canFlyAtLocation 3");
+                    return P.p.getConfig().getBoolean("f-fly.everywhere.wilderness");
+                } else if (faction.isWarZone()) {
+                    //System.out.println("MemoryFPlayer.canFlyAtLocation 4");
+                    return P.p.getConfig().getBoolean("f-fly.everywhere.warzone");
+                } else if (faction.isSafeZone()) {
+                    //System.out.println("MemoryFPlayer.canFlyAtLocation 5");
+                    return P.p.getConfig().getBoolean("f-fly.everywhere.safezone");
+                } else if (faction.getRelationTo(getFaction()) == Relation.ENEMY) {
+                    //System.out.println("MemoryFPlayer.canFlyAtLocation 6");
+                    return P.p.getConfig().getBoolean("f-fly.everywhere.enemy");
+                } else if (faction.getRelationTo(getFaction()) == Relation.ALLY) {
+                    //System.out.println("MemoryFPlayer.canFlyAtLocation 7");
+                    return P.p.getConfig().getBoolean("f-fly.everywhere.ally");
+                } else if (faction.getRelationTo(getFaction()) == Relation.NEUTRAL) {
+                    //System.out.println("MemoryFPlayer.canFlyAtLocation 8");
+                    return P.p.getConfig().getBoolean("f-fly.everywhere.neutral");
+                } else if (faction.getRelationTo(getFaction()) == Relation.TRUCE) {
+                    //System.out.println("MemoryFPlayer.canFlyAtLocation 9");
+                    return P.p.getConfig().getBoolean("f-fly.everywhere.truce");
+                } else if (faction.getRelationTo(getFaction()) == Relation.MEMBER) {
+                    //System.out.println("MemoryFPlayer.canFlyAtLocation 10");
+                    return P.p.getConfig().getBoolean("f-fly.everywhere.member");
+                }
+                //System.out.println("MemoryFPlayer.canFlyAtLocation 11");
+            } else if (faction.isWilderness()) {
+                //System.out.println("MemoryFPlayer.canFlyAtLocation 12");
+                //System.out.println("Permission.FLY_WILDERNESS.has(getPlayer()) = " + Permission.FLY_WILDERNESS.has(getPlayer()));
+                return Permission.FLY_WILDERNESS.has(getPlayer());
             } else if (faction.isSafeZone()) {
-                //System.out.println("MemoryFPlayer.canFlyAtLocation 5");
-                return P.p.getConfig().getBoolean("f-fly.everywhere.safezone");
-            } else if (faction.getRelationTo(getFaction()) == Relation.ENEMY) {
-                //System.out.println("MemoryFPlayer.canFlyAtLocation 6");
-                return P.p.getConfig().getBoolean("f-fly.everywhere.enemy");
-            } else if (faction.getRelationTo(getFaction()) == Relation.ALLY) {
-                //System.out.println("MemoryFPlayer.canFlyAtLocation 7");
-                return P.p.getConfig().getBoolean("f-fly.everywhere.ally");
-            } else if (faction.getRelationTo(getFaction()) == Relation.NEUTRAL) {
-                //System.out.println("MemoryFPlayer.canFlyAtLocation 8");
-                return P.p.getConfig().getBoolean("f-fly.everywhere.neutral");
-            } else if (faction.getRelationTo(getFaction()) == Relation.TRUCE) {
-                //System.out.println("MemoryFPlayer.canFlyAtLocation 9");
-                return P.p.getConfig().getBoolean("f-fly.everywhere.truce");
-            } else if (faction.getRelationTo(getFaction()) == Relation.MEMBER) {
-                //System.out.println("MemoryFPlayer.canFlyAtLocation 10");
-                return P.p.getConfig().getBoolean("f-fly.everywhere.member");
+                //System.out.println("MemoryFPlayer.canFlyAtLocation 13");
+                return Permission.FLY_SAFEZONE.has(getPlayer());
+            } else if (faction.isWarZone()) {
+                //System.out.println("MemoryFPlayer.canFlyAtLocation 14");
+                return Permission.FLY_WARZONE.has(getPlayer());
             }
-            //System.out.println("MemoryFPlayer.canFlyAtLocation 11");
-        } else if (faction.isWilderness()) {
-            //System.out.println("MemoryFPlayer.canFlyAtLocation 12");
-            //System.out.println("Permission.FLY_WILDERNESS.has(getPlayer()) = " + Permission.FLY_WILDERNESS.has(getPlayer()));
-            return Permission.FLY_WILDERNESS.has(getPlayer());
-        } else if (faction.isSafeZone()) {
-            //System.out.println("MemoryFPlayer.canFlyAtLocation 13");
-            return Permission.FLY_SAFEZONE.has(getPlayer());
-        } else if (faction.isWarZone()) {
-            //System.out.println("MemoryFPlayer.canFlyAtLocation 14");
-            return Permission.FLY_WARZONE.has(getPlayer());
         }
         //System.out.println("MemoryFPlayer.canFlyAtLocation 15");
         // Admins can always fly in their territory.

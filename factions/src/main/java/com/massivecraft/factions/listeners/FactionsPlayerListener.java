@@ -565,28 +565,11 @@ public class FactionsPlayerListener implements Listener {
             return;
         }
 
-        // Yes we did change coord (:
-        me.setLastStoodAt(to);
-
         // Did we change "host"(faction)?
         Faction factionFrom = Board.getInstance().getFactionAt(from);
         Faction factionTo = Board.getInstance().getFactionAt(to);
         boolean changedFaction = (factionFrom != factionTo);
-
-        if (p.getConfig().getBoolean("f-fly.enable", false) && changedFaction && !me.isAdminBypassing()) {
-            if (me.isFlying() && p.isSotw()) {
-                me.setFlying(false);
-            } else {
-                boolean canFly = me.canFlyAtLocation();
-                //System.out.println("canFly = " + canFly);
-                if (me.isFlying() && !canFly) {
-                    me.setFlying(false);
-                } else if (!me.isFlying() && canFly) {
-                    me.setFlying(true);
-                }
-            }
-        }
-
+        // Yes we did change coord (:
         if (me.isMapAutoUpdating()) {
             if (me.getLastMapUse() > System.currentTimeMillis()) {
                 if (P.p.getConfig().getBoolean("findfactionsexploit.log", false)) {
@@ -644,6 +627,28 @@ public class FactionsPlayerListener implements Listener {
         } else if (corners.contains(to) && me.hasFaction() && me.canClaimForFaction(me.getFaction()) && (factionTo == null || factionTo.isWilderness())) {
             TitleAPI.getInstance().sendTitle(player, Text.toColor(TL.ENTERED_CORNER_TITLE.toString()), Text.toColor(TL.ENTERED_CORNER_SUBTITLE.toString()), 0, 60, 20);
         }
+
+
+        if (p.getConfig().getBoolean("f-fly.enable", false) && changedFaction && !me.isAdminBypassing()) {
+            if (me.isFlying() && p.isSotw()) {
+                me.setFlying(false);
+            } else {
+                if (me.isPrinterMode()) {
+                    if (!me.canFlyAtLocation(me.getLastStoodAt(), false)) {
+                        me.setLastStoodAt(to);
+                        return;
+                    }
+                }
+                boolean canFly = me.canFlyAtLocation();
+                //System.out.println("canFly = " + canFly);
+                if (me.isFlying() && !canFly) {
+                    me.setFlying(false);
+                } else if (!me.isFlying() && canFly) {
+                    me.setFlying(true);
+                }
+            }
+        }
+        me.setLastStoodAt(to);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -672,11 +677,17 @@ public class FactionsPlayerListener implements Listener {
         me.setLastStoodAt(to);
 
         // Check the location they're teleporting to and check if they can fly there.
-        if (p.getConfig().getBoolean("f-fly.enable", false) && !me.isAdminBypassing() && me.isFlying() && !me.canFlyAtLocation(to)) {
+        final boolean canFlyAtLocation = me.canFlyAtLocation(to);
+        if (p.getConfig().getBoolean("f-fly.enable", false) && !me.isAdminBypassing() && me.isFlying() && !canFlyAtLocation) {
             me.setFFlying(false, false);
+        } else if (me.isPrinterMode()) {
+            if (!me.canFlyAtLocation(me.getLastStoodAt(), false)) {
+                me.setLastStoodAt(to);
+                return;
+            }
         }
         // auto-fly enable
-        else if (!me.isFlying() && me.canFlyAtLocation(to) && recentDamageCache.getIfPresent(event.getPlayer().getUniqueId()) == null) {
+        else if (!me.isFlying() && canFlyAtLocation && recentDamageCache.getIfPresent(event.getPlayer().getUniqueId()) == null) {
             me.setFlying(true);
         }
 

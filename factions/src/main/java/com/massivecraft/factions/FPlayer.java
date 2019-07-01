@@ -30,6 +30,10 @@ import java.util.List;
 
 public interface FPlayer extends EconomyParticipator {
 
+    public boolean isPrinterMode();
+
+    public void setPrinterMode(boolean printerMode);
+
     public boolean getFlyTrailsState();
 
     public void setFlyTrailsState(boolean state);
@@ -327,6 +331,8 @@ public interface FPlayer extends EconomyParticipator {
     public boolean canFlyAtLocation();
 
     public boolean canFlyAtLocation(FLocation location);
+
+    public boolean canFlyAtLocation(FLocation location, boolean everywhereChecks);
 
     public boolean canUseFactionVault();
 
