@@ -3,11 +3,10 @@ package com.gameservergroup.gsgcore.storage;
 
 import com.gameservergroup.gsgcore.GSGCore;
 import com.google.gson.reflect.TypeToken;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Optional;
 
@@ -50,10 +49,15 @@ public class JsonFile<T> {
 
     public String getFileContents() {
         try {
-            return IOUtils.toString(new FileReader(file));
+            return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        /*try {
+            return IOUtils.toString(new FileReader(file));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
         return null;
     }
 }
