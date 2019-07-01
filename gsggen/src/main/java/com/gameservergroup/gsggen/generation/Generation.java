@@ -86,10 +86,10 @@ public class Generation {
         if (getLength() == 0) {
             return false;
         }
-        Block relative = getCurrentBlockPosition().getRelative(blockFace).getBlock();
         if (getStart().getType() != getMaterial()) {
             return false;
         }
+        Block relative = getCurrent().getRelative(blockFace);
         if (relative.getType() != Material.AIR && !isPatch()) {
             return false;
         }
@@ -112,7 +112,9 @@ public class Generation {
         }
         setLength(getLength() - 1);
         if (ASYNC) {
-            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> BLOCK_CONSUMER.accept(relative, getMaterial()));
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> {
+                BLOCK_CONSUMER.accept(relative, getMaterial());
+            });
         } else {
             BLOCK_CONSUMER.accept(relative, getMaterial());
         }

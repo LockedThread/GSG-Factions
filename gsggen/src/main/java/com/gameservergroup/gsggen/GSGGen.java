@@ -1,6 +1,7 @@
 package com.gameservergroup.gsggen;
 
 import com.gameservergroup.gsgcore.plugin.Module;
+import com.gameservergroup.gsggen.enums.GenMessages;
 import com.gameservergroup.gsggen.generation.Generation;
 import com.gameservergroup.gsggen.integration.CombatIntegration;
 import com.gameservergroup.gsggen.integration.combat.impl.CombatTagPlusImpl;
@@ -34,6 +35,13 @@ public class GSGGen extends Module {
                 getLogger().severe("You don't have CombatTagPlus installed, if you don't wish to use it disable the integration in GSGGen's config.yml");
                 getPluginLoader().disablePlugin(this);
                 return;
+            }
+        }
+        for (GenMessages genMessages : GenMessages.values()) {
+            if (getConfig().isSet("messages." + genMessages.getKey())) {
+                genMessages.setMessage(getConfig().getString("messages." + genMessages.getKey()));
+            } else {
+                getConfig().set("messages." + genMessages.getKey(), genMessages.getMessage());
             }
         }
         Generation.ASYNC = getConfig().getBoolean("async-enabled", true);

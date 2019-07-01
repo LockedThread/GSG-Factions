@@ -6,16 +6,22 @@ import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.menus.MenuItem;
 import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
-import com.gameservergroup.gsgcore.utils.Text;
 import com.gameservergroup.gsggen.GSGGen;
+import com.gameservergroup.gsggen.enums.GenMessages;
 import com.gameservergroup.gsggen.generation.Generation;
+import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.FPlayers;
+import com.massivecraft.factions.struct.Relation;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Gen {
@@ -45,7 +51,8 @@ public class Gen {
             customItem.setInteractEventConsumer(event -> {
                 if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     if (GSGGen.getInstance().getCombatIntegration() != null && GSGGen.getInstance().getCombatIntegration().isTagged(event.getPlayer())) {
-                        event.getPlayer().sendMessage(Text.toColor("&cYou can't place gens in combat"));
+                        event.getPlayer().sendMessage(GenMessages.CANT_PLACE_IN_COMBAT.toString());
+                        event.setCancelled(true);
                     } else {
                         EconomyResponse economyResponse = Module.getEconomy().withdrawPlayer(event.getPlayer(), price);
                         if (economyResponse.transactionSuccess()) {
@@ -55,7 +62,7 @@ public class Gen {
                             event.getPlayer().updateInventory();
                             getGeneration(relative, direction == Direction.HORIZONTAL ? event.getBlockFace() : direction.getBlockFaces()[0]).enable();
                         } else {
-                            event.getPlayer().sendMessage(Text.toColor("&cYou don't have enough money to place this!"));
+                            event.getPlayer().sendMessage(GenMessages.CANT_AFFORD.toString());
                             event.setCancelled(true);
                         }
                     }
@@ -64,14 +71,30 @@ public class Gen {
         } else {
             customItem.setPlaceEventConsumer(event -> {
                 if (GSGGen.getInstance().getCombatIntegration() != null && GSGGen.getInstance().getCombatIntegration().isTagged(event.getPlayer())) {
-                    event.getPlayer().sendMessage(Text.toColor("&cYou can't place gens in combat"));
+                    event.getPlayer().sendMessage(GenMessages.CANT_PLACE_IN_COMBAT.toString());
+                    event.setCancelled(true);
                 } else {
                     event.getPlayer().setItemInHand(event.getItemInHand());
+                    if (GSGGen.getInstance().getConfig().getBoolean("enemy-check.enabled")) {
+                        double distance = GSGGen.getInstance().getConfig().getDouble("enemy-check.distance");
+                        FPlayer fPlayer = FPlayers.getInstance().getByPlayer(event.getPlayer());
+                        List<Entity> nearbyEntities = event.getPlayer().getNearbyEntities(distance, distance, distance);
+                        for (Entity entity : nearbyEntities) {
+                            if (entity instanceof Player) {
+                                FPlayer other = FPlayers.getInstance().getByPlayer((Player) entity);
+                                if (fPlayer.getRelationTo(other) == Relation.ENEMY) {
+                                    event.getPlayer().sendMessage(GenMessages.ENEMIES_NEARBY.toString());
+                                    event.setCancelled(true);
+                                    return;
+                                }
+                            }
+                        }
+                    }
                     EconomyResponse economyResponse = Module.getEconomy().withdrawPlayer(event.getPlayer(), price);
                     if (economyResponse.transactionSuccess()) {
                         getGeneration(event.getBlockPlaced(), direction == Direction.HORIZONTAL ? event.getBlockAgainst().getFace(event.getBlockPlaced()) : direction.getBlockFaces()[0]).enable();
                     } else {
-                        event.getPlayer().sendMessage(Text.toColor("&cYou don't have enough money to place this!"));
+                        event.getPlayer().sendMessage(GenMessages.CANT_AFFORD.toString());
                         event.setCancelled(true);
                     }
                 }
@@ -96,7 +119,7 @@ public class Gen {
                 .setInventoryClickEventConsumer(event -> {
                     event.setCancelled(true);
                     if (event.getWhoClicked().getInventory().firstEmpty() == -1) {
-                        event.getWhoClicked().sendMessage(Text.toColor("&cYou inventory is full, unable to give you a gen!"));
+                        event.getWhoClicked().sendMessage(GenMessages.INVENTORY_FULL.toString());
                         if (GSGGen.getInstance().getUnitGen().isCloseInventoryOnNoMoney()) {
                             event.getWhoClicked().closeInventory();
                         }
