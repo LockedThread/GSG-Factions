@@ -11,6 +11,8 @@ import com.gameservergroup.gsgcore.utils.Utils;
 import com.gameservergroup.gsgprinter.GSGPrinter;
 import com.gameservergroup.gsgprinter.enums.PrinterMessages;
 import com.gameservergroup.gsgprinter.objs.PrintingData;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -39,7 +41,7 @@ public class UnitPrinter extends Unit {
 
     private static final DecimalFormat decimalFormat = new DecimalFormat("##.00");
     private static final GSGPrinter GSG_PRINTER = GSGPrinter.getInstance();
-    private static final EnumSet<Material> BANNED_INTERACTABLES = EnumSet.of(Material.MONSTER_EGG, Material.EGG,
+    private static final ImmutableSet<Material> BANNED_INTERACTABLES = Sets.immutableEnumSet(Material.MONSTER_EGG, Material.EGG,
             Material.MOB_SPAWNER, Material.BEACON, Material.BEDROCK, Material.BOW, Material.POTION,
             Material.ENDER_PEARL, Material.SNOW_BALL, Material.EXP_BOTTLE, Material.ENDER_CHEST, Material.INK_SACK,
             Material.EYE_OF_ENDER, Material.ACACIA_DOOR_ITEM, Material.DARK_OAK_DOOR_ITEM, Material.BIRCH_DOOR_ITEM,
@@ -74,7 +76,7 @@ public class UnitPrinter extends Unit {
         }
     }
 
-    public static EnumSet<Material> getBannedInteractables() {
+    public static ImmutableSet<Material> getBannedInteractables() {
         return BANNED_INTERACTABLES;
     }
 
