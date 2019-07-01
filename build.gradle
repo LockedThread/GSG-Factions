@@ -55,6 +55,7 @@ allprojects {
             url 'https://ci.ender.zone/plugin/repository/everything/'
         }
     }
+    version = null
 }
 
 project(":gsgcore") {
