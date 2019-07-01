@@ -287,7 +287,7 @@ public class UnitCollectors extends Unit {
                 .setPlaceEventConsumer(event -> {
                     Collector collector = getCollector(event.getBlockPlaced().getLocation());
                     if (collector == null) {
-                        createCollector(event.getBlockPlaced().getLocation()).setLandOwner(getFactionsBankIntegration() != null ? getFactionsBankIntegration().getFaction(event.getPlayer()).getTag() + "'s" : event.getPlayer().getName() + "'s");
+                        createCollector(event.getBlockPlaced().getLocation(), getFactionsBankIntegration() != null ? getFactionsBankIntegration().getFaction(event.getPlayer()).getTag() : event.getPlayer().getName());
                         if (!CollectorMessages.TITLE_COLLECTOR_PLACE.toString().isEmpty()) {
                             if (useTitles) {
                                 event.getPlayer().sendTitle(Title.builder().title(CollectorMessages.TITLE_COLLECTOR_PLACE.toString()).fadeIn(5).fadeOut(5).stay(25).build());
@@ -357,8 +357,8 @@ public class UnitCollectors extends Unit {
         return collectorHashMap.get(ChunkPosition.of(location.getChunk()));
     }
 
-    public Collector createCollector(Location location) {
-        Collector collector = new Collector(location);
+    public Collector createCollector(Location location, String owner) {
+        Collector collector = new Collector(location, owner);
         collectorHashMap.put(ChunkPosition.of(location.getChunk()), collector);
         return collector;
     }

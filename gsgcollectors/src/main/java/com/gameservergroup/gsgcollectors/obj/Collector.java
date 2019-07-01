@@ -20,17 +20,21 @@ import java.util.EnumMap;
 
 public class Collector {
 
+    private transient int hash;
+    private transient MenuCollector menuCollector;
+
     private BlockPosition blockPosition;
     private EnumMap<CollectionType, Integer> amounts;
     private String landOwner;
-    private transient MenuCollector menuCollector;
 
-    public Collector(Location location) {
-        this(BlockPosition.of(location));
+    public Collector(Location location, String owner) {
+        this(BlockPosition.of(location), owner);
     }
 
-    public Collector(BlockPosition blockPosition) {
+    public Collector(BlockPosition blockPosition, String owner) {
         this.blockPosition = blockPosition;
+        this.landOwner = owner;
+        recalcHash();
     }
 
     public void sellAll(Player player, CollectionType collectionType) {
@@ -130,6 +134,7 @@ public class Collector {
 
     public void setBlockPosition(BlockPosition blockPosition) {
         this.blockPosition = blockPosition;
+        recalcHash();
     }
 
     public BlockPosition getBlockPosition() {
@@ -158,5 +163,35 @@ public class Collector {
 
     public void setLandOwner(String landOwner) {
         this.landOwner = landOwner;
+        recalcHash();
+    }
+
+    private void recalcHash() {
+        int result = blockPosition.hashCode();
+        result = 31 * result + landOwner.hashCode();
+        this.hash = result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Collector collector = (Collector) o;
+
+        if (this.hash == 0) {
+            this.recalcHash();
+        }
+
+        if (collector.hash == 0) {
+            collector.recalcHash();
+        }
+
+        return hash == collector.hash;
+    }
+
+    @Override
+    public int hashCode() {
+        return hash;
     }
 }
