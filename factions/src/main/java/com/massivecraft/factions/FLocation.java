@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class FLocation implements Serializable {
@@ -30,6 +29,8 @@ public class FLocation implements Serializable {
     private String worldName = "world";
     private int x = 0;
     private int z = 0;
+
+    private transient int hash;
 
     //----------------------------------------------//
     // Constructors
@@ -247,14 +248,20 @@ public class FLocation implements Serializable {
         return ret;
     }
 
+    private void recalcHash() {
+        this.hash = (this.x << 9) + this.z + (this.worldName != null ? this.worldName.hashCode() : 0);
+    }
+
     //----------------------------------------------//
     // Comparison
     //----------------------------------------------//
 
     @Override
     public int hashCode() {
-        // should be fast, with good range and few hash collisions: (x * 512) + z + worldName.hashCode
-        return (this.x << 9) + this.z + (this.worldName != null ? this.worldName.hashCode() : 0);
+        if (hash == 0) {
+            recalcHash();
+        }
+        return hash = (this.x << 9) + this.z + (this.worldName != null ? this.worldName.hashCode() : 0);
     }
 
     @Override
@@ -267,6 +274,6 @@ public class FLocation implements Serializable {
         }
 
         FLocation that = (FLocation) obj;
-        return this.x == that.x && this.z == that.z && (Objects.equals(this.worldName, that.worldName));
+        return hashCode() == that.hashCode();
     }
 }
