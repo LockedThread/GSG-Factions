@@ -119,6 +119,9 @@ project(':gsgprinter') {
             mavenLocal()
             jcenter()
         }
+        compile(group: 'net.techcable.tacospigot', name: 'server', version: '1.8.8-R0.2-SNAPSHOT') {
+            exclude group: 'it.unimi.dsi'
+        }
         implementation project(path: ':gsgcore', configuration: 'shadow')
         implementation project(path: ':factions')
         implementation libs.vault
@@ -129,6 +132,13 @@ project(':gsgprinter') {
 }
 
 project(':factions') {
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    jar {
+        from {
+            configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+    }
     repositories {
         maven {
             url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
@@ -141,7 +151,7 @@ project(':factions') {
     }
     dependencies {
         implementation project(path: ':gsgcore', configuration: 'shadow')
-        compile 'org.spigotmc:spigot-api:1.9-R0.1-SNAPSHOT'
+        implementation 'org.spigotmc:spigot-api:1.9-R0.1-SNAPSHOT'
         implementation libs.worldguard
         implementation libs.vault
         implementation libs.worldedit
@@ -151,6 +161,19 @@ project(':factions') {
         implementation libs.essentials
         implementation libs.clipplaceholderapi
         implementation(libs.mvdw)
+    }
+
+    shadowJar {
+        //version = null
+        classifier = null
+        dependencies {
+            //noinspection GroovyAssignabilityCheck
+            include(dependency('mkremins:fanciful:0.4.0-SNAPSHOT'))
+        }
+    }
+
+    artifacts {
+        archives shadowJar
     }
 }
 
