@@ -1,33 +1,34 @@
 package com.gameservergroup.gsgcore.storage.objs;
 
+import it.unimi.dsi.util.XoRoShiRo128PlusRandom;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class ChunkPosition {
+
+    private static final Random RANDOM = new XoRoShiRo128PlusRandom();
 
     private transient int hash;
     private final String worldName;
     private final int x;
     private final int z;
 
-    private ChunkPosition(String worldName, int x, int z) {
+    public ChunkPosition(String worldName, int x, int z) {
         Objects.requireNonNull(worldName, "WorldName must not be null for ChunkPosition instantiation");
         this.worldName = worldName;
         this.x = x;
         this.z = z;
-        recalcHash();
     }
 
     public void recalcHash() {
         int result = worldName.hashCode();
         result = 31 * result + x;
         result = 31 * result + z;
+        result = 31 * result + new UUID(RANDOM.nextLong(), RANDOM.nextLong()).hashCode();
         this.hash = result;
     }
 
@@ -84,13 +85,7 @@ public class ChunkPosition {
         if (o == null || getClass() != o.getClass()) return false;
 
         ChunkPosition that = (ChunkPosition) o;
-        if (that.hash == 0) {
-            that.recalcHash();
-        }
-        if (hash == 0) {
-            recalcHash();
-        }
-        return that.hash == hash;
+        return that.hashCode() == hashCode();
     }
 
     @Override

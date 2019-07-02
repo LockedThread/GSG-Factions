@@ -179,19 +179,15 @@ public class Collector {
 
         Collector collector = (Collector) o;
 
-        if (this.hash == 0) {
-            this.recalcHash();
-        }
 
-        if (collector.hash == 0) {
-            collector.recalcHash();
-        }
-
-        return hash == collector.hash;
+        return this.hashCode() == collector.hashCode();
     }
 
     @Override
     public int hashCode() {
+        if (hash == 0) {
+            recalcHash();
+        }
         return hash;
     }
 }

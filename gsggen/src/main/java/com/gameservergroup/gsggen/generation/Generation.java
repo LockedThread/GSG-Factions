@@ -34,7 +34,6 @@ public class Generation {
         this.length = gen.getLength();
         this.blockFace = blockFace;
         this.init();
-        recalcHash();
     }
 
     public void init() {

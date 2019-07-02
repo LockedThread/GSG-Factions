@@ -30,8 +30,6 @@ public class FLocation implements Serializable {
     private int x = 0;
     private int z = 0;
 
-    private transient int hash;
-
     //----------------------------------------------//
     // Constructors
     //----------------------------------------------//
@@ -248,20 +246,13 @@ public class FLocation implements Serializable {
         return ret;
     }
 
-    private void recalcHash() {
-        this.hash = (this.x << 9) + this.z + (this.worldName != null ? this.worldName.hashCode() : 0);
-    }
-
     //----------------------------------------------//
     // Comparison
     //----------------------------------------------//
 
     @Override
     public int hashCode() {
-        if (hash == 0) {
-            recalcHash();
-        }
-        return hash = (this.x << 9) + this.z + (this.worldName != null ? this.worldName.hashCode() : 0);
+        return (this.x << 9) + this.z + (this.worldName != null ? this.worldName.hashCode() : 0);
     }
 
     @Override
@@ -274,6 +265,6 @@ public class FLocation implements Serializable {
         }
 
         FLocation that = (FLocation) obj;
-        return hashCode() == that.hashCode();
+        return this.x == that.x && this.z == that.z && this.worldName.equals(that.worldName);
     }
 }
