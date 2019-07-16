@@ -17,10 +17,10 @@ import org.github.paperspigot.Title;
 
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.Objects;
 
 public class Collector {
 
-    private transient int hash;
     private transient MenuCollector menuCollector;
 
     private BlockPosition blockPosition;
@@ -34,7 +34,6 @@ public class Collector {
     public Collector(BlockPosition blockPosition, String owner) {
         this.blockPosition = blockPosition;
         this.landOwner = owner;
-        recalcHash();
     }
 
     public void sellAll(Player player, CollectionType collectionType) {
@@ -134,7 +133,6 @@ public class Collector {
 
     public void setBlockPosition(BlockPosition blockPosition) {
         this.blockPosition = blockPosition;
-        recalcHash();
     }
 
     public BlockPosition getBlockPosition() {
@@ -163,13 +161,6 @@ public class Collector {
 
     public void setLandOwner(String landOwner) {
         this.landOwner = landOwner;
-        recalcHash();
-    }
-
-    private void recalcHash() {
-        int result = blockPosition.hashCode();
-        result = 31 * result + landOwner.hashCode();
-        this.hash = result;
     }
 
     @Override
@@ -179,15 +170,14 @@ public class Collector {
 
         Collector collector = (Collector) o;
 
-
-        return this.hashCode() == collector.hashCode();
+        return Objects.equals(blockPosition, collector.blockPosition) && Objects.equals(landOwner, collector.landOwner);
     }
 
     @Override
     public int hashCode() {
-        if (hash == 0) {
-            recalcHash();
-        }
-        return hash;
+        int result = 31 + (blockPosition != null ? blockPosition.hashCode() : 0);
+        result = 31 * result + (amounts != null ? amounts.hashCode() : 0);
+        result = 31 * result + (landOwner != null ? landOwner.hashCode() : 0);
+        return result;
     }
 }

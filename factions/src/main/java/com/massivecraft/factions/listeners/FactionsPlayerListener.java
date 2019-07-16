@@ -565,6 +565,7 @@ public class FactionsPlayerListener implements Listener {
             return;
         }
 
+        me.setLastStoodAt(to);
         // Did we change "host"(faction)?
         Faction factionFrom = Board.getInstance().getFactionAt(from);
         Faction factionTo = Board.getInstance().getFactionAt(to);
@@ -648,7 +649,6 @@ public class FactionsPlayerListener implements Listener {
                 }
             }
         }
-        me.setLastStoodAt(to);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
