@@ -69,6 +69,7 @@ project(":gsgcore") {
 
     dependencies {
         compile 'it.unimi.dsi:fastutil:8.2.3'
+        compile 'it.unimi.dsi:dsiutils:2.5.4'
         implementation libs.worldguard
         implementation libs.vault
         implementation(group: 'net.techcable.tacospigot', name: 'server', version: '1.8.8-R0.2-SNAPSHOT') {
@@ -82,6 +83,7 @@ project(":gsgcore") {
         dependencies {
             //noinspection GroovyAssignabilityCheck
             include(dependency('it.unimi.dsi:fastutil:8.2.3'))
+            include(dependency('it.unimi.dsi:dsiutils:2.5.4'))
             //noinspection GroovyAssignabilityCheck
             exclude(dependency('net.techcable.tacospigot:server:1.8.8-R0.2-SNAPSHOT'))
         }
@@ -192,6 +194,28 @@ project(':gsggen') {
         }
         implementation project(path: ':gsgcore', configuration: 'shadow')
         implementation project(path: ':factions')
+        implementation libs.combattagplus
+        implementation libs.vault
+    }
+}
+
+project(':gsgtrenchtools') {
+    dependencies {
+        repositories {
+            mavenCentral()
+            mavenLocal()
+            jcenter()
+        }
+        /*compile(group: 'net.techcable.tacospigot', name: 'server', version: '1.8.8-R0.2-SNAPSHOT') {
+            exclude group: 'it.unimi.dsi'
+        }*/
+        compile(group: 'net.techcable.tacospigot', name: 'server', version: '1.8.8-R0.2-SNAPSHOT') {
+            exclude group: 'it.unimi.dsi'
+        }
+        implementation project(path: ':gsgcore', configuration: 'shadow')
+        implementation project(path: ':factions')
+        implementation libs.mcmmo
+        implementation libs.coreprotect
         implementation libs.combattagplus
         implementation libs.vault
     }
