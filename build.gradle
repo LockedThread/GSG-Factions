@@ -39,7 +39,8 @@ ext.libs = [
         'mvdw'              : 'be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT',
         'combattagplus'     : 'net.minelink:CombatTagPlus:1.3.2-SNAPSHOT',
         'essentials'        : 'net.ess3:EssentialsX:2.16.1',
-        'clipplaceholderapi': 'me.clip:placeholderapi:2.9.2'
+        'clipplaceholderapi': 'me.clip:placeholderapi:2.9.2',
+        'askyblock'         : 'com.wasteofplastic:askyblock:3.0.8.2'
 ]
 
 allprojects {
@@ -53,6 +54,9 @@ allprojects {
         jcenter()
         maven {
             url 'https://ci.ender.zone/plugin/repository/everything/'
+        }
+        maven {
+            url 'http://dl.bintray.com/tastybento/maven-repo'
         }
     }
     version = null
@@ -111,6 +115,7 @@ project(':gsgcollectors') {
         implementation libs.shopguiplus
         implementation libs.aceoutposts
         implementation libs.mcmmo
+        implementation libs.askyblock
     }
 }
 
