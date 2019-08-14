@@ -11,6 +11,16 @@ options:
   creepers-collect-tnt: true
   auto-pickup-sugar-cane-normally: true
   # Don't blame me if this ruins your economy, this was requested by a client.
+
+  landowner:
+    factions:
+      at-least-role: 'COLEADER'
+    askyblock:
+      enabled: false
+      # Makes it so only leaders can sell
+      only-leader: false
+
+
   shop-gui-plus:
     hook: false
     blacklisted-shops:

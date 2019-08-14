@@ -4,8 +4,10 @@ import com.gameservergroup.gsgcollectors.GSGCollectors;
 import com.gameservergroup.gsgcollectors.enums.CollectionType;
 import com.gameservergroup.gsgcollectors.enums.CollectorMessages;
 import com.gameservergroup.gsgcollectors.integration.FactionsBankIntegration;
-import com.gameservergroup.gsgcollectors.integration.impl.FactionsUUIDImpl;
+import com.gameservergroup.gsgcollectors.integration.LandOwnerIntegration;
 import com.gameservergroup.gsgcollectors.integration.impl.LockedThreadFactionsBankImpl;
+import com.gameservergroup.gsgcollectors.integration.impl.landowner.LandOwnerASkyBlockImpl;
+import com.gameservergroup.gsgcollectors.integration.impl.landowner.LandOwnerFactionsUUIDImpl;
 import com.gameservergroup.gsgcollectors.obj.Collector;
 import com.gameservergroup.gsgcollectors.task.TaskSave;
 import com.gameservergroup.gsgcore.events.EventFilters;
@@ -58,6 +60,7 @@ public class UnitCollectors extends Unit {
 
     //Integrations
     private FactionsBankIntegration factionsBankIntegration = null;
+    private LandOwnerIntegration landOwnerIntegration = null;
 
     //Storage
     private EnumSet<CollectionType> collectionTypes;
@@ -87,11 +90,16 @@ public class UnitCollectors extends Unit {
             if (factions.getDescription().getAuthors().contains("LockedThread")) {
                 this.factionsBankIntegration = new LockedThreadFactionsBankImpl();
                 GSG_COLLECTORS.getLogger().info("Enabled LockedThread FactionsBank implementation");
-                new FactionsUUIDImpl().setupListeners(this);
+                (this.landOwnerIntegration = new LandOwnerFactionsUUIDImpl()).setupListeners(this);
             } else if (factions.getDescription().getAuthors().contains("drtshock")) {
-                new FactionsUUIDImpl().setupListeners(this);
+                (this.landOwnerIntegration = new LandOwnerFactionsUUIDImpl()).setupListeners(this);
             } else {
                 GSG_COLLECTORS.getLogger().severe("TNTBank will not work for you! Purchase LockedThread's FactionsFork for support!");
+            }
+        } else if (GSG_COLLECTORS.getServer().getPluginManager().getPlugin("ASkyBlock") != null) {
+            if (GSG_COLLECTORS.getConfig().getBoolean("options.landowner.askyblock.enabled")) {
+                (this.landOwnerIntegration = new LandOwnerASkyBlockImpl()).setupListeners(this);
+                GSG_COLLECTORS.getLogger().info("Enabled ASkyBlock implementation!");
             }
         } else {
             EventPost.of(PlayerInteractEvent.class, EventPriority.HIGHEST)
@@ -448,5 +456,9 @@ public class UnitCollectors extends Unit {
 
     public boolean isCollectToInventoryWithNoCollector() {
         return collectToInventoryWithNoCollector;
+    }
+
+    public LandOwnerIntegration getLandOwnerIntegration() {
+        return landOwnerIntegration;
     }
 }

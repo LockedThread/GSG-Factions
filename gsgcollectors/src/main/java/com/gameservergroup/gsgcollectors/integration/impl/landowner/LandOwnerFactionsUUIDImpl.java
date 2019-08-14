@@ -1,8 +1,8 @@
-package com.gameservergroup.gsgcollectors.integration.impl;
+package com.gameservergroup.gsgcollectors.integration.impl.landowner;
 
 import com.gameservergroup.gsgcollectors.GSGCollectors;
 import com.gameservergroup.gsgcollectors.enums.CollectorMessages;
-import com.gameservergroup.gsgcollectors.integration.FactionIntegration;
+import com.gameservergroup.gsgcollectors.integration.LandOwnerIntegration;
 import com.gameservergroup.gsgcollectors.obj.Collector;
 import com.gameservergroup.gsgcollectors.units.UnitCollectors;
 import com.gameservergroup.gsgcore.events.EventFilters;
@@ -15,13 +15,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class FactionsUUIDImpl implements FactionIntegration {
+public class LandOwnerFactionsUUIDImpl implements LandOwnerIntegration {
 
     private Role atLeastRole;
 
     @Override
     public void setupListeners(UnitCollectors unitCollectors) {
-        GSGCollectors.getInstance().getServer().getScheduler().runTaskLater(GSGCollectors.getInstance(), () -> atLeastRole = Role.fromString(GSGCollectors.getInstance().getConfig().getString("options.at-least-role")), 1L);
+        GSGCollectors.getInstance().getServer().getScheduler().runTaskLater(GSGCollectors.getInstance(), () -> atLeastRole = Role.fromString(GSGCollectors.getInstance().getConfig().getString("options.landowner.factions.at-least-role")), 1L);
         EventPost.of(PlayerInteractEvent.class, EventPriority.HIGHEST)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> event.getClickedBlock() != null)
