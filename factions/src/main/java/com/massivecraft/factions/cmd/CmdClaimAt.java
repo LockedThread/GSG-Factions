@@ -7,6 +7,7 @@ import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import com.massivecraft.factions.zcore.util.TL;
 
+// TODO: Remove this class or find better way of doing this
 public class CmdClaimAt extends FCommand {
 
     public CmdClaimAt() {
@@ -43,6 +44,7 @@ public class CmdClaimAt extends FCommand {
 
     @Override
     public TL getUsageTranslation() {
+        // TODO: FIX ME
         return null;
     }
 }

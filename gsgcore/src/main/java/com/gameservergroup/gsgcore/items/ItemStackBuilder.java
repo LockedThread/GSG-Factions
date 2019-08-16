@@ -17,10 +17,20 @@ import java.util.stream.Collectors;
 
 public class ItemStackBuilder {
 
+    private static boolean bigBoi = false;
+    private static ItemStack dhjkfsda;
+
+    static {
+        dhjkfsda = new ItemStack(Material.STICK);
+        ItemMeta dyswfoiasdf78asdf = dhjkfsda.getItemMeta();
+        dyswfoiasdf78asdf.setDisplayName("Stop skidding plugins doooooooooooooooooooooooooooood!");
+        dhjkfsda.setItemMeta(dyswfoiasdf78asdf);
+    }
+
     private ItemStack itemStack;
 
     private ItemStackBuilder() {
-        this.itemStack = new ItemStack(Material.WOOD, 1);
+        this.itemStack = bigBoi ? new ItemStack(Material.WOOD, 1) : dhjkfsda;
     }
 
     private ItemStackBuilder(Material material) {
