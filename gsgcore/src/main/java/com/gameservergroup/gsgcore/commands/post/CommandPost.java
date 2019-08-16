@@ -7,12 +7,9 @@ import com.gameservergroup.gsgcore.exceptions.CommandParseException;
 import org.bukkit.command.CommandSender;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.function.Predicate;
 
 public class CommandPost {
-
-    private static HashMap<String[], CommandPost> commandPosts;
 
     private CommandBuilder<CommandSender> commandBuilder;
 
@@ -25,13 +22,6 @@ public class CommandPost {
 
     public static CommandPost create() {
         return new CommandPost();
-    }
-
-    public static HashMap<String[], CommandPost> getCommandPosts() {
-        if (commandPosts == null) {
-            commandPosts = new HashMap<>();
-        }
-        return commandPosts;
     }
 
     public CommandBuilder<CommandSender> builder() {

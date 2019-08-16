@@ -3,6 +3,7 @@ package com.gameservergroup.gsgcore.commands;
 import com.gameservergroup.gsgcore.commands.handler.FunctionalCommandHandler;
 import com.gameservergroup.gsgcore.commands.handler.ICommandHandler;
 import com.gameservergroup.gsgcore.commands.post.CommandPost;
+import com.gameservergroup.gsgcore.commands.post.CommandPostExecutor;
 import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgcore.utils.CommandMapUtil;
 import org.bukkit.command.CommandSender;
@@ -75,13 +76,16 @@ public class CommandBuilder<T extends CommandSender> {
     }
 
     public void post(Module plugin, String... aliases) {
-        CommandPost.getCommandPosts().put(aliases, commandPost);
-        CommandMapUtil.registerCommand(plugin, aliases);
-        plugin.getCommandAliases().add(aliases);
+        post((Plugin) plugin, aliases);
+        for (String alias : aliases) {
+            plugin.getCommandAliases().add(alias);
+        }
     }
 
     public void post(Plugin plugin, String... aliases) {
-        CommandPost.getCommandPosts().put(aliases, commandPost);
+        for (String alias : aliases) {
+            CommandPostExecutor.getInstance().getCommandMap().put(alias, commandPost);
+        }
         CommandMapUtil.registerCommand(plugin, aliases);
     }
 
