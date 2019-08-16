@@ -11,16 +11,14 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 public class CustomItem {
 
-    private static final Map<String, CustomItem> CUSTOM_ITEM_MAP = new HashMap<>();
+    private static Map<String, CustomItem> CUSTOM_ITEM_MAP;
 
-    private transient final int hash;
     private final String moduleName;
     private final String name;
     private ItemStack itemStack;
@@ -38,7 +36,6 @@ public class CustomItem {
         this.moduleName = module.getName();
         this.name = name;
         this.itemStack = itemStack;
-        this.hash = name.hashCode();
         CUSTOM_ITEM_MAP.put(name, this);
     }
 
@@ -112,6 +109,21 @@ public class CustomItem {
         return this;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CustomItem that = (CustomItem) o;
+
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
     public Consumer<BlockPlaceEvent> getPlaceEventConsumer() {
         return placeEventConsumer;
     }
@@ -119,20 +131,6 @@ public class CustomItem {
     public CustomItem setPlaceEventConsumer(Consumer<BlockPlaceEvent> placeEventConsumer) {
         this.placeEventConsumer = placeEventConsumer;
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CustomItem that = (CustomItem) o;
-        return that.hash == this.hash;
-    }
-
-
-    @Override
-    public int hashCode() {
-        return hash;
     }
 
     @Override

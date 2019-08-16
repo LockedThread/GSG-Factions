@@ -9,13 +9,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public abstract class Menu implements InventoryHolder {
 
-    private transient final int hash;
     private Consumer<InventoryOpenEvent> inventoryOpenEventConsumer;
     private Consumer<InventoryCloseEvent> inventoryCloseEventConsumer;
     private Inventory inventory;
@@ -24,7 +23,6 @@ public abstract class Menu implements InventoryHolder {
     public Menu(String name, int size) {
         this.inventory = Bukkit.createInventory(this, size, Text.toColor(name));
         this.menuItems = new Int2ObjectOpenHashMap<>();
-        this.hash = UUID.randomUUID().hashCode();
     }
 
     public abstract void initialize();
@@ -91,11 +89,20 @@ public abstract class Menu implements InventoryHolder {
 
         Menu menu = (Menu) o;
 
-        return menu.hash == hash;
+        if (!Objects.equals(inventoryOpenEventConsumer, menu.inventoryOpenEventConsumer))
+            return false;
+        if (!Objects.equals(inventoryCloseEventConsumer, menu.inventoryCloseEventConsumer))
+            return false;
+        if (!Objects.equals(inventory, menu.inventory)) return false;
+        return Objects.equals(menuItems, menu.menuItems);
     }
 
     @Override
     public int hashCode() {
-        return hash;
+        int result = inventoryOpenEventConsumer != null ? inventoryOpenEventConsumer.hashCode() : 0;
+        result = 31 * result + (inventoryCloseEventConsumer != null ? inventoryCloseEventConsumer.hashCode() : 0);
+        result = 31 * result + (inventory != null ? inventory.hashCode() : 0);
+        result = 31 * result + (menuItems != null ? menuItems.hashCode() : 0);
+        return result;
     }
 }

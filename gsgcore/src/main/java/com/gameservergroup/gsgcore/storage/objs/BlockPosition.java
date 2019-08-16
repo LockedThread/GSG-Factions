@@ -1,6 +1,5 @@
 package com.gameservergroup.gsgcore.storage.objs;
 
-import it.unimi.dsi.util.XoRoShiRo128PlusRandom;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -9,14 +8,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
 import java.util.Objects;
-import java.util.Random;
-import java.util.UUID;
 
 public class BlockPosition {
 
-    private static final Random RANDOM = new XoRoShiRo128PlusRandom();
-
-    private transient int hash;
     private final String worldName;
     private final int x;
     private final int y;
@@ -28,15 +22,6 @@ public class BlockPosition {
         this.x = x;
         this.y = y;
         this.z = z;
-    }
-
-    public void recalcHash() {
-        int result = worldName.hashCode();
-        result = 31 * result + x;
-        result = 31 * result + y;
-        result = 31 * result + z;
-        result = 31 * result + new UUID(RANDOM.nextLong(), RANDOM.nextLong()).hashCode();
-        this.hash = result;
     }
 
     public static BlockPosition of(Location location) {
@@ -105,15 +90,19 @@ public class BlockPosition {
 
         BlockPosition that = (BlockPosition) o;
 
-        return that.hashCode() == hashCode();
+        if (x != that.x) return false;
+        if (y != that.y) return false;
+        if (z != that.z) return false;
+        return Objects.equals(worldName, that.worldName);
     }
 
     @Override
     public int hashCode() {
-        if (hash == 0) {
-            recalcHash();
-        }
-        return hash;
+        int result = 31 + (worldName != null ? worldName.hashCode() : 0);
+        result = 31 * result + x;
+        result = 31 * result + y;
+        result = 31 * result + z;
+        return result;
     }
 
     @Override
