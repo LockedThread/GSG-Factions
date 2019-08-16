@@ -4,6 +4,7 @@ import com.gameservergroup.gsgcore.GSGCore;
 import com.gameservergroup.gsgcore.commands.post.CommandPostExecutor;
 import com.gameservergroup.gsgcore.events.EventPost;
 import com.gameservergroup.gsgcore.items.CustomItem;
+import com.gameservergroup.gsgcore.maven.LibraryLoader;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.google.common.base.Charsets;
 import com.google.gson.GsonBuilder;
@@ -145,6 +146,7 @@ public abstract class Module extends JavaPlugin {
                 }.toString()));
                 getLogger().info("");
                 enable();
+                LibraryLoader.loadAll(this);
             } else {
                 getLogger().severe("");
                 getLogger().severe("");
