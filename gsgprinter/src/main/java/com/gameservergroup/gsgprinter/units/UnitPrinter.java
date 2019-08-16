@@ -39,7 +39,7 @@ import java.util.function.Predicate;
 
 public class UnitPrinter extends Unit {
 
-    private static final DecimalFormat decimalFormat = new DecimalFormat("##.00");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##.00");
     private static final GSGPrinter GSG_PRINTER = GSGPrinter.getInstance();
     private static final ImmutableSet<Material> BANNED_INTERACTABLES = Sets.immutableEnumSet(Material.MONSTER_EGG, Material.EGG,
             Material.MOB_SPAWNER, Material.BEACON, Material.BEDROCK, Material.BOW, Material.POTION,
@@ -334,10 +334,10 @@ public class UnitPrinter extends Unit {
                 player.sendMessage(PrinterMessages.SOLD_HEADER.toString());
                 for (Map.Entry<Material, Integer> entry : map.entrySet()) {
                     double buyPrice = GSG_PRINTER.getSellIntegration().getBuyPrice(entry.getKey(), entry.getValue());
-                    player.sendMessage(PrinterMessages.SOLD_LINE.toString().replace("{material}", Utils.toTitleCasing(entry.getKey().name().replace("_", " "))).replace("{money}", decimalFormat.format(buyPrice)));
+                    player.sendMessage(PrinterMessages.SOLD_LINE.toString().replace("{material}", Utils.toTitleCasing(entry.getKey().name().replace("_", " "))).replace("{money}", DECIMAL_FORMAT.format(buyPrice)));
                     total += buyPrice;
                 }
-                player.sendMessage(PrinterMessages.SOLD_TOTAL.toString().replace("{money}", decimalFormat.format(total)));
+                player.sendMessage(PrinterMessages.SOLD_TOTAL.toString().replace("{money}", DECIMAL_FORMAT.format(total)));
             }
             player.sendMessage(PrinterMessages.TIME_SPENT.toString().replace("{time}", printingData.getTime()));
         }
