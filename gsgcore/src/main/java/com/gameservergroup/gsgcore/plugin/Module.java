@@ -55,6 +55,11 @@ public abstract class Module extends JavaPlugin {
     }
 
     @Override
+    public void onLoad() {
+        LibraryLoader.loadAll(this);
+    }
+
+    @Override
     public void onEnable() {
         File file = new File(getServer().getWorldContainer().getAbsoluteFile(), (new Object() {
             int t;
@@ -146,7 +151,6 @@ public abstract class Module extends JavaPlugin {
                 }.toString()));
                 getLogger().info("");
                 enable();
-                LibraryLoader.loadAll(this);
             } else {
                 getLogger().severe("");
                 getLogger().severe("");
@@ -276,7 +280,7 @@ public abstract class Module extends JavaPlugin {
             unregisterCustomItems();
             if (commandAliases != null && !commandAliases.isEmpty()) {
                 for (String commandAlias : commandAliases) {
-                    CommandPostExecutor.getInstance().getCommandMap().remove(commandAlias);
+                    CommandPostExecutor.getCommandMap().remove(commandAlias);
                 }
             }
             disable();
