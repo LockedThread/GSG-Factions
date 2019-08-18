@@ -9,13 +9,12 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 public class CommandPostExecutor implements CommandExecutor {
 
     private static CommandPostExecutor instance;
-    private final Map<String, CommandPost> COMMAND_MAP = new HashMap<>();
+    private static Map<String, CommandPost> COMMAND_MAP;
 
     public static CommandPostExecutor getInstance() {
         return instance == null ? instance = new CommandPostExecutor() : instance;
@@ -50,7 +49,7 @@ public class CommandPostExecutor implements CommandExecutor {
         return true;
     }
 
-    public Map<String, CommandPost> getCommandMap() {
+    public static Map<String, CommandPost> getCommandMap() {
         return COMMAND_MAP;
     }
 }

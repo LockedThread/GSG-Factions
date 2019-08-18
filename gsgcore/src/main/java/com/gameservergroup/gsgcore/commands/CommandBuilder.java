@@ -84,7 +84,7 @@ public class CommandBuilder<T extends CommandSender> {
 
     public void post(Plugin plugin, String... aliases) {
         for (String alias : aliases) {
-            CommandPostExecutor.getInstance().getCommandMap().put(alias, commandPost);
+            CommandPostExecutor.getCommandMap().put(alias, commandPost);
         }
         CommandMapUtil.registerCommand(plugin, aliases);
     }
