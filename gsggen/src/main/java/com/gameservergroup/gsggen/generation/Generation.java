@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 public class Generation {
@@ -24,7 +25,6 @@ public class Generation {
     private BlockPosition currentBlockPosition;
     private transient FLocation startingFLocation;
     private transient Block start, current;
-    private transient int hash;
 
     public Generation(BlockPosition startingBlockPosition, Gen gen, BlockFace blockFace) {
         this.startingBlockPosition = startingBlockPosition;
@@ -174,14 +174,6 @@ public class Generation {
         this.currentBlockPosition = currentBlockPosition;
     }
 
-    private void recalcHash() {
-        int result = startingBlockPosition != null ? startingBlockPosition.hashCode() : 0;
-        result = 31 * result + (blockFace != null ? blockFace.hashCode() : 0);
-        result = 31 * result + (material != null ? material.hashCode() : 0);
-        result = 31 * result + (patch ? 1 : 0);
-        this.hash = result;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -189,15 +181,26 @@ public class Generation {
 
         Generation that = (Generation) o;
 
-        return that.hashCode() == hashCode();
+        return patch == that.patch
+                && length == that.length
+                && blockFace == that.blockFace
+                && material == that.material
+                && Objects.equals(startingBlockPosition, that.startingBlockPosition)
+                && Objects.equals(currentBlockPosition, that.currentBlockPosition);
     }
 
     @Override
     public int hashCode() {
-        if (hash == 0) {
-            recalcHash();
-        }
-        return hash;
+        int result = blockFace != null ? blockFace.hashCode() : 0;
+        result = 31 * result + (material != null ? material.hashCode() : 0);
+        result = 31 * result + (startingBlockPosition != null ? startingBlockPosition.hashCode() : 0);
+        result = 31 * result + (patch ? 1 : 0);
+        result = 31 * result + length;
+        result = 31 * result + (currentBlockPosition != null ? currentBlockPosition.hashCode() : 0);
+        result = 31 * result + (startingFLocation != null ? startingFLocation.hashCode() : 0);
+        result = 31 * result + (start != null ? start.hashCode() : 0);
+        result = 31 * result + (current != null ? current.hashCode() : 0);
+        return result;
     }
 
     @Override
