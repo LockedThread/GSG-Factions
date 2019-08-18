@@ -325,9 +325,12 @@ public class UnitPrinter extends Unit {
     }
 
     public void disablePrinter(Player player, boolean notify, boolean nofall) {
+        PrintingData printingData = printingPlayers.get(player.getUniqueId());
+        if (printingData == null) {
+            return;
+        }
         if (notify) {
             player.sendMessage(PrinterMessages.PRINTER_DISABLE.toString());
-            PrintingData printingData = printingPlayers.get(player.getUniqueId());
             EnumMap<Material, Integer> map = printingData.getPlacedBlocks();
             if (!map.isEmpty()) {
                 double total = 0.0;

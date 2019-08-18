@@ -19,7 +19,7 @@ public class LockedThreadFactionsUUIDImpl implements FactionsIntegration {
     @Override
     public void hookFlightDisable() {
         EventPost.of(FPlayerFlightDisableEvent.class)
-                .filter(event -> event.getfPlayer() != null && event.getfPlayer().isOnline() && GSGPrinter.getInstance().getUnitPrinter().getPrintingPlayers().containsKey(event.getfPlayer().getPlayer().getUniqueId()))
+                .filter(event -> event.getfPlayer() != null && event.getfPlayer().isOnline())
                 .handle(event -> GSGPrinter.getInstance().getUnitPrinter().disablePrinter(event.getfPlayer().getPlayer(), true, true))
                 .post(GSGPrinter.getInstance());
     }
