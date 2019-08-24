@@ -7,6 +7,7 @@ import com.gameservergroup.gsgcollectors.integration.FactionsBankIntegration;
 import com.gameservergroup.gsgcollectors.integration.LandOwnerIntegration;
 import com.gameservergroup.gsgcollectors.integration.impl.LockedThreadFactionsBankImpl;
 import com.gameservergroup.gsgcollectors.integration.impl.landowner.LandOwnerASkyBlockImpl;
+import com.gameservergroup.gsgcollectors.integration.impl.landowner.LandOwnerFabledSkyblockImpl;
 import com.gameservergroup.gsgcollectors.integration.impl.landowner.LandOwnerFactionsUUIDImpl;
 import com.gameservergroup.gsgcollectors.obj.Collector;
 import com.gameservergroup.gsgcollectors.task.TaskSave;
@@ -100,6 +101,11 @@ public class UnitCollectors extends Unit {
             if (GSG_COLLECTORS.getConfig().getBoolean("options.landowner.askyblock.enabled")) {
                 (this.landOwnerIntegration = new LandOwnerASkyBlockImpl()).setupListeners(this);
                 GSG_COLLECTORS.getLogger().info("Enabled ASkyBlock implementation!");
+            }
+        } else if (GSG_COLLECTORS.getServer().getPluginManager().getPlugin("FabledSkyBlock") != null) {
+            if (GSG_COLLECTORS.getConfig().getBoolean("options.landowner.fabled-skyblock.enabled")) {
+                (this.landOwnerIntegration = new LandOwnerFabledSkyblockImpl()).setupListeners(this);
+                GSG_COLLECTORS.getLogger().info("Enabled FabledSkyBlock implementation!");
             }
         } else {
             EventPost.of(PlayerInteractEvent.class, EventPriority.HIGHEST)
