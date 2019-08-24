@@ -7,7 +7,7 @@ import com.gameservergroup.gsgcollectors.integration.FactionsBankIntegration;
 import com.gameservergroup.gsgcollectors.integration.LandOwnerIntegration;
 import com.gameservergroup.gsgcollectors.integration.impl.LockedThreadFactionsBankImpl;
 import com.gameservergroup.gsgcollectors.integration.impl.landowner.LandOwnerASkyBlockImpl;
-import com.gameservergroup.gsgcollectors.integration.impl.landowner.LandOwnerFabledSkyblockImpl;
+import com.gameservergroup.gsgcollectors.integration.impl.landowner.LandOwnerFabledSkyBlockImpl;
 import com.gameservergroup.gsgcollectors.integration.impl.landowner.LandOwnerFactionsUUIDImpl;
 import com.gameservergroup.gsgcollectors.obj.Collector;
 import com.gameservergroup.gsgcollectors.task.TaskSave;
@@ -104,7 +104,7 @@ public class UnitCollectors extends Unit {
             }
         } else if (GSG_COLLECTORS.getServer().getPluginManager().getPlugin("FabledSkyBlock") != null) {
             if (GSG_COLLECTORS.getConfig().getBoolean("options.landowner.fabled-skyblock.enabled")) {
-                (this.landOwnerIntegration = new LandOwnerFabledSkyblockImpl()).setupListeners(this);
+                (this.landOwnerIntegration = new LandOwnerFabledSkyBlockImpl()).setupListeners(this);
                 GSG_COLLECTORS.getLogger().info("Enabled FabledSkyBlock implementation!");
             }
         } else {
@@ -322,7 +322,9 @@ public class UnitCollectors extends Unit {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("collector-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
                 Collector collector = getCollector(event.getClickedBlock().getLocation());
                 if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
-                    collector.sellAll(event.getPlayer());
+                    if (landOwnerIntegration.canAccessCollector(event.getPlayer(), collector, event.getClickedBlock().getLocation(), true)) {
+                        collector.sellAll(event.getPlayer());
+                    }
                     event.setCancelled(true);
                 }
             }
@@ -331,7 +333,9 @@ public class UnitCollectors extends Unit {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("collector-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
                 Collector collector = getCollector(event.getClickedBlock().getLocation());
                 if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
-                    collector.depositTnt(event.getPlayer());
+                    if (landOwnerIntegration.canAccessCollector(event.getPlayer(), collector, event.getClickedBlock().getLocation(), true)) {
+                        collector.depositTnt(event.getPlayer());
+                    }
                     event.setCancelled(true);
                 }
             }

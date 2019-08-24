@@ -11,6 +11,8 @@ import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.massivecraft.factions.*;
 import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.struct.Role;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -62,5 +64,32 @@ public class LandOwnerFactionsUUIDImpl implements LandOwnerIntegration {
                         }
                     }
                 }).post(GSGCollectors.getInstance());
+    }
+
+    @Override
+    public boolean canAccessCollector(Player player, Collector collector, Location location, boolean sendMessage) {
+        FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
+        Faction myFaction = fPlayer.getFaction();
+        if (!GSGCollectors.getInstance().getUnitCollectors().isEditWhilstFactionless() && myFaction.isWilderness() && !fPlayer.isAdminBypassing()) {
+            if (sendMessage) {
+                player.sendMessage(CollectorMessages.NO_ACCESS_FACTIONLESS.toString());
+            }
+            return false;
+        }
+        FLocation fLocation = new FLocation(location);
+        Faction factionThere = Board.getInstance().getFactionAt(fLocation);
+        if (!GSGCollectors.getInstance().getUnitCollectors().isAccessNotYours() && factionThere.getRelationTo(myFaction) != Relation.MEMBER && !factionThere.isWilderness() && !fPlayer.isAdminBypassing()) {
+            if (sendMessage) {
+                player.sendMessage(CollectorMessages.NO_ACCESS_NOT_YOURS.toString());
+            }
+            return false;
+        }
+        if (GSGCollectors.getInstance().getUnitCollectors().isRoleRestricted() && !fPlayer.getRole().isAtLeast(atLeastRole) && !fPlayer.isAdminBypassing()) {
+            if (sendMessage) {
+                player.sendMessage(CollectorMessages.NO_ACCESS_NO_PERMISSIONS.toString().replace("{role}", atLeastRole.toString()));
+            }
+            return false;
+        }
+        return true;
     }
 }

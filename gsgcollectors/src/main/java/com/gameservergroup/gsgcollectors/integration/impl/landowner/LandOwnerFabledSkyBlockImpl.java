@@ -8,15 +8,16 @@ import com.gameservergroup.gsgcollectors.units.UnitCollectors;
 import com.gameservergroup.gsgcore.events.EventFilters;
 import com.gameservergroup.gsgcore.events.EventPost;
 import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
-import com.wasteofplastic.askyblock.ASkyBlockAPI;
-import com.wasteofplastic.askyblock.Island;
+import me.goodandevil.skyblock.api.SkyBlockAPI;
+import me.goodandevil.skyblock.api.island.Island;
+import me.goodandevil.skyblock.api.island.IslandRole;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class LandOwnerASkyBlockImpl implements LandOwnerIntegration {
+public class LandOwnerFabledSkyBlockImpl implements LandOwnerIntegration {
 
     @Override
     public void setupListeners(UnitCollectors unitCollectors) {
@@ -44,10 +45,12 @@ public class LandOwnerASkyBlockImpl implements LandOwnerIntegration {
 
     @Override
     public boolean canAccessCollector(Player player, Collector collector, Location location, boolean sendMessage) {
-        Island islandAt = ASkyBlockAPI.getInstance().getIslandAt(location);
-        if (islandAt.getMembers().contains(player.getUniqueId())) {
-            if (GSGCollectors.getInstance().getConfig().getBoolean("options.landowner.askyblock.only-leader")) {
-                if (!islandAt.getOwner().equals(player.getUniqueId())) {
+        Island islandAt = SkyBlockAPI.getIslandManager().getIslandAtLocation(location);
+        if (islandAt.getOwnerUUID().equals(player.getUniqueId()) ||
+                islandAt.getPlayersWithRole(IslandRole.MEMBER).contains(player.getUniqueId()) ||
+                islandAt.getPlayersWithRole(IslandRole.OPERATOR).contains(player.getUniqueId())) {
+            if (GSGCollectors.getInstance().getConfig().getBoolean("options.landowner.fabled-skyblock.only-leader")) {
+                if (!islandAt.getOwnerUUID().equals(player.getUniqueId())) {
                     if (sendMessage) {
                         player.sendMessage(CollectorMessages.NO_ACCESS_NOT_YOURS.toString());
                     }
