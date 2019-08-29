@@ -3,6 +3,7 @@ package com.gameservergroup.gsgcore.menus;
 import com.gameservergroup.gsgcore.utils.Text;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.bukkit.Bukkit;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
@@ -14,6 +15,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public abstract class Menu implements InventoryHolder {
+
+    private static final Consumer<InventoryClickEvent> SET_CANCELLED = event -> event.setCancelled(true);
 
     private Consumer<InventoryOpenEvent> inventoryOpenEventConsumer;
     private Consumer<InventoryCloseEvent> inventoryCloseEventConsumer;
@@ -35,12 +38,15 @@ public abstract class Menu implements InventoryHolder {
         if (slot > inventory.getSize()) {
             throw new RuntimeException("Unable to add a MenuItem to a Menu due to the menu's size. Increase your menu size or contact LockedThread.");
         }
+        if (menuItem.getInventoryClickEventConsumer() == null) {
+            menuItem.setInventoryClickEventConsumer(SET_CANCELLED);
+        }
         inventory.setItem(slot, menuItem.getItemStack());
         menuItems.put(slot, menuItem);
     }
 
     public void setItem(int slot, ItemStack itemStack) {
-        setItem(slot, MenuItem.of(itemStack).setInventoryClickEventConsumer(event -> event.setCancelled(true)));
+        setItem(slot, MenuItem.of(itemStack).setInventoryClickEventConsumer(SET_CANCELLED));
     }
 
     public Int2ObjectOpenHashMap<MenuItem> getMenuItems() {

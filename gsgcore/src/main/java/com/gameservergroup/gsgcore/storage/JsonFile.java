@@ -53,11 +53,6 @@ public class JsonFile<T> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        /*try {
-            return IOUtils.toString(new FileReader(file));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
         return null;
     }
 }
