@@ -24,7 +24,7 @@ public class ShopGUIPlusSellImpl implements SellIntegration {
         for (Map.Entry<String, Shop> entry : ShopGuiPlugin.getInstance().getShopManager().shops.entrySet()) {
             if (!shops.contains(entry.getKey().toLowerCase())) {
                 for (ShopItem shopItem : entry.getValue().getShopItems()) {
-                    if (shopItem.getItem().getType().isBlock()) continue;
+                    if (!shopItem.getItem().getType().isBlock()) continue;
                     if (shopItem.getItem().getType() == Material.STRING) {
                         prices.putIfAbsent(Material.STRING.getId(), shopItem.getBuyPrice());
                         prices.putIfAbsent(Material.TRIPWIRE.getId(), shopItem.getBuyPrice());
