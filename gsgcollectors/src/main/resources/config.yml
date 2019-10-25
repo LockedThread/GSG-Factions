@@ -13,6 +13,7 @@ options:
   landowner:
     factions:
       at-least-role: 'COLEADER'
+      allowed-in-wilderness: false
     askyblock:
       enabled: false
       # Makes it so only leaders can sell

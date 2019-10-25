@@ -7,15 +7,19 @@ import com.gameservergroup.gsgcollectors.obj.Collector;
 import com.gameservergroup.gsgcollectors.units.UnitCollectors;
 import com.gameservergroup.gsgcore.events.EventFilters;
 import com.gameservergroup.gsgcore.events.EventPost;
+import com.gameservergroup.gsgcore.items.CustomItem;
 import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.massivecraft.factions.*;
 import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.struct.Role;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.github.paperspigot.Title;
 
 public class LandOwnerFactionsUUIDImpl implements LandOwnerIntegration {
 
@@ -64,6 +68,43 @@ public class LandOwnerFactionsUUIDImpl implements LandOwnerIntegration {
                         }
                     }
                 }).post(GSGCollectors.getInstance());
+
+        unitCollectors.setCollectorItem(CustomItem.of(GSGCollectors.getInstance(), GSGCollectors.getInstance().getConfig().getConfigurationSection("collector-item"))
+                .setPlaceEventConsumer(event -> {
+                    Collector collector = unitCollectors.getCollector(event.getBlockPlaced().getLocation());
+                    if (collector == null) {
+
+                        Faction factionAt = Board.getInstance().getFactionAt(new FLocation(event.getBlockPlaced()));
+
+                        FPlayer fPlayer = FPlayers.getInstance().getByPlayer(event.getPlayer());
+
+                        if (factionAt.isWilderness() && GSGCollectors.getInstance().getConfig().getBoolean("options.landowner.factions.allowed-in-wilderness", false)) {
+                            event.getPlayer().sendMessage(CollectorMessages.NO_ACCESS_WILDERNESS.toString());
+                        } else if (factionAt.getTag().equals(fPlayer.getFaction().getTag())) {
+                            if (fPlayer.getRole().isAtLeast(atLeastRole)) {
+                                unitCollectors.createCollector(event.getBlockPlaced().getLocation(), unitCollectors.getFactionsBankIntegration() != null ? unitCollectors.getFactionsBankIntegration().getFaction(event.getPlayer()).getTag() : event.getPlayer().getName());
+                                if (!CollectorMessages.TITLE_COLLECTOR_PLACE.toString().isEmpty()) {
+                                    if (unitCollectors.isUseTitles()) {
+                                        event.getPlayer().sendTitle(Title.builder().title(CollectorMessages.TITLE_COLLECTOR_PLACE.toString()).fadeIn(5).fadeOut(5).stay(25).build());
+                                    } else {
+                                        event.getPlayer().sendMessage(CollectorMessages.TITLE_COLLECTOR_PLACE.toString());
+                                    }
+                                }
+                            } else {
+                                event.getPlayer().sendMessage(CollectorMessages.NO_ACCESS_NOT_ROLE.toString());
+                            }
+                        } else {
+                            event.getPlayer().sendMessage(CollectorMessages.NO_ACCESS_NOT_YOURS.toString());
+                        }
+                    } else if (canAccessCollector(event.getPlayer(), collector, event.getBlockPlaced().getLocation(), true)) {
+                        collector.getBlockPosition().getBlock().setType(Material.AIR);
+                        collector.setBlockPosition(BlockPosition.of(event.getBlockPlaced()));
+                        event.getPlayer().sendMessage(CollectorMessages.UPDATED_COLLECTOR_BLOCKPOSITION.toString());
+                        if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+                            event.getPlayer().setItemInHand(event.getItemInHand());
+                        }
+                    }
+                }));
     }
 
     @Override

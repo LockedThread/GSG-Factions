@@ -297,27 +297,29 @@ public class UnitCollectors extends Unit {
                     .build();
         }
 
-        this.collectorItem = CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("collector-item"))
-                .setPlaceEventConsumer(event -> {
-                    Collector collector = getCollector(event.getBlockPlaced().getLocation());
-                    if (collector == null) {
-                        createCollector(event.getBlockPlaced().getLocation(), getFactionsBankIntegration() != null ? getFactionsBankIntegration().getFaction(event.getPlayer()).getTag() : event.getPlayer().getName());
-                        if (!CollectorMessages.TITLE_COLLECTOR_PLACE.toString().isEmpty()) {
-                            if (useTitles) {
-                                event.getPlayer().sendTitle(Title.builder().title(CollectorMessages.TITLE_COLLECTOR_PLACE.toString()).fadeIn(5).fadeOut(5).stay(25).build());
-                            } else {
-                                event.getPlayer().sendMessage(CollectorMessages.TITLE_COLLECTOR_PLACE.toString());
+        if (!(landOwnerIntegration instanceof LandOwnerFactionsUUIDImpl)) {
+            this.collectorItem = CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("collector-item"))
+                    .setPlaceEventConsumer(event -> {
+                        Collector collector = getCollector(event.getBlockPlaced().getLocation());
+                        if (collector == null) {
+                            createCollector(event.getBlockPlaced().getLocation(), getFactionsBankIntegration() != null ? getFactionsBankIntegration().getFaction(event.getPlayer()).getTag() : event.getPlayer().getName());
+                            if (!CollectorMessages.TITLE_COLLECTOR_PLACE.toString().isEmpty()) {
+                                if (useTitles) {
+                                    event.getPlayer().sendTitle(Title.builder().title(CollectorMessages.TITLE_COLLECTOR_PLACE.toString()).fadeIn(5).fadeOut(5).stay(25).build());
+                                } else {
+                                    event.getPlayer().sendMessage(CollectorMessages.TITLE_COLLECTOR_PLACE.toString());
+                                }
+                            }
+                        } else {
+                            collector.getBlockPosition().getBlock().setType(Material.AIR);
+                            collector.setBlockPosition(BlockPosition.of(event.getBlockPlaced()));
+                            event.getPlayer().sendMessage(CollectorMessages.UPDATED_COLLECTOR_BLOCKPOSITION.toString());
+                            if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+                                event.getPlayer().setItemInHand(event.getItemInHand());
                             }
                         }
-                    } else {
-                        collector.getBlockPosition().getBlock().setType(Material.AIR);
-                        collector.setBlockPosition(BlockPosition.of(event.getBlockPlaced()));
-                        event.getPlayer().sendMessage(CollectorMessages.UPDATED_COLLECTOR_BLOCKPOSITION.toString());
-                        if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-                            event.getPlayer().setItemInHand(event.getItemInHand());
-                        }
-                    }
-                });
+                    });
+        }
         CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("collector-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
                 Collector collector = getCollector(event.getClickedBlock().getLocation());
@@ -470,5 +472,9 @@ public class UnitCollectors extends Unit {
 
     public LandOwnerIntegration getLandOwnerIntegration() {
         return landOwnerIntegration;
+    }
+
+    public void setCollectorItem(CustomItem collectorItem) {
+        this.collectorItem = collectorItem;
     }
 }
