@@ -75,11 +75,11 @@ public class LandOwnerFactionsUUIDImpl implements LandOwnerIntegration {
                     if (collector == null) {
 
                         Faction factionAt = Board.getInstance().getFactionAt(new FLocation(event.getBlockPlaced()));
-
                         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(event.getPlayer());
 
-                        if (factionAt.isWilderness() && GSGCollectors.getInstance().getConfig().getBoolean("options.landowner.factions.allowed-in-wilderness", false)) {
+                        if (factionAt.isWilderness() && !GSGCollectors.getInstance().getConfig().getBoolean("options.landowner.factions.allowed-in-wilderness", false)) {
                             event.getPlayer().sendMessage(CollectorMessages.NO_ACCESS_WILDERNESS.toString());
+                            event.setCancelled(true);
                         } else if (factionAt.getTag().equals(fPlayer.getFaction().getTag())) {
                             if (fPlayer.getRole().isAtLeast(atLeastRole)) {
                                 unitCollectors.createCollector(event.getBlockPlaced().getLocation(), unitCollectors.getFactionsBankIntegration() != null ? unitCollectors.getFactionsBankIntegration().getFaction(event.getPlayer()).getTag() : event.getPlayer().getName());
@@ -92,9 +92,11 @@ public class LandOwnerFactionsUUIDImpl implements LandOwnerIntegration {
                                 }
                             } else {
                                 event.getPlayer().sendMessage(CollectorMessages.NO_ACCESS_NOT_ROLE.toString());
+                                event.setCancelled(true);
                             }
                         } else {
                             event.getPlayer().sendMessage(CollectorMessages.NO_ACCESS_NOT_YOURS.toString());
+                            event.setCancelled(true);
                         }
                     } else if (canAccessCollector(event.getPlayer(), collector, event.getBlockPlaced().getLocation(), true)) {
                         collector.getBlockPosition().getBlock().setType(Material.AIR);
