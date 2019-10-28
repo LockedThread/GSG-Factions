@@ -6,6 +6,7 @@ import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.objs.Gen;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
+import org.bukkit.ChunkSnapshot;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -23,6 +24,7 @@ public class Generation {
     private final boolean patch;
     private int length;
     private BlockPosition currentBlockPosition;
+    private transient ChunkSnapshot chunkSnapshot;
     private transient FLocation startingFLocation;
     private transient Block start, current;
 
@@ -33,6 +35,7 @@ public class Generation {
         this.patch = gen.isPatch();
         this.length = gen.getLength();
         this.blockFace = blockFace;
+        this.chunkSnapshot = currentBlockPosition.getChunk().getChunkSnapshot();
         this.init();
     }
 
@@ -60,17 +63,7 @@ public class Generation {
         if (relative.getType() != Material.AIR && !isPatch()) {
             return false;
         }
-        if (isPatch() && relative.getType() != Material.WATER &&
-                relative.getType() != Material.STATIONARY_WATER &&
-                relative.getType() != Material.LAVA &&
-                relative.getType() != Material.STATIONARY_LAVA &&
-                relative.getType() != Material.OBSIDIAN &&
-                relative.getType() != Material.SAND &&
-                relative.getType() != Material.GRAVEL &&
-                relative.getType() != Material.AIR &&
-                relative.getType() != Material.COBBLESTONE) {
-            return false;
-        }
+        if (isBlockAllowed(relative)) return false;
         setLength(getLength() - 1);
         if (ASYNC) {
             GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> BLOCK_CONSUMER.accept(relative, getMaterial()));
@@ -81,29 +74,25 @@ public class Generation {
         return true;
     }
 
-    public boolean generateHorizontal() {
+    public boolean generateHorizontal(BlockPosition relative) {
         if (getLength() == 0) {
             return false;
         }
         if (getStart().getType() != getMaterial()) {
             return false;
         }
-        Block relative = getCurrent().getRelative(blockFace);
-        if (relative.getType() != Material.AIR && !isPatch()) {
-            return false;
+        Block relativeBlock;
+        if (relative == null) {
+            relativeBlock = getCurrent().getRelative(blockFace);
+            relative = BlockPosition.of(relativeBlock);
+            if (relativeBlock.getType() != Material.AIR && !isPatch()) {
+                return false;
+            }
+        } else {
+            relativeBlock = relative.getBlock();
         }
-        if (isPatch() && relative.getType() != Material.WATER &&
-                relative.getType() != Material.STATIONARY_WATER &&
-                relative.getType() != Material.LAVA &&
-                relative.getType() != Material.STATIONARY_LAVA &&
-                relative.getType() != Material.OBSIDIAN &&
-                relative.getType() != Material.SAND &&
-                relative.getType() != Material.GRAVEL &&
-                relative.getType() != Material.AIR &&
-                relative.getType() != Material.COBBLESTONE) {
-            return false;
-        }
-        if (!Board.getInstance().getFactionAt(startingFLocation).getTag().equals(Board.getInstance().getFactionAt(new FLocation(relative)).getTag())) {
+        if (isBlockAllowed(relativeBlock)) return false;
+        if (!Board.getInstance().getFactionAt(startingFLocation).getTag().equals(Board.getInstance().getFactionAt(new FLocation(relativeBlock)).getTag())) {
             return false;
         }
         if (Utils.isOutsideBorder(relative.getLocation())) {
@@ -111,14 +100,25 @@ public class Generation {
         }
         setLength(getLength() - 1);
         if (ASYNC) {
-            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> {
-                BLOCK_CONSUMER.accept(relative, getMaterial());
-            });
+            final Block effectiveRelative = relativeBlock;
+            GSGGen.getInstance().getServer().getScheduler().runTask(GSGGen.getInstance(), () -> BLOCK_CONSUMER.accept(effectiveRelative, getMaterial()));
         } else {
-            BLOCK_CONSUMER.accept(relative, getMaterial());
+            BLOCK_CONSUMER.accept(relativeBlock, getMaterial());
         }
-        setCurrent(relative);
+        setCurrent(relativeBlock);
         return true;
+    }
+
+    private boolean isBlockAllowed(Block block) {
+        return isPatch() && block.getType() != Material.WATER &&
+                block.getType() != Material.STATIONARY_WATER &&
+                block.getType() != Material.LAVA &&
+                block.getType() != Material.STATIONARY_LAVA &&
+                block.getType() != Material.OBSIDIAN &&
+                block.getType() != Material.SAND &&
+                block.getType() != Material.GRAVEL &&
+                block.getType() != Material.AIR &&
+                block.getType() != Material.COBBLESTONE;
     }
 
     public Block getStart() {
@@ -135,7 +135,7 @@ public class Generation {
     }
 
     public void enable() {
-        GSGGen.getInstance().getUnitGen().getGenerations().add(this);
+        GSGGen.getInstance().getUnitGen().getGenerations().put(this, Boolean.TRUE);
     }
 
     public int getLength() {
@@ -172,6 +172,18 @@ public class Generation {
 
     public void setCurrentBlockPosition(BlockPosition currentBlockPosition) {
         this.currentBlockPosition = currentBlockPosition;
+    }
+
+
+    public ChunkSnapshot getChunkSnapshot() {
+        if (chunkSnapshot == null) {
+            return chunkSnapshot = currentBlockPosition.getChunk().getChunkSnapshot();
+        }
+        return chunkSnapshot;
+    }
+
+    public void setChunkSnapshot(ChunkSnapshot chunkSnapshot) {
+        this.chunkSnapshot = chunkSnapshot;
     }
 
     @Override

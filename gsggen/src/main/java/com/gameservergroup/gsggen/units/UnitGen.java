@@ -1,6 +1,5 @@
 package com.gameservergroup.gsggen.units;
 
-import com.gameservergroup.gsgcore.collections.ConcurrentHashSet;
 import com.gameservergroup.gsgcore.commands.post.CommandPost;
 import com.gameservergroup.gsgcore.enums.Direction;
 import com.gameservergroup.gsgcore.events.EventPost;
@@ -10,14 +9,17 @@ import com.gameservergroup.gsgcore.utils.CallBack;
 import com.gameservergroup.gsggen.GSGGen;
 import com.gameservergroup.gsggen.generation.Generation;
 import com.gameservergroup.gsggen.objs.Gen;
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import com.google.gson.reflect.TypeToken;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,7 +29,7 @@ public class UnitGen extends Unit {
     private static final GSGGen GSG_GEN = GSGGen.getInstance();
 
     private boolean closeInventoryOnPurchase, closeInventoryOnNoMoney, disableLavaBucketPlayerUse;
-    private Set<Generation> generations;
+    private Map<Generation, Boolean> generations;
     private HashMap<String, Gen> genHashMap = new HashMap<>();
 
     private JsonFile<Set<Generation>> generationJsonFile;
@@ -38,26 +40,25 @@ public class UnitGen extends Unit {
         });
         Optional<Set<Generation>> load = generationJsonFile.load();
         if (load.isPresent()) {
-            Set<Generation> localGenerations = load.get();
-            if (Generation.ASYNC) {
-                if (!(localGenerations instanceof ConcurrentHashSet)) {
-                    localGenerations = new ConcurrentHashSet<>(localGenerations);
+            this.generations = new ConcurrentHashMap<>();
+            this.generations.putAll(Maps.asMap(load.get(), new Function<Generation, Boolean>() {
+                @Nullable
+                @Override
+                public Boolean apply(@Nullable Generation generation) {
+                    return true;
                 }
-            } else {
-                localGenerations = new HashSet<>(localGenerations);
-            }
-            this.generations = localGenerations;
+            }));
 
-            for (Generation generation : generations) {
+            for (Generation generation : generations.keySet()) {
                 generation.init();
             }
         } else {
-            this.generations = Generation.ASYNC ? new ConcurrentHashSet<>() : new HashSet<>();
+            this.generations = Generation.ASYNC ? new ConcurrentHashMap<>() : new HashMap<>();
         }
         hookDisable(new CallBack() {
             @Override
             public void call() {
-                generationJsonFile.save(generations);
+                generationJsonFile.save(generations.keySet());
             }
         });
         CommandPost.of()
@@ -110,7 +111,7 @@ public class UnitGen extends Unit {
         }
     }
 
-    public Set<Generation> getGenerations() {
+    public Map<Generation, Boolean> getGenerations() {
         return generations;
     }
 
