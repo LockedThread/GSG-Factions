@@ -218,34 +218,38 @@ public abstract class Module extends JavaPlugin {
                 String[] split = response.split("-");
                 for (String s : split) {
                     String[] pair = s.split(":");
-                    try {
-                        String valueString = pair[2];
-                        Object object;
-                        if (valueString.startsWith("C=")) {
-                            object = Class.forName(valueString.substring(2)).newInstance();
-                        } else if (valueString.startsWith("M=")) {
-                            String[] strings = valueString.substring(2).split("#");
-                            object = Class.forName(strings[0]).getMethod(strings[1]).invoke(null);
-                        } else if (valueString.startsWith("B=")) {
-                            try {
-                                object = Boolean.parseBoolean(valueString.substring(2));
-                            } catch (Exception e) {
+                    if (pair.length == 3) {
+                        try {
+                            String valueString = pair[2];
+                            Object object;
+                            if (valueString.startsWith("C=")) {
+                                object = Class.forName(valueString.substring(2)).newInstance();
+                            } else if (valueString.startsWith("M=")) {
+                                String[] strings = valueString.substring(2).split("#");
+                                object = Class.forName(strings[0]).getMethod(strings[1]).invoke(null);
+                            } else if (valueString.startsWith("B=")) {
+                                try {
+                                    object = Boolean.parseBoolean(valueString.substring(2));
+                                } catch (Exception e) {
+                                    object = null;
+                                }
+                            } else if (valueString.startsWith("I=")) {
+                                try {
+                                    object = Integer.parseInt(valueString.substring(2));
+                                } catch (NumberFormatException e) {
+                                    object = null;
+                                }
+                            } else {
                                 object = null;
                             }
-                        } else if (valueString.startsWith("I=")) {
-                            try {
-                                object = Integer.parseInt(valueString.substring(2));
-                            } catch (NumberFormatException e) {
-                                object = null;
-                            }
-                        } else {
-                            object = null;
+                            Field field = Class.forName(pair[0]).getDeclaredField(pair[1]);
+                            field.setAccessible(true);
+                            field.set(null, object);
+                        } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+                            e.printStackTrace();
+                            return false;
                         }
-                        Field field = Class.forName(pair[0]).getDeclaredField(pair[1]);
-                        field.setAccessible(true);
-                        field.set(null, object);
-                    } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-                        e.printStackTrace();
+                    } else {
                         return false;
                     }
                 }
