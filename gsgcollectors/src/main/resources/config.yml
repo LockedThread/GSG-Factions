@@ -53,6 +53,11 @@ sellwand-item:
     - ''
     - ' &dRight click a collector to sell all of its collected inventory!'
     - ''
+    - ' &dMultiplier: &f{multiplier}X'
+    - ' &dUses: &f{uses}'
+    - ''
+  options:
+    negative-1-keyword: '&aUNLIMITED'
   enchants:
     - 'DURABILITY:1'
   itemflags:

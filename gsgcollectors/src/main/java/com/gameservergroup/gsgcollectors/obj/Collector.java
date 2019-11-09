@@ -4,6 +4,8 @@ import com.gameservergroup.gsgcollectors.GSGCollectors;
 import com.gameservergroup.gsgcollectors.enums.CollectionType;
 import com.gameservergroup.gsgcollectors.enums.CollectorMessages;
 import com.gameservergroup.gsgcollectors.integration.FactionsBankIntegration;
+import com.gameservergroup.gsgcollectors.integration.SellPriceModifierIntegration;
+import com.gameservergroup.gsgcollectors.integration.impl.AceOutpostsSellPriceModifierImpl;
 import com.gameservergroup.gsgcollectors.menus.MenuCollector;
 import com.gameservergroup.gsgcore.plugin.Module;
 import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
@@ -52,25 +54,41 @@ public class Collector {
     }
 
     public void sellAll(Player player) {
+        sellAll(player, 0.0);
+    }
+
+    public double sellAll(Player player, double multiplier) {
         double money = getAmounts().entrySet().stream().filter(entry -> entry.getKey() != CollectionType.TNT).mapToDouble(entry -> entry.getKey().getPrice() * entry.getValue()).sum();
-        if (GSGCollectors.getInstance().getSellPriceModifierIntegration() != null) {
-            money = GSGCollectors.getInstance().getSellPriceModifierIntegration().getModifiedPrice(player, money);
+        boolean outpost = false;
+        SellPriceModifierIntegration sellIntegration = GSGCollectors.getInstance().getSellPriceModifierIntegration();
+        if (sellIntegration != null) {
+            if (sellIntegration instanceof AceOutpostsSellPriceModifierImpl) {
+                outpost = true;
+            } else {
+                money = sellIntegration.getModifiedPrice(player, money);
+            }
         }
         if (money > 0.0) {
+            multiplier += outpost ? 1 : 0;
+            money *= multiplier;
+            if (sellIntegration != null && outpost) {
+                money = sellIntegration.getModifiedPrice(player, money);
+            }
             Module.getEconomy().depositPlayer(player, money);
+            String replace = CollectorMessages.TITLE_SELL.toString().replace("{money}", String.valueOf(money));
             if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
-                player.sendTitle(Title.builder().title(CollectorMessages.TITLE_SELL.toString().replace("{money}", String.valueOf(money))).fadeIn(5).fadeOut(5).stay(25).build());
+                player.sendTitle(Title.builder().title(replace).fadeIn(5).fadeOut(5).stay(25).build());
             } else {
-                player.sendMessage(CollectorMessages.TITLE_SELL.toString().replace("{money}", String.valueOf(money)));
+                player.sendMessage(replace);
             }
             resetWithBlackList(CollectionType.TNT);
+            return money;
+        } else if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
+            player.sendTitle(Title.builder().title(CollectorMessages.CANT_SELL_NOTHING.toString().replace("{money}", String.valueOf(money))).fadeIn(5).fadeOut(5).stay(25).build());
         } else {
-            if (GSGCollectors.getInstance().getUnitCollectors().isUseTitles()) {
-                player.sendTitle(Title.builder().title(CollectorMessages.CANT_SELL_NOTHING.toString().replace("{money}", String.valueOf(money))).fadeIn(5).fadeOut(5).stay(25).build());
-            } else {
-                player.sendMessage(CollectorMessages.CANT_SELL_NOTHING.toString());
-            }
+            player.sendMessage(CollectorMessages.CANT_SELL_NOTHING.toString());
         }
+        return 0.0;
     }
 
     public void resetWithBlackList(CollectionType... collectionTypes) {

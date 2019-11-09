@@ -15,7 +15,8 @@ public enum CollectorMessages {
     CANT_SELL_NOTHING("&cYou can't sell nothing!"),
     CANT_DEPOSIT_NOTHING("&cYou can't deposit nothing!"),
     DEPOSITED_TNT("&aYou have deposited &f{tnt} &atnt"),
-    UPDATED_COLLECTOR_BLOCKPOSITION("&aYou have updated your collector's block position!");
+    UPDATED_COLLECTOR_BLOCKPOSITION("&aYou have updated your collector's block position!"),
+    YOUR_SELLWAND_IS_BROKEN("&cYour sellwand is broken!");
 
     private String message;
 

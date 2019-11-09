@@ -20,6 +20,7 @@ import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.gameservergroup.gsgcore.storage.objs.ChunkPosition;
 import com.gameservergroup.gsgcore.units.Unit;
 import com.gameservergroup.gsgcore.utils.CallBack;
+import com.gameservergroup.gsgcore.utils.NBTItem;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.server.v1_8_R3.Blocks;
 import net.minecraft.server.v1_8_R3.EnumDirection;
@@ -34,6 +35,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -46,8 +48,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.github.paperspigot.Title;
 
-import java.util.EnumSet;
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class UnitCollectors extends Unit {
 
@@ -246,6 +248,8 @@ public class UnitCollectors extends Unit {
         }
     }
 
+    private List<String> defaultSellWandLore = null;
+
     public void load() {
         this.collectorMenuSize = GSG_COLLECTORS.getConfig().getInt("menu.size");
         this.collectorMenuName = GSG_COLLECTORS.getConfig().getString("menu.name");
@@ -320,31 +324,73 @@ public class UnitCollectors extends Unit {
                         }
                     });
         }
-        CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
+        CustomItem sellWandCustomItem = CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("sellwand-item")).setInteractEventConsumer(event -> {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("collector-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
                 Collector collector = getCollector(event.getClickedBlock().getLocation());
+                Player player = event.getPlayer();
                 if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
-                    if (landOwnerIntegration.canAccessCollector(event.getPlayer(), collector, event.getClickedBlock().getLocation(), true)) {
-                        collector.sellAll(event.getPlayer());
+                    if (landOwnerIntegration != null) {
+                        if (landOwnerIntegration.canAccessCollector(player, collector, event.getClickedBlock().getLocation(), true)) {
+                            checkSellWandUses(event.getItem(), collector, player);
+                        }
+                    } else {
+                        checkSellWandUses(event.getItem(), collector, player);
                     }
-                    event.setCancelled(true);
                 }
+                event.setCancelled(true);
+
             }
         });
-        CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().getConfigurationSection("tntwand-item")).setInteractEventConsumer(event -> {
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("collector-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
-                Collector collector = getCollector(event.getClickedBlock().getLocation());
-                if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
-                    if (landOwnerIntegration.canAccessCollector(event.getPlayer(), collector, event.getClickedBlock().getLocation(), true)) {
-                        collector.depositTnt(event.getPlayer());
-                    }
-                    event.setCancelled(true);
+        sellWandCustomItem.setRequestedNBT("uses", "multiplier");
+        sellWandCustomItem.setItemEdit(new CustomItem.ItemEdit() {
+            @SuppressWarnings("ConstantConditions")
+            @Override
+            public ItemStack getEditedItemStack() {
+                return getEditedItemStack(null);
+            }
+
+            @Override
+            public ItemStack getEditedItemStack(Map<String, Object> map) {
+                int uses = (int) map.get("uses");
+                uses = uses == 0 ? -1 : uses;
+
+                double multiplier = (double) map.get("multiplier");
+                multiplier = multiplier == 0 ? 1.0 : multiplier;
+
+                final ItemStack itemStack = sellWandCustomItem.getOriginalItemStack();
+                NBTItem nbtItem = new NBTItem(itemStack)
+                        .set("uses", uses)
+                        .set("multiplier", multiplier);
+                List<String> list = new ArrayList<>();
+                for (String s : itemStack.getItemMeta().getLore()) {
+                    list.add(s.replace("{uses}", uses == -1 ? GSG_COLLECTORS.getConfig().getString("sellwand-item.options.negative-1-keyword") : String.valueOf(uses))
+                            .replace("{multiplier}", String.valueOf(multiplier)));
                 }
+                return ItemStackBuilder.of(nbtItem.buildItemStack()).setLore(list).build();
             }
         });
+
+        CustomItem.of(GSG_COLLECTORS, GSG_COLLECTORS.getConfig().
+
+                getConfigurationSection("tntwand-item")).
+
+                setInteractEventConsumer(event ->
+
+                {
+                    if (event.getAction() == Action.RIGHT_CLICK_BLOCK && GSG_COLLECTORS.getConfig().getString("collector-item.material").equalsIgnoreCase(event.getClickedBlock().getType().name())) {
+                        Collector collector = getCollector(event.getClickedBlock().getLocation());
+                        if (collector != null && collector.getBlockPosition().equals(BlockPosition.of(event.getClickedBlock()))) {
+                            if (landOwnerIntegration.canAccessCollector(event.getPlayer(), collector, event.getClickedBlock().getLocation(), true)) {
+                                collector.depositTnt(event.getPlayer());
+                            }
+                            event.setCancelled(true);
+                        }
+                    }
+                });
         EnumSet<CollectionType> collectionTypes = EnumSet.noneOf(CollectionType.class);
         ConfigurationSection collectionTypeSection = GSG_COLLECTORS.getConfig().getConfigurationSection("collection-types");
-        for (String key : collectionTypeSection.getKeys(false)) {
+        for (
+                String key : collectionTypeSection.getKeys(false)) {
             CollectionType collectionType;
             try {
                 collectionType = CollectionType.valueOf(key.toUpperCase().replace("-", "_"));
@@ -357,6 +403,39 @@ public class UnitCollectors extends Unit {
             collectionTypes.add(collectionType);
         }
         this.collectionTypes = collectionTypes;
+    }
+
+    public void checkSellWandUses(ItemStack itemStack, Collector collector, Player player) {
+        NBTItem nbtItem = new NBTItem(itemStack);
+        int uses = nbtItem.getInt("uses");
+        if (uses == 0) {
+            if (isUseTitles()) {
+                player.sendTitle(Title.builder().title(CollectorMessages.YOUR_SELLWAND_IS_BROKEN.toString()).fadeIn(5).fadeOut(5).stay(25).build());
+            } else {
+                player.sendMessage(CollectorMessages.YOUR_SELLWAND_IS_BROKEN.toString());
+            }
+        } else {
+            double multiplier = nbtItem.getDouble("multiplier");
+            if (uses == -1) {
+                collector.sellAll(player, multiplier);
+            } else {
+                collector.sellAll(player, multiplier);
+                nbtItem.set("uses", uses -= 1);
+
+                itemStack = nbtItem.buildItemStack();
+
+                player.setItemInHand(ItemStackBuilder.of(itemStack).setLore(getReformattedLore(uses, multiplier)).build());
+            }
+        }
+    }
+
+    private List<String> getReformattedLore(int uses, double multiplier) {
+        if (defaultSellWandLore == null) {
+            defaultSellWandLore = CustomItem.getCustomItem("sellwand-item").getOriginalItemStack().getItemMeta().getLore();
+        }
+        return defaultSellWandLore.stream()
+                .map(k -> k.replace("{uses}", String.valueOf(uses)).replace("{multiplier}", String.valueOf(multiplier)))
+                .collect(Collectors.toList());
     }
 
     private boolean canGrow(Block bukkitBlock) {
@@ -392,6 +471,17 @@ public class UnitCollectors extends Unit {
             location.getBlock().setType(Material.AIR);
             location.getWorld().dropItemNaturally(location, getCollectorItem().getItemStack());
         }
+    }
+
+    public boolean decrementSellWandUses(ItemStack itemStack) {
+        NBTItem nbtItem = new NBTItem(itemStack);
+        int uses = nbtItem.getInt("uses");
+        if (uses == -1) return true;
+        if (uses == 0) return false;
+
+        nbtItem.set("uses", uses - 1);
+
+        return true;
     }
 
     public String getCollectorMenuName() {
