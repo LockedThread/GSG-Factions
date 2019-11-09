@@ -5,7 +5,7 @@ import com.gameservergroup.gsgcore.utils.CallBack;
 
 public abstract class Unit {
 
-    public static final GSGCore GSG_CORE = GSGCore.getInstance();
+    public static GSGCore GSG_CORE = GSGCore.getInstance();
     private CallBack callBack;
 
     public void call() {

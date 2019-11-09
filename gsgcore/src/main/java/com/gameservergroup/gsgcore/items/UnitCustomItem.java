@@ -29,7 +29,11 @@ public class UnitCustomItem extends Unit {
                 .assertPermission("gsg.customitem")
                 .handler(c -> {
                     if (c.getRawArgs().length == 0) {
-                        c.reply("", "&d/customitem list", "&d/customitem give [player] [item] {amount} {PRESET-NBT...}", "&d/customitem info [item]", "&d/customitem migrate [customitem] [migration-type] [arguments] - Ask locked for help!", "\n");
+                        c.reply("", "&d/customitem list",
+                                "&d/customitem give [player] [item] {amount} {PRESET-NBT...}",
+                                "&d/customitem info [item]",
+                                "&d/customitem migrate [customitem] [migration-type] [arguments] - Ask locked for help!",
+                                "\n");
                     } else if (c.getRawArgs().length == 1) {
                         if (c.getRawArg(0).equalsIgnoreCase("list")) {
                             c.reply("", "&dCustomItems: &f" + Joiner.on(", ").skipNulls().join(CustomItem.getCustomItemMap().keySet()), "");
@@ -44,6 +48,7 @@ public class UnitCustomItem extends Unit {
                                     "&dBlockBreakEvent: &f" + (customItem.getBreakEventConsumer() != null),
                                     "&dBlockPlaceEvent: &f" + (customItem.getPlaceEventConsumer() != null),
                                     "&dPlayerInteractEvent: &f" + (customItem.getInteractEventConsumer() != null),
+                                    "&dRequested NBT: &f" + (customItem.getRequestedNBT() != null ? Joiner.on(", ").skipNulls().join(customItem.getRequestedNBT()) : "None"),
                                     "");
                         } else {
                             c.reply("&cInvalid argument");
@@ -85,12 +90,31 @@ public class UnitCustomItem extends Unit {
 
                             ItemStack itemStack;
                             if (nbt != null) {
-                                itemStack = customItem.getItemEdit().getEditedItemStack(nbt);
+                                Task:
+                                for (String key : nbt.keySet()) {
+
+                                    String requestedNbt = null;
+                                    for (int i = 0; i < customItem.getRequestedNBT().length; i++) {
+                                        requestedNbt = customItem.getRequestedNBT()[i];
+                                        if (key.equals(requestedNbt)) {
+                                            continue Task;
+                                        }
+                                    }
+
+                                    c.reply("&cYou are missing the required nbt data \"" + requestedNbt + "\"");
+                                    return;
+                                }
+                                try {
+                                    itemStack = customItem.getItemEdit().getEditedItemStack(nbt);
+                                } catch (NullPointerException ex) {
+                                    c.reply("&cThis item requires meta data. {" + Joiner.on(",").skipNulls().join(customItem.getRequestedNBT()) + "}");
+                                    return;
+                                }
                             } else {
                                 try {
                                     itemStack = customItem.getItemStack();
                                 } catch (NullPointerException ex) {
-                                    c.reply("&cThis item requires meta data");
+                                    c.reply("&cThis item requires meta data. {" + Joiner.on(",").skipNulls().join(customItem.getRequestedNBT()) + "}");
                                     return;
                                 }
                             }

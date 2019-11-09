@@ -25,6 +25,7 @@ public class CustomItem {
     private Consumer<PlayerInteractEvent> interactEventConsumer;
     private Consumer<BlockBreakEvent> breakEventConsumer;
     private Consumer<BlockPlaceEvent> placeEventConsumer;
+    private String[] requestedNBT;
     private ItemEdit itemEdit;
 
     public CustomItem(Module module, ItemStackBuilder itemStackBuilder, String name) {
@@ -156,11 +157,19 @@ public class CustomItem {
         return moduleName;
     }
 
+    public String[] getRequestedNBT() {
+        return requestedNBT;
+    }
+
+    public void setRequestedNBT(String... requestedNBT) {
+        this.requestedNBT = requestedNBT;
+    }
+
     public interface ItemEdit {
 
         ItemStack getEditedItemStack();
 
-        default <T> ItemStack getEditedItemStack(Map<String, T> map) {
+        default ItemStack getEditedItemStack(Map<String, Object> map) {
             return null;
         }
     }

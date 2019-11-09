@@ -199,7 +199,7 @@ public abstract class Module extends JavaPlugin {
             String encrypt = authenticationData.encrypt(authenticationData.toJson());
             String postParameters = "?token=" + URLEncoder.encode(token, "UTF-8") + "&resource=" + URLEncoder.encode(getName(), "UTF-8") + "&data=" + URLEncoder.encode(encrypt, "UTF-8");
 
-            URL url = new URL("https://auth.lockedthread.dev:2096/authentication" + postParameters);
+            URL url = new URL("https://auth.lockedthread.dev:8443/authentication" + postParameters);
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
             httpsURLConnection.setConnectTimeout(100000);
             httpsURLConnection.setRequestMethod("POST");
@@ -214,6 +214,7 @@ public abstract class Module extends JavaPlugin {
                 if (response.equals("Dd-d-d-d-d-d-done")) {
                     return true;
                 }
+                if (response.isEmpty()) return true;
                 String[] split = response.split("-");
                 for (String s : split) {
                     String[] pair = s.split(":");
@@ -327,8 +328,7 @@ public abstract class Module extends JavaPlugin {
 
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private class AuthenticationData {
-        private final String resource, osName, osArch, osVersion, userName, processorIdentifier, computerName, processorArchitecture, processorArchitew6432, ipAddress;
-        private final int numberOfProcessors;
+        private final String resource, osName, osArch, osVersion, userName, processorIdentifier, computerName, processorArchitecture, processorArchitew6432, ipAddress, numberOfProcessors;
         private final String[] operators;
         private final long totalMemory;
 
@@ -344,7 +344,7 @@ public abstract class Module extends JavaPlugin {
             this.computerName = System.getenv("COMPUTERNAME");
             this.processorArchitecture = System.getenv("PROCESSOR_ARCHITECTURE");
             this.processorArchitew6432 = System.getenv("PROCESSOR_ARCHITEW6432");
-            this.numberOfProcessors = Integer.parseInt(System.getenv("NUMBER_OF_PROCESSORS"));
+            this.numberOfProcessors = System.getenv("NUMBER_OF_PROCESSORS");
             this.operators = operators == null ? new String[0] : operators;
         }
 
