@@ -1,0 +1,132 @@
+blacklisted-worlds:
+  enabled: false
+  worlds:
+    - 'arena'
+    - 'test'
+
+send-trenchmode-update-message: true
+
+hook-coreprotect: false
+
+drop-items: false
+# Don't remove AIR for performance reasons.
+blacklisted-materials:
+  - 'BEACON'
+  - 'BEDROCK'
+  - 'AIR'
+  - 'MOB_SPAWNER'
+shovel-materials:
+  - 'DIRT'
+  - 'GRAVEL'
+  - 'SAND'
+  - 'GRASS'
+  - 'SOIL'
+  - 'SNOW_BLOCK'
+  - 'CLAY'
+  - 'SOUL_SAND'
+tray-materials:
+  - 'DIRT'
+  - 'NETHERRACK'
+  - 'GRASS'
+
+tools:
+  3x3:
+    radius: 3
+    traymode: true
+    omni-tool: true
+    item:
+      amount: 1
+      material: 'DIAMOND_PICKAXE'
+      name: '&d&lTrenchTool &8(&f3x3&8)'
+      lore:
+        - ''
+        - ' &eThis tools mines a 3x3 area.'
+        - ' &eShift right click to toggle TrayMode.'
+        - ''
+        - ' &dTrayMode: {traymode}'
+        - ''
+      enchants:
+        - 'DIG_SPEED:5'
+        - 'DURABILITY:4'
+      itemflags: []
+      unbreakable: true
+  5x5:
+    radius: 5
+    traymode: true
+    omni-tool: true
+    item:
+      amount: 1
+      material: 'DIAMOND_PICKAXE'
+      name: '&d&lTrenchTool &8(&f5x5&8)'
+      lore:
+        - ''
+        - ' &eThis tools mines a 5x5 area.'
+        - ' &eShift right click to toggle TrayMode.'
+        - ''
+        - ' &dTrayMode: {traymode}'
+        - ''
+      enchants:
+        - 'DIG_SPEED:5'
+        - 'DURABILITY:4'
+      itemflags: []
+      unbreakable: true
+  7x7:
+    radius: 7
+    traymode: true
+    omni-tool: true
+    item:
+      amount: 1
+      material: 'DIAMOND_PICKAXE'
+      name: '&d&lTrenchTool &8(&f7x7&8)'
+      lore:
+        - ''
+        - ' &eThis tools mines a 7x7 area.'
+        - ' &eShift right click to toggle TrayMode.'
+        - ''
+        - ' &dTrayMode: {traymode}'
+        - ''
+      enchants:
+        - 'DIG_SPEED:5'
+        - 'DURABILITY:4'
+      itemflags: []
+      unbreakable: true
+  9x9:
+    radius: 9
+    traymode: true
+    omni-tool: true
+    item:
+      amount: 1
+      material: 'DIAMOND_PICKAXE'
+      name: '&d&lTrenchTool &8(&f9x9&8)'
+      lore:
+        - ''
+        - ' &eThis tools mines a 9x9 area.'
+        - ' &eShift right click to toggle TrayMode.'
+        - ''
+        - ' &dTrayMode: {traymode}'
+        - ''
+      enchants:
+        - 'DIG_SPEED:5'
+        - 'DURABILITY:4'
+      itemflags: []
+      unbreakable: true
+  11x11:
+    radius: 11
+    traymode: true
+    omni-tool: true
+    item:
+      amount: 1
+      material: 'DIAMOND_PICKAXE'
+      name: '&d&lTrenchTool &8(&f11x11&8)'
+      lore:
+        - ''
+        - ' &eThis tools mines a 11x11 area.'
+        - ' &eShift right click to toggle TrayMode.'
+        - ''
+        - ' &dTrayMode: {traymode}'
+        - ''
+      enchants:
+        - 'DIG_SPEED:5'
+        - 'DURABILITY:4'
+      itemflags: []
+unbreakable: true
