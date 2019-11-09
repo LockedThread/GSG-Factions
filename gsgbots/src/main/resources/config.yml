@@ -1,0 +1,5 @@
+bot:
+  entity:
+    villager-profession: 'BLACKSMITH'
+    name: "{player}'s Bot | {sand}"
+    update-sand-placeholder: true

@@ -1,2 +1,4 @@
 rootProject.name = 'gsg-parent'
 include 'gsgcore', 'factions', 'gsggen', 'gsgprinter', 'gsgvouchers', 'gsgoutpost', 'gsgtrenchtools', 'gsgcollectors'
+include 'gsgbots'
+

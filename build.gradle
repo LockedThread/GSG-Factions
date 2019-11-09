@@ -88,6 +88,17 @@ project(":gsgcore") {
     }
 }
 
+project(':gsgbots') {
+    dependencies {
+        compile(group: 'net.techcable.tacospigot', name: 'server', version: '1.8.8-R0.2-SNAPSHOT') {
+            exclude group: 'it.unimi.dsi'
+        }
+        implementation project(path: ':gsgcore', configuration: 'shadow')
+        implementation project(path: ':factions')
+        implementation libs.vault
+    }
+}
+
 project(':gsgcollectors') {
     dependencies {
         compile(group: 'net.techcable.tacospigot', name: 'server', version: '1.8.8-R0.2-SNAPSHOT') {
