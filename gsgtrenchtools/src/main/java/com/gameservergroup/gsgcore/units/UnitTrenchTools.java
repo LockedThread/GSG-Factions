@@ -3,6 +3,7 @@ package com.gameservergroup.gsgcore.units;
 import com.gameservergroup.gsgcore.GSGTrenchTools;
 import com.gameservergroup.gsgcore.enums.TrenchMessages;
 import com.gameservergroup.gsgcore.objs.TrenchTool;
+import com.gameservergroup.gsgcore.utils.NBTItem;
 import com.gameservergroup.gsgcore.utils.Utils;
 import com.google.common.collect.ImmutableSet;
 import org.bukkit.Location;
@@ -51,9 +52,11 @@ public class UnitTrenchTools extends Unit {
                 ItemStack hand = player.getItemInHand();
                 if (player.isSneaking() && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
                     if (trenchTool.isTrayMode()) {
+                        NBTItem nbtItem = new NBTItem(hand);
+                        final boolean toolTrayMode = nbtItem.getBoolean("tray-mode");
+                        nbtItem.set("tray-mode", !toolTrayMode);
 
-                        final boolean toolTrayMode = trenchTool.getToolTrayMode(hand);
-                        ItemStack itemStack = player.getItemInHand();
+                        ItemStack itemStack = nbtItem.buildItemStack();
                         ItemMeta meta = itemStack.getItemMeta();
                         List<String> trayModeLore = trenchTool.getTrayModeLore(!toolTrayMode);
                         meta.setLore(trayModeLore);
