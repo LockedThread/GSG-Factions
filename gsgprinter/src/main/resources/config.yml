@@ -5,6 +5,11 @@ shopguiplus:
     - 'donator'
     - 'special'
 
+whitelisted-inventories:
+  enabled: false
+  titles:
+    - '                 &d&l(*) &fGens &d&l(*)'
+
 #Enemy check in ticks when not using LockedThread's factions fork. This will cause unnecessary lag. Please switch to LockedThread's faction fork.
 flight-check:
   interval: 40

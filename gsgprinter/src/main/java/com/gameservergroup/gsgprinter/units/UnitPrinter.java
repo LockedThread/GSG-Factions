@@ -34,7 +34,11 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 public class UnitPrinter extends Unit {
@@ -51,16 +55,22 @@ public class UnitPrinter extends Unit {
             Material.GREEN_RECORD, Material.BOAT, Material.MINECART, Material.MINECART, Material.COMMAND_MINECART, Material.EXPLOSIVE_MINECART,
             Material.HOPPER_MINECART, Material.POWERED_MINECART, Material.STORAGE_MINECART, Material.BED, Material.DOUBLE_PLANT, Material.LONG_GRASS);
     private boolean useNcp;
-    private HashSet<String> allowedCommands;
-    private HashSet<String> blacklistedKeywords;
-    private HashMap<UUID, PrintingData> printingPlayers;
+    private ImmutableSet<String> whitelistedInventoryTitles;
+    private ImmutableSet<String> whitelistedCommands;
+    private ImmutableSet<String> blacklistedKeywords;
+    private ConcurrentHashMap<UUID, PrintingData> printingPlayers;
 
     private boolean startsWith(Collection<String> strings, String data) {
-        return strings.stream().anyMatch(string -> string.toLowerCase().startsWith(data.toLowerCase()));
+        for (String string : strings) {
+            if (string.toLowerCase().startsWith(data.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean sift(Collection<String> strings, String data) {
-        return strings.stream().anyMatch(string -> string.contains(data));
+        return strings.stream().anyMatch(string -> string.toLowerCase().contains(data.toLowerCase()));
     }
 
     private <T extends PlayerEvent> void cancelEvents(Predicate<T> predicate, Class<T>[] playerEvents) {
@@ -82,10 +92,13 @@ public class UnitPrinter extends Unit {
 
     @Override
     public void setup() {
-        this.printingPlayers = new HashMap<>();
+        this.printingPlayers = new ConcurrentHashMap<>();
         this.useNcp = GSG_PRINTER.getConfig().getBoolean("use-ncp");
-        this.allowedCommands = new HashSet<>(GSG_PRINTER.getConfig().getStringList("allowed-commands"));
-        this.blacklistedKeywords = new HashSet<>(GSG_PRINTER.getConfig().getStringList("blacklisted-keywords"));
+        this.whitelistedCommands = ImmutableSet.copyOf(GSG_PRINTER.getConfig().getStringList("allowed-commands"));
+        this.blacklistedKeywords = ImmutableSet.copyOf(GSG_PRINTER.getConfig().getStringList("blacklisted-keywords"));
+        if (GSG_PRINTER.getConfig().getBoolean("whitelisted-inventories.enabled")) {
+            this.whitelistedInventoryTitles = ImmutableSet.copyOf(GSG_PRINTER.getConfig().getStringList("whitelisted-inventories.titles"));
+        }
         hookDisable(new CallBack() {
             @Override
             public void call() {
@@ -199,15 +212,17 @@ public class UnitPrinter extends Unit {
                 .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
                 .filter(event -> event.getView().getType() != InventoryType.CREATIVE)
                 .handle(event -> {
-                    event.setCancelled(true);
-                    event.getView().close();
+                    if (whitelistedInventoryTitles == null || whitelistedInventoryTitles.contains(event.getInventory().getTitle())) {
+                        event.setCancelled(true);
+                        event.getView().close();
+                    }
                 }).post(GSG_PRINTER);
 
         EventPost.of(PlayerCommandPreprocessEvent.class, EventPriority.LOWEST)
                 .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
                 .handle(event -> {
                     String message = event.getMessage().toLowerCase().trim();
-                    if (!startsWith(allowedCommands, message) || !sift(blacklistedKeywords, message)) {
+                    if (!startsWith(whitelistedCommands, message) || sift(blacklistedKeywords, message)) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(Text.toColor("&cYou can't use that command in /printer!"));
                     }
@@ -358,7 +373,7 @@ public class UnitPrinter extends Unit {
         }
     }
 
-    public HashMap<UUID, PrintingData> getPrintingPlayers() {
+    public Map<UUID, PrintingData> getPrintingPlayers() {
         return printingPlayers;
     }
 }
