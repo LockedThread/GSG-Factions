@@ -207,7 +207,7 @@ public class UnitPrinter extends Unit {
                 .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
                 .handle(event -> {
                     String message = event.getMessage().toLowerCase().trim();
-                    if (!startsWith(allowedCommands, message) || sift(blacklistedKeywords, message)) {
+                    if (!startsWith(allowedCommands, message) || !sift(blacklistedKeywords, message)) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(Text.toColor("&cYou can't use that command in /printer!"));
                     }
