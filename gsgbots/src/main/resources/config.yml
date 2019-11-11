@@ -1,5 +1,51 @@
 bot:
+  search-material: 'SANDSTONE'
+  search-radius: 5
+  deposit-amount: 100000
+  sand-price: 5.0
   entity:
     villager-profession: 'BLACKSMITH'
     name: "{player}'s Bot | {sand}"
     update-sand-placeholder: true
+  menu:
+    title: "&e{player}'s SandBot"
+    slots: 27
+    fill:
+      enabled: true
+      glass-pane-color: 'BLACK'
+      enchanted: false
+    items:
+      balance-item:
+        name: '&eBalance'
+        slot: 13
+        material: 'EMERALD'
+        lore:
+          - '&7&m----------------'
+          - '&aBalance: &e{balance}'
+          - '&aTotal Sand: &e{total-sand}'
+          - '&7&m----------------'
+        enchants: []
+        itemflags: []
+      remove-item:
+        slot: 17
+        name: '&cRemove'
+        material: 'BARRIER'
+        lore:
+          - '&7&m------------------------------'
+          - '&cClick to remove this sand bot!'
+          - '&7&m------------------------------'
+        enchants: []
+        itemflags: []
+      toggle-item:
+        slot: 11
+        name: '&eToggle'
+        material: 'WOOL'
+        meta:
+          enabled-color: 'GREEN'
+          disabled-color: 'RED'
+        lore:
+          - '&7&m------------------------------'
+          - '&eStatus: {status}'
+          - '&7&m------------------------------'
+        enchants: []
+        itemflags: []
