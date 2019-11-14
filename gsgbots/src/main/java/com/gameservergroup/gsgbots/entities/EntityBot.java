@@ -1,22 +1,20 @@
 package com.gameservergroup.gsgbots.entities;
 
 import com.gameservergroup.gsgbots.GSGBots;
+import com.gameservergroup.gsgbots.utils.Utils;
 import com.gameservergroup.gsgcore.utils.Text;
 import net.minecraft.server.v1_8_R3.*;
+import org.bukkit.craftbukkit.v1_8_R3.util.UnsafeList;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 
 public class EntityBot extends EntityVillager {
 
-    private static final LinkedHashSet EMPTY_LINKED_HASHSET = new LinkedHashSet() {
+    private static final UnsafeList EMPTY_UNSAFE_LIST = new UnsafeList() {
         @Override
         public boolean add(Object o) {
             return false;
@@ -28,65 +26,37 @@ public class EntityBot extends EntityVillager {
         }
     };
     private static Villager.Profession villagerProfession;
-    private static Field entityVillager_b, entityVillager_c;
+    private static Field pathfinderGoalSelector_b, pathfinderGoalSelector_c;
 
     static {
         try {
-            entityVillager_b = EntityVillager.class.getField("b");
-            entityVillager_b.setAccessible(true);
-            entityVillager_c = EntityVillager.class.getField("c");
-            entityVillager_c.setAccessible(true);
+            pathfinderGoalSelector_b = PathfinderGoalSelector.class.getDeclaredField("b");
+            pathfinderGoalSelector_b.setAccessible(true);
+            pathfinderGoalSelector_c = PathfinderGoalSelector.class.getDeclaredField("c");
+            pathfinderGoalSelector_c.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
     }
 
-    public EntityBot(World world, Player player, int sand) {
+    public EntityBot(World world) {
         super(world);
 
         try {
-            entityVillager_b.set(this.goalSelector, EMPTY_LINKED_HASHSET);
-            entityVillager_b.set(this.targetSelector, EMPTY_LINKED_HASHSET);
-            entityVillager_c.set(this.goalSelector, EMPTY_LINKED_HASHSET);
-            entityVillager_c.set(this.targetSelector, EMPTY_LINKED_HASHSET);
+            pathfinderGoalSelector_b.set(this.goalSelector, EMPTY_UNSAFE_LIST);
+            pathfinderGoalSelector_b.set(this.targetSelector, EMPTY_UNSAFE_LIST);
+            pathfinderGoalSelector_c.set(this.goalSelector, EMPTY_UNSAFE_LIST);
+            pathfinderGoalSelector_c.set(this.targetSelector, EMPTY_UNSAFE_LIST);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
 
-        this.setProfession(villagerProfession.getId());
-
-        this.setCustomNameVisible(true);
-        this.setCustomName(Text.toColor(GSGBots.getInstance().getConfig().getString("bot.entity.name"))
-                .replace("{sand}", String.valueOf(sand))
-                .replace("{player}", player.getName()));
-
+        this.setHealth(20);
+        this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.0);
     }
 
     public static void setVillagerProfession(Villager.Profession villagerProfession) {
         EntityBot.villagerProfession = villagerProfession;
-    }
-
-    public static void registerEntityBot() {
-        try {
-            List<Map<?, ?>> dataMap = new ArrayList<>();
-            for (Field f : EntityTypes.class.getDeclaredFields()) {
-                if (f.getType().getSimpleName().equals(Map.class.getSimpleName())) {
-                    f.setAccessible(true);
-                    dataMap.add((Map<?, ?>) f.get(null));
-                }
-            }
-
-            if (dataMap.get(2).containsKey(120)) {
-                dataMap.get(0).remove("Villager");
-                dataMap.get(2).remove(120);
-            }
-
-            Method method = EntityTypes.class.getDeclaredMethod("a", Class.class, String.class, int.class);
-            method.setAccessible(true);
-            method.invoke(null, EntityBot.class, "Villager", 120);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -107,5 +77,30 @@ public class EntityBot extends EntityVillager {
     @Override
     public boolean damageEntity(DamageSource damagesource, float f) {
         return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void registerEntityBot() {
+        try {
+            String name = "bot";
+            int id = EntityType.VILLAGER.getTypeId();
+
+            ((Map) Utils.getPrivateField(EntityTypes.class, "c").get(null)).put(name, EntityBot.class);
+            ((Map) Utils.getPrivateField(EntityTypes.class, "d").get(null)).put(EntityBot.class, name);
+            ((Map) Utils.getPrivateField(EntityTypes.class, "e").get(null)).put(id, EntityBot.class);
+            ((Map) Utils.getPrivateField(EntityTypes.class, "f").get(null)).put(EntityBot.class, id);
+            ((Map) Utils.getPrivateField(EntityTypes.class, "g").get(null)).put(name, id);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update(Player player, int sand) {
+        this.setProfession(villagerProfession.getId());
+
+        this.setCustomNameVisible(true);
+        this.setCustomName(Text.toColor(GSGBots.getInstance().getConfig().getString("bot.entity.name"))
+                .replace("{sand}", String.valueOf(sand))
+                .replace("{player}", player.getName()));
     }
 }

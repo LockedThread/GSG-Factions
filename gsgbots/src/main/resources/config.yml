@@ -1,3 +1,12 @@
+bot-egg-item:
+  name: '&dBot Entity Egg'
+  material: 'MONSTER_EGG'
+  lore:
+    - '&7&m------------------------------'
+    - '&eRight click to spawn entity egg!'
+    - '&7&m------------------------------'
+  enchants: []
+  itemflags: []
 bot:
   search-material: 'SANDSTONE'
   search-radius: 5
@@ -5,7 +14,7 @@ bot:
   sand-price: 5.0
   entity:
     villager-profession: 'BLACKSMITH'
-    name: "{player}'s Bot | {sand}"
+    name: "&d{player}'s Bot &l| &d{sand}"
     update-sand-placeholder: true
   menu:
     title: "&e{player}'s SandBot"

@@ -2,3 +2,4 @@ name: 'GSGBots'
 main: com.gameservergroup.gsgbots.GSGBots
 version: '1.0-SNAPSHOT'
 author: 'LockedThread'
+depend: [GSGCore, Vault]

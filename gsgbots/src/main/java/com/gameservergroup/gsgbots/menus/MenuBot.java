@@ -27,14 +27,6 @@ public class MenuBot extends Menu {
         initialize();
     }
 
-    public static double getSandPrice() {
-        return SAND_PRICE;
-    }
-
-    public static void setSandPrice(double sandPrice) {
-        SAND_PRICE = sandPrice;
-    }
-
     @Override
     public void initialize() {
         MenuItems[] values = MenuItems.values();
@@ -54,6 +46,14 @@ public class MenuBot extends Menu {
         return bot;
     }
 
+    public static double getSandPrice() {
+        return SAND_PRICE;
+    }
+
+    public static void setSandPrice(double sandPrice) {
+        SAND_PRICE = sandPrice;
+    }
+
     private enum MenuItems {
         ITEM_FILLED, ITEM_BALANCE, ITEM_REMOVE, ITEM_TOGGLE, ITEM_REFRESH;
 
@@ -68,61 +68,58 @@ public class MenuBot extends Menu {
         }
 
         private void init() {
-            switch (this) {
-                case ITEM_FILLED:
-                    if (GSGBots.getInstance().getConfig().getBoolean("bot.menu.fill.enabled")) {
-                        DyeColor dyeColor = DyeColor.valueOf(GSGBots.getInstance().getConfig().getString("bot.menu.fill.glass-pane-color").toUpperCase());
-                        ItemStackBuilder itemStackBuilder = ItemStackBuilder.of(Material.STAINED_GLASS_PANE).setDyeColor(dyeColor).setDisplayName(" ");
-                        if (GSGBots.getInstance().getConfig().getBoolean("bot.menu.fill.enchanted")) {
-                            itemStackBuilder.addEnchant(Enchantment.DURABILITY, 1);
-                            itemStackBuilder.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                        }
-                        this.menuItem = MenuItem.of(itemStackBuilder.build());
+            if (this == MenuItems.ITEM_FILLED) {
+                if (GSGBots.getInstance().getConfig().getBoolean("bot.menu.fill.enabled")) {
+                    DyeColor dyeColor = DyeColor.valueOf(GSGBots.getInstance().getConfig().getString("bot.menu.fill.glass-pane-color").toUpperCase());
+                    ItemStackBuilder itemStackBuilder = ItemStackBuilder.of(Material.STAINED_GLASS_PANE).setDyeColor(dyeColor).setDisplayName(" ");
+                    if (GSGBots.getInstance().getConfig().getBoolean("bot.menu.fill.enchanted")) {
+                        itemStackBuilder.addEnchant(Enchantment.DURABILITY, 1);
+                        itemStackBuilder.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                     }
-                    return;
-                case ITEM_BALANCE: {
-                    ItemStack itemStack = ItemStackBuilder.of(GSGBots.getInstance().getConfig().getConfigurationSection("bot.menu.items.balance-item")).build();
-                    this.menuItem = MenuItem.of(itemStack).setInventoryClickEventConsumer(event -> {
-                        MenuBot menuBot = (MenuBot) event.getClickedInventory();
-                        if (GSGBots.getEconomy().withdrawPlayer(((Player) event.getWhoClicked()), SAND_PRICE).transactionSuccess()) {
-                            Bot bot = menuBot.getBot();
-                            bot.setMoneyBalance(bot.getMoneyBalance() + SAND_PRICE);
-                            bot.setSandBalance((int) (bot.getMoneyBalance() / SAND_PRICE));
-                            updateItem(menuBot);
-                        }
-                        event.setCancelled(true);
-                    });
-                    return;
+                    this.menuItem = MenuItem.of(itemStackBuilder.build());
+                    this.slot = -1;
                 }
-                case ITEM_REMOVE:
-                    return;
-                case ITEM_TOGGLE: {
-                    String enabledColor = GSGBots.getInstance().getConfig().getString("bot.menu.items.toggle-item.meta.enabled-color").toUpperCase();
-                    CHATCOLOR_ENABLED = ChatColor.valueOf(enabledColor);
-                    DYECOLOR_ENABLED = DyeColor.valueOf(enabledColor);
-
-                    String disabledColor = GSGBots.getInstance().getConfig().getString("bot.menu.items.toggle-item.meta.disabled-color").toUpperCase();
-                    DYECOLOR_DISABLED = DyeColor.valueOf(disabledColor);
-                    CHATCOLOR_DISABLED = ChatColor.valueOf(disabledColor);
-
-                    ItemStackBuilder itemStackBuilder = ItemStackBuilder.of(GSGBots.getInstance().getConfig().getConfigurationSection("bot.menu.items.toggle-item"));
-                    ItemStack itemStack = itemStackBuilder.build();
-                    this.menuItem = MenuItem.of(itemStack).setInventoryClickEventConsumer(event -> {
-                        MenuBot menuBot = (MenuBot) event.getClickedInventory();
-                        menuBot.getBot().setStatus(!menuBot.getBot().isStatus());
-                        event.setCancelled(true);
+            } else if (this == MenuItems.ITEM_BALANCE) {
+                ItemStack itemStack = ItemStackBuilder.of(GSGBots.getInstance().getConfig().getConfigurationSection("bot.menu.items.balance-item")).build();
+                this.menuItem = MenuItem.of(itemStack).setInventoryClickEventConsumer(event -> {
+                    MenuBot menuBot = (MenuBot) event.getClickedInventory();
+                    if (GSGBots.getEconomy().withdrawPlayer(((Player) event.getWhoClicked()), SAND_PRICE).transactionSuccess()) {
+                        Bot bot = menuBot.getBot();
+                        bot.setMoneyBalance(bot.getMoneyBalance() + SAND_PRICE);
+                        bot.setSandBalance((int) (bot.getMoneyBalance() / SAND_PRICE));
                         updateItem(menuBot);
-                    });
-                    return;
-                }
-                case ITEM_REFRESH:
-                    return;
+                    }
+                    event.setCancelled(true);
+                });
+                this.slot = GSGBots.getInstance().getConfig().getInt("bot.menu.items.balance-item.slot");
+            } else if (this == MenuItems.ITEM_REMOVE) {
+                this.slot = GSGBots.getInstance().getConfig().getInt("bot.menu.items.remove-item.slot");
+            } else if (this == MenuItems.ITEM_TOGGLE) {
+                String enabledColor = GSGBots.getInstance().getConfig().getString("bot.menu.items.toggle-item.meta.enabled-color").toUpperCase();
+                CHATCOLOR_ENABLED = ChatColor.valueOf(enabledColor);
+                DYECOLOR_ENABLED = DyeColor.valueOf(enabledColor);
+
+                String disabledColor = GSGBots.getInstance().getConfig().getString("bot.menu.items.toggle-item.meta.disabled-color").toUpperCase();
+                DYECOLOR_DISABLED = DyeColor.valueOf(disabledColor);
+                CHATCOLOR_DISABLED = ChatColor.valueOf(disabledColor);
+
+                ItemStackBuilder itemStackBuilder = ItemStackBuilder.of(GSGBots.getInstance().getConfig().getConfigurationSection("bot.menu.items.toggle-item"));
+                ItemStack itemStack = itemStackBuilder.build();
+                this.menuItem = MenuItem.of(itemStack).setInventoryClickEventConsumer(event -> {
+                    MenuBot menuBot = (MenuBot) event.getClickedInventory();
+                    menuBot.getBot().setStatus(!menuBot.getBot().isStatus());
+                    event.setCancelled(true);
+                    updateItem(menuBot);
+                });
+                this.slot = GSGBots.getInstance().getConfig().getInt("bot.menu.items.toggle-item.slot");
+            } else if (this == MenuItems.ITEM_REFRESH) {
+
             }
         }
 
         public void updateItem(MenuBot menuBot) {
             if (this == MenuItems.ITEM_BALANCE) {
-                MenuItem clone = menuBot.getMenuItem(slot).get();
+                MenuItem clone = getMenuItem(menuBot);
                 ItemStack itemStack = clone.getItemStack();
                 clone.setItemStack(ItemStackBuilder.of(itemStack).setLore(itemStack.getItemMeta().getLore()
                         .stream()
@@ -130,7 +127,7 @@ public class MenuBot extends Menu {
                         .collect(Collectors.toList())).build());
                 menuBot.setItem(this.slot, clone);
             } else if (this == MenuItems.ITEM_TOGGLE) {
-                MenuItem clone = menuBot.getMenuItem(slot).get();
+                MenuItem clone = getMenuItem(menuBot);
                 ItemStack itemStack = clone.getItemStack();
                 clone.setItemStack(ItemStackBuilder.of(itemStack)
                         .setDyeColor(menuBot.getBot().isStatus() ? DYECOLOR_ENABLED : DYECOLOR_DISABLED)
@@ -141,6 +138,10 @@ public class MenuBot extends Menu {
                                 .collect(Collectors.toList())).build());
                 menuBot.setItem(this.slot, clone);
             }
+        }
+
+        private MenuItem getMenuItem(MenuBot menuBot) {
+            return menuBot.getMenuItem(this.slot).orElse(this.menuItem.clone());
         }
     }
 }
