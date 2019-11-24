@@ -45,10 +45,13 @@ public class GSGPrinter extends Module {
         }
         if (getConfig().getString("sell-integration").equalsIgnoreCase("essentials")) {
             sellIntegration = new EssentialsSellImpl(getServer().getPluginManager().getPlugin("Essentials"));
+            getLogger().info("Using Essentials Sell Prices");
         } else if (getConfig().getString("sell-integration").equalsIgnoreCase("config")) {
             sellIntegration = new ConfigSellImpl(getDataFolder(), "prices.yml");
+            getLogger().info("Using prices.yml prices");
         } else if (getConfig().getString("sell-integration").equalsIgnoreCase("shopguiplus")) {
             sellIntegration = new ShopGUIPlusSellImpl();
+            getLogger().info("Using ShopGUIPlus prices");
         } else {
             getLogger().info("Unable to find a supported sell integration, either download one or change your sell-integration!");
             getPluginLoader().disablePlugin(this);
