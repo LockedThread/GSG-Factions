@@ -19,7 +19,6 @@ import com.massivecraft.factions.struct.ChatMode;
 import com.massivecraft.factions.tasks.TaskAutoLeave;
 import com.massivecraft.factions.tasks.TaskFlight;
 import com.massivecraft.factions.tasks.TaskWallCheckReminder;
-import com.massivecraft.factions.units.UnitFactionMissions;
 import com.massivecraft.factions.units.UnitFactionUpgrade;
 import com.massivecraft.factions.units.UnitWorldBorder;
 import com.massivecraft.factions.util.*;
@@ -110,7 +109,7 @@ public class P extends MPlugin {
         }
 
         // Register units so that factionupgrades are loaded before factions are
-        registerUnits(new UnitWorldBorder(), new UnitFactionUpgrade(), new UnitFactionMissions());
+        registerUnits(new UnitWorldBorder(), new UnitFactionUpgrade());
 
         FPlayers.getInstance().load();
         Factions.getInstance().load();

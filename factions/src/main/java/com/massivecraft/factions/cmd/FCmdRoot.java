@@ -107,6 +107,7 @@ public class FCmdRoot extends FCommand {
     public CmdCornerReload cmdCornerReload = new CmdCornerReload();
     public CmdStats cmdStats = new CmdStats();
     public CmdAltsOpen cmdAltsOpen = new CmdAltsOpen();
+    public CmdDrain cmdDrain = new CmdDrain();
 
     public FCmdRoot() {
         super();
@@ -223,6 +224,10 @@ public class FCmdRoot extends FCommand {
         this.addSubCommand(this.cmdCornerReload);
         this.addSubCommand(this.cmdStats);
         this.addSubCommand(this.cmdAltsOpen);
+
+        if (p.getConfig().getBoolean("draining-enabled")) {
+            this.addSubCommand(this.cmdDrain);
+        }
 
         if (p.getConfig().getBoolean("inspect.enable") && p.getServer().getPluginManager().getPlugin("CoreProtect") != null) {
             this.addSubCommand(new CmdInspect());

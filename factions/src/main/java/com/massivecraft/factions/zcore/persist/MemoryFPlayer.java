@@ -84,6 +84,7 @@ public abstract class MemoryFPlayer implements FPlayer {
     protected transient boolean printerMode;
     private String flyTrailsEffect;
     private boolean flyTrailsState;
+    private boolean drainingEnabled = true;
 
     public MemoryFPlayer() {
     }
@@ -131,6 +132,16 @@ public abstract class MemoryFPlayer implements FPlayer {
         this.mapHeight = Conf.mapHeight;
         this.notificationsEnabled = other.notificationsEnabled;
         this.altFactionId = other.altFactionId;
+    }
+
+    @Override
+    public boolean isDrainEnabled() {
+        return drainingEnabled;
+    }
+
+    @Override
+    public void setDrainEnabled(boolean drainingEnabled) {
+        this.drainingEnabled = drainingEnabled;
     }
 
     @Override

@@ -41,6 +41,7 @@ public enum PermissableAction {
     F_PERMS("F Perms"),
     CHECK("F Check"),
     INSPECT("F Inspect"),
+    F_DRAIN_TOGGLE("F Drain Toggle"),
     ;
 
     private String name;

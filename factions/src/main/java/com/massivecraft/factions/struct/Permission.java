@@ -117,7 +117,10 @@ public enum Permission {
     FLY_TRAILS("fly.trails"),
     UPGRADES("upgrades"),
     CORNER_LIST("cornerlist"),
-    STATISTICS("statistics");
+    STATISTICS("statistics"),
+    DRAIN("drain"),
+    DRAIN_TOGGLE("drain.toggle"),
+    DRAIN_BYPASS("drain.bypass");
 
     public final String node;
 

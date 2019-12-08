@@ -30,187 +30,191 @@ import java.util.List;
 
 public interface FPlayer extends EconomyParticipator {
 
-    public boolean isPrinterMode();
+    boolean isDrainEnabled();
 
-    public void setPrinterMode(boolean printerMode);
+    void setDrainEnabled(boolean drainingEnabled);
 
-    public boolean getFlyTrailsState();
+    boolean isPrinterMode();
 
-    public void setFlyTrailsState(boolean state);
+    void setPrinterMode(boolean printerMode);
 
-    public String getFlyTrailsEffect();
+    boolean getFlyTrailsState();
 
-    public void setFlyTrailsEffect(String effect);
+    void setFlyTrailsState(boolean state);
 
-    public double getFormattedTimePlayed();
+    String getFlyTrailsEffect();
 
-    public EnumMap<FactionStatistic, Integer> getFactionStatisticMap();
+    void setFlyTrailsEffect(String effect);
 
-    public int getFactionStatistic(FactionStatistic factionStatistic);
+    double getFormattedTimePlayed();
 
-    public default void incrementFactionStatistic(FactionStatistic factionStatistic) {
+    EnumMap<FactionStatistic, Integer> getFactionStatisticMap();
+
+    int getFactionStatistic(FactionStatistic factionStatistic);
+
+    default void incrementFactionStatistic(FactionStatistic factionStatistic) {
         getFactionStatisticMap().compute(factionStatistic, (factionStatistic1, integer) -> integer == null ? 1 : integer + 1);
     }
 
-    public default void setFactionStatistic(FactionStatistic factionStatistic, int data) {
+    default void setFactionStatistic(FactionStatistic factionStatistic, int data) {
         getFactionStatisticMap().put(factionStatistic, data);
     }
 
-    public void openFactionUpgradeMenu();
+    void openFactionUpgradeMenu();
 
-    public boolean isInspecting();
+    boolean isInspecting();
 
-    public void setInspecting(boolean inspecting);
+    void setInspecting(boolean inspecting);
 
-    public long getLastMapUse();
+    long getLastMapUse();
 
-    public void setLastMapUse(long lastMapUse);
+    void setLastMapUse(long lastMapUse);
 
-    public boolean isSeeingChunk();
+    boolean isSeeingChunk();
 
-    public void setSeeingChunk(boolean seeingChunk);
+    void setSeeingChunk(boolean seeingChunk);
 
-    public boolean isMutedChatEnabled();
+    boolean isMutedChatEnabled();
 
-    public void setMutedChat(boolean mutedChat);
+    void setMutedChat(boolean mutedChat);
 
-    public void login();
+    void login();
 
-    public void logout();
+    void logout();
 
-    public com.massivecraft.factions.Faction getFaction();
+    com.massivecraft.factions.Faction getFaction();
 
-    public void setFaction(com.massivecraft.factions.Faction faction);
+    void setFaction(com.massivecraft.factions.Faction faction);
 
-    public String getFactionId();
+    String getFactionId();
 
-    public boolean hasFaction();
+    boolean hasFaction();
 
-    public boolean willAutoLeave();
+    boolean willAutoLeave();
 
-    public void setAutoLeave(boolean autoLeave);
+    void setAutoLeave(boolean autoLeave);
 
-    public void setMonitorJoins(boolean monitor);
+    void setMonitorJoins(boolean monitor);
 
-    public boolean isMonitoringJoins();
+    boolean isMonitoringJoins();
 
-    public Role getRole();
+    Role getRole();
 
-    public void setRole(Role role);
+    void setRole(Role role);
 
-    public boolean shouldTakeFallDamage();
+    boolean shouldTakeFallDamage();
 
-    public void setTakeFallDamage(boolean fallDamage);
+    void setTakeFallDamage(boolean fallDamage);
 
-    public double getPowerBoost();
+    double getPowerBoost();
 
-    public void setPowerBoost(double powerBoost);
+    void setPowerBoost(double powerBoost);
 
-    public com.massivecraft.factions.Faction getAutoClaimFor();
+    com.massivecraft.factions.Faction getAutoClaimFor();
 
-    public void setAutoClaimFor(com.massivecraft.factions.Faction faction);
+    void setAutoClaimFor(com.massivecraft.factions.Faction faction);
 
-    public boolean isAutoSafeClaimEnabled();
+    boolean isAutoSafeClaimEnabled();
 
-    public void setIsAutoSafeClaimEnabled(boolean enabled);
+    void setIsAutoSafeClaimEnabled(boolean enabled);
 
-    public boolean isAutoWarClaimEnabled();
+    boolean isAutoWarClaimEnabled();
 
-    public void setIsAutoWarClaimEnabled(boolean enabled);
+    void setIsAutoWarClaimEnabled(boolean enabled);
 
-    public boolean isAdminBypassing();
+    boolean isAdminBypassing();
 
-    public boolean isStealth();
+    boolean isStealth();
 
-    public void setStealth(boolean stealth);
+    void setStealth(boolean stealth);
 
-    public boolean isVanished();
+    boolean isVanished();
 
-    public void setIsAdminBypassing(boolean val);
+    void setIsAdminBypassing(boolean val);
 
-    public ChatMode getChatMode();
+    ChatMode getChatMode();
 
-    public void setChatMode(ChatMode chatMode);
+    void setChatMode(ChatMode chatMode);
 
-    public boolean isIgnoreAllianceChat();
+    boolean isIgnoreAllianceChat();
 
-    public void setIgnoreAllianceChat(boolean ignore);
+    void setIgnoreAllianceChat(boolean ignore);
 
-    public boolean isSpyingChat();
+    boolean isSpyingChat();
 
-    public void setSpyingChat(boolean chatSpying);
+    void setSpyingChat(boolean chatSpying);
 
-    public boolean showScoreboard();
+    boolean showScoreboard();
 
-    public void setShowScoreboard(boolean show);
+    void setShowScoreboard(boolean show);
 
     // FIELD: account
-    public String getAccountId();
+    String getAccountId();
 
-    public void resetFactionData(boolean doSpoutUpdate);
+    void resetFactionData(boolean doSpoutUpdate);
 
-    public void resetFactionData();
+    void resetFactionData();
 
-    public void resetAltFactionData();
+    void resetAltFactionData();
 
-    public long getLastLoginTime();
+    long getLastLoginTime();
 
-    public void setLastLoginTime(long lastLoginTime);
+    void setLastLoginTime(long lastLoginTime);
 
-    public boolean isMapAutoUpdating();
+    boolean isMapAutoUpdating();
 
-    public void setMapAutoUpdating(boolean mapAutoUpdating);
+    void setMapAutoUpdating(boolean mapAutoUpdating);
 
-    public boolean hasLoginPvpDisabled();
+    boolean hasLoginPvpDisabled();
 
-    public FLocation getLastStoodAt();
+    FLocation getLastStoodAt();
 
-    public void setLastStoodAt(FLocation flocation);
+    void setLastStoodAt(FLocation flocation);
 
-    public String getTitle();
+    String getTitle();
 
-    public void setTitle(CommandSender sender, String title);
+    void setTitle(CommandSender sender, String title);
 
-    public String getName();
+    String getName();
 
-    public String getTag();
+    String getTag();
 
-    public boolean hasAltFaction();
+    boolean hasAltFaction();
 
-    public com.massivecraft.factions.Faction getAltFaction();
+    com.massivecraft.factions.Faction getAltFaction();
 
-    public void setAltFaction(com.massivecraft.factions.Faction faction);
+    void setAltFaction(com.massivecraft.factions.Faction faction);
 
-    public String getAltFactionId();
+    String getAltFactionId();
 
     // Base concatenations:
 
-    public String getNameAndSomething(String something);
+    String getNameAndSomething(String something);
 
-    public String getNameAndTitle();
+    String getNameAndTitle();
 
-    public String getNameAndTag();
+    String getNameAndTag();
 
     // Colored concatenations:
     // These are used in information messages
 
-    public String getNameAndTitle(com.massivecraft.factions.Faction faction);
+    String getNameAndTitle(com.massivecraft.factions.Faction faction);
 
-    public String getNameAndTitle(com.massivecraft.factions.FPlayer fplayer);
+    String getNameAndTitle(com.massivecraft.factions.FPlayer fplayer);
 
     // Chat Tag:
     // These are injected into the format of global chat messages.
 
-    public String getChatTag();
+    String getChatTag();
 
     // Colored Chat Tag
-    public String getChatTag(com.massivecraft.factions.Faction faction);
+    String getChatTag(com.massivecraft.factions.Faction faction);
 
-    public String getChatTag(com.massivecraft.factions.FPlayer fplayer);
+    String getChatTag(com.massivecraft.factions.FPlayer fplayer);
 
-    public int getKills();
+    int getKills();
 
-    public int getDeaths();
+    int getDeaths();
 
 
     // -------------------------------
@@ -218,140 +222,140 @@ public interface FPlayer extends EconomyParticipator {
     // -------------------------------
 
     @Override
-    public String describeTo(RelationParticipator that, boolean ucfirst);
+    String describeTo(RelationParticipator that, boolean ucfirst);
 
     @Override
-    public String describeTo(RelationParticipator that);
+    String describeTo(RelationParticipator that);
 
     @Override
-    public Relation getRelationTo(RelationParticipator rp);
+    Relation getRelationTo(RelationParticipator rp);
 
     @Override
-    public Relation getRelationTo(RelationParticipator rp, boolean ignorePeaceful);
+    Relation getRelationTo(RelationParticipator rp, boolean ignorePeaceful);
 
-    public Relation getRelationToLocation();
+    Relation getRelationToLocation();
 
     @Override
-    public ChatColor getColorTo(RelationParticipator rp);
+    ChatColor getColorTo(RelationParticipator rp);
 
     //----------------------------------------------//
     // Health
     //----------------------------------------------//
-    public void heal(int amnt);
+    void heal(int amnt);
 
 
     //----------------------------------------------//
     // Power
     //----------------------------------------------//
-    public double getPower();
+    double getPower();
 
-    public void alterPower(double delta);
+    void alterPower(double delta);
 
-    public double getPowerMax();
+    double getPowerMax();
 
-    public double getPowerMin();
+    double getPowerMin();
 
-    public int getPowerRounded();
+    int getPowerRounded();
 
-    public int getPowerMaxRounded();
+    int getPowerMaxRounded();
 
-    public int getPowerMinRounded();
+    int getPowerMinRounded();
 
-    public void updatePower();
+    void updatePower();
 
-    public void losePowerFromBeingOffline();
+    void losePowerFromBeingOffline();
 
-    public void onDeath();
+    void onDeath();
 
     //----------------------------------------------//
     // Territory
     //----------------------------------------------//
-    public boolean isInOwnTerritory();
+    boolean isInOwnTerritory();
 
-    public boolean isInOthersTerritory();
+    boolean isInOthersTerritory();
 
-    public boolean isInAllyTerritory();
+    boolean isInAllyTerritory();
 
-    public boolean isInNeutralTerritory();
+    boolean isInNeutralTerritory();
 
-    public boolean isInEnemyTerritory();
+    boolean isInEnemyTerritory();
 
-    public void sendFactionHereMessage(com.massivecraft.factions.Faction from);
+    void sendFactionHereMessage(com.massivecraft.factions.Faction from);
 
     // -------------------------------
     // Actions
     // -------------------------------
 
-    public void leave(boolean makePay);
+    void leave(boolean makePay);
 
-    public boolean canClaimForFaction(com.massivecraft.factions.Faction forFaction);
+    boolean canClaimForFaction(com.massivecraft.factions.Faction forFaction);
 
-    public boolean canClaimForFactionAtLocation(com.massivecraft.factions.Faction forFaction, Location location, boolean notifyFailure);
+    boolean canClaimForFactionAtLocation(com.massivecraft.factions.Faction forFaction, Location location, boolean notifyFailure);
 
-    public boolean canClaimForFactionAtLocation(com.massivecraft.factions.Faction forFaction, FLocation location, boolean notifyFailure);
+    boolean canClaimForFactionAtLocation(com.massivecraft.factions.Faction forFaction, FLocation location, boolean notifyFailure);
 
-    public boolean attemptClaim(com.massivecraft.factions.Faction forFaction, Location location, boolean notifyFailure);
+    boolean attemptClaim(com.massivecraft.factions.Faction forFaction, Location location, boolean notifyFailure);
 
-    public boolean attemptClaim(Faction forFaction, FLocation location, boolean notifyFailure);
+    boolean attemptClaim(Faction forFaction, FLocation location, boolean notifyFailure);
 
-    public void msg(String str, Object... args);
+    void msg(String str, Object... args);
 
-    public String getId();
+    String getId();
 
-    public void setId(String id);
+    void setId(String id);
 
-    public Player getPlayer();
+    Player getPlayer();
 
-    public boolean isOnline();
+    boolean isOnline();
 
-    public void sendMessage(String message);
+    void sendMessage(String message);
 
-    public void sendMessage(List<String> messages);
+    void sendMessage(List<String> messages);
 
-    public void sendFancyMessage(FancyMessage message);
+    void sendFancyMessage(FancyMessage message);
 
-    public void sendFancyMessage(List<FancyMessage> message);
+    void sendFancyMessage(List<FancyMessage> message);
 
-    public int getMapHeight();
+    int getMapHeight();
 
-    public void setMapHeight(int height);
+    void setMapHeight(int height);
 
-    public boolean isOnlineAndVisibleTo(Player me);
+    boolean isOnlineAndVisibleTo(Player me);
 
-    public void remove();
+    void remove();
 
-    public boolean isOffline();
+    boolean isOffline();
 
-    public boolean isFlying();
+    boolean isFlying();
 
-    public void setFlying(boolean fly);
+    void setFlying(boolean fly);
 
-    public void setFFlying(boolean fly, boolean damage);
+    void setFFlying(boolean fly, boolean damage);
 
-    public boolean canFlyAtLocation();
+    boolean canFlyAtLocation();
 
-    public boolean canFlyAtLocation(FLocation location);
+    boolean canFlyAtLocation(FLocation location);
 
-    public boolean canFlyAtLocation(FLocation location, boolean everywhereChecks);
+    boolean canFlyAtLocation(FLocation location, boolean everywhereChecks);
 
-    public boolean canUseFactionVault();
+    boolean canUseFactionVault();
 
     // -------------------------------
     // Warmups
     // -------------------------------
 
-    public boolean isWarmingUp();
+    boolean isWarmingUp();
 
-    public WarmUpUtil.Warmup getWarmupType();
+    WarmUpUtil.Warmup getWarmupType();
 
-    public void addWarmup(WarmUpUtil.Warmup warmup, int taskId);
+    void addWarmup(WarmUpUtil.Warmup warmup, int taskId);
 
-    public void stopWarmup();
+    void stopWarmup();
 
-    public void clearWarmup();
+    void clearWarmup();
 
-    public void setNotificationsEnabled(boolean enabled);
+    void setNotificationsEnabled(boolean enabled);
 
-    public boolean hasNotificationsEnabled();
+    boolean hasNotificationsEnabled();
 
 }

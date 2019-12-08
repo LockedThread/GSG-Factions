@@ -30,6 +30,12 @@ public enum TL {
      * LockedThread's ADDITIONS
      */
 
+    COMMAND_DRAIN_DESCRIPTION("Allows leaders to drain your faction member's money."),
+    COMMAND_DRAIN_TOGGLE_DISABLED("&cYou have disabled drains for yourself!"),
+    COMMAND_DRAIN_TOGGLE_ENABLED("&aYou have enabled drains for yourself!"),
+    COMMAND_DRAIN_FINISHED("&aYou have drained %s balance's"),
+    COMMAND_DRAIN_ERROR("&cYou are not able to remove anyone's money!"),
+
     COMMAND_TRAIL_DESCRIPTION("Allows players to toggle and change their flight trail."),
 
     COMMAND_FLY_DESCRIPTION("Enter or leave Faction flight mode"),

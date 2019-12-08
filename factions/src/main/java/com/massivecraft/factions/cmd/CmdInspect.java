@@ -29,7 +29,7 @@ public class CmdInspect extends FCommand {
 
     @Override
     public void perform() {
-        Access access = myFaction.getAccess(fme, PermissableAction.INVITE);
+        Access access = myFaction.getAccess(fme, PermissableAction.INSPECT);
         if (access == Access.DENY || (access == Access.UNDEFINED && !assertMinRole(Role.MODERATOR))) {
             fme.msg(TL.GENERIC_NOPERMISSION, "inspect");
             return;

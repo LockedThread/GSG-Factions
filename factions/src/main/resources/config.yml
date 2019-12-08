@@ -7,16 +7,7 @@
 
 faction-chest-title: '&eFaction Chest'
 
-faction-missions:
-  menus:
-    root:
-      name: '&cFactio Missions'
-      size: 27
-      fill:
-        enabled: true
-        color: 'BLACK'
-        enchanted: true
-      items:
+draining-enabled: true
 
 faction-upgrades:
   enabled: true
@@ -938,6 +929,7 @@ fperm-gui:
       tag: 32
       inspect: 33
       alts: 34
+      f-drain-toggle: 35
       # Material to show, if the material isf-fly colorable eg: Wool, Stained Clay it will update with it's access color
     materials:
       build: STAINED_CLAY
@@ -966,6 +958,7 @@ fperm-gui:
       tag: STAINED_CLAY
       inspect: STAINED_CLAY
       alts: STAINED_CLAY
+      f-drain-toggle: STAINED_CLAY
     # Same dummy items format as above
     dummy-items:
       '0':
