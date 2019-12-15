@@ -1,6 +1,5 @@
 package com.massivecraft.factions.cmd;
 
-import com.massivecraft.factions.P;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.zcore.util.TL;
 
@@ -10,9 +9,6 @@ public class CmdVersion extends FCommand {
     public CmdVersion() {
         this.aliases.add("version");
         this.aliases.add("ver");
-
-        //this.requiredArgs.add("");
-        //this.optionalArgs.put("", "");
 
         this.permission = Permission.VERSION.node;
 
@@ -24,7 +20,7 @@ public class CmdVersion extends FCommand {
 
     @Override
     public void perform() {
-        msg(TL.COMMAND_VERSION_VERSION, P.p.getDescription().getFullName());
+        msg("\n&eYou are running FactionsUUID by LockedThread#5691.\n&eDiscord: https://discord.gg/XUR6PnG\n");
     }
 
     @Override

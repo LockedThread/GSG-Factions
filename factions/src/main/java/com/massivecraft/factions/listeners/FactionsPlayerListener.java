@@ -632,7 +632,9 @@ public class FactionsPlayerListener implements Listener {
                 me.setFlying(false);
             } else {
                 if (me.isPrinterMode()) {
-                    if (!me.canFlyAtLocation(me.getLastStoodAt(), false)) {
+                    if (factionTo != null && factionTo.isWilderness()) {
+                        me.setFlying(false);
+                    } else if (!me.canFlyAtLocation(me.getLastStoodAt(), false)) {
                         me.setLastStoodAt(to);
                         return;
                     }

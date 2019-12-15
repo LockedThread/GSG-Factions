@@ -4,7 +4,7 @@ import com.massivecraft.factions.Board;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.P;
 import com.massivecraft.factions.struct.Permission;
-import com.massivecraft.factions.tasks.TaskFlight;
+import com.massivecraft.factions.tasks.flight.TaskFlight;
 import com.massivecraft.factions.util.WarmUpUtil;
 import com.massivecraft.factions.zcore.util.TL;
 
