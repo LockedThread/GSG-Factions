@@ -16,11 +16,10 @@ import java.util.stream.Collectors;
 
 public class ShopGUIPlusSellImpl implements SellIntegration {
 
-    private final Int2DoubleMap prices;
+    private final Int2DoubleMap prices = new Int2DoubleOpenHashMap();
     private final int id;
 
     public ShopGUIPlusSellImpl() {
-        this.prices = new Int2DoubleOpenHashMap();
         this.id = GSGPrinter.getInstance().getServer().getScheduler().runTaskTimer(GSGPrinter.getInstance(), () -> {
             if (ShopGuiPlugin.getInstance().getShopManager().shops.isEmpty()) {
                 return;
@@ -29,25 +28,27 @@ public class ShopGUIPlusSellImpl implements SellIntegration {
             for (Map.Entry<String, Shop> entry : ShopGuiPlugin.getInstance().getShopManager().shops.entrySet()) {
                 if (!shops.contains(entry.getKey().toLowerCase())) {
                     for (ShopItem shopItem : entry.getValue().getShopItems()) {
-                        if (shopItem.getItem().getType().isBlock()) {
-                            if (shopItem.getItem().getType() == Material.STRING) {
-                                prices.put(Material.TRIPWIRE.getId(), shopItem.getBuyPrice());
-                            } else if (shopItem.getItem().getType() == Material.REDSTONE) {
-                                prices.put(Material.REDSTONE_WIRE.getId(), shopItem.getBuyPrice());
-                            } else if (shopItem.getItem().getType() == Material.DIODE) {
-                                prices.put(Material.DIODE_BLOCK_OFF.getId(), shopItem.getBuyPrice());
-                                prices.put(Material.DIODE_BLOCK_ON.getId(), shopItem.getBuyPrice());
-                            } else if (shopItem.getItem().getType() == Material.REDSTONE_COMPARATOR) {
-                                prices.put(Material.REDSTONE_COMPARATOR_OFF.getId(), shopItem.getBuyPrice());
-                                prices.put(Material.REDSTONE_COMPARATOR_ON.getId(), shopItem.getBuyPrice());
-                            } else if (shopItem.getItem().getType() == Material.SUGAR_CANE) {
-                                prices.put(Material.SUGAR_CANE_BLOCK.getId(), shopItem.getBuyPrice());
-                            }
-                            prices.put(shopItem.getItem().getType().getId(), shopItem.getBuyPrice());
+                        Material material = shopItem.getItem().getType();
+                        if (material.isBlock()) {
+                            prices.put(material.getId(), shopItem.getBuyPrice());
+                        } else if (material == Material.STRING) {
+                            prices.put(Material.TRIPWIRE.getId(), shopItem.getBuyPrice());
+                        } else if (material == Material.REDSTONE) {
+                            prices.put(Material.REDSTONE_WIRE.getId(), shopItem.getBuyPrice());
+                        } else if (material == Material.DIODE) {
+                            prices.put(Material.DIODE_BLOCK_OFF.getId(), shopItem.getBuyPrice());
+                            prices.put(Material.DIODE_BLOCK_ON.getId(), shopItem.getBuyPrice());
+                        } else if (material == Material.REDSTONE_COMPARATOR) {
+                            prices.put(Material.REDSTONE_COMPARATOR_OFF.getId(), shopItem.getBuyPrice());
+                            prices.put(Material.REDSTONE_COMPARATOR_ON.getId(), shopItem.getBuyPrice());
+                        } else if (material == Material.SUGAR_CANE) {
+                            prices.put(Material.SUGAR_CANE_BLOCK.getId(), shopItem.getBuyPrice());
                         }
                     }
                 }
             }
+            System.out.println("prices = " + prices.toString());
+            prices.forEach((key, value) -> System.out.println("key=" + key + ", value=" + value));
             end();
         }, 40L, 40L).getTaskId();
     }

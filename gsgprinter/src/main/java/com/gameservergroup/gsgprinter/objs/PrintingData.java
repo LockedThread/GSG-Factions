@@ -21,7 +21,7 @@ public class PrintingData {
     }
 
     public String getTime() {
-        return ((double) (Duration.between(startTime, Instant.now()).getSeconds() / 60)) + " minutes";
+        return (double) Duration.between(startTime, Instant.now()).getSeconds() / 60.0 + " minutes";
     }
 
     public EnumMap<Material, Integer> getPlacedBlocks() {
