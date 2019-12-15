@@ -29,11 +29,7 @@ public class PrintingData {
     }
 
     private static long getLongKey(Block block) {
-        long combined = 0L;
-        combined |= block.getY() << 24;
-        combined |= block.getX() & 0xFFFFFFFL << 28;
-        combined |= block.getZ() & 0xFFFFFFFL;
-        return combined;
+        return block.getY() << 24 | block.getX() & 0xFFFFFFFL << 28 | block.getZ() & 0xFFFFFFFL;
     }
 
     public boolean hasPlacedBlocks() {
@@ -47,7 +43,6 @@ public class PrintingData {
     public void addBlock(Block block) {
         getBlocks().add(getLongKey(block));
     }
-
 
     public Instant getStartTime() {
         return startTime;
