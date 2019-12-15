@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class ShopGUIPlusSellImpl implements SellIntegration {
 
-    private Int2DoubleMap prices;
+    private final Int2DoubleMap prices;
     private final int id;
 
     public ShopGUIPlusSellImpl() {
@@ -40,6 +40,8 @@ public class ShopGUIPlusSellImpl implements SellIntegration {
                             } else if (shopItem.getItem().getType() == Material.REDSTONE_COMPARATOR) {
                                 prices.put(Material.REDSTONE_COMPARATOR_OFF.getId(), shopItem.getBuyPrice());
                                 prices.put(Material.REDSTONE_COMPARATOR_ON.getId(), shopItem.getBuyPrice());
+                            } else if (shopItem.getItem().getType() == Material.SUGAR_CANE) {
+                                prices.put(Material.SUGAR_CANE_BLOCK.getId(), shopItem.getBuyPrice());
                             }
                             prices.put(shopItem.getItem().getType().getId(), shopItem.getBuyPrice());
                         }
