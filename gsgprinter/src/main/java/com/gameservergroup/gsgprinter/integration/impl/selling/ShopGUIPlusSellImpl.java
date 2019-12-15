@@ -47,8 +47,6 @@ public class ShopGUIPlusSellImpl implements SellIntegration {
                     }
                 }
             }
-            System.out.println("prices = " + prices.toString());
-            prices.forEach((key, value) -> System.out.println("key=" + key + ", value=" + value));
             end();
         }, 40L, 40L).getTaskId();
     }

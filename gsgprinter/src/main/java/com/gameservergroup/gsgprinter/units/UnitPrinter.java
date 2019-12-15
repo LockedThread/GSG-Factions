@@ -151,7 +151,7 @@ public class UnitPrinter extends Unit {
                 .handle(event -> disablePrinter(event.getPlayer(), true))
                 .post(GSG_PRINTER);
 
-        EventPost.of(BlockPlaceEvent.class)
+        EventPost.of(BlockPlaceEvent.class, EventPriority.HIGHEST)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> event.getBlockPlaced() != null)
                 .handle(event -> {
