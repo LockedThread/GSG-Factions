@@ -20,6 +20,11 @@ enable-combattagplus-integration: true
 enable-blockbreak: true
 #Auto excludes them from printer related checks for no cheat plus.
 use-ncp: true
+#Commands executed when a player enters printer
+enable-printer-commands:
+  - 'msg {player} you have enabled printer'
+#Commands executed when a player leaves printer
+disable-printer-commands: []
 #Can be config, shopguiplus, essentials.
 sell-integration: 'config'
 #Commands allowed

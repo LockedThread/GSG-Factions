@@ -16,7 +16,8 @@ public enum PrinterMessages {
     SOLD_HEADER("&aYou have sold:"),
     SOLD_LINE("&a{material} &f- &c{money}"),
     SOLD_TOTAL("\n&eYour total amount sold was {money}"),
-    TIME_SPENT("&eYou spent {time} in PrinterMode");
+    TIME_SPENT("&eYou spent {time} in PrinterMode"),
+    YOU_CANT_BREAK_THIS_BLOCK("&cYou can't break this block!");
 
     private String message;
 

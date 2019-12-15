@@ -11,6 +11,7 @@ import com.gameservergroup.gsgcore.utils.Utils;
 import com.gameservergroup.gsgprinter.GSGPrinter;
 import com.gameservergroup.gsgprinter.enums.PrinterMessages;
 import com.gameservergroup.gsgprinter.objs.PrintingData;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -34,10 +35,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
@@ -58,7 +56,9 @@ public class UnitPrinter extends Unit {
     private ImmutableSet<String> whitelistedInventoryTitles;
     private ImmutableSet<String> whitelistedCommands;
     private ImmutableSet<String> blacklistedKeywords;
+    private ImmutableList<String> enablePrinterCommands, disablePrinterCommands;
     private ConcurrentHashMap<UUID, PrintingData> printingPlayers;
+    private boolean blockBreakEnabled;
 
     private boolean startsWith(Collection<String> strings, String data) {
         for (String string : strings) {
@@ -99,6 +99,14 @@ public class UnitPrinter extends Unit {
         if (GSG_PRINTER.getConfig().getBoolean("whitelisted-inventories.enabled")) {
             this.whitelistedInventoryTitles = ImmutableSet.copyOf(GSG_PRINTER.getConfig().getStringList("whitelisted-inventories.titles"));
         }
+        List<String> list = GSG_PRINTER.getConfig().getStringList("enable-printer-commands");
+        if (!list.isEmpty()) {
+            this.enablePrinterCommands = ImmutableList.copyOf(list);
+        }
+        if (!(list = GSG_PRINTER.getConfig().getStringList("disable-printer-commands")).isEmpty()) {
+            this.disablePrinterCommands = ImmutableList.copyOf(list);
+        }
+
         hookDisable(new CallBack() {
             @Override
             public void call() {
@@ -150,13 +158,14 @@ public class UnitPrinter extends Unit {
                     PrintingData printingData = printingPlayers.get(event.getPlayer().getUniqueId());
                     if (printingData != null) {
                         if (GSG_CORE.canBuild(event.getPlayer(), event.getBlockPlaced())) {
-                            if (!chargePlayer(event.getPlayer(), printingData, event.getBlockPlaced().getType())) {
+                            if (chargePlayer(event.getPlayer(), printingData, event.getBlockPlaced().getType())) {
+                                printingData.addBlock(event.getBlock());
+                            } else {
                                 event.setCancelled(true);
                             }
                         }
                     }
-                })
-                .post(GSG_PRINTER);
+                }).post(GSG_PRINTER);
 
         EventPost.of(ProjectileLaunchEvent.class)
                 .filter(event -> event.getEntity().getShooter() instanceof Player)
@@ -272,13 +281,22 @@ public class UnitPrinter extends Unit {
                     event.setDroppedExp(0);
                 }).post(GSG_PRINTER);
 
-        if (GSG_PRINTER.getConfig().getBoolean("enable-blockbreak")) {
+        this.blockBreakEnabled = GSG_PRINTER.getConfig().getBoolean("enable-blockbreak");
+        if (blockBreakEnabled) {
             EventPost.of(BlockBreakEvent.class)
                     .filter(EventFilters.getIgnoreCancelled())
-                    .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
-                    .filter(event -> BANNED_INTERACTABLES.contains(event.getBlock().getType()) || event.getBlock().getY() < 1)
-                    .handle(event -> event.setCancelled(true))
-                    .post(GSG_PRINTER);
+                    .handle(event -> {
+                        PrintingData printingData = printingPlayers.get(event.getPlayer().getUniqueId());
+                        if (printingData != null) {
+                            if (BANNED_INTERACTABLES.contains(event.getBlock().getType()) || event.getBlock().getY() < 1) {
+                                event.setCancelled(true);
+                                event.getPlayer().sendMessage(PrinterMessages.YOU_CANT_BREAK_THIS_BLOCK.toString());
+                            } else if (!printingData.hasPlacedBlock(event.getBlock())) {
+                                event.getPlayer().sendMessage(PrinterMessages.YOU_CANT_BREAK_THIS_BLOCK.toString());
+                                event.setCancelled(true);
+                            }
+                        }
+                    }).post(GSG_PRINTER);
         } else {
             EventPost.of(BlockBreakEvent.class)
                     .filter(EventFilters.getIgnoreCancelled())
@@ -299,6 +317,13 @@ public class UnitPrinter extends Unit {
         if (notify) {
             player.sendMessage(PrinterMessages.PRINTER_ENABLE.toString());
         }
+        if (enablePrinterCommands != null) {
+            enablePrinterCommands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("{player}", player.getName())));
+        }
+        if (disablePrinterCommands != null) {
+            disablePrinterCommands.forEach(command -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("{player}", player.getName())));
+        }
+
         if (useNcp) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ncp exempt " + player.getName() + " net");
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ncp exempt " + player.getName() + " blockplace");
@@ -346,16 +371,18 @@ public class UnitPrinter extends Unit {
         }
         if (notify) {
             player.sendMessage(PrinterMessages.PRINTER_DISABLE.toString());
-            EnumMap<Material, Integer> map = printingData.getPlacedBlocks();
-            if (!map.isEmpty()) {
-                double total = 0.0;
-                player.sendMessage(PrinterMessages.SOLD_HEADER.toString());
-                for (Map.Entry<Material, Integer> entry : map.entrySet()) {
-                    double buyPrice = GSG_PRINTER.getSellIntegration().getBuyPrice(entry.getKey(), entry.getValue());
-                    player.sendMessage(PrinterMessages.SOLD_LINE.toString().replace("{material}", Utils.toTitleCasing(entry.getKey().name().replace("_", " "))).replace("{money}", DECIMAL_FORMAT.format(buyPrice)));
-                    total += buyPrice;
+            if (printingData.hasPlacedBlocks()) {
+                EnumMap<Material, Integer> map = printingData.getPlacedBlocks();
+                if (!map.isEmpty()) {
+                    double total = 0.0;
+                    player.sendMessage(PrinterMessages.SOLD_HEADER.toString());
+                    for (Map.Entry<Material, Integer> entry : map.entrySet()) {
+                        double buyPrice = GSG_PRINTER.getSellIntegration().getBuyPrice(entry.getKey(), entry.getValue());
+                        player.sendMessage(PrinterMessages.SOLD_LINE.toString().replace("{material}", Utils.toTitleCasing(entry.getKey().name().replace("_", " "))).replace("{money}", DECIMAL_FORMAT.format(buyPrice)));
+                        total += buyPrice;
+                    }
+                    player.sendMessage(PrinterMessages.SOLD_TOTAL.toString().replace("{money}", DECIMAL_FORMAT.format(total)));
                 }
-                player.sendMessage(PrinterMessages.SOLD_TOTAL.toString().replace("{money}", DECIMAL_FORMAT.format(total)));
             }
             player.sendMessage(PrinterMessages.TIME_SPENT.toString().replace("{time}", printingData.getTime()));
         }
