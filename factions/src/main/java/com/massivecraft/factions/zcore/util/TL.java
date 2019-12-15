@@ -30,6 +30,9 @@ public enum TL {
      * LockedThread's ADDITIONS
      */
 
+
+    COMMAND_SHIELD_DESCRIPTION("Manages faction shields"),
+
     COMMAND_DRAIN_DESCRIPTION("Allows leaders to drain your faction member's money."),
     COMMAND_DRAIN_TOGGLE_DISABLED("&cYou have disabled drains for yourself!"),
     COMMAND_DRAIN_TOGGLE_ENABLED("&aYou have enabled drains for yourself!"),

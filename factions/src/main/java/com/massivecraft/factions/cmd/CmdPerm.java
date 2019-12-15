@@ -7,13 +7,14 @@ import com.massivecraft.factions.struct.Role;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
-import com.massivecraft.factions.zcore.fperms.gui.PermissableActionGUI;
-import com.massivecraft.factions.zcore.fperms.gui.PermissableRelationGUI;
+import com.massivecraft.factions.zcore.fperms.gui.PermissibleRelationGUI;
+import com.massivecraft.factions.zcore.fperms.gui.shit.PermissibleActionGUI;
 import com.massivecraft.factions.zcore.util.TL;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
 
 public class CmdPerm extends FCommand {
 
@@ -45,14 +46,10 @@ public class CmdPerm extends FCommand {
         }
 
         if (args.size() == 0) {
-            PermissableRelationGUI gui = new PermissableRelationGUI(fme);
-            gui.build();
-
-            me.openInventory(gui.getInventory());
+            me.openInventory(PermissibleRelationGUI.getInstance().getInventory());
             return;
         } else if (args.size() == 1 && getPermissable(argAsString(0)) != null) {
-            PermissableActionGUI gui = new PermissableActionGUI(fme, getPermissable(argAsString(0)));
-            gui.build();
+            PermissibleActionGUI gui = new PermissibleActionGUI(myFaction, getPermissable(argAsString(0)));
 
             me.openInventory(gui.getInventory());
             return;

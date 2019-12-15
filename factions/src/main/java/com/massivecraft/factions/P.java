@@ -73,6 +73,7 @@ public class P extends MPlugin {
     private CombatIntegration combatIntegration;
     public SeeChunkUtil seeChunkUtil;
     public ParticleProvider particleProvider;
+    public boolean drainingEnabled;
 
     public P() {
         p = this;
@@ -110,7 +111,7 @@ public class P extends MPlugin {
 
         // Register units so that factionupgrades are loaded before factions are
         registerUnits(new UnitWorldBorder(), new UnitFactionUpgrade());
-
+        drainingEnabled = P.p.getConfig().getBoolean("draining-enabled");
         FPlayers.getInstance().load();
         Factions.getInstance().load();
         for (FPlayer fPlayer : FPlayers.getInstance().getAllFPlayers()) {

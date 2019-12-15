@@ -108,6 +108,7 @@ public class FCmdRoot extends FCommand {
     public CmdStats cmdStats = new CmdStats();
     public CmdAltsOpen cmdAltsOpen = new CmdAltsOpen();
     public CmdDrain cmdDrain = new CmdDrain();
+    public CmdShield cmdShield = new CmdShield();
 
     public FCmdRoot() {
         super();
@@ -224,8 +225,9 @@ public class FCmdRoot extends FCommand {
         this.addSubCommand(this.cmdCornerReload);
         this.addSubCommand(this.cmdStats);
         this.addSubCommand(this.cmdAltsOpen);
+        this.addSubCommand(this.cmdShield);
 
-        if (p.getConfig().getBoolean("draining-enabled")) {
+        if (p.drainingEnabled) {
             this.addSubCommand(this.cmdDrain);
         }
 

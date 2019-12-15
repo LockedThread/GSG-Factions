@@ -1,5 +1,5 @@
 package com.massivecraft.factions.zcore.fperms.gui;
-
+/*
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.P;
 import com.massivecraft.factions.util.FactionGUI;
@@ -112,10 +112,7 @@ public class PermissableActionGUI implements InventoryHolder, FactionGUI {
     public void onClick(int slot, ClickType click) {
         if (specialSlots.containsKey(slot)) {
             if (specialSlots.get(slot) == SpecialItem.BACK) {
-                PermissableRelationGUI relationGUI = new PermissableRelationGUI(fme);
-                relationGUI.build();
-
-                fme.getPlayer().openInventory(relationGUI.getInventory());
+                fme.getPlayer().openInventory(PermissibleRelationGUI.getInstance().getInventory());
             }
             return;
         }
@@ -297,3 +294,4 @@ public class PermissableActionGUI implements InventoryHolder, FactionGUI {
     }
 
 }
+*/

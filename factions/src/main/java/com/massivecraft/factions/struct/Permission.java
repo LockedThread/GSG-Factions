@@ -120,7 +120,9 @@ public enum Permission {
     STATISTICS("statistics"),
     DRAIN("drain"),
     DRAIN_TOGGLE("drain.toggle"),
-    DRAIN_BYPASS("drain.bypass");
+    DRAIN_BYPASS("drain.bypass"),
+    SHIELD("shield"),
+    SHIELD_ACTIVATE("shield.activate");
 
     public final String node;
 

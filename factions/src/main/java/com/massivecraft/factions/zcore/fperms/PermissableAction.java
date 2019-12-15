@@ -1,6 +1,6 @@
 package com.massivecraft.factions.zcore.fperms;
 
-import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.P;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -9,9 +9,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public enum PermissableAction {
     ALTS("alts"),
@@ -59,6 +59,9 @@ public enum PermissableAction {
     public static PermissableAction fromString(String check) {
         for (PermissableAction permissableAction : values()) {
             if (permissableAction.name().equalsIgnoreCase(check)) {
+                if (permissableAction == PermissableAction.F_DRAIN_TOGGLE && !P.p.drainingEnabled) {
+                    return null;
+                }
                 return permissableAction;
             }
         }
@@ -67,7 +70,7 @@ public enum PermissableAction {
     }
 
     // Utility method to build items for F Perm GUI
-    public ItemStack buildItem(FPlayer fme, Permissable permissable) {
+    public ItemStack buildItem(Faction faction, Permissable permissable) {
         final ConfigurationSection section = P.p.getConfig().getConfigurationSection("fperm-gui.action");
 
         if (section == null) {
@@ -76,8 +79,7 @@ public enum PermissableAction {
             return new ItemStack(Material.AIR);
         }
 
-        String displayName = replacePlaceholers(section.getString("placeholder-item.name"), fme, permissable);
-        List<String> lore = new ArrayList<>();
+        String displayName = replacePlaceholers(section.getString("placeholder-item.name"), faction, permissable);
 
         if (section.getString("materials." + name().toLowerCase().replace('_', '-')) == null) {
             return null;
@@ -87,14 +89,14 @@ public enum PermissableAction {
             material = Material.STAINED_CLAY;
         }
 
-        Access access = fme.getFaction().getAccess(permissable, this);
+        Access access = faction.getAccess(permissable, this);
         if (access == null) {
             access = Access.UNDEFINED;
         }
         DyeColor dyeColor = null;
         try {
             dyeColor = DyeColor.valueOf(section.getString("access." + access.name().toLowerCase()));
-        } catch (Exception exception) {
+        } catch (Exception ignored) {
         }
 
         ItemStack item = new ItemStack(material);
@@ -104,9 +106,7 @@ public enum PermissableAction {
             item.setDurability(dyeColor.getWoolData());
         }
 
-        for (String loreLine : section.getStringList("placeholder-item.lore")) {
-            lore.add(replacePlaceholers(loreLine, fme, permissable));
-        }
+        List<String> lore = section.getStringList("placeholder-item.lore").stream().map(loreLine -> replacePlaceholers(loreLine, faction, permissable)).collect(Collectors.toList());
 
         itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES);
         itemMeta.setDisplayName(displayName);
@@ -125,14 +125,14 @@ public enum PermissableAction {
         return this.name;
     }
 
-    public String replacePlaceholers(String string, FPlayer fme, Permissable permissable) {
+    public String replacePlaceholers(String string, Faction faction, Permissable permissable) {
         // Run Permissable placeholders
         string = permissable.replacePlaceholders(string);
 
         String actionName = name.substring(0, 1).toUpperCase() + name.substring(1);
         string = string.replace("{action}", actionName);
 
-        Access access = fme.getFaction().getAccess(permissable, this);
+        Access access = faction.getAccess(permissable, this);
         if (access == null) {
             access = Access.UNDEFINED;
         }
