@@ -32,20 +32,6 @@ public class CommandPostExecutor implements CommandExecutor {
         } else {
             throw new RuntimeException("This shouldn't happen, report to LockedThread if you see this.");
         }
-        /*for (Map.Entry<String[], CommandPost> entry : CommandPost.getCommandPosts().entrySet()) {
-            for (String alias : entry.getKey()) {
-                if (alias.equalsIgnoreCase(command.getName())) {
-                    try {
-                        entry.getValue().call(sender instanceof Player ? new CommandHandler<>((Player) sender, label, args) : new CommandHandler<>((ConsoleCommandSender) sender, label, args));
-                    } catch (CommandParseException ex) {
-                        ex.getSenderConsumer().accept(sender);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        return true;*/
         return true;
     }
 

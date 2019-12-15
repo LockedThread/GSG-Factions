@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class MenuItem {
+public class MenuItem implements Cloneable {
 
     private ItemStack itemStack;
     private Consumer<InventoryClickEvent> inventoryClickEventConsumer;
@@ -50,5 +50,15 @@ public class MenuItem {
     @Override
     public int hashCode() {
         return 31 * (itemStack != null ? itemStack.hashCode() : 0) + (inventoryClickEventConsumer != null ? inventoryClickEventConsumer.hashCode() : 0);
+    }
+
+    @Override
+    public MenuItem clone() {
+        try {
+            return (MenuItem) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
