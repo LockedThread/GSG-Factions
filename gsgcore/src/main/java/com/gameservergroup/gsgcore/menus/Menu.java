@@ -1,8 +1,13 @@
 package com.gameservergroup.gsgcore.menus;
 
+import com.gameservergroup.gsgcore.GSGCore;
+import com.gameservergroup.gsgcore.items.ItemStackBuilder;
+import com.gameservergroup.gsgcore.menus.fill.FillOptions;
 import com.gameservergroup.gsgcore.utils.Text;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -21,20 +26,61 @@ public abstract class Menu implements InventoryHolder {
     private Consumer<InventoryOpenEvent> inventoryOpenEventConsumer;
     private Consumer<InventoryCloseEvent> inventoryCloseEventConsumer;
     private Inventory inventory;
-    private Int2ObjectOpenHashMap<MenuItem> menuItems;
+    private final Int2ObjectOpenHashMap<MenuItem> menuItems;
+    private final FillOptions fillOptions;
 
-    public Menu(String name, int size) {
+    public Menu(String name, int size, FillOptions fillOptions) {
         this.inventory = Bukkit.createInventory(this, size, Text.toColor(name));
         this.menuItems = new Int2ObjectOpenHashMap<>();
+        this.fillOptions = fillOptions;
+    }
+
+    public Menu(String name, int size) {
+        this(name, size, null);
     }
 
     public abstract void initialize();
 
-    public Optional<MenuItem> getMenuItem(int slot) {
+    public final void fill() {
+        if (fillOptions != null) {
+            switch (fillOptions.getFillMode()) {
+                case CHECKERED:
+                    for (int i = 0; i < fillOptions.getDyeColorsList().size(); i++) {
+                        DyeColor dyeColor = fillOptions.getDyeColorsList().get(i);
+                        setItem(getInventory().firstEmpty(), ItemStackBuilder.of(Material.STAINED_GLASS_PANE).setDyeColor(dyeColor).setDisplayName("").build());
+                        if (i == fillOptions.getDyeColorsList().size() - 1 && getInventory().firstEmpty() != -1) {
+                            i = 0;
+                        }
+                    }
+                    break;
+                case RANDOM:
+                    if (fillOptions.getDyeColorsList().size() == 0) {
+                        return;
+                    } else if (fillOptions.getDyeColorsList().size() > 1) {
+                        while (getInventory().firstEmpty() != -1) {
+                            setItem(getInventory().firstEmpty(), ItemStackBuilder.of(Material.STAINED_GLASS_PANE)
+                                    .setDyeColor(fillOptions.getDyeColorsList().get(GSGCore.getInstance().getRandom().nextInt(fillOptions.getDyeColorsList().size())))
+                                    .setDisplayName("")
+                                    .build());
+                        }
+                        break;
+                    }
+                case SOLID:
+                    final ItemStack itemStack = ItemStackBuilder.of(Material.STAINED_GLASS_PANE).setDyeColor(fillOptions.getDyeColor()).setDisplayName("").build();
+                    while (getInventory().firstEmpty() != -1) {
+                        setItem(getInventory().firstEmpty(), itemStack);
+                    }
+                    break;
+            }
+        }
+    }
+
+
+    public final Optional<MenuItem> getMenuItem(int slot) {
         return Optional.ofNullable(menuItems.get(slot));
     }
 
-    public void setItem(int slot, MenuItem menuItem) {
+    public final void setItem(int slot, MenuItem menuItem) {
         if (slot > inventory.getSize()) {
             throw new RuntimeException("Unable to add a MenuItem to a Menu due to the menu's size. Increase your menu size or contact LockedThread.");
         }
@@ -45,41 +91,41 @@ public abstract class Menu implements InventoryHolder {
         menuItems.put(slot, menuItem);
     }
 
-    public void setItem(int slot, ItemStack itemStack) {
+    public final void setItem(int slot, ItemStack itemStack) {
         setItem(slot, MenuItem.of(itemStack).setInventoryClickEventConsumer(SET_CANCELLED));
     }
 
-    public Int2ObjectOpenHashMap<MenuItem> getMenuItems() {
+    public final Int2ObjectOpenHashMap<MenuItem> getMenuItems() {
         return menuItems;
     }
 
-    public void setInventory(String name, int size) {
+    public final void setInventory(String name, int size) {
         this.inventory = Bukkit.createInventory(this, size, Text.toColor(name));
         this.menuItems.clear();
     }
 
-    public void setInventory(Inventory inventory) {
-        this.inventory = inventory;
-    }
-
     @Override
-    public Inventory getInventory() {
+    public final Inventory getInventory() {
         return inventory;
     }
 
-    public Consumer<InventoryOpenEvent> getInventoryOpenEventConsumer() {
+    public final void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
+    public final Consumer<InventoryOpenEvent> getInventoryOpenEventConsumer() {
         return inventoryOpenEventConsumer;
     }
 
-    public void setInventoryOpenEventConsumer(Consumer<InventoryOpenEvent> inventoryOpenEventConsumer) {
+    public final void setInventoryOpenEventConsumer(Consumer<InventoryOpenEvent> inventoryOpenEventConsumer) {
         this.inventoryOpenEventConsumer = inventoryOpenEventConsumer;
     }
 
-    public Consumer<InventoryCloseEvent> getInventoryCloseEventConsumer() {
+    public final Consumer<InventoryCloseEvent> getInventoryCloseEventConsumer() {
         return inventoryCloseEventConsumer;
     }
 
-    public void setInventoryCloseEventConsumer(Consumer<InventoryCloseEvent> inventoryCloseEventConsumer) {
+    public final void setInventoryCloseEventConsumer(Consumer<InventoryCloseEvent> inventoryCloseEventConsumer) {
         this.inventoryCloseEventConsumer = inventoryCloseEventConsumer;
     }
 
