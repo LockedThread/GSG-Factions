@@ -250,6 +250,7 @@ public class UnitCollectors extends Unit {
 
     private List<String> defaultSellWandLore = null;
 
+    @SuppressWarnings("DuplicatedCode")
     public void load() {
         this.collectorMenuSize = GSG_COLLECTORS.getConfig().getInt("menu.size");
         this.collectorMenuName = GSG_COLLECTORS.getConfig().getString("menu.name");
