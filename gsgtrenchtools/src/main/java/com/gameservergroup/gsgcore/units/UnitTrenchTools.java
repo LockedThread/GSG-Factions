@@ -58,7 +58,7 @@ public class UnitTrenchTools extends Unit {
 
                         ItemStack itemStack = nbtItem.buildItemStack();
                         ItemMeta meta = itemStack.getItemMeta();
-                        List<String> trayModeLore = trenchTool.getTrayModeLore(!toolTrayMode);
+                        List<String> trayModeLore = trenchTool.getTrayModeLore(toolTrayMode);
                         meta.setLore(trayModeLore);
                         itemStack.setItemMeta(meta);
                         player.setItemInHand(itemStack);
@@ -69,9 +69,9 @@ public class UnitTrenchTools extends Unit {
                         //player.updateInventory();
                         if (GSGTrenchTools.getInstance().getConfig().getBoolean("send-trenchmode-update-message")) {
                             if (toolTrayMode) {
-                                player.sendMessage(TrenchMessages.TRENCHMODE_DISABLE.toString());
-                            } else {
                                 player.sendMessage(TrenchMessages.TRENCHMODE_ENABLE.toString());
+                            } else {
+                                player.sendMessage(TrenchMessages.TRENCHMODE_DISABLE.toString());
                             }
                         }
                     }
@@ -97,16 +97,12 @@ public class UnitTrenchTools extends Unit {
                         if (shovelMaterials.contains(material)) {
                             final short durability = hand.getDurability();
                             hand.setType(getTranslatedMaterial(hand));
-                            if (!hand.getItemMeta().spigot().isUnbreakable()) {
-                                hand.setDurability(durability);
-                            }
+                            hand.setDurability(hand.getItemMeta().spigot().isUnbreakable() ? 0 : durability);
                         }
                     } else if (!shovelMaterials.contains(material)) {
                         final short durability = hand.getDurability();
                         hand.setType(getTranslatedMaterial(hand));
-                        if (!hand.getItemMeta().spigot().isUnbreakable()) {
-                            hand.setDurability(durability);
-                        }
+                        hand.setDurability(hand.getItemMeta().spigot().isUnbreakable() ? 0 : durability);
                     }
                 }
             });
