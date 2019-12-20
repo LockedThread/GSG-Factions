@@ -7,8 +7,8 @@ import com.massivecraft.factions.struct.Role;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
+import com.massivecraft.factions.zcore.fperms.gui.PermissibleActionGUI;
 import com.massivecraft.factions.zcore.fperms.gui.PermissibleRelationGUI;
-import com.massivecraft.factions.zcore.fperms.gui.shit.PermissibleActionGUI;
 import com.massivecraft.factions.zcore.util.TL;
 
 import java.util.Arrays;

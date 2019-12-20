@@ -17,6 +17,7 @@ import com.massivecraft.factions.integration.combat.impl.CombatTagPlusImpl;
 import com.massivecraft.factions.listeners.*;
 import com.massivecraft.factions.struct.ChatMode;
 import com.massivecraft.factions.tasks.TaskAutoLeave;
+import com.massivecraft.factions.tasks.TaskShieldCacheUpdate;
 import com.massivecraft.factions.tasks.TaskWallCheckReminder;
 import com.massivecraft.factions.tasks.flight.TaskFlight;
 import com.massivecraft.factions.units.UnitFactionUpgrade;
@@ -74,6 +75,7 @@ public class P extends MPlugin {
     public SeeChunkUtil seeChunkUtil;
     public ParticleProvider particleProvider;
     public boolean drainingEnabled;
+    public TaskShieldCacheUpdate taskShieldCacheUpdate;
 
     public P() {
         p = this;
@@ -191,6 +193,8 @@ public class P extends MPlugin {
         setupPlaceholderAPI();
         postEnable();
         this.locked = getConfig().getBoolean("lock.enabled");
+        (this.taskShieldCacheUpdate = new TaskShieldCacheUpdate()).runTaskTimerAsynchronously(this, 1200L, 1200);
+
         if (getConfig().getBoolean("lock.block-place")) {
             EventPost.of(BlockPlaceEvent.class)
                     .filter(EventFilters.getIgnoreCancelled())

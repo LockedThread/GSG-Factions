@@ -11,6 +11,7 @@ import com.massivecraft.factions.util.Message;
 import com.massivecraft.factions.util.MiscUtil;
 import com.massivecraft.factions.util.RelationUtil;
 import com.massivecraft.factions.zcore.factionchest.FactionChest;
+import com.massivecraft.factions.zcore.factionshields.FactionShield;
 import com.massivecraft.factions.zcore.factionupgrades.FactionUpgrade;
 import com.massivecraft.factions.zcore.factionupgrades.FactionUpgradeMenu;
 import com.massivecraft.factions.zcore.factionwarps.WarpMenu;
@@ -75,6 +76,9 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     private long lastDeath;
     protected long checkReminderMinutes = 0;
     protected EnumMap<FactionUpgrade, Integer> upgradeMap;
+
+    protected FactionShield factionShield;
+    protected boolean factionShieldCachedValue;
 
     protected transient WarpMenu warpMenu;
     protected transient FactionUpgradeMenu factionUpgradeMenu;
@@ -144,6 +148,25 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         resetPerms(); // Reset on new Faction so it has default values.
     }
 
+    @Override
+    public FactionShield getFactionShield() {
+        return factionShield;
+    }
+
+    @Override
+    public void setFactionShield(FactionShield factionShield) {
+        this.factionShield = factionShield;
+    }
+
+    @Override
+    public boolean getFactionShieldCachedValue() {
+        return factionShieldCachedValue;
+    }
+
+    @Override
+    public void setFactionShieldCachedValue(boolean factionShieldCachedValue) {
+        this.factionShieldCachedValue = factionShieldCachedValue;
+    }
 
     @Override
     public WarpMenu getWarpMenu() {
@@ -154,7 +177,6 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     public FactionUpgradeMenu getFactionUpgradeMenu() {
         return factionUpgradeMenu == null ? factionUpgradeMenu = new FactionUpgradeMenu(this) : factionUpgradeMenu;
     }
-
 
     @Override
     public EnumMap<FactionUpgrade, Integer> getUpgrades() {

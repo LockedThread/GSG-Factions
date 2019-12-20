@@ -1,4 +1,4 @@
-package com.massivecraft.factions.zcore.fperms.gui.shit;
+package com.massivecraft.factions.zcore.fperms.gui;
 
 import com.gameservergroup.gsgcore.menus.Menu;
 import com.gameservergroup.gsgcore.menus.MenuItem;
@@ -9,7 +9,6 @@ import com.massivecraft.factions.P;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.Permissable;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
-import com.massivecraft.factions.zcore.fperms.gui.PermissibleRelationGUI;
 import com.massivecraft.factions.zcore.util.TL;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;

@@ -10,14 +10,12 @@ import com.massivecraft.factions.zcore.util.TagReplacer;
 import com.massivecraft.factions.zcore.util.TagUtil;
 import mkremins.fanciful.FancyMessage;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CmdShow extends FCommand {
 
-    private static final DecimalFormat df = new DecimalFormat("###,###,###,###");
-    List<String> defaults = new ArrayList<>();
+    private final List<String> defaults = new ArrayList<>();
 
     public CmdShow() {
         this.aliases.add("show");
@@ -29,6 +27,7 @@ public class CmdShow extends FCommand {
         defaults.add("<a>Description: <i>{description}");
         defaults.add("<a>Joining: <i>{joining}    {peaceful}");
         defaults.add("<a>Land / Power / Maxpower: <i> {chunks} / {power} / {maxPower}");
+        defaults.add("<a>Shield: {faction-shield}");
         defaults.add("<a>Founded: <i>{create-date}");
         defaults.add("<a>This faction is permanent, remaining even with no members.");
         defaults.add("<a>Land value: <i>{land-value} {land-refund}");

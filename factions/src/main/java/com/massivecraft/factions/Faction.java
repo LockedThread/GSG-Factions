@@ -8,6 +8,7 @@ import com.massivecraft.factions.struct.Role;
 import com.massivecraft.factions.struct.StrikeInfo;
 import com.massivecraft.factions.util.LazyLocation;
 import com.massivecraft.factions.zcore.factionchest.FactionChest;
+import com.massivecraft.factions.zcore.factionshields.FactionShield;
 import com.massivecraft.factions.zcore.factionupgrades.FactionUpgrade;
 import com.massivecraft.factions.zcore.factionupgrades.FactionUpgradeMenu;
 import com.massivecraft.factions.zcore.factionwarps.WarpMenu;
@@ -28,340 +29,348 @@ public interface Faction extends EconomyParticipator {
      * LockedThread's ADDITIONS
      */
 
-    public WarpMenu getWarpMenu();
+    FactionShield getFactionShield();
 
-    public FactionUpgradeMenu getFactionUpgradeMenu();
+    void setFactionShield(FactionShield factionShield);
 
-    public EnumMap<FactionUpgrade, Integer> getUpgrades();
+    boolean getFactionShieldCachedValue();
 
-    public long getCheckReminderMinutes();
+    void setFactionShieldCachedValue(boolean factionShieldCachedValue);
 
-    public void setCheckReminderMinutes(long minutes);
+    WarpMenu getWarpMenu();
 
-    public void sendCheckRemind();
+    FactionUpgradeMenu getFactionUpgradeMenu();
 
-    public String getPayPal();
+    EnumMap<FactionUpgrade, Integer> getUpgrades();
 
-    public void setPayPal(String email);
+    long getCheckReminderMinutes();
 
-    public HashMap<String, List<String>> getAnnouncements();
+    void setCheckReminderMinutes(long minutes);
 
-    public ConcurrentHashMap<String, LazyLocation> getWarps();
+    void sendCheckRemind();
 
-    public LazyLocation getWarp(String name);
+    String getPayPal();
 
-    public String getTrueWarp(String name);
+    void setPayPal(String email);
 
-    public void setWarp(String name, LazyLocation loc);
+    HashMap<String, List<String>> getAnnouncements();
 
-    public boolean isWarp(String name);
+    ConcurrentHashMap<String, LazyLocation> getWarps();
 
-    public boolean hasWarpPassword(String warp);
+    LazyLocation getWarp(String name);
 
-    public boolean isWarpPassword(String warp, String password);
+    String getTrueWarp(String name);
 
-    public void setWarpPassword(String warp, String password);
+    void setWarp(String name, LazyLocation loc);
 
-    public boolean removeWarp(String name);
+    boolean isWarp(String name);
 
-    public void clearWarps();
+    boolean hasWarpPassword(String warp);
 
-    public void addAnnouncement(FPlayer fPlayer, String msg);
+    boolean isWarpPassword(String warp, String password);
 
-    public void sendUnreadAnnouncements(FPlayer fPlayer);
+    void setWarpPassword(String warp, String password);
 
-    public void removeAnnouncements(FPlayer fPlayer);
+    boolean removeWarp(String name);
 
-    public Set<String> getInvites();
+    void clearWarps();
 
-    public String getId();
+    void addAnnouncement(FPlayer fPlayer, String msg);
 
-    public void setId(String id);
+    void sendUnreadAnnouncements(FPlayer fPlayer);
 
-    public void invite(FPlayer fplayer);
+    void removeAnnouncements(FPlayer fPlayer);
 
-    public void deinvite(FPlayer fplayer);
+    Set<String> getInvites();
 
-    public boolean isInvited(FPlayer fplayer);
+    String getId();
 
-    public void ban(FPlayer target, FPlayer banner);
+    void setId(String id);
 
-    public void unban(FPlayer player);
+    void invite(FPlayer fplayer);
 
-    public boolean isBanned(FPlayer player);
+    void deinvite(FPlayer fplayer);
 
-    public Set<BanInfo> getBannedPlayers();
+    boolean isInvited(FPlayer fplayer);
 
-    public void strike(CommandSender executor, String description);
+    void ban(FPlayer target, FPlayer banner);
+
+    void unban(FPlayer player);
+
+    boolean isBanned(FPlayer player);
+
+    Set<BanInfo> getBannedPlayers();
+
+    void strike(CommandSender executor, String description);
 
     // removes the most recent strike issued
-    public void destrike(CommandSender executor);
+    void destrike(CommandSender executor);
 
-    public Set<StrikeInfo> getStrikes();
+    Set<StrikeInfo> getStrikes();
 
-    public boolean getOpen();
+    boolean getOpen();
 
-    public void setOpen(boolean isOpen);
+    void setOpen(boolean isOpen);
 
-    public boolean isPeaceful();
+    boolean isPeaceful();
 
-    public void setPeaceful(boolean isPeaceful);
+    void setPeaceful(boolean isPeaceful);
 
-    public boolean getPeacefulExplosionsEnabled();
+    boolean getPeacefulExplosionsEnabled();
 
-    public void setPeacefulExplosionsEnabled(boolean val);
+    void setPeacefulExplosionsEnabled(boolean val);
 
-    public boolean noExplosionsInTerritory();
+    boolean noExplosionsInTerritory();
 
-    public boolean isPermanent();
+    boolean isPermanent();
 
-    public void setPermanent(boolean isPermanent);
+    void setPermanent(boolean isPermanent);
 
-    public String getTag();
+    String getTag();
 
-    public void setTag(String str);
+    void setTag(String str);
 
-    public String getTag(String prefix);
+    String getTag(String prefix);
 
-    public String getTag(com.massivecraft.factions.Faction otherFaction);
+    String getTag(com.massivecraft.factions.Faction otherFaction);
 
-    public String getTag(FPlayer otherFplayer);
+    String getTag(FPlayer otherFplayer);
 
-    public String getComparisonTag();
+    String getComparisonTag();
 
-    public String getDescription();
+    String getDescription();
 
-    public void setDescription(String value);
+    void setDescription(String value);
 
-    public boolean hasHome();
+    boolean hasHome();
 
-    public Location getHome();
+    Location getHome();
 
-    public void setHome(Location home);
+    void setHome(Location home);
 
-    public long getFoundedDate();
+    long getFoundedDate();
 
-    public void setFoundedDate(long newDate);
+    void setFoundedDate(long newDate);
 
-    public void confirmValidHome();
+    void confirmValidHome();
 
-    public String getAccountId();
+    String getAccountId();
 
-    public Integer getPermanentPower();
+    Integer getPermanentPower();
 
-    public void setPermanentPower(Integer permanentPower);
+    void setPermanentPower(Integer permanentPower);
 
-    public boolean hasPermanentPower();
+    boolean hasPermanentPower();
 
-    public double getPowerBoost();
+    double getPowerBoost();
 
-    public void setPowerBoost(double powerBoost);
+    void setPowerBoost(double powerBoost);
 
-    public boolean noPvPInTerritory();
+    boolean noPvPInTerritory();
 
-    public boolean noMonstersInTerritory();
+    boolean noMonstersInTerritory();
 
-    public boolean isNormal();
+    boolean isNormal();
 
     @Deprecated
-    public boolean isNone();
+    boolean isNone();
 
-    public boolean isWilderness();
+    boolean isWilderness();
 
-    public boolean isSafeZone();
+    boolean isSafeZone();
 
-    public boolean isWarZone();
+    boolean isWarZone();
 
-    public boolean isPlayerFreeType();
+    boolean isPlayerFreeType();
 
-    public boolean isPowerFrozen();
+    boolean isPowerFrozen();
 
-    public void setLastDeath(long time);
+    void setLastDeath(long time);
 
-    public int getKills();
+    int getKills();
 
-    public int getDeaths();
+    int getDeaths();
 
-    public Access getAccess(Permissable permissable, PermissableAction permissableAction);
+    Access getAccess(Permissable permissable, PermissableAction permissableAction);
 
-    public Access getAccess(FPlayer player, PermissableAction permissableAction);
+    Access getAccess(FPlayer player, PermissableAction permissableAction);
 
-    public void setPermission(Permissable permissable, PermissableAction permissableAction, Access access);
+    void setPermission(Permissable permissable, PermissableAction permissableAction, Access access);
 
-    public void resetPerms();
+    void resetPerms();
 
-    public Map<Permissable, Map<PermissableAction, Access>> getPermissions();
+    Map<Permissable, Map<PermissableAction, Access>> getPermissions();
 
-    public int getTntBankBalance();
+    int getTntBankBalance();
 
-    public boolean setTntBankBalance(int tntBankBalance);
+    boolean setTntBankBalance(int tntBankBalance);
 
-    public int getTntBankLimit();
+    int getTntBankLimit();
 
-    public void setTntBankLimit(int tntBankLimit);
+    void setTntBankLimit(int tntBankLimit);
 
-    public int getVaultRows();
+    int getVaultRows();
 
-    public void setVaultRows(int vaultRows);
+    void setVaultRows(int vaultRows);
 
-    public FactionChest getFactionChest();
+    FactionChest getFactionChest();
 
-    public int getMaxWarps();
+    int getMaxWarps();
 
-    public void setMaxWarps(int maxWarps);
+    void setMaxWarps(int maxWarps);
 
-    public int getMaxMembers();
+    int getMaxMembers();
 
-    public void setMaxMembers(int maxMembers);
+    void setMaxMembers(int maxMembers);
 
-    public boolean isAltInvitesOpen();
+    boolean isAltInvitesOpen();
 
-    public void setAltInvitesOpen(boolean altInvitesOpen);
+    void setAltInvitesOpen(boolean altInvitesOpen);
 
-    public void inviteAlt(FPlayer fplayer);
+    void inviteAlt(FPlayer fplayer);
 
-    public void deinviteAlt(FPlayer fplayer);
+    void deinviteAlt(FPlayer fplayer);
 
-    public void deinviteAllAlts();
+    void deinviteAllAlts();
 
-    public boolean isAltInvited(FPlayer fplayer);
+    boolean isAltInvited(FPlayer fplayer);
 
-    public List<String> getAltInvites();
+    List<String> getAltInvites();
 
-    public boolean addAltPlayer(FPlayer player);
+    boolean addAltPlayer(FPlayer player);
 
-    public boolean removeAltPlayer(FPlayer player);
+    boolean removeAltPlayer(FPlayer player);
 
-    public Set<FPlayer> getAltPlayers();
+    Set<FPlayer> getAltPlayers();
 
     // -------------------------------
     // Relation and relation colors
     // -------------------------------
 
-    public int getAltSize();
+    int getAltSize();
 
     @Override
-    public String describeTo(RelationParticipator that, boolean ucfirst);
+    String describeTo(RelationParticipator that, boolean ucfirst);
 
     @Override
-    public String describeTo(RelationParticipator that);
+    String describeTo(RelationParticipator that);
 
     @Override
-    public Relation getRelationTo(RelationParticipator rp);
+    Relation getRelationTo(RelationParticipator rp);
 
     @Override
-    public Relation getRelationTo(RelationParticipator rp, boolean ignorePeaceful);
+    Relation getRelationTo(RelationParticipator rp, boolean ignorePeaceful);
 
     @Override
-    public ChatColor getColorTo(RelationParticipator rp);
+    ChatColor getColorTo(RelationParticipator rp);
 
-    public Relation getRelationWish(com.massivecraft.factions.Faction otherFaction);
+    Relation getRelationWish(com.massivecraft.factions.Faction otherFaction);
 
-    public void setRelationWish(com.massivecraft.factions.Faction otherFaction, Relation relation);
+    void setRelationWish(com.massivecraft.factions.Faction otherFaction, Relation relation);
 
-    public int getRelationCount(Relation relation);
+    int getRelationCount(Relation relation);
 
     // ----------------------------------------------//
     // Power
     // ----------------------------------------------//
-    public double getPower();
+    double getPower();
 
-    public double getPowerMax();
+    double getPowerMax();
 
-    public int getPowerRounded();
+    int getPowerRounded();
 
-    public int getPowerMaxRounded();
+    int getPowerMaxRounded();
 
-    public int getLandRounded();
+    int getLandRounded();
 
-    public int getLandRoundedInWorld(String worldName);
+    int getLandRoundedInWorld(String worldName);
 
     // -------------------------------
     // FPlayers
     // -------------------------------
 
-    public boolean hasLandInflation();
+    boolean hasLandInflation();
 
     // maintain the reference list of FPlayers in this faction
-    public void refreshFPlayers();
+    void refreshFPlayers();
 
-    public boolean addFPlayer(FPlayer fplayer);
+    boolean addFPlayer(FPlayer fplayer);
 
-    public boolean removeFPlayer(FPlayer fplayer);
+    boolean removeFPlayer(FPlayer fplayer);
 
-    public int getSize();
+    int getSize();
 
-    public Set<FPlayer> getFPlayers();
+    Set<FPlayer> getFPlayers();
 
-    public Set<FPlayer> getFPlayersWhereOnline(boolean online);
+    Set<FPlayer> getFPlayersWhereOnline(boolean online);
 
-    public Set<FPlayer> getFPlayersWhereOnline(boolean online, FPlayer viewer);
+    Set<FPlayer> getFPlayersWhereOnline(boolean online, FPlayer viewer);
 
-    public FPlayer getFPlayerAdmin();
+    FPlayer getFPlayerAdmin();
 
-    public ArrayList<FPlayer> getFPlayersWhereRole(Role role);
+    ArrayList<FPlayer> getFPlayersWhereRole(Role role);
 
-    public ArrayList<Player> getOnlinePlayers();
+    ArrayList<Player> getOnlinePlayers();
 
     // slightly faster check than getOnlinePlayers() if you just want to see if
     // there are any players online
-    public boolean hasPlayersOnline();
+    boolean hasPlayersOnline();
 
-    public void memberLoggedOff();
+    void memberLoggedOff();
 
     // used when current leader is about to be removed from the faction;
     // promotes new leader, or disbands faction if no other members left
-    public void promoteNewLeader();
+    void promoteNewLeader();
 
-    public Role getDefaultRole();
+    Role getDefaultRole();
 
-    public void setDefaultRole(Role role);
+    void setDefaultRole(Role role);
 
     // ----------------------------------------------//
     // Messages
     // ----------------------------------------------//
-    public void msg(String message, Object... args);
+    void msg(String message, Object... args);
 
-    public void sendMessage(String message);
+    void sendMessage(String message);
 
     // ----------------------------------------------//
     // Ownership of specific claims
     // ----------------------------------------------//
 
-    public void sendMessage(List<String> messages);
+    void sendMessage(List<String> messages);
 
-    public Map<com.massivecraft.factions.FLocation, Set<String>> getClaimOwnership();
+    Map<com.massivecraft.factions.FLocation, Set<String>> getClaimOwnership();
 
-    public void clearAllClaimOwnership();
+    void clearAllClaimOwnership();
 
-    public void clearClaimOwnership(com.massivecraft.factions.FLocation loc);
+    void clearClaimOwnership(com.massivecraft.factions.FLocation loc);
 
-    public void clearClaimOwnership(FPlayer player);
+    void clearClaimOwnership(FPlayer player);
 
-    public void grantAllClaimOwnership(FPlayer player);
+    void grantAllClaimOwnership(FPlayer player);
 
-    public int getCountOfClaimsWithOwners();
+    int getCountOfClaimsWithOwners();
 
-    public boolean doesLocationHaveOwnersSet(com.massivecraft.factions.FLocation loc);
+    boolean doesLocationHaveOwnersSet(com.massivecraft.factions.FLocation loc);
 
-    public boolean isPlayerInOwnerList(FPlayer player, com.massivecraft.factions.FLocation loc);
+    boolean isPlayerInOwnerList(FPlayer player, com.massivecraft.factions.FLocation loc);
 
-    public void setPlayerAsOwner(FPlayer player, com.massivecraft.factions.FLocation loc);
+    void setPlayerAsOwner(FPlayer player, com.massivecraft.factions.FLocation loc);
 
-    public void removePlayerAsOwner(FPlayer player, com.massivecraft.factions.FLocation loc);
+    void removePlayerAsOwner(FPlayer player, com.massivecraft.factions.FLocation loc);
 
-    public Set<String> getOwnerList(com.massivecraft.factions.FLocation loc);
+    Set<String> getOwnerList(com.massivecraft.factions.FLocation loc);
 
-    public String getOwnerListString(com.massivecraft.factions.FLocation loc);
+    String getOwnerListString(com.massivecraft.factions.FLocation loc);
 
-    public boolean playerHasOwnershipRights(FPlayer fplayer, com.massivecraft.factions.FLocation loc);
+    boolean playerHasOwnershipRights(FPlayer fplayer, com.massivecraft.factions.FLocation loc);
 
-    public boolean playerHasExplicitOwnershipRights(FPlayer fplayer, FLocation loc);
+    boolean playerHasExplicitOwnershipRights(FPlayer fplayer, FLocation loc);
 
     // ----------------------------------------------//
     // Persistance and entity management
     // ----------------------------------------------//
-    public void remove();
+    void remove();
 
-    public Set<FLocation> getAllClaims();
+    Set<FLocation> getAllClaims();
 }

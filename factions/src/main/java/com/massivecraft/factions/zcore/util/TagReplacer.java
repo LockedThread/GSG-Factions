@@ -77,6 +77,7 @@ public enum TagReplacer {
     FACTION_KILLS(TagType.FACTION, "{faction-kills}"),
     FACTION_DEATHS(TagType.FACTION, "{faction-deaths}"),
     FACTION_BANCOUNT(TagType.FACTION, "{faction-bancount}"),
+    FACTION_SHIELD(TagType.FACTION, "{faction-shield}"),
 
     /**
      * General variables, require no faction or player
@@ -100,7 +101,6 @@ public enum TagReplacer {
      * Returns a list of all the variables we can use for this type<br>
      *
      * @param type the type we want
-     *
      * @return a list of all the variables with this type
      */
     protected static List<com.massivecraft.factions.zcore.util.TagReplacer> getByType(TagType type) {
@@ -155,7 +155,6 @@ public enum TagReplacer {
      *
      * @param fac Target faction
      * @param fp  Target player (can be null)
-     *
      * @return the value for this enum!
      */
     protected String getValue(Faction fac, FPlayer fp) {
@@ -266,6 +265,8 @@ public enum TagReplacer {
                 return String.valueOf(fac.getDeaths());
             case FACTION_BANCOUNT:
                 return String.valueOf(fac.getBannedPlayers().size());
+            case FACTION_SHIELD:
+                return fac.getFactionShield() != null ? fac.getFactionShield().getFormattedTime() : "NONE";
         }
         return null;
     }
@@ -273,7 +274,6 @@ public enum TagReplacer {
     /**
      * @param original raw line with variables
      * @param value    what to replace var in raw line with
-     *
      * @return the string with the new value
      */
     public String replace(String original, String value) {
@@ -282,7 +282,6 @@ public enum TagReplacer {
 
     /**
      * @param toSearch raw line with variables
-     *
      * @return if the raw line contains this enums variable
      */
     public boolean contains(String toSearch) {

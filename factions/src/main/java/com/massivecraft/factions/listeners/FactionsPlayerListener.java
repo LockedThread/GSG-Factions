@@ -46,6 +46,8 @@ public class FactionsPlayerListener implements Listener {
     // for handling people who repeatedly spam attempts to open a door (or similar) in another faction's territory
     private Map<String, InteractAttemptSpam> interactSpammers = new HashMap<>();
 
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("d MMM HH:mm:ss");
+
     public FactionsPlayerListener(P p) {
         this.p = p;
         for (Player player : p.getServer().getOnlinePlayers()) {
@@ -457,13 +459,15 @@ public class FactionsPlayerListener implements Listener {
                     player.sendMessage(TL.INSPECT_NO_DATA.toString());
                 } else {
                     player.sendMessage(p.txt.titleize(event.getClickedBlock().getX() + "x, " + event.getClickedBlock().getY() + "y, " + event.getClickedBlock().getZ() + "z"));
-                    coreProtectAPI.blockLookup(event.getClickedBlock(), 604800).stream().map(coreProtectAPI::parseResult).forEach(result -> player.sendMessage(
-                            TL.INSPECT_ROW.format(
-                                    result.getPlayer(),
-                                    new SimpleDateFormat("d MMM HH:mm:ss").format(new Date(System.currentTimeMillis() - (result.getTime() * 1000))),
-                                    result.getActionString(),
-                                    StringUtils.capitalize(result.getType().name().toLowerCase()))
-                            )
+                    coreProtectAPI.blockLookup(event.getClickedBlock(), 604800).stream().map(coreProtectAPI::parseResult).forEach(result -> {
+                                player.sendMessage(
+                                        TL.INSPECT_ROW.format(
+                                                result.getPlayer(),
+                                                SIMPLE_DATE_FORMAT.format(new Date(System.currentTimeMillis() - (result.getTime() * 1000))),
+                                                result.getActionString(),
+                                                StringUtils.capitalize(result.getType().name().toLowerCase()))
+                                );
+                            }
                     );
                 }
             }

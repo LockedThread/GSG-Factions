@@ -178,6 +178,10 @@ public class FactionsEntityListener implements Listener {
             // faction is peaceful and has explosions set to disabled
             event.setCancelled(true);
             return;
+        } else if (faction.getFactionShield() != null && faction.getFactionShieldCachedValue()) {
+            // faction is in faction shielding
+            event.setCancelled(true);
+            return;
         }
 
         boolean online = faction.hasPlayersOnline();
@@ -237,10 +241,15 @@ public class FactionsEntityListener implements Listener {
                 if (chunkX != localX || chunkZ != localZ) {
                     // different chunk to origin, check it
                     Faction facAt = Board.getInstance().getFactionAt(new FLocation(block));
-                    if (facAt != null && facAt.isWarZone()) {
-                        // no explosions on warzone boundaries
-                        event.setCancelled(true);
-                        return;
+                    if (facAt != null) {
+                        if (facAt.isWarZone()) {
+                            // no explosions on warzone boundaries
+                            event.setCancelled(true);
+                            return;
+                        } else if (faction.getFactionShield() != null && faction.getFactionShieldCachedValue()) {
+                            event.setCancelled(true);
+                            return;
+                        }
                     }
                 }
             }
