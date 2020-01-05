@@ -798,6 +798,7 @@ show:
   - '<a>Land / Power / Maxpower: <i> {chunks}/{power}/{maxPower}'
   - '<a>Founded: <i>{create-date}'
   - '<a>Shield: <i>{faction-shield}'
+  - '<a>Discord: <i>{faction-discord-invite}'
   - '<a>This faction is permanent, remaining even with no members.' # only shows if faction is permanent
   - '<a>Land value: <i>{land-value} {land-refund}'
   - '<a>Balance: <i>{faction-balance}'

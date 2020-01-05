@@ -65,6 +65,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected boolean altsOpen;
     protected int invitesToday;
     protected long lastShieldChange;
+    protected String discord;
 
     protected transient long lastPlayerLoggedOffTime;
     protected transient Set<FPlayer> fplayers = new HashSet<>();
@@ -112,6 +113,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.altPlayers = new HashSet<>();
         this.altInvites = new ArrayList<>();
         this.payPalEmail = "";
+        this.discord = "PRIVATE";
         this.checkReminderMinutes = 0;
         this.upgradeMap = new EnumMap<>(FactionUpgrade.class);
         resetPerms(); // Reset on new Faction so it has default values.
@@ -145,9 +147,20 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.altPlayers = new HashSet<>();
         this.altInvites = new ArrayList<>();
         this.payPalEmail = "";
+        this.discord = "PRIVATE";
         this.checkReminderMinutes = 0;
         this.upgradeMap = new EnumMap<>(FactionUpgrade.class);
         resetPerms(); // Reset on new Faction so it has default values.
+    }
+
+    @Override
+    public String getDiscord() {
+        return discord;
+    }
+
+    @Override
+    public void setDiscord(String discord) {
+        this.discord = discord;
     }
 
     @Override

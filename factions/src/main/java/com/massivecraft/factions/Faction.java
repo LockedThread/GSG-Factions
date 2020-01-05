@@ -25,11 +25,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public interface Faction extends EconomyParticipator {
 
-    long getLastShieldChange();
+    String getDiscord();
 
     /**
      * LockedThread's ADDITIONS
      */
+
+    void setDiscord(String discord);
+
+    long getLastShieldChange();
 
     void setLastShieldChange(long lastShieldChange);
 

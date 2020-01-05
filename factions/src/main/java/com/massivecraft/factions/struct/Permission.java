@@ -122,7 +122,8 @@ public enum Permission {
     DRAIN_TOGGLE("drain.toggle"),
     DRAIN_BYPASS("drain.bypass"),
     SHIELD("shield"),
-    SHIELD_ACTIVATE("shield.activate");
+    SHIELD_ACTIVATE("shield.activate"),
+    SET_DISCORD("setdiscord");
 
     public final String node;
 

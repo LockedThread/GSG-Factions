@@ -43,7 +43,7 @@ public class CmdSetPayPal extends FCommand {
                     }
                 }
             } else {
-                msg(TL.GENERIC_NOPERMISSION, "execute /setpaypal [faction] [email]");
+                msg(TL.GENERIC_NOPERMISSION, "execute /f setpaypal [faction] [email]");
             }
         } else {
             msg(TL.COMMAND_INVALID_ARGUMENTS);

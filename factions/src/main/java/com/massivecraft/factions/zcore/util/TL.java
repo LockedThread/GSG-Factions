@@ -119,6 +119,10 @@ public enum TL {
     COMMAND_SET_PAYPAL_DESCRIPTION("Allows faction leaders to set their PayPal"),
     COMMAND_SET_PAYPAL_SUCCESS("&aYou have successfully set your faction's PayPal to &f%1$s"),
     COMMAND_SET_PAYPAL_NOT_EMAIL("&c%1$s is not a email!"),
+
+    COMMAND_SET_DISCORD_DESCRIPTION("Allows faction leaders to set their Discord"),
+    COMMAND_SET_DISCORD_SUCCESS("&aYou have successfully set your faction's Discord to &f%1$s"),
+    COMMAND_SET_DISCORD_NOT_EMAIL("&c%1$s is not a discord invite!"),
     /**
      * Translation meta
      */

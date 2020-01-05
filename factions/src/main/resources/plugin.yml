@@ -128,6 +128,8 @@ permissions:
       factions.check: true
       factions.upgrades: true
       factions.drain: true
+      factions.setpaypal: true
+      factions.setdiscord: true
   factions.check:
     description: Allows players to edit the automated wall check reminder time for their faction
   factions.mutechat:

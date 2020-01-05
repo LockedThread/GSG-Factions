@@ -78,6 +78,7 @@ public enum TagReplacer {
     FACTION_DEATHS(TagType.FACTION, "{faction-deaths}"),
     FACTION_BANCOUNT(TagType.FACTION, "{faction-bancount}"),
     FACTION_SHIELD(TagType.FACTION, "{faction-shield}"),
+    FACTION_DISCORD_INVITE(TagType.FACTION, "{faction-discord-invite}"),
 
     /**
      * General variables, require no faction or player
@@ -267,6 +268,8 @@ public enum TagReplacer {
                 return String.valueOf(fac.getBannedPlayers().size());
             case FACTION_SHIELD:
                 return fac.getFactionShield() != null ? fac.getFactionShield().getFormattedTime() : "NONE";
+            case FACTION_DISCORD_INVITE:
+                return fac.getDiscord();
         }
         return null;
     }
