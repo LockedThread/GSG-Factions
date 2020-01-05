@@ -12,6 +12,7 @@ import com.massivecraft.factions.zcore.factionshields.FactionShield;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FactionShieldConfigureMenu extends Menu {
@@ -39,17 +40,23 @@ public class FactionShieldConfigureMenu extends Menu {
         List<Integer> slots = CONFIGURE_MENU_SECTION.getIntegerList("shield-item.slot-array");
 
         int shieldTime = P.p.getConfig().getInt("faction-shields.shield-time");
-        final FactionShield[] factionShields = new FactionShield[(shieldTime * 3) + 1];
+        ArrayList<FactionShield> factionShields = new ArrayList<>();
 
-        for (int i = 0; i < factionShields.length; i++) {
-            factionShields[i] = new FactionShield(i, i + shieldTime);
+        int index = 0;
+        while (index != 24) {
+            if (shieldTime + index > 24) {
+                factionShields.add(new FactionShield(index, (index + shieldTime) - 24));
+            } else {
+                factionShields.add(new FactionShield(index, index + shieldTime));
+            }
+            index++;
         }
 
         for (int i = 0; i < slots.size(); i++) {
             FactionShield factionShield;
             try {
-                factionShield = factionShields[i];
-            } catch (ArrayIndexOutOfBoundsException ex) {
+                factionShield = factionShields.get(i);
+            } catch (IndexOutOfBoundsException ex) {
                 break;
             }
             int slot = slots.get(i);
@@ -64,6 +71,8 @@ public class FactionShieldConfigureMenu extends Menu {
                 if (faction != null) {
                     if (faction.getFPlayerAdmin().getAccountId().equals(fPlayer.getAccountId())) {
                         faction.setFactionShield(factionShield);
+                        faction.setLastShieldChange(System.currentTimeMillis());
+                        event.getWhoClicked().closeInventory();
                         return;
                     }
                 }

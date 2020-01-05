@@ -25,9 +25,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public interface Faction extends EconomyParticipator {
 
+    long getLastShieldChange();
+
     /**
      * LockedThread's ADDITIONS
      */
+
+    void setLastShieldChange(long lastShieldChange);
+
+    int getInvitesToday();
+
+    void setInvitesToday(int invitesToday);
 
     FactionShield getFactionShield();
 

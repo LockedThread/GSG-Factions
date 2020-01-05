@@ -7,6 +7,7 @@
 
 faction-chest-title: '&eFaction Chest'
 
+force-invites-enabled: true
 draining-enabled: true
 
 faction-shields:
@@ -45,7 +46,7 @@ faction-shields:
       format:
         time: 'yyyy-MM-dd-HH:mm:ss'
         never: '&cNever'
-        inactive: '&c&uShield Inactive'
+        inactive: '&c&nShield Inactive'
   configure-menu:
     name: '&cFaction Shield Configuration'
     size: 54

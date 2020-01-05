@@ -63,6 +63,8 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     protected Set<StrikeInfo> strikes = new HashSet<>();
     protected List<String> altInvites = new ArrayList<>();
     protected boolean altsOpen;
+    protected int invitesToday;
+    protected long lastShieldChange;
 
     protected transient long lastPlayerLoggedOffTime;
     protected transient Set<FPlayer> fplayers = new HashSet<>();
@@ -146,6 +148,26 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.checkReminderMinutes = 0;
         this.upgradeMap = new EnumMap<>(FactionUpgrade.class);
         resetPerms(); // Reset on new Faction so it has default values.
+    }
+
+    @Override
+    public long getLastShieldChange() {
+        return lastShieldChange;
+    }
+
+    @Override
+    public void setLastShieldChange(long lastShieldChange) {
+        this.lastShieldChange = lastShieldChange;
+    }
+
+    @Override
+    public int getInvitesToday() {
+        return invitesToday;
+    }
+
+    @Override
+    public void setInvitesToday(int invitesToday) {
+        this.invitesToday = invitesToday;
     }
 
     @Override
@@ -300,6 +322,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
     }
 
     public void invite(FPlayer fplayer) {
+        setInvitesToday(getInvitesToday() + 1);
         this.invites.add(fplayer.getId());
     }
 

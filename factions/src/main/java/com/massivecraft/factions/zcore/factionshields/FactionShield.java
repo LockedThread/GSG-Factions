@@ -16,24 +16,6 @@ public final class FactionShield {
         this.maxHour = maxHour;
     }
 
-    private static String calculateTime(int time) {
-        if (time == 0) {
-            return "12AM";
-        } else if (time < 12) {
-            return time + "AM";
-        } else if (time == 12) {
-            return "12PM";
-        } else if (time == 24) {
-            return "12AM";
-        } else {
-            int calc = Math.abs(time - 12);
-            if (calc > 12) {
-                return calc - 12 + " AM";
-            }
-            return calc + "PM";
-        }
-    }
-
     public boolean isInBetween(Faction faction) {
         return isInBetween(faction, CURRENT_CALENDAR.get(Calendar.HOUR_OF_DAY));
     }
@@ -63,12 +45,43 @@ public final class FactionShield {
         return false;
     }
 
+    private static String calculateTime(int time) {
+        if (time == 0) {
+            return "12AM";
+        } else if (time < 12) {
+            return time + "AM";
+        } else if (time == 12) {
+            return "12PM";
+        } else if (time == 24) {
+            return "12AM";
+        } else {
+            int calc = Math.abs(time - 12);
+            if (calc > 12) {
+                return calc - 12 + " AM";
+            }
+            return calc + "PM";
+        }
+    }
+
     public int getMinHour() {
         return minHour;
     }
 
     public int getMaxHour() {
         return maxHour;
+    }
+
+    public long getTimeLeft() {
+        if (isInBetween(null)) {
+            int hourOfDay = CURRENT_CALENDAR.get(Calendar.HOUR_OF_DAY);
+            if (hourOfDay == maxHour) {
+                System.out.println("hour of day = maxHour");
+                return CURRENT_CALENDAR.get(Calendar.MINUTE);
+            } else {
+                return ((maxHour - hourOfDay) * 60) + CURRENT_CALENDAR.get(Calendar.MINUTE);
+            }
+        }
+        return -1;
     }
 
     @Override

@@ -387,6 +387,7 @@ public enum TL {
     COMMAND_INVITE_ALREADYMEMBER("%1$s&e is already a member of %2$s"),
     COMMAND_INVITE_DESCRIPTION("Invite a player to your faction"),
     COMMAND_INVITE_BANNED("&7%1$s &cis banned from your Faction. Not sending an invite."),
+    COMMAND_INVITE_FORCE_INVITE_DENIED("&cUnable to invite %1$s because you have reached your max invites today!"),
 
     COMMAND_JOIN_CANNOTFORCE("&cYou do not have permission to move other players into a faction."),
     COMMAND_JOIN_SYSTEMFACTION("&cPlayers may only join normal factions. This is a system faction."),

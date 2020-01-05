@@ -4,11 +4,16 @@ import com.gameservergroup.gsgcore.items.ItemStackBuilder;
 import com.gameservergroup.gsgcore.menus.Menu;
 import com.gameservergroup.gsgcore.menus.MenuItem;
 import com.gameservergroup.gsgcore.menus.fill.FillOptions;
+import com.gameservergroup.gsgcore.utils.Text;
+import com.gameservergroup.gsgcore.utils.TimeUtil;
 import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.P;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.stream.Collectors;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FactionShieldMainMenu extends Menu {
 
@@ -33,22 +38,46 @@ public class FactionShieldMainMenu extends Menu {
                 .setInventoryClickEventConsumer(event -> {
                     event.setCancelled(true);
                     if (PLAYERS_CAN_CONFIGURE) {
-                        if (fPlayer.getFaction().getFPlayerAdmin().getAccountId().equals(fPlayer.getAccountId())) {
+                        Faction faction = fPlayer.getFaction();
+                        if (faction.getFPlayerAdmin().getAccountId().equals(fPlayer.getAccountId())) {
                             event.getWhoClicked().openInventory(FactionShieldConfigureMenu.getInstance().getInventory());
                         }
                     }
                 }));
 
 
+        SimpleDateFormat lastShieldChangeFormat = new SimpleDateFormat(MAIN_MENU_SECTION.getString("information-item.format.time"));
         setItem(MAIN_MENU_SECTION.getInt("information-item.slot"), MenuItem.of(ItemStackBuilder.of(MAIN_MENU_SECTION.getConfigurationSection("information-item"))
                 .consumeItemMeta(itemMeta -> {
                     // TODO: COMPLETE THIS
-                    itemMeta.setLore(itemMeta.getLore()
-                            .stream()
-                            .map(s -> s.replace("{last-shield-change}", "").replace("{time-remaining}", ""))
-                            .collect(Collectors.toList()));
+                    Faction faction = fPlayer.getFaction();
+                    String lastShieldChange, timeRemaining;
+                    if (faction.getLastShieldChange() == 0) {
+                        lastShieldChange = MAIN_MENU_SECTION.getString("information-item.format.never");
+                        timeRemaining = MAIN_MENU_SECTION.getString("information-item.format.inactive");
+                    } else {
+                        lastShieldChange = lastShieldChangeFormat.format(faction.getLastShieldChange());
+                        if (faction.getFactionShield() != null && faction.getFactionShieldCachedValue()) {
+                            long timeLeft = faction.getFactionShield().getTimeLeft();
+                            if (timeLeft != -1) {
+                                if (timeLeft < 60) {
+                                    timeLeft = Math.abs(timeLeft - 60) * 60;
+                                } else {
+                                    timeLeft *= 60;
+                                }
+                            }
+                            timeRemaining = TimeUtil.toLongForm(timeLeft);
+                        } else {
+                            timeRemaining = MAIN_MENU_SECTION.getString("information-item.format.inactive");
+                        }
+                    }
+                    List<String> list = new ArrayList<>();
+                    for (String s : itemMeta.getLore()) {
+                        String replace = s.replace("{last-shield-change}", lastShieldChange).replace("{time-remaining}", timeRemaining);
+                        list.add(Text.toColor(replace));
+                    }
+                    itemMeta.setLore(list);
                 }).build()));
-
         fill();
     }
 }

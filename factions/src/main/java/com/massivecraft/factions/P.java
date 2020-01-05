@@ -7,8 +7,9 @@ import com.gameservergroup.gsgcore.events.EventPost;
 import com.google.common.base.Joiner;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.massivecraft.factions.cmd.CmdAutoHelp;
 import com.massivecraft.factions.cmd.FCmdRoot;
+import com.massivecraft.factions.cmd.chat.CmdFF;
+import com.massivecraft.factions.cmd.help.CmdAutoHelp;
 import com.massivecraft.factions.integration.CombatIntegration;
 import com.massivecraft.factions.integration.Econ;
 import com.massivecraft.factions.integration.Essentials;
@@ -17,6 +18,7 @@ import com.massivecraft.factions.integration.combat.impl.CombatTagPlusImpl;
 import com.massivecraft.factions.listeners.*;
 import com.massivecraft.factions.struct.ChatMode;
 import com.massivecraft.factions.tasks.TaskAutoLeave;
+import com.massivecraft.factions.tasks.TaskForceInviteUpdate;
 import com.massivecraft.factions.tasks.TaskShieldCacheUpdate;
 import com.massivecraft.factions.tasks.TaskWallCheckReminder;
 import com.massivecraft.factions.tasks.flight.TaskFlight;
@@ -46,10 +48,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -137,6 +136,7 @@ public class P extends MPlugin {
         this.cmdBase = new FCmdRoot();
         this.cmdAutoHelp = new CmdAutoHelp();
         this.getBaseCommands().add(cmdBase);
+        this.getBaseCommands().add(new CmdFF());
 
         Econ.setup();
         setupPermissions();
@@ -147,6 +147,8 @@ public class P extends MPlugin {
 
         // start up task which runs the autoLeaveAfterDaysOfInactivity routine
         startAutoLeaveTask(false);
+
+        startAutoInvitePerDayTask();
 
         // Run before initializing listeners to handle reloads properly.
         if (Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14")) {
@@ -235,6 +237,7 @@ public class P extends MPlugin {
         }
         saveConfig();
         if (this.loadSuccessful) {
+            Conf.lastDayServerStarted = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
             Conf.save();
         }
         if (autoLeaveTask != null) {
@@ -302,6 +305,13 @@ public class P extends MPlugin {
         if (Conf.autoLeaveRoutineRunsEveryXMinutes > 0.0) {
             long ticks = (long) (20 * 60 * Conf.autoLeaveRoutineRunsEveryXMinutes);
             autoLeaveTask = getServer().getScheduler().scheduleSyncRepeatingTask(this, new TaskAutoLeave(), ticks, ticks);
+        }
+    }
+
+    public void startAutoInvitePerDayTask() {
+        if (Conf.autoInvitePerDayCheckEveryXMinutes > 0.0 && getConfig().getBoolean("force-invites-enabled")) {
+            long ticks = (long) (20 * 60 * Conf.autoLeaveRoutineRunsEveryXMinutes);
+            new TaskForceInviteUpdate().runTaskTimer(this, ticks, ticks);
         }
     }
 

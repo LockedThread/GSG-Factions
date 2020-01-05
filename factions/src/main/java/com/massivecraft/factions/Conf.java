@@ -9,6 +9,10 @@ import java.util.*;
 
 public class Conf {
 
+
+    public static boolean raidClaimEnabled;
+    public static int raidClaimLimit;
+
     // /f corner
     public static int bufferSize = 20;
 
@@ -98,6 +102,8 @@ public class Conf {
 
     public static double autoLeaveAfterDaysOfInactivity = 10.0;
     public static double autoLeaveRoutineRunsEveryXMinutes = 5.0;
+    public static double autoInvitePerDayCheckEveryXMinutes = 30.0;
+    public static double amountOfInvitesPerDay = 5;
     public static int autoLeaveRoutineMaxMillisecondsPerTick = 5;  // 1 server tick is roughly 50ms, so default max 10% of a tick
     public static boolean removePlayerDataWhenBanned = true;
     public static boolean autoLeaveDeleteFPlayerData = true; // Let them just remove player from Faction.
@@ -294,6 +300,8 @@ public class Conf {
     public static Set<String> worldsNoWildernessProtection = new LinkedHashSet<>();
 
     public static Backend backEnd = Backend.JSON;
+
+    public static int lastDayServerStarted = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
 
     // Taller and wider for "bigger f map"
     public static int mapHeight = 17;

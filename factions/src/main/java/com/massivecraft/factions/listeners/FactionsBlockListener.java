@@ -277,6 +277,22 @@ public class FactionsBlockListener implements Listener {
         }
     }
 
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockDispense(BlockDispenseEvent event) {
+        if (!event.isCancelled()) {
+            if (event.getItem() != null && event.getItem().getType() == Material.TNT) {
+                Faction faction = Board.getInstance().getFactionAt(new FLocation(event.getBlock().getLocation()));
+                if (!faction.isWilderness()) {
+                    if (faction.getFactionShield() != null) {
+                        if (faction.getFactionShieldCachedValue()) {
+                            event.setCancelled(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private boolean canPistonMoveBlock(Faction pistonFaction, Location target) {
 
         Faction otherFaction = Board.getInstance().getFactionAt(new FLocation(target));
