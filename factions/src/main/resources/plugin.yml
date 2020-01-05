@@ -9,6 +9,8 @@ commands:
   factions:
     description: Reference command for Factions.
     aliases: [f]
+  ff:
+    description: Alias for /f c f
 permissions:
   factions.kit.admin:
     description: All faction permissions.

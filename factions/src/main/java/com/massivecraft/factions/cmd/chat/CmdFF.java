@@ -1,5 +1,6 @@
 package com.massivecraft.factions.cmd.chat;
 
+import com.massivecraft.factions.Conf;
 import com.massivecraft.factions.cmd.FCommand;
 import com.massivecraft.factions.struct.ChatMode;
 import com.massivecraft.factions.struct.Permission;
@@ -10,6 +11,8 @@ public class CmdFF extends FCommand {
     public CmdFF() {
         super();
 
+        this.aliases.add("ff");
+        this.allowNoSlashAccess = Conf.allowNoSlashCommand;
         this.permission = Permission.CHAT.node;
 
         senderMustBePlayer = true;

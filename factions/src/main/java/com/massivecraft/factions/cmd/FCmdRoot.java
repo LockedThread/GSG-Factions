@@ -15,6 +15,7 @@ import com.massivecraft.factions.cmd.claim.*;
 import com.massivecraft.factions.cmd.corner.CmdCorner;
 import com.massivecraft.factions.cmd.corner.CmdCornerList;
 import com.massivecraft.factions.cmd.corner.CmdCornerReload;
+import com.massivecraft.factions.cmd.discord.CmdSetDiscord;
 import com.massivecraft.factions.cmd.drain.CmdDrain;
 import com.massivecraft.factions.cmd.help.CmdHelp;
 import com.massivecraft.factions.cmd.home.CmdHome;
@@ -45,6 +46,7 @@ import java.util.logging.Level;
 
 public class FCmdRoot extends FCommand {
 
+    public CmdSetDiscord cmdSetDiscord = new CmdSetDiscord();
     public CmdAdmin cmdAdmin = new CmdAdmin();
     public CmdAutoClaim cmdAutoClaim = new CmdAutoClaim();
     public CmdBoom cmdBoom = new CmdBoom();
@@ -163,8 +165,7 @@ public class FCmdRoot extends FCommand {
         this.setHelpShort("The faction base command");
         this.helpLong.add(p.txt.parseTags("<i>This command contains all faction stuff."));
 
-        //this.subCommands.add(p.cmdHelp);
-
+        this.addSubCommand(this.cmdSetDiscord);
         this.addSubCommand(this.cmdAdmin);
         this.addSubCommand(this.cmdAutoClaim);
         this.addSubCommand(this.cmdBoom);

@@ -334,7 +334,9 @@ public class P extends MPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] split) {
         if (split.length == 0) {
-            return handleCommand(sender, "/f help", false);
+            if (!label.equalsIgnoreCase("ff")) {
+                return handleCommand(sender, "/f help", false);
+            }
         }
 
         // otherwise, needs to be handled; presumably another plugin directly ran the command

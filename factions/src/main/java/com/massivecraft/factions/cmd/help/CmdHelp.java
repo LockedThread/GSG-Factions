@@ -171,7 +171,6 @@ public class CmdHelp extends FCommand {
         pageLines = new ArrayList<>();
         pageLines.add(p.cmdBase.cmdSetMaxTNTBankBalance.getUseageTemplate(true));
         pageLines.add(p.cmdBase.cmdDisband.getUseageTemplate(true));
-        pageLines.add("");
         pageLines.add(p.cmdBase.cmdRelationAlly.getUseageTemplate(true));
         pageLines.add(p.cmdBase.cmdRelationNeutral.getUseageTemplate(true));
         pageLines.add(p.cmdBase.cmdRelationEnemy.getUseageTemplate(true));
