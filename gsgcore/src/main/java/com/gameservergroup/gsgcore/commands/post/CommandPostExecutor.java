@@ -26,7 +26,9 @@ public class CommandPostExecutor implements CommandExecutor {
         if (commandPost != null) {
             try {
                 commandPost.call(sender instanceof Player ? new CommandHandler<>((Player) sender, label, args) : new CommandHandler<>((ConsoleCommandSender) sender, label, args));
-            } catch (CommandParseException | IOException e) {
+            } catch (CommandParseException e) {
+                e.getSenderConsumer().accept(sender);
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {

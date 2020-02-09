@@ -151,6 +151,26 @@ public class ItemStackBuilder {
         return this;
     }
 
+    public ItemStackBuilder replacePlaceholders(String... strings) {
+        if (strings.length == 0) {
+            return this;
+        }
+        return consumeItemMeta(itemMeta -> {
+            itemMeta.setLore(itemMeta.getLore().stream().map(s -> {
+                for (int i = 0; i < strings.length; i += 2) {
+                    s = s.replace(strings[i], strings[i + 1]);
+                }
+                return s;
+            }).collect(Collectors.toList()));
+
+            String displayName = itemMeta.getDisplayName();
+            for (int i = 0; i < strings.length; i += 2) {
+                displayName = displayName.replace(strings[i], strings[i + 1]);
+            }
+            itemMeta.setDisplayName(displayName);
+        });
+    }
+
     public ItemStackBuilder setColor(Color color) {
         return consumeItemMeta(itemMeta -> ((LeatherArmorMeta) itemStack.getItemMeta()).setColor(color));
     }

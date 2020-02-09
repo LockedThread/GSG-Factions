@@ -1098,90 +1098,64 @@ public abstract class MemoryFPlayer implements FPlayer {
 
     @Override
     public boolean canFlyAtLocation(FLocation location) {
-        return canFlyAtLocation(location, true);
+        return canFlyAtLocation(location, false);
     }
 
     @Override
     public boolean canFlyAtLocation(FLocation location, boolean everywhereChecks) {
         Faction faction = Board.getInstance().getFactionAt(location);
-        //System.out.println("MemoryFPlayer.canFlyAtLocation 1");
         if (everywhereChecks) {
             if (P.p.getConfig().getBoolean("f-fly.everywhere.enabled") && Permission.FLY_EVERYWHERE.has(getPlayer())) {
-                //System.out.println("MemoryFPlayer.canFlyAtLocation 2");
                 if (faction.isWilderness()) {
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 3");
                     return P.p.getConfig().getBoolean("f-fly.everywhere.wilderness");
                 } else if (faction.isWarZone()) {
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 4");
                     return P.p.getConfig().getBoolean("f-fly.everywhere.warzone");
                 } else if (faction.isSafeZone()) {
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 5");
                     return P.p.getConfig().getBoolean("f-fly.everywhere.safezone");
                 } else if (faction.getRelationTo(getFaction()) == Relation.ENEMY) {
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 6");
                     return P.p.getConfig().getBoolean("f-fly.everywhere.enemy");
                 } else if (faction.getRelationTo(getFaction()) == Relation.ALLY) {
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 7");
                     return P.p.getConfig().getBoolean("f-fly.everywhere.ally");
                 } else if (faction.getRelationTo(getFaction()) == Relation.NEUTRAL) {
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 8");
                     return P.p.getConfig().getBoolean("f-fly.everywhere.neutral");
                 } else if (faction.getRelationTo(getFaction()) == Relation.TRUCE) {
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 9");
                     return P.p.getConfig().getBoolean("f-fly.everywhere.truce");
                 } else if (faction.getRelationTo(getFaction()) == Relation.MEMBER) {
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 10");
                     return P.p.getConfig().getBoolean("f-fly.everywhere.member");
                 }
-                //System.out.println("MemoryFPlayer.canFlyAtLocation 11");
             } else if (faction.isWilderness()) {
-                //System.out.println("MemoryFPlayer.canFlyAtLocation 12");
-                //System.out.println("Permission.FLY_WILDERNESS.has(getPlayer()) = " + Permission.FLY_WILDERNESS.has(getPlayer()));
                 return Permission.FLY_WILDERNESS.has(getPlayer());
             } else if (faction.isSafeZone()) {
-                //System.out.println("MemoryFPlayer.canFlyAtLocation 13");
                 return Permission.FLY_SAFEZONE.has(getPlayer());
             } else if (faction.isWarZone()) {
-                //System.out.println("MemoryFPlayer.canFlyAtLocation 14");
                 return Permission.FLY_WARZONE.has(getPlayer());
             }
         }
-        //System.out.println("MemoryFPlayer.canFlyAtLocation 15");
         // Admins can always fly in their territory.
         // admin bypass (ops) can fly as well.
         if (isAdminBypassing || (faction == getFaction() && getRole().isAtLeast(Role.COLEADER))) {
-            //System.out.println("MemoryFPlayer.canFlyAtLocation 16");
             return true;
         }
 
         Access access = faction.getAccess(this, PermissableAction.FLY);
 
         if (access == null || access == Access.UNDEFINED) {
-            //System.out.println("MemoryFPlayer.canFlyAtLocation 17");
             // If access is null or undefined, we'll default to the conf.json
             switch (faction.getRelationTo(getFaction())) {
                 case ENEMY:
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 18");
                     return Conf.defaultFlyPermEnemy;
                 case ALLY:
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 19");
                     return Conf.defaultFlyPermAlly;
                 case NEUTRAL:
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 20");
                     return Conf.defaultFlyPermNeutral;
                 case TRUCE:
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 21");
                     return Conf.defaultFlyPermTruce;
                 case MEMBER:
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 22");
                     return Conf.defaultFlyPermMember;
                 default:
-                    //System.out.println("MemoryFPlayer.canFlyAtLocation 23");
                     return false; // should never reach.
             }
         }
-        //System.out.println("MemoryFPlayer.canFlyAtLocation 24");
-        //System.out.println("access = " + access);
         return access == Access.ALLOW;
     }
 

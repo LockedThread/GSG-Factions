@@ -7,16 +7,91 @@
 
 faction-chest-title: '&eFaction Chest'
 
-faction-missions:
-  menus:
-    root:
-      name: '&cFactio Missions'
-      size: 27
-      fill:
-        enabled: true
-        color: 'BLACK'
-        enchanted: true
-      items:
+force-invites-enabled: true
+draining-enabled: true
+
+faction-shields:
+  enabled: true
+
+  players-can-configure: true
+
+  shield-time: 8
+  main-menu:
+    name: '&cFaction Shield Control'
+    size: 27
+    fill:
+      enabled: true
+      fill-mode: 'CHECKERED'
+      colors:
+        - 'GRAY'
+        - 'RED'
+    configure-item:
+      slot: 11
+      name: '&aConfigure Your Shield'
+      material: 'REDSTONE_BLOCK'
+      lore:
+        - ''
+        - '&fClick to select the time'
+        - "&ffor your faction's shield"
+        - ''
+    information-item:
+      slot: 15
+      name: '&3Shield Information'
+      material: 'PAPER'
+      lore:
+        - ''
+        - '&fLast shield change: &a{last-shield-change}'
+        - '&fTime remaining: {time-remaining}'
+        - ''
+      format:
+        time: 'yyyy-MM-dd-HH:mm:ss'
+        never: '&cNever'
+        inactive: '&c&nShield Inactive'
+  configure-menu:
+    name: '&cFaction Shield Configuration'
+    size: 54
+    fill:
+      enabled: true
+      fill-mode: 'SOLID'
+      color: 'BLACK'
+    shield-item:
+      slot-array:
+        - 10
+        - 11
+        - 12
+        - 13
+        - 14
+        - 15
+        - 16
+        - 19
+        - 20
+        - 21
+        - 22
+        - 23
+        - 24
+        - 25
+        - 28
+        - 29
+        - 30
+        - 31
+        - 32
+        - 33
+        - 34
+        - 37
+        - 38
+        - 39
+        - 40
+        - 41
+        - 42
+        - 43
+        - 44
+      name: '&3{time-start}-{time-end} EST'
+      material: 'BANNER'
+      lore:
+        - ''
+        - '&eClick here to select &3{time-start}-{time-end} as'
+        - '&eyour designated faction shield time'
+        - ''
 
 faction-upgrades:
   enabled: true
@@ -722,6 +797,8 @@ show:
   - '<a>Joining: <i>{joining}    {peaceful}'
   - '<a>Land / Power / Maxpower: <i> {chunks}/{power}/{maxPower}'
   - '<a>Founded: <i>{create-date}'
+  - '<a>Shield: <i>{faction-shield}'
+  - '<a>Discord: <i>{faction-discord-invite}'
   - '<a>This faction is permanent, remaining even with no members.' # only shows if faction is permanent
   - '<a>Land value: <i>{land-value} {land-refund}'
   - '<a>Balance: <i>{faction-balance}'
@@ -938,6 +1015,7 @@ fperm-gui:
       tag: 32
       inspect: 33
       alts: 34
+      f-drain-toggle: 35
       # Material to show, if the material isf-fly colorable eg: Wool, Stained Clay it will update with it's access color
     materials:
       build: STAINED_CLAY
@@ -966,6 +1044,7 @@ fperm-gui:
       tag: STAINED_CLAY
       inspect: STAINED_CLAY
       alts: STAINED_CLAY
+      f-drain-toggle: STAINED_CLAY
     # Same dummy items format as above
     dummy-items:
       '0':

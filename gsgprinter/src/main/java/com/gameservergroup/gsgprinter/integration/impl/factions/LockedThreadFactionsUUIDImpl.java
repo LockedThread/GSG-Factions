@@ -32,6 +32,7 @@ public class LockedThreadFactionsUUIDImpl implements FactionsIntegration {
                 .post(GSGPrinter.getInstance());
 
         EventPost.of(FPlayerLeaveEvent.class)
+                .filter(event -> event.getfPlayer() != null && event.getfPlayer().isOnline())
                 .handle(event -> GSGPrinter.getInstance().getUnitPrinter().disablePrinter(event.getfPlayer().getPlayer(), true))
                 .post(GSGPrinter.getInstance());
 

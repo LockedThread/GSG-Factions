@@ -39,7 +39,6 @@ public class Bot {
         this.entityLocation = BlockPosition.of(location);
 
         this.entityBot = new EntityBot(((CraftWorld) location.getWorld()).getHandle());
-        //this.entityBot.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         this.entityBot.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         ((CraftWorld) location.getWorld()).getHandle().addEntity(entityBot, CreatureSpawnEvent.SpawnReason.CUSTOM);
         this.entityBot.update(player, 0);
@@ -72,10 +71,12 @@ public class Bot {
         for (int x = entityLocation.getX() - SEARCH_RADIUS; x < entityLocation.getX() + SEARCH_RADIUS; x++) {
             for (int z = entityLocation.getZ() - SEARCH_RADIUS; z < entityLocation.getZ() + SEARCH_RADIUS; z++) {
                 Block blockAt = world.getBlockAt(x, entityLocation.getY(), z);
-                if (set == null) {
-                    set = new HashSet<>();
+                if (blockAt.getType() == SEARCH_MATERIAL) {
+                    if (set == null) {
+                        set = new HashSet<>();
+                    }
+                    set.add(blockAt);
                 }
-                set.add(blockAt);
             }
         }
         return set == null ? null : ImmutableSet.copyOf(set);

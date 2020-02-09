@@ -29,4 +29,12 @@ public class ImmutablePair<K, V> implements Pair<K, V> {
     public void setValue(V value) {
         throw new UnsupportedOperationException("This pair is immutable and therefore the fields can't be changed.");
     }
+
+    @Override
+    public String toString() {
+        return "ImmutablePair{" +
+                "key=" + key +
+                ", value=" + value +
+                '}';
+    }
 }

@@ -1,7 +1,8 @@
+import com.gameservergroup.gsgcore.utils.TimeUtil;
 import com.massivecraft.factions.zcore.factionshields.FactionShield;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -36,6 +37,8 @@ public class TimeTest {
 
         int currentHour = getCurrentHour();
 
+        System.out.println("currentHour = " + currentHour);
+
         System.out.println("ZERO_TO_EIGHT.isInBetween(currentHour) = " + ZERO_TO_EIGHT.isInBetween(null, currentHour));
 
         System.out.println("TWENTY_TO_FOUR.isInBetween(currentHour) = " + TWENTY_TO_FOUR.isInBetween(null, currentHour));
@@ -60,19 +63,47 @@ public class TimeTest {
     }
 
     @Test
+    public void testHunterTime() {
+        FactionShield shield = new FactionShield(5, 13);
+
+        System.out.println("getCurrentHour() = " + getCurrentHour());
+
+        System.out.println("shield = " + shield);
+        System.out.println("shield.isInBetween(null) = " + shield.isInBetween(null));
+    }
+
+    @Test
     public void testShieldTimes() {
         int shieldTime = 8;
-        final FactionShield[] FACTION_SHIELDS = new FactionShield[(shieldTime * 3) + 1];
 
-        for (int i = 0; i < FACTION_SHIELDS.length; i++) {
-            FACTION_SHIELDS[i] = new FactionShield(i, i + shieldTime);
+        ArrayList<FactionShield> factionShields = new ArrayList<>();
+
+        int index = 0;
+        while (index != 24) {
+            if (shieldTime + index > 24) {
+                factionShields.add(new FactionShield(index, (index + shieldTime) - 24));
+            } else {
+                factionShields.add(new FactionShield(index, index + shieldTime));
+            }
+            index++;
         }
 
-        for (FactionShield factionShield : FACTION_SHIELDS) {
+        for (FactionShield factionShield : factionShields) {
             System.out.println("factionShield.getFormattedTime() = " + factionShield.getFormattedTime());
+            System.out.println("factionShield.isInBetween(null) = " + factionShield.isInBetween(null));
+            long timeLeft = factionShield.getTimeLeft();
+            System.out.println("factionShield.getTimeLeft() = " + timeLeft);
+            if (timeLeft != -1) {
+                if (timeLeft < 60) {
+                    timeLeft = Math.abs(timeLeft - 60) * 60;
+                } else {
+                    timeLeft *= 60;
+                }
+                System.out.println("TimeUtil.toLongForm(factionShield.getTimeLeft()) = " + TimeUtil.toLongForm(timeLeft));
+            }
         }
 
-        System.out.println(Arrays.deepToString(FACTION_SHIELDS));
+        System.out.println(factionShields);
 
     }
 

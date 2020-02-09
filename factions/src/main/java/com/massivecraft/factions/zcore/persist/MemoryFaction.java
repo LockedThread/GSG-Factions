@@ -85,6 +85,8 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
 
     protected transient WarpMenu warpMenu;
     protected transient FactionUpgradeMenu factionUpgradeMenu;
+    protected transient Set<String> focusedPlayers;
+    protected transient FPlayer leader;
 
     // -------------------------------------------- //
     // Construct
@@ -151,6 +153,23 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
         this.checkReminderMinutes = 0;
         this.upgradeMap = new EnumMap<>(FactionUpgrade.class);
         resetPerms(); // Reset on new Faction so it has default values.
+    }
+
+    @Override
+    public Set<String> getFocusedPlayers() {
+        return focusedPlayers;
+    }
+
+    @Override
+    public void addFocusedPlayer(String uuid) {
+        (focusedPlayers == null ? focusedPlayers = new HashSet<>() : focusedPlayers).add(uuid);
+    }
+
+    @Override
+    public void removeFocusedPlayer(String player) {
+        if (focusedPlayers != null) {
+            focusedPlayers.remove(player);
+        }
     }
 
     @Override
@@ -959,12 +978,11 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
             return null;
         }
 
-        for (FPlayer fplayer : fplayers) {
-            if (fplayer.getRole() == Role.ADMIN) {
-                return fplayer;
-            }
+        if (this.leader == null) {
+            return leader = fplayers.stream().filter(fPlayer -> fPlayer.getRole() == Role.ADMIN).findFirst().get();
+        } else {
+            return leader;
         }
-        return null;
     }
 
     public ArrayList<FPlayer> getFPlayersWhereRole(Role role) {
@@ -1073,7 +1091,7 @@ public abstract class MemoryFaction implements Faction, EconomyParticipator {
                 fplayer.setRole(Role.COLEADER);
             }
 
-            replacements.get(0).setRole(Role.ADMIN);
+            (leader = replacements.get(0)).setRole(Role.ADMIN);
             this.msg("<i>Faction admin <h>%s<i> has been removed. %s<i> has been promoted as the new faction admin.", oldLeader == null ? "" : oldLeader.getName(), replacements.get(0).getName());
             P.p.log("Faction " + this.getTag() + " (" + this.getId() + ") admin was removed. Replacement admin: " + replacements.get(0).getName());
         }

@@ -30,6 +30,10 @@ public enum TL {
      * LockedThread's ADDITIONS
      */
 
+    COMMAND_FOCUS_DESCRIPTION("Focuses and unfocuses your faction on a player"),
+    COMMAND_FOCUS_INFO("&eFocused Players: &f%1$s"),
+    COMMAND_FOCUS_FOCUSED("&aYou have focused your faction on &f%1$s"),
+    COMMAND_FOCUS_UNFOCUSED("&cYou have unfocused your faction on &f%1$s"),
 
     COMMAND_SHIELD_DESCRIPTION("Manages faction shields"),
 

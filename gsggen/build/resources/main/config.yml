@@ -7,7 +7,13 @@
 #Interval in which gens flow in ticks, 20tps = 20 ticks per second therefore around 1 gen per second by default.
 interval: 40
 
-async-enabled: true
+async:
+  enabled: true
+  threads: 2
+
+enemy-check:
+  enabled: true
+  distance: 8
 
 enable-combattagplus-integration: true
 #May cause issues with minecraft clients, this is not fixable without causing mas amount of ItemStack instantiations.

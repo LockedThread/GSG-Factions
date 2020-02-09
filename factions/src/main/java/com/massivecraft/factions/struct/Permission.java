@@ -123,7 +123,8 @@ public enum Permission {
     DRAIN_BYPASS("drain.bypass"),
     SHIELD("shield"),
     SHIELD_ACTIVATE("shield.activate"),
-    SET_DISCORD("setdiscord");
+    SET_DISCORD("setdiscord"),
+    FOCUS("focus");
 
     public final String node;
 

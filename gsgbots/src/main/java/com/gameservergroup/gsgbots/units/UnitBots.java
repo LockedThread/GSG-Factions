@@ -28,6 +28,7 @@ public class UnitBots extends Unit {
                     if (bot != null) {
                         event.getPlayer().openInventory(bot.getMenuBot().getInventory());
                     }
+                    event.setCancelled(true);
                 }).post(GSGBots.getInstance());
 
         CustomItem.of(GSGBots.getInstance(), GSGBots.getInstance().getConfig().getConfigurationSection("bot-egg-item")).setInteractEventConsumer(event -> {

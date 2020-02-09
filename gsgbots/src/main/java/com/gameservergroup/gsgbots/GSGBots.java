@@ -25,6 +25,7 @@ public class GSGBots extends Module {
 
         EntityBot.setVillagerProfession(Villager.Profession.valueOf(getConfig().getString("bot.entity.villager-profession")));
         EntityBot.registerEntityBot();
+        MenuBot.MenuItems.init();
         Bot.setSearchMaterial(Material.matchMaterial(getConfig().getString("bot.search-material")));
         Bot.setSearchRadius(getConfig().getInt("bot.search-radius"));
         MenuBot.setSandPrice(getConfig().getDouble("bot.sand-price"));

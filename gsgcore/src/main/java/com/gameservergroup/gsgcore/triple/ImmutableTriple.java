@@ -42,4 +42,13 @@ public class ImmutableTriple<L, M, R> implements Triple<L, M, R> {
     public void setRight(R r) {
         throw new UnsupportedOperationException("This pair is immutable and therefore the fields can't be changed.");
     }
+
+    @Override
+    public String toString() {
+        return "ImmutableTriple{" +
+                "left=" + left +
+                ", middle=" + middle +
+                ", right=" + right +
+                '}';
+    }
 }

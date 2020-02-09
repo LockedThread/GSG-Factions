@@ -53,6 +53,14 @@ public class MenuItem implements Cloneable {
     }
 
     @Override
+    public String toString() {
+        return "MenuItem{" +
+                "itemStack=" + itemStack +
+                ", inventoryClickEventConsumer=" + inventoryClickEventConsumer +
+                '}';
+    }
+
+    @Override
     public MenuItem clone() {
         try {
             return (MenuItem) super.clone();

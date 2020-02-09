@@ -11,15 +11,14 @@ import java.util.function.Predicate;
 public class EventPost<T extends Event> {
 
     private boolean disabled = false;
-    private Class<T> eventClass;
+    private final Class<T> eventClass;
+    private final EventPriority eventPriority;
     private LinkedList<Predicate<T>> filters;
-    private EventPriority eventPriority;
     private Consumer<T> eventConsumer;
 
     private EventPost(Class<T> eventClass, EventPriority eventPriority) {
         this.eventClass = eventClass;
         this.eventPriority = eventPriority;
-        this.filters = new LinkedList<>();
     }
 
     public static <T extends Event> EventPost<T> of(Class<T> eventClass, EventPriority eventPriority) {
@@ -31,6 +30,9 @@ public class EventPost<T extends Event> {
     }
 
     public EventPost<T> filter(Predicate<T> event) {
+        if (filters == null) {
+            filters = new LinkedList<>();
+        }
         filters.add(event);
         return this;
     }
@@ -56,10 +58,6 @@ public class EventPost<T extends Event> {
 
     EventPriority getEventPriority() {
         return eventPriority;
-    }
-
-    public void setEventPriority(EventPriority eventPriority) {
-        this.eventPriority = eventPriority;
     }
 
     Consumer<T> getEventConsumer() {

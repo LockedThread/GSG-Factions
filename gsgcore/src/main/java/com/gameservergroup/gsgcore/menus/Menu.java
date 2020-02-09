@@ -27,7 +27,7 @@ public abstract class Menu implements InventoryHolder {
     private Consumer<InventoryCloseEvent> inventoryCloseEventConsumer;
     private Inventory inventory;
     private final Int2ObjectOpenHashMap<MenuItem> menuItems;
-    private final FillOptions fillOptions;
+    private FillOptions fillOptions;
 
     public Menu(String name, int size, FillOptions fillOptions) {
         this.inventory = Bukkit.createInventory(this, size, Text.toColor(name));
@@ -45,13 +45,39 @@ public abstract class Menu implements InventoryHolder {
         if (fillOptions != null) {
             switch (fillOptions.getFillMode()) {
                 case CHECKERED:
-                    for (int i = 0; i < fillOptions.getDyeColorsList().size(); i++) {
-                        DyeColor dyeColor = fillOptions.getDyeColorsList().get(i);
-                        setItem(getInventory().firstEmpty(), ItemStackBuilder.of(Material.STAINED_GLASS_PANE).setDyeColor(dyeColor).setDisplayName("").build());
-                        if (i == fillOptions.getDyeColorsList().size() - 1 && getInventory().firstEmpty() != -1) {
-                            i = 0;
+                    int flipFlopInt = 0;
+                    for (int i = 0; i < getInventory().getContents().length; i++) {
+                        ItemStack content = getInventory().getContents()[i];
+                        if (content == null || content.getType() == Material.AIR) {
+                            DyeColor dyeColor = fillOptions.getDyeColorsList().get(flipFlopInt);
+                            setItem(i, ItemStackBuilder.of(Material.STAINED_GLASS_PANE).setDyeColor(dyeColor).setDisplayName(" ").build());
+                        }
+                        if (flipFlopInt == fillOptions.getDyeColorsList().size() - 1) {
+                            flipFlopInt = 0;
+                        } else {
+                            flipFlopInt++;
                         }
                     }
+                    /*
+                    int a = 0;
+                    while ((firstEmpty = getInventory().firstEmpty()) != -1) {
+                        int difference = firstEmpty - lastSlot;
+                        if (difference > 1) {
+                            if (difference > fillOptions.getDyeColorsList().size()) {
+                                a = difference % fillOptions.getDyeColorsList().size() - 1;
+                            } else {
+                                a = difference - 1;
+                            }
+                        }
+                        DyeColor dyeColor = fillOptions.getDyeColorsList().get(a);
+                        setItem(firstEmpty, ItemStackBuilder.of(Material.STAINED_GLASS_PANE).setDyeColor(dyeColor).setDisplayName(" ").build());
+                        if (a == fillOptions.getDyeColorsList().size() - 1) {
+                            a = 0;
+                        } else {
+                            a++;
+                        }
+                        lastSlot = firstEmpty;
+                    }*/
                     break;
                 case RANDOM:
                     if (fillOptions.getDyeColorsList().size() == 0) {
@@ -60,13 +86,13 @@ public abstract class Menu implements InventoryHolder {
                         while (getInventory().firstEmpty() != -1) {
                             setItem(getInventory().firstEmpty(), ItemStackBuilder.of(Material.STAINED_GLASS_PANE)
                                     .setDyeColor(fillOptions.getDyeColorsList().get(GSGCore.getInstance().getRandom().nextInt(fillOptions.getDyeColorsList().size())))
-                                    .setDisplayName("")
+                                    .setDisplayName(" ")
                                     .build());
                         }
                         break;
                     }
                 case SOLID:
-                    final ItemStack itemStack = ItemStackBuilder.of(Material.STAINED_GLASS_PANE).setDyeColor(fillOptions.getDyeColor()).setDisplayName("").build();
+                    final ItemStack itemStack = ItemStackBuilder.of(Material.STAINED_GLASS_PANE).setDyeColor(fillOptions.getDyeColor()).setDisplayName(" ").build();
                     while (getInventory().firstEmpty() != -1) {
                         setItem(getInventory().firstEmpty(), itemStack);
                     }
@@ -75,6 +101,13 @@ public abstract class Menu implements InventoryHolder {
         }
     }
 
+    public final FillOptions getFillOptions() {
+        return fillOptions;
+    }
+
+    public final void setFillOptions(FillOptions fillOptions) {
+        this.fillOptions = fillOptions;
+    }
 
     public final Optional<MenuItem> getMenuItem(int slot) {
         return Optional.ofNullable(menuItems.get(slot));

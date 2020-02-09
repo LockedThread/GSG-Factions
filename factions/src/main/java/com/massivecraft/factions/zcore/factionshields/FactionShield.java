@@ -7,7 +7,7 @@ import java.util.TimeZone;
 
 public final class FactionShield {
 
-    private static Calendar CURRENT_CALENDAR = Calendar.getInstance(TimeZone.getTimeZone("America/New_York"));
+    private final static transient Calendar CURRENT_CALENDAR = Calendar.getInstance(TimeZone.getTimeZone("America/New_York"));
 
     private final int minHour, maxHour;
 

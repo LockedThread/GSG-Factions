@@ -36,9 +36,11 @@ public class EventPostExecutor<T extends Event> implements EventExecutor, Listen
         if (!event.getClass().equals(eventPost.getEventClass())) {
             return;
         }
-        for (Predicate<T> filter : eventPost.getFilters()) {
-            if (!filter.test((T) event)) {
-                return;
+        if (eventPost.getFilters() != null) {
+            for (Predicate<T> filter : eventPost.getFilters()) {
+                if (!filter.test((T) event)) {
+                    return;
+                }
             }
         }
         T eventInstance = (T) eventPost.getEventClass().cast(event);

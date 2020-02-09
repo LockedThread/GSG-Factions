@@ -46,8 +46,12 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -95,7 +99,19 @@ public class P extends MPlugin {
             return;
         }
         this.loadSuccessful = false;
-        saveDefaultConfig();
+
+        if (!getDataFolder().exists())
+            getDataFolder().mkdir();
+
+        File file = new File(getDataFolder(), "config.yml");
+
+        if (!file.exists()) {
+            try (InputStream in = getClass().getClassLoader().getResourceAsStream("config.yml")) {
+                Files.copy(in, file.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         // Load Conf from disk
         Conf.load();
@@ -229,13 +245,18 @@ public class P extends MPlugin {
 
     @Override
     public void disable() {
+        boolean save = false;
         if (getConfig().getBoolean("lock.enabled") != locked) {
             getConfig().set("lock.enabled", locked);
+            save = true;
         }
         if (getConfig().getBoolean("sotw") != sotw) {
             getConfig().set("sotw", sotw);
+            save = true;
         }
-        saveConfig();
+        if (save) {
+            saveConfig();
+        }
         if (this.loadSuccessful) {
             Conf.lastDayServerStarted = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
             Conf.save();

@@ -32,11 +32,9 @@ public class UnitGen extends Unit {
     private Map<Generation, Boolean> generations;
     private HashMap<String, Gen> genHashMap = new HashMap<>();
 
-    private JsonFile<Set<Generation>> generationJsonFile;
-
     public void setup() {
         load();
-        this.generationJsonFile = new JsonFile<>(GSG_GEN.getDataFolder(), "gens.json", new TypeToken<Set<Generation>>() {
+        JsonFile<Set<Generation>> generationJsonFile = new JsonFile<>(GSG_GEN.getDataFolder(), "gens.json", new TypeToken<Set<Generation>>() {
         });
         Optional<Set<Generation>> load = generationJsonFile.load();
         if (load.isPresent()) {

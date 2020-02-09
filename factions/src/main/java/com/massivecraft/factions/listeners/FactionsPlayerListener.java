@@ -644,7 +644,6 @@ public class FactionsPlayerListener implements Listener {
                     }
                 }
                 boolean canFly = me.canFlyAtLocation();
-                //System.out.println("canFly = " + canFly);
                 if (me.isFlying() && !canFly) {
                     me.setFlying(false);
                 } else if (!me.isFlying() && canFly) {

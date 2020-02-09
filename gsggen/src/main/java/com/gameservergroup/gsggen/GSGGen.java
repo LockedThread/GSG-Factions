@@ -13,6 +13,9 @@ import org.bukkit.ChunkSnapshot;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class GSGGen extends Module {
 
     private static GSGGen instance;
@@ -48,11 +51,38 @@ public class GSGGen extends Module {
                 getConfig().set("messages." + genMessages.getKey(), genMessages.getMessage());
             }
         }
-        Generation.ASYNC = getConfig().getBoolean("async-enabled", true);
+        Generation.ASYNC = getConfig().getBoolean("async.enabled", true);
         registerUnits(unitGen = new UnitGen());
         this.genMenu = new GenMenu();
         if (Generation.ASYNC) {
-            getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
+            ExecutorService executorService = Executors.newFixedThreadPool(getConfig().getInt("async.threads", 2));
+            getServer().getScheduler().runTaskTimer(this, () -> executorService.submit(() -> {
+                for (Generation generation : unitGen.getGenerations().keySet()) {
+                    BlockPosition currentBlockPosition = generation.getCurrentBlockPosition();
+                    if (currentBlockPosition.isChunkLoaded()) {
+                        if (generation.isVertical()) {
+                            if (!generation.generateVertical()) {
+                                unitGen.getGenerations().remove(generation);
+                            }
+                        } else {
+                            doGenerationChecks(generation, currentBlockPosition);
+                        }
+                    } else if (generation.isVertical()) {
+                        currentBlockPosition.loadChunkAsync(chunk -> {
+                            if (!generation.generateVertical()) {
+                                unitGen.getGenerations().remove(generation);
+                            }
+                        });
+                    } else {
+                        currentBlockPosition.loadChunkAsync(chunk -> doGenerationChecks(generation, currentBlockPosition));
+                    }
+                }
+            }), getConfig().getLong("interval"), getConfig().getLong("interval"));
+        } else {
+            getServer().getScheduler().runTaskTimer(this, () -> unitGen.getGenerations().keySet().removeIf(generation -> generation.isVertical() ? !generation.generateVertical() : !generation.generateHorizontal(null)), getConfig().getLong("interval"), getConfig().getLong("interval"));
+
+        }
+            /*getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
                 for (Generation generation : unitGen.getGenerations().keySet()) {
                     BlockPosition currentBlockPosition = generation.getCurrentBlockPosition();
                     if (currentBlockPosition.isChunkLoaded()) {
@@ -108,12 +138,12 @@ public class GSGGen extends Module {
                                 unitGen.getGenerations().remove(generation);
                             }
                         }
-                    }*/
+                    }
                 }
             }, getConfig().getLong("interval"), getConfig().getLong("interval"));
         } else {
             getServer().getScheduler().runTaskTimer(this, () -> unitGen.getGenerations().keySet().removeIf(generation -> generation.isVertical() ? !generation.generateVertical() : !generation.generateHorizontal(null)), getConfig().getLong("interval"), getConfig().getLong("interval"));
-        }
+        }*/
     }
 
     private void doGenerationChecks(Generation generation, BlockPosition currentBlockPosition) {

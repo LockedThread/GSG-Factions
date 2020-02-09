@@ -65,7 +65,7 @@ public class CmdDisband extends FCommand {
         for (FPlayer fplayer : faction.getFPlayers()) {
             Bukkit.getServer().getPluginManager().callEvent(new FPlayerLeaveEvent(fplayer, faction, FPlayerLeaveEvent.PlayerLeaveReason.DISBAND));
 
-            // Remove faction impl for all players in this Faction
+            // Remove faction fly for all players in this Faction
             fplayer.setFFlying(false, false);
         }
 

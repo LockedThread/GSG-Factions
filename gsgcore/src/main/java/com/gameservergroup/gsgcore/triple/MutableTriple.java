@@ -41,4 +41,13 @@ public class MutableTriple<L, M, R> implements Triple<L, M, R> {
     public void setRight(R right) {
         this.right = right;
     }
+
+    @Override
+    public String toString() {
+        return "MutableTriple{" +
+                "left=" + left +
+                ", middle=" + middle +
+                ", right=" + right +
+                '}';
+    }
 }

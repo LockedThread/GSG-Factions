@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation 'org.jetbrains:annotations:15.0'
 }
 
 ext.libs = [
@@ -27,7 +28,10 @@ ext.libs = [
         'essentials'        : 'net.ess3:EssentialsX:2.16.1',
         'clipplaceholderapi': 'me.clip:placeholderapi:2.9.2',
         'askyblock'         : 'com.wasteofplastic:askyblock:3.0.8.2',
-        'fabledskyblock'    : 'com.goodandevil.skyblock:FabledSkyBlock:Build-78.5'
+        'fabledskyblock'    : 'com.goodandevil.skyblock:FabledSkyBlock:Build-78.5',
+        'epicspawners'      : 'com.songoda:epicspawners:1.0',
+        'bstats'            : 'org.bstats:bstats-bukkit:1.5',
+        'combatlogx'        : 'com.SirBlobman.combatlogx:CombatLogX-API:9.0.0.0'
 ]
 
 allprojects {
@@ -60,8 +64,14 @@ project(":gsgcore") {
     }
 
     dependencies {
+        compile 'me.lucko:sql-streams:1.0.0'
+        compile 'org.jetbrains:annotations:16.0.2'
         compile 'it.unimi.dsi:fastutil:8.2.3'
         compile 'it.unimi.dsi:dsiutils:2.5.4'
+        compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.5.3'
+        compile(group: 'com.zaxxer', name: 'HikariCP', version: '3.4.2') {
+            exclude group: 'org.slf4j', module: 'slf4j-api'
+        }
         implementation libs.worldguard
         implementation libs.vault
         implementation(group: 'net.techcable.tacospigot', name: 'server', version: '1.8.8-R0.2-SNAPSHOT') {
@@ -76,10 +86,15 @@ project(":gsgcore") {
             //noinspection GroovyAssignabilityCheck
             include(dependency('it.unimi.dsi:fastutil:8.2.3'))
             include(dependency('it.unimi.dsi:dsiutils:2.5.4'))
+            include(dependency(group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.5.3'))
+            include(dependency(group: 'com.zaxxer', name: 'HikariCP', version: '3.4.2'))
             //noinspection GroovyAssignabilityCheck
             exclude(dependency('net.techcable.tacospigot:server:1.8.8-R0.2-SNAPSHOT'))
         }
+        relocate 'com.zaxxer', 'com.gameservergroup.gsgcore.relocations.com.zaxxer'
+        relocate 'org.mariadb.jdbc', 'com.gameservergroup.gsgcore.relocations.org.mariadb.jdbc'
         relocate 'it.unimi.dsi', 'com.gameservergroup.gsgcore.relocations'
+        relocate 'org.bstats', 'com.gameservergroup.gsgcore.relocations.org.bstats'
     }
 
     artifacts {
@@ -111,16 +126,12 @@ project(':gsgcollectors') {
         implementation libs.mcmmo
         implementation libs.askyblock
         implementation libs.fabledskyblock
+        implementation libs.epicspawners
     }
 }
 
 project(':gsgprinter') {
     dependencies {
-        repositories {
-            mavenCentral()
-            mavenLocal()
-            jcenter()
-        }
         compile(group: 'net.techcable.tacospigot', name: 'server', version: '1.8.8-R0.2-SNAPSHOT') {
             exclude group: 'it.unimi.dsi'
         }
@@ -130,6 +141,7 @@ project(':gsgprinter') {
         implementation libs.shopguiplus
         implementation libs.essentials
         implementation libs.combattagplus
+        implementation libs.combatlogx
     }
 }
 

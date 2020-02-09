@@ -130,6 +130,33 @@ public class UnitCollectors extends Unit {
                     }).post(GSG_COLLECTORS);
         }
 
+/*        CommandPost.create()
+                .builder()
+                .assertPlayer()
+                .assertPermission("gsgcollectors.admin")
+                .handler(c -> {
+                    if (c.getRawArgs().length == 0) {
+                        c.reply("\n/collectoradmin debug\n");
+                    } else if (c.getRawArgs().length == 1) {
+                        if (c.getRawArg(0).equalsIgnoreCase("debug")) {
+                            Collector collector = getCollector(c.getSender().getLocation());
+                            if (collector != null) {
+                                c.reply("&ecollector=" + collector.toString());
+                                EnumMap<EntityType, Integer> entityTypeIntegerMap = new EnumMap<>(EntityType.class);
+                                for (BlockState tileEntity : c.getSender().getLocation().getChunk().getTileEntities()) {
+                                    if (tileEntity instanceof CreatureSpawner) {
+                                        EntityType spawnedType = (((CreatureSpawner) tileEntity)).getSpawnedType();
+                                        entityTypeIntegerMap.computeIfPresent(spawnedType, (entityType, integer) -> integer + 1);
+                                        entityTypeIntegerMap.putIfAbsent(spawnedType, 1);
+                                    }
+                                }
+                            } else {
+                                c.reply("&cThere is no collector in this chunk!");
+                            }
+                        }
+                    }
+                }).post(GSG_COLLECTORS, "collectoradmin");*/
+
         this.jsonFile = new JsonFile<>(GSG_COLLECTORS.getDataFolder(), "collectors.json", new TypeToken<HashMap<ChunkPosition, Collector>>() {
         });
         this.collectorHashMap = jsonFile.load().orElse(new HashMap<>());

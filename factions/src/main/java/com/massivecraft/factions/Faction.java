@@ -25,11 +25,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public interface Faction extends EconomyParticipator {
 
-    String getDiscord();
-
     /**
      * LockedThread's ADDITIONS
      */
+
+    Set<String> getFocusedPlayers();
+
+    void addFocusedPlayer(String player);
+
+    void removeFocusedPlayer(String player);
+
+    String getDiscord();
 
     void setDiscord(String discord);
 

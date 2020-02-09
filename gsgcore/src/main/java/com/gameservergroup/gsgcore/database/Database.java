@@ -1,38 +1,40 @@
 package com.gameservergroup.gsgcore.database;
 
-import com.gameservergroup.gsgcore.database.types.JsonDatabase;
-import com.gameservergroup.gsgcore.database.types.MySQLDatabase;
-import com.gameservergroup.gsgcore.database.types.RedisDatabase;
-import com.gameservergroup.gsgcore.database.types.YMLDatabase;
+public abstract class Database {
 
-import java.io.IOException;
+    private final int port;
+    private final String address;
+    private final DatabaseType databaseType;
 
-public interface Database {
+    public Database(int port, String address, DatabaseType databaseType) {
+        this.port = port;
+        this.address = address;
+        this.databaseType = databaseType;
+    }
 
-    @SuppressWarnings("unchecked")
-    static <T extends AbstractDatabase> T create(Class<T> databaseClass) {
-        if (databaseClass.equals(JsonDatabase.class)) {
-            return (T) new JsonDatabase<>();
-        } else if (databaseClass.equals(YMLDatabase.class)) {
-            return (T) new YMLDatabase();
-        } else if (databaseClass.equals(MySQLDatabase.class)) {
-            return (T) new MySQLDatabase();
-        } else if (databaseClass.equals(RedisDatabase.class)) {
-            return (T) new RedisDatabase();
+    public abstract boolean connect() throws Exception;
+
+    public abstract void disconnect() throws Exception;
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public DatabaseType getDatabaseType() {
+        return databaseType;
+    }
+
+    public enum DatabaseType {
+        MYSQL(3306), SQL_LITE(3306), REDIS(6379);
+
+        final int defaultPort;
+
+        DatabaseType(int defaultPort) {
+            this.defaultPort = defaultPort;
         }
-        return null;
     }
-
-    void connect() throws IOException;
-
-    void disconnect();
-
-    default void load() {
-
-    }
-
-    default void unload() {
-    }
-
-
 }

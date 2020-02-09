@@ -1,6 +1,7 @@
 package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.Board;
+import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.P;
 import com.massivecraft.factions.struct.Permission;
@@ -67,8 +68,10 @@ public class CmdFly extends FCommand {
         }
 
         // Do checks if true
-        if (!fme.canFlyAtLocation()) {
-            Faction factionAtLocation = Board.getInstance().getFactionAt(fme.getLastStoodAt());
+        FLocation loc = new FLocation(me.getLocation());
+        boolean canFlyAtLocation = fme.canFlyAtLocation(loc);
+        if (!canFlyAtLocation) {
+            Faction factionAtLocation = Board.getInstance().getFactionAt(loc);
             fme.msg(TL.COMMAND_FLY_NO_ACCESS, factionAtLocation.getTag(fme));
             return;
         } else if (TaskFlight.instance().enemiesTask.enemiesNearby(fme, P.p.getConfig().getInt("f-fly.enemy-radius", 7))) {

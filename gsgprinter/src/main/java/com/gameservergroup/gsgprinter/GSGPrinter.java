@@ -5,6 +5,7 @@ import com.gameservergroup.gsgprinter.enums.PrinterMessages;
 import com.gameservergroup.gsgprinter.integration.CombatIntegration;
 import com.gameservergroup.gsgprinter.integration.FactionsIntegration;
 import com.gameservergroup.gsgprinter.integration.SellIntegration;
+import com.gameservergroup.gsgprinter.integration.impl.combat.CombatLogXImpl;
 import com.gameservergroup.gsgprinter.integration.impl.combat.CombatTagPlusImpl;
 import com.gameservergroup.gsgprinter.integration.impl.factions.FactionsUUIDImpl;
 import com.gameservergroup.gsgprinter.integration.impl.factions.LockedThreadFactionsUUIDImpl;
@@ -35,12 +36,20 @@ public class GSGPrinter extends Module {
             Plugin combatTagPlus = getServer().getPluginManager().getPlugin("CombatTagPlus");
             if (combatTagPlus != null) {
                 getLogger().info("Enabled CombatTagPlus Integration");
-                this.enableCombatTagPlusIntegration = getConfig().getBoolean("enable-combattagplus-integration");
+                this.enableCombatTagPlusIntegration = true;
                 this.combatIntegration = new CombatTagPlusImpl(combatTagPlus);
             } else {
                 getLogger().severe("You don't have CombatTagPlus installed, if you don't wish to use it disable the integration in GSGPrinter's config.yml");
-                getPluginLoader().disablePlugin(this);
-                return;
+            }
+        }
+        if (getConfig().getBoolean("enable-combatlogx-integration")) {
+            Plugin combatLogX = getServer().getPluginManager().getPlugin("CombatLogX");
+            if (combatLogX != null) {
+                getLogger().info("Enabled CombatLogX Integration");
+                this.enableCombatTagPlusIntegration = true;
+                this.combatIntegration = new CombatLogXImpl();
+            } else {
+                getLogger().severe("You don't have CombatTagX installed, if you don't wish to use it disable the integration in GSGPrinter's config.yml");
             }
         }
         if (getConfig().getString("sell-integration").equalsIgnoreCase("essentials")) {

@@ -182,6 +182,16 @@ public class Collector {
     }
 
     @Override
+    public String toString() {
+        return "Collector{" +
+                "menuCollector=" + menuCollector +
+                ", blockPosition=" + blockPosition +
+                ", amounts=" + amounts +
+                ", landOwner='" + landOwner + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

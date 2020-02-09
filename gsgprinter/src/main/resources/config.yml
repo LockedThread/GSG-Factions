@@ -16,6 +16,7 @@ flight-check:
   radius: 25
 #Implements getting kicked out of combat whilst in printer.
 enable-combattagplus-integration: true
+enable-combatlogx-integration: false
 #Allows the breaking of blocks in printer
 enable-blockbreak: true
 #Auto excludes them from printer related checks for no cheat plus.

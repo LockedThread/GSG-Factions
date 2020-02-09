@@ -132,6 +132,7 @@ permissions:
       factions.drain: true
       factions.setpaypal: true
       factions.setdiscord: true
+      factions.focus: true
   factions.check:
     description: Allows players to edit the automated wall check reminder time for their faction
   factions.mutechat:
@@ -332,7 +333,7 @@ permissions:
   factions.ban:
     description: Ban players from Factions
   factions.fly.member:
-    description: Allow use of /f impl
+    description: Allow use of /f fly
   factions.coleader:
     description: Allow use of /f coleader <target>
   factions.near:

@@ -32,12 +32,16 @@ public class CmdCheck extends FCommand {
             fme.msg(TL.GENERIC_NOPERMISSION, "check");
             return;
         }
-        int minutes = argAsInt(0);
-        if (minutes <= 0) {
-            msg(TL.COMMAND_CHECK_NEGATIVE_MINUTES);
-        } else {
-            myFaction.setCheckReminderMinutes(minutes);
-            msg(TL.COMMAND_CHECK_SUCCESS.format(minutes));
+        try {
+            int minutes = argAsInt(0);
+            if (minutes <= 0) {
+                msg(TL.COMMAND_CHECK_NEGATIVE_MINUTES);
+            } else {
+                myFaction.setCheckReminderMinutes(minutes);
+                msg(TL.COMMAND_CHECK_SUCCESS.format(minutes));
+            }
+        } catch (Exception e) {
+            msg(TL.COMMAND_INVALID_ARGUMENTS);
         }
     }
 }
