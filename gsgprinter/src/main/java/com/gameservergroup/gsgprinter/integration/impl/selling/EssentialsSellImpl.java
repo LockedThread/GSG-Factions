@@ -16,8 +16,9 @@ import java.util.Locale;
 
 public class EssentialsSellImpl implements SellIntegration {
 
-    private EssentialsConf config;
-    private IEssentials iEssentials;
+    private final double defaultPrice;
+    private final EssentialsConf config;
+    private final IEssentials iEssentials;
 
     public EssentialsSellImpl(Plugin plugin) {
 
@@ -35,6 +36,7 @@ public class EssentialsSellImpl implements SellIntegration {
         } catch (NoSuchFieldException | IllegalAccessException ex) {
             throw new RuntimeException("Unable to access Worth.class, field \"config\".", ex);
         }
+        this.defaultPrice = GSGPrinter.getInstance().getConfig().getBoolean("default-price.enabled") ? GSGPrinter.getInstance().getConfig().getDouble("default-price.price") : -1;
     }
 
 
@@ -51,6 +53,9 @@ public class EssentialsSellImpl implements SellIntegration {
     @Override
     public double getBuyPrice(ItemStack itemStack) {
         BigDecimal price = iEssentials.getWorth().getPrice(iEssentials, itemStack);
-        return price == null ? 0.00 : price.doubleValue();
+        if (defaultPrice == -1) {
+            return price == null ? 0.00 : price.doubleValue();
+        }
+        return price == null ? defaultPrice : price.doubleValue();
     }
 }

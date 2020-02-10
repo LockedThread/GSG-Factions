@@ -18,8 +18,10 @@ public class ShopGUIPlusSellImpl implements SellIntegration {
 
     private final Int2DoubleMap prices = new Int2DoubleOpenHashMap();
     private final int id;
+    private final double defaultPrice;
 
     public ShopGUIPlusSellImpl() {
+        this.defaultPrice = GSGPrinter.getInstance().getConfig().getBoolean("default-price.enabled") ? GSGPrinter.getInstance().getConfig().getDouble("default-price.price") : -1;
         this.id = GSGPrinter.getInstance().getServer().getScheduler().runTaskTimer(GSGPrinter.getInstance(), () -> {
             if (ShopGuiPlugin.getInstance().getShopManager().shops.isEmpty()) {
                 return;
@@ -62,6 +64,9 @@ public class ShopGUIPlusSellImpl implements SellIntegration {
 
     @Override
     public double getBuyPrice(Material material) {
-        return prices.getOrDefault(material.getId(), 0.0);
+        if (defaultPrice == -1) {
+            return prices.getOrDefault(material.getId(), 0.0);
+        }
+        return prices.getOrDefault(material.getId(), defaultPrice);
     }
 }

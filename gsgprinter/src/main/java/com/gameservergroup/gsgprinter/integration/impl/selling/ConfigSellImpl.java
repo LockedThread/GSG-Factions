@@ -15,16 +15,18 @@ import java.util.stream.Collectors;
 
 public class ConfigSellImpl implements SellIntegration {
 
-    private YamlConfiguration yamlConfiguration;
     private Int2DoubleMap prices;
+    private final double defaultPrice;
 
     public ConfigSellImpl(File dir, String fileName) {
+        YamlConfiguration yamlConfiguration;
+        this.defaultPrice = GSGPrinter.getInstance().getConfig().getBoolean("default-price.enabled") ? GSGPrinter.getInstance().getConfig().getDouble("default-price.price") : -1;
         File file = new File(dir, fileName);
         if (!file.exists()) {
             try {
                 file.createNewFile();
                 this.prices = new Int2DoubleOpenHashMap();
-                this.yamlConfiguration = YamlConfiguration.loadConfiguration(file);
+                yamlConfiguration = YamlConfiguration.loadConfiguration(file);
                 for (Material material : Material.values()) {
                     if (material.isBlock() && !UnitPrinter.getBannedInteractables().contains(material)) {
                         yamlConfiguration.set(material.name().toLowerCase().replace("_", "-"), 1.0);
@@ -37,7 +39,7 @@ public class ConfigSellImpl implements SellIntegration {
                 e.printStackTrace();
             }
         } else {
-            this.yamlConfiguration = YamlConfiguration.loadConfiguration(file);
+            yamlConfiguration = YamlConfiguration.loadConfiguration(file);
             this.prices = yamlConfiguration.getKeys(false).stream().collect(Collectors.toMap(key -> Material.matchMaterial(key.replace("-", "_").toUpperCase()).getId(), key -> yamlConfiguration.getDouble(key), (a, b) -> b, Int2DoubleOpenHashMap::new));
             double v = prices.get(Material.STRING.getId());
             if (v != 0.0) {
@@ -54,6 +56,9 @@ public class ConfigSellImpl implements SellIntegration {
 
     @Override
     public double getBuyPrice(Material material) {
-        return prices.getOrDefault(material.getId(), 0.0);
+        if (defaultPrice == -1) {
+            return prices.getOrDefault(material.getId(), 0.0);
+        }
+        return prices.getOrDefault(material.getId(), defaultPrice);
     }
 }
