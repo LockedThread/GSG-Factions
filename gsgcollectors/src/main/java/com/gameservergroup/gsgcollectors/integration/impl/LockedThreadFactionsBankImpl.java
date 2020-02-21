@@ -10,12 +10,13 @@ public class LockedThreadFactionsBankImpl implements FactionsBankIntegration {
 
     @Override
     public boolean setTntBankBalance(Faction faction, int amount) {
-        return faction.setTntBankBalance(amount);
+        faction.setTNTBank(amount);
+        return true;
     }
 
     @Override
     public int getTntBankBalance(Faction faction) {
-        return faction.getTntBankBalance();
+        return faction.getTNTBank();
     }
 
     @Override

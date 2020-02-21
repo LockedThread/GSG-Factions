@@ -119,7 +119,7 @@ project(':gsgcollectors') {
             exclude group: 'it.unimi.dsi'
         }
         implementation project(path: ':gsgcore', configuration: 'shadow')
-        implementation project(path: ':factions')
+        //implementation project(path: ':factions')
         implementation libs.vault
         implementation libs.shopguiplus
         implementation libs.aceoutposts
@@ -127,6 +127,7 @@ project(':gsgcollectors') {
         implementation libs.askyblock
         implementation libs.fabledskyblock
         implementation libs.epicspawners
+        implementation 'com.auqkwatech:AuqkwaFactions:1.0'
     }
 }
 

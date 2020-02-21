@@ -12,6 +12,8 @@ import com.gameservergroup.gsgcore.storage.objs.BlockPosition;
 import com.massivecraft.factions.*;
 import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.struct.Role;
+import com.massivecraft.factions.zcore.fperms.Access;
+import com.massivecraft.factions.zcore.fperms.PermissibleAction;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -127,12 +129,7 @@ public class LandOwnerFactionsUUIDImpl implements LandOwnerIntegration {
             }
             return false;
         }
-        if (GSGCollectors.getInstance().getUnitCollectors().isRoleRestricted() && !fPlayer.getRole().isAtLeast(atLeastRole) && !fPlayer.isAdminBypassing()) {
-            if (sendMessage) {
-                player.sendMessage(CollectorMessages.NO_ACCESS_NO_PERMISSIONS.toString().replace("{role}", atLeastRole.toString()));
-            }
-            return false;
-        }
-        return true;
+        Access access = myFaction.getAccess(fPlayer, PermissibleAction.COLLECTORS);
+        return access == Access.ALLOW || access == Access.UNDEFINED;
     }
 }
