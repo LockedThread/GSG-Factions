@@ -309,7 +309,7 @@ faction-upgrades:
         default:
           rows: 1
         1:
-          amount: 2
+          rows: 2
           cost:
             cost-type: 'MONEY'
             amount: 500.0
