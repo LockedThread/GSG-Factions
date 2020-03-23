@@ -1,11 +1,8 @@
 package com.massivecraft.factions.cmd;
 
-import com.massivecraft.factions.Board;
-import com.massivecraft.factions.FLocation;
-import com.massivecraft.factions.Faction;
-import com.massivecraft.factions.P;
+import com.massivecraft.factions.*;
 import com.massivecraft.factions.struct.Permission;
-import com.massivecraft.factions.tasks.flight.TaskFlight;
+import com.massivecraft.factions.util.FlightUtil;
 import com.massivecraft.factions.util.WarmUpUtil;
 import com.massivecraft.factions.zcore.util.TL;
 
@@ -38,30 +35,11 @@ public class CmdFly extends FCommand {
     }
 
     private void toggleFlight(final boolean toggle) {
-      /*
-        if (Permission.FLY_EVERYWHERE.has(me)) {
-            if (P.p.getConfig().getBoolean("f-fly.everywhere.enabled")) {
-                if (P.p.getConfig().getBoolean("f-fly.everywhere.wilderness")) {
-                    Faction factionAt = Board.getInstance().getFactionAt(new FLocation(me.getLocation()));
-                    if (factionAt.isWilderness()) {
-                        fme.setFlying(true);
-                        return;
-                    }
-                }
-            }
-        }
-        */
         if (P.p.isSotw()) {
             msg(TL.SOTW_IS_ENABLED);
             return;
         }
 
-        /*Access access = myFaction.getAccess(fme, PermissableAction.FLY);
-        if (access == Access.DENY || (access == Access.UNDEFINED && !assertMinRole(Role.RECRUIT))) {
-            fme.msg(TL.GENERIC_NOPERMISSION, "fly");
-            return;
-        }*/
-        // If false do nothing besides set
         if (!toggle) {
             fme.setFlying(false);
             return;
@@ -74,12 +52,28 @@ public class CmdFly extends FCommand {
             Faction factionAtLocation = Board.getInstance().getFactionAt(loc);
             fme.msg(TL.COMMAND_FLY_NO_ACCESS, factionAtLocation.getTag(fme));
             return;
-        } else if (TaskFlight.instance().enemiesTask.enemiesNearby(fme, P.p.getConfig().getInt("f-fly.enemy-radius", 7))) {
+        } else if (FlightUtil.instance().enemiesTask.enemiesNearby(fme)) {
             fme.msg(TL.COMMAND_FLY_ENEMY_NEARBY);
             return;
         }
 
         this.doWarmUp(WarmUpUtil.Warmup.FLIGHT, TL.WARMUPS_NOTIFY_FLIGHT, "Fly", () -> fme.setFlying(true), this.p.getConfig().getLong("warmups.f-fly", 0));
+    }
+
+    private boolean flyTest(FPlayer fPlayer, boolean notify) {
+        if (!fPlayer.canFlyAtLocation()) {
+            if (notify) {
+                Faction factionAtLocation = Board.getInstance().getFactionAt(fPlayer.getLastStoodAt());
+                fPlayer.msg(TL.COMMAND_FLY_NO_ACCESS, factionAtLocation.getTag(fPlayer));
+            }
+            return false;
+        } else if (FlightUtil.instance().enemiesNearby(fPlayer)) {
+            if (notify) {
+                fPlayer.msg(TL.COMMAND_FLY_ENEMY_NEARBY);
+            }
+            return false;
+        }
+        return true;
     }
 
     @Override

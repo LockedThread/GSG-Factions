@@ -13,6 +13,8 @@ import org.bukkit.ChunkSnapshot;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -79,8 +81,12 @@ public class GSGGen extends Module {
                 }
             }), getConfig().getLong("interval"), getConfig().getLong("interval"));
         } else {
-            getServer().getScheduler().runTaskTimer(this, () -> unitGen.getGenerations().keySet().removeIf(generation -> generation.isVertical() ? !generation.generateVertical() : !generation.generateHorizontal(null)), getConfig().getLong("interval"), getConfig().getLong("interval"));
-
+            getServer().getScheduler().runTaskTimer(this, () -> {
+                if (!unitGen.getGenerations().isEmpty()) {
+                    Set<Map.Entry<Generation, Boolean>> entrySet = unitGen.getGenerations().entrySet();
+                    entrySet.removeIf(entry -> entry.getKey().isVertical() ? !entry.getKey().generateVertical() : !entry.getKey().generateHorizontal(null));
+                }
+            }, getConfig().getLong("interval"), getConfig().getLong("interval"));
         }
             /*getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
                 for (Generation generation : unitGen.getGenerations().keySet()) {

@@ -309,7 +309,7 @@ faction-upgrades:
         default:
           rows: 1
         1:
-          amount: 2
+          rows: 2
           cost:
             cost-type: 'MONEY'
             amount: 500.0
@@ -545,7 +545,7 @@ warp-cost:
 # Faction Fly
 f-fly:
   # Enable Faction Fly:
-  enable: true
+  enabled: true
   # If a player leaves fly (out of territory or took damage)
   # how long should they not take fall damage for?
   # Set to 0 to have them always take fall damage.

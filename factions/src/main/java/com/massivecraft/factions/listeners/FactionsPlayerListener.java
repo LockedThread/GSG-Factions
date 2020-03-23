@@ -543,7 +543,6 @@ public class FactionsPlayerListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         FPlayer me = FPlayers.getInstance().getByPlayer(player);
-
         // clear visualization
         if (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockY() != event.getTo().getBlockY() || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
             VisualizeUtil.clear(event.getPlayer());
@@ -552,12 +551,10 @@ public class FactionsPlayerListener implements Listener {
                 me.msg(TL.WARMUPS_CANCELLED);
             }
         }
-
         // quick check to make sure player is moving between chunks; good performance boost
         if (event.getFrom().getBlockX() >> 4 == event.getTo().getBlockX() >> 4 && event.getFrom().getBlockZ() >> 4 == event.getTo().getBlockZ() >> 4 && event.getFrom().getWorld() == event.getTo().getWorld()) {
             return;
         }
-
         // Did we change coord?
         final FLocation from = me.getLastStoodAt();
         final FLocation to = new FLocation(event.getTo());
@@ -570,7 +567,7 @@ public class FactionsPlayerListener implements Listener {
         // Did we change "host"(faction)?
         Faction factionFrom = Board.getInstance().getFactionAt(from);
         Faction factionTo = Board.getInstance().getFactionAt(to);
-        boolean changedFaction = (factionFrom != factionTo);
+        boolean changedFaction = (!factionFrom.getTag().equals(factionTo.getTag()));
         // Yes we did change coord (:
         if (me.isMapAutoUpdating()) {
             if (me.getLastMapUse() > System.currentTimeMillis()) {
@@ -630,8 +627,7 @@ public class FactionsPlayerListener implements Listener {
             TitleAPI.getInstance().sendTitle(player, Text.toColor(TL.ENTERED_CORNER_TITLE.toString()), Text.toColor(TL.ENTERED_CORNER_SUBTITLE.toString()), 0, 60, 20);
         }
 
-
-        if (p.getConfig().getBoolean("f-fly.enable", false) && changedFaction && !me.isAdminBypassing()) {
+        if (p.getConfig().getBoolean("f-fly.enabled", true) && changedFaction && !me.isAdminBypassing()) {
             if (me.isFlying() && p.isSotw()) {
                 me.setFlying(false);
             } else {
@@ -680,7 +676,7 @@ public class FactionsPlayerListener implements Listener {
 
         // Check the location they're teleporting to and check if they can fly there.
         final boolean canFlyAtLocation = me.canFlyAtLocation(to);
-        if (p.getConfig().getBoolean("f-fly.enable", false) && !me.isAdminBypassing() && me.isFlying() && !canFlyAtLocation) {
+        if (p.getConfig().getBoolean("f-fly.enabled", false) && !me.isAdminBypassing() && me.isFlying() && !canFlyAtLocation) {
             me.setFFlying(false, false);
         } else if (me.isPrinterMode()) {
             if (!me.canFlyAtLocation(me.getLastStoodAt(), false)) {

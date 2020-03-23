@@ -275,7 +275,7 @@ public class FCmdRoot extends FCommand {
             p.log(Level.WARNING, "Faction Inspect set to false in config.yml. Not enabling /f inspect command.");
         }
 
-        if (p.getConfig().getBoolean("f-fly.enable", false)) {
+        if (p.getConfig().getBoolean("f-fly.enabled", false)) {
             this.addSubCommand(this.cmdFly);
             this.addSubCommand(this.cmdStealth);
             p.log(Level.INFO, "Enabling /f fly command");

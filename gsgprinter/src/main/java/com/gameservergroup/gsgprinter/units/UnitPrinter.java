@@ -137,9 +137,17 @@ public class UnitPrinter extends Unit {
         EventPost.of(PlayerInteractEvent.class, EventPriority.LOWEST)
                 .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
-                .filter(event -> event.getItem() != null && ((BANNED_INTERACTABLES.contains(event.getItem().getType())) || (event.getItem().hasItemMeta() && (event.getItem().getItemMeta().hasLore() || event.getItem().getItemMeta().hasDisplayName()))) || event.getAction() == Action.LEFT_CLICK_AIR || event.getClickedBlock() != null && event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getState() instanceof InventoryHolder && !event.getPlayer().isSneaking())
-                .handle(event -> event.setCancelled(true))
-                .post(GSG_PRINTER);
+                .filter(new Predicate<PlayerInteractEvent>() {
+                    @Override
+                    public boolean test(PlayerInteractEvent event) {
+                        if (event.getItem() != null && (!event.getItem().getType().isBlock() || (BANNED_INTERACTABLES.contains(event.getItem().getType())) || (event.getItem().hasItemMeta() && (event.getItem().getItemMeta().hasLore() || event.getItem().getItemMeta().hasDisplayName()))) || event.getAction() == Action.LEFT_CLICK_AIR) {
+                            return true;
+                        } else if (event.getClickedBlock() != null) if (event.getAction() == Action.RIGHT_CLICK_BLOCK)
+                            if (event.getClickedBlock().getState() instanceof InventoryHolder)
+                                return !event.getPlayer().isSneaking();
+                        return false;
+                    }
+                }).handle(event -> event.setCancelled(true)).post(GSG_PRINTER);
 
         EventPost.of(PlayerQuitEvent.class, EventPriority.LOWEST)
                 .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
@@ -209,12 +217,36 @@ public class UnitPrinter extends Unit {
                 .handle(event -> event.setCancelled(true))
                 .post(GSG_PRINTER);
 
+        EventPost.of(InventoryCreativeEvent.class, EventPriority.LOWEST)
+                .filter(event -> printingPlayers.containsKey(event.getWhoClicked().getUniqueId()))
+                .handle(event -> {
+                    if (event.getCurrentItem() != null) {
+                        if (!event.getCurrentItem().getType().isBlock()) {
+                            event.setCancelled(true);
+                        }
+                    }
+                    if (event.getCursor() != null) {
+                        if (!event.getCursor().getType().isBlock()) {
+                            event.setCancelled(true);
+                        }
+                    }
+                }).post(GSG_PRINTER);
+
         EventPost.of(InventoryClickEvent.class, EventPriority.LOWEST)
                 .filter(event -> printingPlayers.containsKey(event.getWhoClicked().getUniqueId()))
-                .filter(event -> event.getView().getType() != InventoryType.CREATIVE)
                 .handle(event -> {
-                    event.setCancelled(true);
-                    event.getWhoClicked().closeInventory();
+                    if (event.getView().getType() == InventoryType.CREATIVE) {
+                        if (event.getCurrentItem() != null) {
+                            if (!event.getCurrentItem().getType().isBlock()) {
+                                event.setCancelled(true);
+                                event.setCurrentItem(null);
+                                event.setCursor(null);
+                            }
+                        }
+                    } else {
+                        event.setCancelled(true);
+                        event.getWhoClicked().closeInventory();
+                    }
                 }).post(GSG_PRINTER);
 
         EventPost.of(InventoryOpenEvent.class, EventPriority.LOWEST)

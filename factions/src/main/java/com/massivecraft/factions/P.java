@@ -21,7 +21,6 @@ import com.massivecraft.factions.tasks.TaskAutoLeave;
 import com.massivecraft.factions.tasks.TaskForceInviteUpdate;
 import com.massivecraft.factions.tasks.TaskShieldCacheUpdate;
 import com.massivecraft.factions.tasks.TaskWallCheckReminder;
-import com.massivecraft.factions.tasks.flight.TaskFlight;
 import com.massivecraft.factions.units.UnitFactionUpgrade;
 import com.massivecraft.factions.units.UnitWorldBorder;
 import com.massivecraft.factions.util.*;
@@ -175,9 +174,9 @@ public class P extends MPlugin {
         }
         log(Level.INFO, "Using %1s as a particle provider", particleProvider.name());
 
-
+        factionsPlayerListener = new FactionsPlayerListener(this);
         // Register Event Handlers
-        getServer().getPluginManager().registerEvents(factionsPlayerListener = new FactionsPlayerListener(this), this);
+        getServer().getPluginManager().registerEvents(factionsPlayerListener, this);
         getServer().getPluginManager().registerEvents(new FactionsChatListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsEntityListener(this), this);
         getServer().getPluginManager().registerEvents(new FactionsExploitListener(), this);
@@ -194,7 +193,7 @@ public class P extends MPlugin {
         if (sotw) {
             log(Level.INFO, "Factions Flight is disabled because /f sotw is enabled!");
         } else if (getConfig().getBoolean("f-fly.enabled", true)) {
-            TaskFlight.start();
+            FlightUtil.start();
             log(Level.INFO, "Enabling enemy radius check for f fly every %s seconds", factionsFlightDelay / 20);
         }
 

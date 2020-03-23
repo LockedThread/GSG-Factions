@@ -4,7 +4,6 @@ import com.google.common.base.Charsets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.bukkit.Bukkit;
-import org.junit.Test;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -38,7 +37,7 @@ public class AuthenticationTest {
         return "Test";
     }
 
-    @Test
+    //@Test
     public void authenticationTest() {
         if (testAuthenticationServer()) {
             System.out.println("Enabled");

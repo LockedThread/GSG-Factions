@@ -1,5 +1,10 @@
 async-payments: true
 
+#Use this if you must, could cause very big problems if used incorrectly. It's usage is to default to this price if it cannot find the item in your price implementation.
+default-price:
+  enabled: false
+  price: 100.0
+
 shopguiplus:
   blacklisted-shops:
     - 'donator'
