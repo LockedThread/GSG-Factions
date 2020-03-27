@@ -60,6 +60,10 @@ public class UnitPrinter extends Unit {
     private ConcurrentHashMap<UUID, PrintingData> printingPlayers;
     private boolean blockBreakEnabled;
 
+    public static ImmutableSet<Material> getBannedInteractables() {
+        return BANNED_INTERACTABLES;
+    }
+
     private boolean startsWith(Collection<String> strings, String data) {
         for (String string : strings) {
             if (string.toLowerCase().startsWith(data.toLowerCase())) {
@@ -84,10 +88,6 @@ public class UnitPrinter extends Unit {
                         }
                     }).post(GSG_PRINTER);
         }
-    }
-
-    public static ImmutableSet<Material> getBannedInteractables() {
-        return BANNED_INTERACTABLES;
     }
 
     @Override
@@ -135,19 +135,28 @@ public class UnitPrinter extends Unit {
                     }).post(GSG_PRINTER, "print", "printer", "printermode");
         }
         EventPost.of(PlayerInteractEvent.class, EventPriority.LOWEST)
-                .filter(EventFilters.getIgnoreCancelled())
                 .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
-                .filter(new Predicate<PlayerInteractEvent>() {
-                    @Override
-                    public boolean test(PlayerInteractEvent event) {
-                        if (event.getItem() != null && (!event.getItem().getType().isBlock() || (BANNED_INTERACTABLES.contains(event.getItem().getType())) || (event.getItem().hasItemMeta() && (event.getItem().getItemMeta().hasLore() || event.getItem().getItemMeta().hasDisplayName()))) || event.getAction() == Action.LEFT_CLICK_AIR) {
+                .filter(event -> {
+                    if (event.getItem() != null) {
+                        if (event.getItem().getType() == Material.MONSTER_EGG || event.getItem().getType() == Material.MONSTER_EGGS) {
                             return true;
-                        } else if (event.getClickedBlock() != null) if (event.getAction() == Action.RIGHT_CLICK_BLOCK)
-                            if (event.getClickedBlock().getState() instanceof InventoryHolder)
-                                return !event.getPlayer().isSneaking();
-                        return false;
+                        }
                     }
-                }).handle(event -> event.setCancelled(true)).post(GSG_PRINTER);
+                    if (event.getItem() != null && (BANNED_INTERACTABLES.contains(event.getItem().getType()) || event.getItem().hasItemMeta())) {
+                        return true;
+                    } else if (event.getClickedBlock() != null) {
+                        if (event.getClickedBlock().isLiquid()) {
+                            return true;
+                        }
+                        if (event.getClickedBlock().getState() instanceof InventoryHolder) {
+                            return !event.getPlayer().isSneaking();
+                        }
+                    }
+                    return event.getAction() == Action.RIGHT_CLICK_AIR;
+                }).handle(event -> {
+            event.setCancelled(true);
+            event.getPlayer().setItemInHand(null);
+        }).post(GSG_PRINTER);
 
         EventPost.of(PlayerQuitEvent.class, EventPriority.LOWEST)
                 .filter(event -> printingPlayers.containsKey(event.getPlayer().getUniqueId()))
@@ -221,12 +230,12 @@ public class UnitPrinter extends Unit {
                 .filter(event -> printingPlayers.containsKey(event.getWhoClicked().getUniqueId()))
                 .handle(event -> {
                     if (event.getCurrentItem() != null) {
-                        if (!event.getCurrentItem().getType().isBlock()) {
+                        if (event.getCurrentItem().getType() == Material.MONSTER_EGG || event.getCurrentItem().getType() == Material.MONSTER_EGGS) {
                             event.setCancelled(true);
                         }
                     }
                     if (event.getCursor() != null) {
-                        if (!event.getCursor().getType().isBlock()) {
+                        if (event.getCurrentItem().getType() == Material.MONSTER_EGG || event.getCurrentItem().getType() == Material.MONSTER_EGGS) {
                             event.setCancelled(true);
                         }
                     }
@@ -237,7 +246,7 @@ public class UnitPrinter extends Unit {
                 .handle(event -> {
                     if (event.getView().getType() == InventoryType.CREATIVE) {
                         if (event.getCurrentItem() != null) {
-                            if (!event.getCurrentItem().getType().isBlock()) {
+                            if (event.getCurrentItem().getType() == Material.MONSTER_EGG || event.getCurrentItem().getType() == Material.MONSTER_EGGS) {
                                 event.setCancelled(true);
                                 event.setCurrentItem(null);
                                 event.setCursor(null);
